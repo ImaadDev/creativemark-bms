@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { getAllClients, deleteClient } from "../../../services/clientApi";
 import { getAllEmployees } from "../../../services/employeeApi";
-import { testBackendConnection } from "../../../services/api";
+import { checkBackendHealth } from "../../../services/api";
 import { FullPageLoading } from "../../../components/LoadingSpinner";
 import { 
   FaEdit, 
@@ -44,7 +44,7 @@ export default function ClientsPage() {
         setLoading(true);
         
         // Test backend connection first
-        const backendTest = await testBackendConnection();
+        const backendTest = await checkBackendHealth();
         if (!backendTest) {
           console.error("Backend is not running or not accessible");
           setClients([]);
