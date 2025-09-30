@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getAllClients, deleteClient } from "../../../services/clientApi";
-import { getAllEmployees } from "../../../services/employeeApi";
-import { checkBackendHealth } from "../../../services/api";
+// import { getAllClients, deleteClient } from "../../../services/clientApi";
+// import { getAllEmployees } from "../../../services/employeeApi";
+import api from "../../../services/api";
+// import { checkBackendHealth } from "../../../services/api";
 import { FullPageLoading } from "../../../components/LoadingSpinner";
 import { 
   FaEdit, 
@@ -44,35 +45,35 @@ export default function ClientsPage() {
         setLoading(true);
         
         // Test backend connection first
-        const backendTest = await checkBackendHealth();
-        if (!backendTest) {
-          console.error("Backend is not running or not accessible");
-          setClients([]);
-          setEmployees([]);
-          return;
-        }
+        // const backendTest = await checkBackendHealth();
+        // if (!backendTest) {
+        //   console.error("Backend is not running or not accessible");
+        //   setClients([]);
+        //   setEmployees([]);
+        //   return;
+        // }
   
         const [clientsResponse, employeesResponse] = await Promise.all([
-          getAllClients(),
-          getAllEmployees()
+          api.get('/clients'),
+          api.get('/employees')
         ]);
   
         console.log("Clients API response:", clientsResponse);
         console.log("Employees API response:", employeesResponse);
         
         // Handle clients data
-        if (clientsResponse.success && clientsResponse.data) {
-          setClients(clientsResponse.data);
+        if (clientsResponse.data.success && clientsResponse.data.data) {
+          setClients(clientsResponse.data.data);
         } else {
-          console.error("Failed to fetch clients:", clientsResponse.message);
+          console.error("Failed to fetch clients:", clientsResponse.data.message);
           setClients([]);
         }
         
         // Handle employees data
-        if (employeesResponse.success && employeesResponse.data) {
-          setEmployees(employeesResponse.data);
+        if (employeesResponse.data.success && employeesResponse.data.data) {
+          setEmployees(employeesResponse.data.data);
         } else {
-          console.error("Failed to fetch employees:", employeesResponse.message);
+          console.error("Failed to fetch employees:", employeesResponse.data.message);
           setEmployees([]);
         }
   
@@ -198,9 +199,9 @@ export default function ClientsPage() {
         deleteSpinner.classList.remove('hidden');
         deleteText.textContent = 'Deleting...';
 
-        const response = await deleteClient(client._id);
+        const response = await api.delete(`/clients/${client._id}`);
         
-        if (response.success) {
+        if (response.data.success) {
           // Remove client from state
           setClients(clients.filter(c => c._id !== client._id));
           if (selectedClient?._id === client._id) {
