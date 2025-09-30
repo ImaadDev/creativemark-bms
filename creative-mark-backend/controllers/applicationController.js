@@ -1,0 +1,1022 @@
+import Application from "../models/Application.js";
+import ApplicationDocument from "../models/Document.js";
+import ApplicationTimeline from "../models/Timeline.js";
+import Payment from "../models/Payment.js";
+import User from "../models/User.js";
+
+/**
+ * @desc    Create a new application
+ * @route   POST /api/applications
+ * @access  Private (Client)
+ * @param   {Object} req.body - Application data
+ * @param   {string} req.body.userId - User ID (required)
+ * @param   {string} req.body.serviceType - Service type (required)
+ * @param   {string} [req.body.partnerType] - Partner type (default: "sole")
+ * @param   {string} [req.body.partnerId] - Saudi partner ID
+ * @param   {number} [req.body.externalCompaniesCount] - Number of external companies (default: 0)
+ * @param   {Array} [req.body.externalCompaniesDetails] - External companies details
+ * @param   {number} [req.body.projectEstimatedValue] - Project estimated value
+ * @param   {Array} [req.body.familyMembers] - Family members details
+ * @param   {boolean} [req.body.needVirtualOffice] - Need virtual office (default: false)
+ * @param   {boolean} [req.body.companyArrangesExternalCompanies] - Company arranges external companies (default: false)
+ * @param   {string} [req.body.status] - Application status (default: "submitted")
+ * @param   {string} [req.body.approvedBy] - Approver user ID
+ * @param   {string} [req.body.approvedAt] - Approval date
+ * @param   {Array} [req.body.assignedEmployees] - Assigned employee IDs
+ * @param   {Object} req.files - Uploaded documents
+ * @returns {Object} Created application details with all fields
+ */
+export const addApplication = async (req, res) => {
+    try {
+  
+    const {
+      userId,
+      serviceType,
+      partnerType,
+      partnerId,
+      externalCompaniesCount,
+      externalCompaniesDetails,
+      projectEstimatedValue,
+      familyMembers,
+      needVirtualOffice,
+      companyArrangesExternalCompanies,
+      // Additional fields from the model
+      approvedBy,
+      approvedAt,
+      assignedEmployees,
+      status
+    } = req.body;
+  
+      
+      if (!userId || !serviceType) {
+        console.log("Validation failed: Missing required fields");
+        return res.status(400).json({
+          success: false,
+          message: "User ID and service type are required",
+        });
+      }
+  
+      // Verify user exists
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+  
+      // Parse JSON arrays if sent as strings
+      let parsedExternalCompanies = [];
+      let parsedFamilyMembers = [];
+      let parsedAssignedEmployees = [];
+
+      try {
+        if (externalCompaniesDetails) {
+          parsedExternalCompanies = Array.isArray(externalCompaniesDetails)
+            ? externalCompaniesDetails
+            : JSON.parse(externalCompaniesDetails);
+        }
+      } catch (err) {
+        console.warn("Invalid externalCompaniesDetails JSON:", externalCompaniesDetails);
+      }
+
+      try {
+        if (familyMembers) {
+          parsedFamilyMembers = Array.isArray(familyMembers)
+            ? familyMembers
+            : JSON.parse(familyMembers);
+        }
+      } catch (err) {
+        console.warn("Invalid familyMembers JSON:", familyMembers);
+      }
+
+      try {
+        if (assignedEmployees) {
+          parsedAssignedEmployees = Array.isArray(assignedEmployees)
+            ? assignedEmployees
+            : JSON.parse(assignedEmployees);
+        }
+      } catch (err) {
+        console.warn("Invalid assignedEmployees JSON:", assignedEmployees);
+      }
+
+      // Validate status if provided
+      const validStatuses = ["submitted", "under_review", "approved", "in_process", "completed", "rejected"];
+      const finalStatus = status && validStatuses.includes(status) ? status : "submitted";
+
+      // Validate approvedBy if provided
+      if (approvedBy) {
+        const approver = await User.findById(approvedBy);
+        if (!approver || !["staff", "admin"].includes(approver.role)) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid approver. Only staff and admin can approve applications"
+          });
+        }
+      }
+
+      // Validate assignedEmployees if provided
+      if (parsedAssignedEmployees.length > 0) {
+        const employees = await User.find({ _id: { $in: parsedAssignedEmployees } });
+        if (employees.length !== parsedAssignedEmployees.length) {
+          return res.status(400).json({
+            success: false,
+            message: "One or more assigned employees not found"
+          });
+        }
+      }
+  
+   
+      
+      const application = new Application({
+        userId,
+        serviceType,
+        partnerType: partnerType || "sole",
+        partnerId: partnerId || null,
+        externalCompaniesCount: externalCompaniesCount || 0,
+        externalCompaniesDetails: parsedExternalCompanies,
+        projectEstimatedValue,
+        familyMembers: parsedFamilyMembers,
+        needVirtualOffice: needVirtualOffice || false,
+        companyArrangesExternalCompanies: companyArrangesExternalCompanies || false,
+        // Additional fields from model
+        status: finalStatus,
+        approvedBy: approvedBy || null,
+        approvedAt: approvedAt ? new Date(approvedAt) : null,
+        assignedEmployees: parsedAssignedEmployees,
+      });
+
+      await application.save();
+  
+      // Handle document uploads (req.files from Cloudinary)
+      if (req.files && Object.keys(req.files).length > 0) {
+        console.log("Processing uploaded files:", Object.keys(req.files));
+        const documentPromises = [];
+
+        for (const field in req.files) {
+          const fileArray = req.files[field];
+          for (const file of fileArray) {
+            console.log(`Saving document: ${field} -> ${file.path}`);
+            documentPromises.push(
+              ApplicationDocument.create({
+                applicationId: application._id,
+                type: field,
+                fileUrl: file.path, // 🔑 Cloudinary URL stored here
+                uploadedBy: userId,
+              })
+            );
+          }
+        }
+
+        await Promise.all(documentPromises);
+        console.log("All documents saved to Cloudinary successfully!");
+      }
+  
+      // Create initial timeline entry
+      await ApplicationTimeline.create({
+        applicationId: application._id,
+        status: "submitted",
+        note: "Application submitted by client",
+        progress: 0,
+        updatedBy: userId,
+      });
+
+      // Notify admins about new application submission
+      const io = req.app.get('io');
+      if (io) {
+        try {
+          const admins = await User.find({ role: 'admin' }).select('_id fullName');
+          const clientName = user.fullName || user.name || 'Client';
+          
+          admins.forEach(admin => {
+            const notificationData = {
+              applicationId: application._id,
+              message: `New ${application.serviceType} application submitted by ${clientName}`,
+              serviceType: application.serviceType,
+              partnerType: application.partnerType,
+              submittedBy: clientName,
+              submittedAt: new Date(),
+              timestamp: new Date()
+            };
+            
+            io.to(`user_${admin._id}`).emit('new_application_notification', notificationData);
+          });
+        } catch (notificationError) {
+          console.error('Error sending admin notifications:', notificationError);
+          // Continue with response even if notifications fail
+        }
+      }
+  
+      res.status(201).json({
+        success: true,
+        message: "Application submitted successfully",
+        data: {
+          applicationId: application._id,
+          status: application.status,
+          serviceType: application.serviceType,
+          partnerType: application.partnerType,
+          externalCompaniesCount: application.externalCompaniesCount,
+          needVirtualOffice: application.needVirtualOffice,
+          approvedBy: application.approvedBy,
+          approvedAt: application.approvedAt,
+          assignedEmployees: application.assignedEmployees,
+          submittedAt: application.createdAt,
+          updatedAt: application.updatedAt,
+        },
+      });
+    } catch (error) {
+      console.error("Add Application Error:", error);
+  
+      if (error.name === "ValidationError") {
+        console.error("Validation errors:", Object.values(error.errors).map(err => err.message));
+        console.error("Validation error fields:", Object.keys(error.errors));
+        return res.status(400).json({
+          success: false,
+          message: "Validation error",
+          errors: Object.values(error.errors).map((err) => err.message),
+          details: Object.keys(error.errors)
+        });
+      }
+  
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error:
+          process.env.NODE_ENV === "development"
+            ? error.message
+            : "Something went wrong",
+      });
+    }
+  };
+  
+
+/**
+ * @desc    Review application (approve/reject)
+ * @route   PATCH /api/applications/:applicationId/review
+ * @access  Private (Staff/Admin)
+ * @param   {string} req.params.applicationId - Application ID
+ * @param   {string} req.body.action - Review action (approve/reject)
+ * @param   {string} req.body.staffId - Staff member ID
+ * @param   {string} [req.body.reason] - Reason for rejection
+ * @returns {Object} Review result
+ */
+export const reviewApplication = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { action, staffId, reason } = req.body;
+
+    // Validate required fields
+    if (!action || !staffId) {
+      return res.status(400).json({
+        success: false,
+        message: "Action and staff ID are required"
+      });
+    }
+
+    // Validate action
+    if (!["approve", "reject"].includes(action)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid action. Must be 'approve' or 'reject'"
+      });
+    }
+
+    // Find application
+    const application = await Application.findById(applicationId);
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found"
+      });
+    }
+
+    // Check if application is in reviewable state
+    if (application.status !== "submitted" && application.status !== "under_review") {
+      return res.status(400).json({
+        success: false,
+        message: `Application cannot be reviewed. Current status: ${application.status}`
+      });
+    }
+
+    // Verify staff member exists
+    const staff = await User.findById(staffId);
+    if (!staff || !["staff", "admin"].includes(staff.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized. Only staff and admin can review applications"
+      });
+    }
+
+    // Process approval
+    if (action === "approve") {
+      application.status = "approved";
+      application.approvedBy = staffId;
+      application.approvedAt = new Date();
+      await application.save();
+
+      await ApplicationTimeline.create({
+        applicationId: application._id,
+        status: "approved",
+        note: "Application approved. Awaiting payment.",
+        updatedBy: staffId,
+      });
+
+      // Emit notification to client
+      const io = req.app.get('io');
+      if (io) {
+        const clientMessage = reason 
+          ? `Your ${application.serviceType} application has been approved! You can now proceed with payment. Note: ${reason}`
+          : `Your ${application.serviceType} application has been approved! You can now proceed with payment.`;
+          
+        io.to(`user_${application.userId}`).emit('status_update_notification', {
+          applicationId: application._id,
+          status: 'approved',
+          message: clientMessage,
+          updatedBy: staff.fullName,
+          note: reason,
+          timestamp: new Date()
+        });
+
+        // Notify assigned employees
+        application.assignedEmployees.forEach(assignment => {
+          const employeeMessage = reason
+            ? `Application ${application._id} has been approved by ${staff.fullName}. Note: ${reason}`
+            : `Application ${application._id} has been approved by ${staff.fullName}`;
+            
+          io.to(`user_${assignment.employeeId}`).emit('status_update_notification', {
+            applicationId: application._id,
+            status: 'approved',
+            message: employeeMessage,
+            updatedBy: staff.fullName,
+            note: reason,
+            timestamp: new Date()
+          });
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Application approved successfully",
+        data: {
+          applicationId: application._id,
+          status: application.status,
+          approvedBy: staff.fullName,
+          approvedAt: application.approvedAt
+        }
+      });
+    }
+
+    // Process rejection
+    if (action === "reject") {
+      if (!reason) {
+        return res.status(400).json({
+          success: false,
+          message: "Reason is required for rejection"
+        });
+      }
+
+      application.status = "rejected";
+      await application.save();
+
+      await ApplicationTimeline.create({
+        applicationId: application._id,
+        status: "rejected",
+        note: `Application rejected. Reason: ${reason}`,
+        updatedBy: staffId,
+      });
+
+      // Emit notification to client
+      const io = req.app.get('io');
+      if (io) {
+        io.to(`user_${application.userId}`).emit('status_update_notification', {
+          applicationId: application._id,
+          status: 'rejected',
+          message: `Your ${application.serviceType} application has been rejected. Reason: ${reason}`,
+          updatedBy: staff.fullName,
+          note: reason,
+          timestamp: new Date()
+        });
+
+        // Notify assigned employees
+        application.assignedEmployees.forEach(assignment => {
+          const employeeMessage = `Application ${application._id} has been rejected by ${staff.fullName}. Reason: ${reason}`;
+          
+          io.to(`user_${assignment.employeeId}`).emit('status_update_notification', {
+            applicationId: application._id,
+            status: 'rejected',
+            message: employeeMessage,
+            updatedBy: staff.fullName,
+            note: reason,
+            timestamp: new Date()
+          });
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Application rejected",
+        data: {
+          applicationId: application._id,
+          status: application.status,
+          rejectedBy: staff.fullName,
+          rejectedAt: new Date(),
+          reason
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Review Application Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+    });
+  }
+};
+
+/**
+ * @desc    Process payment for approved application
+ * @route   POST /api/applications/:applicationId/payment
+ * @access  Private (Client)
+ * @param   {string} req.params.applicationId - Application ID
+ * @param   {number} req.body.amount - Payment amount
+ * @param   {string} req.body.method - Payment method
+ * @param   {string} req.body.plan - Payment plan
+ * @param   {string} req.body.userId - User making payment
+ * @returns {Object} Payment confirmation
+ */
+export const makePayment = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { amount, method, plan, userId } = req.body;
+
+    // Validate required fields
+    if (!amount || !method || !plan || !userId) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount, method, plan, and user ID are required"
+      });
+    }
+
+    // Validate payment method
+    if (!["card", "bank_transfer", "cash"].includes(method)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment method"
+      });
+    }
+
+    // Validate payment plan
+    if (!["full", "installment"].includes(plan)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment plan"
+      });
+    }
+
+    // Validate amount
+    if (amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment amount must be greater than 0"
+      });
+    }
+
+    // Find application
+    const application = await Application.findById(applicationId);
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found"
+      });
+    }
+
+    // Check application status
+    if (application.status !== "approved") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment allowed only for approved applications",
+        currentStatus: application.status
+      });
+    }
+
+    // Check if payment already exists
+    const existingPayment = await Payment.findOne({ applicationId });
+    if (existingPayment) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment already exists for this application"
+      });
+    }
+
+    // Verify user exists and is the application owner
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    if (application.userId.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized. You can only pay for your own applications"
+      });
+    }
+
+    // Create payment record
+    const payment = new Payment({
+      applicationId,
+      amount,
+      method,
+      plan,
+      status: "paid",
+      paidBy: userId,
+      transactionRef: `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    });
+
+    await payment.save();
+
+    // Update application status
+    application.status = "in_process";
+    await application.save();
+
+    // Create timeline entry
+    await ApplicationTimeline.create({
+      applicationId,
+      status: "in_process",
+      note: `Payment received via ${method} (${plan} plan) - Amount: ${amount} SAR`,
+      updatedBy: userId,
+    });
+
+    // Emit notification to assigned employees
+    const io = req.app.get('io');
+    if (io) {
+      const paymentNote = `Payment received via ${method} (${plan} plan) - Amount: ${amount} SAR`;
+      
+      application.assignedEmployees.forEach(assignment => {
+        io.to(`user_${assignment.employeeId}`).emit('status_update_notification', {
+          applicationId: application._id,
+          status: 'in_process',
+          message: `Payment received for application ${application._id}. Processing can now begin.`,
+          updatedBy: user.fullName,
+          note: paymentNote,
+          timestamp: new Date()
+        });
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Payment processed successfully",
+      data: {
+        paymentId: payment._id,
+        transactionRef: payment.transactionRef,
+        amount: payment.amount,
+        method: payment.method,
+        plan: payment.plan,
+        status: payment.status,
+        paidAt: payment.createdAt,
+        applicationStatus: application.status
+      }
+    });
+  } catch (error) {
+    console.error("Make Payment Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+    });
+  }
+};
+
+/**
+ * @desc    Get application details with full information
+ * @route   GET /api/applications/:applicationId
+ * @access  Private (Client/Staff/Admin)
+ * @param   {string} req.params.applicationId - Application ID
+ * @returns {Object} Complete application details
+ */
+export const getApplication = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+
+    // Validate application ID format
+    if (!applicationId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid application ID format"
+      });
+    }
+
+    const application = await Application.findById(applicationId)
+      .populate("userId", "fullName email phone role nationality")
+      .populate("partnerId", "fullName email phone role")
+      .populate("assignedEmployees.employeeId", "fullName email role position")
+      .populate("approvedBy", "fullName email role")
+      .populate("documents")
+      .populate("timeline")
+      .populate("payment");
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found"
+      });
+    }
+
+    // Format response data
+    const responseData = {
+      applicationId: application._id,
+      client: {
+        id: application.userId._id,
+        name: application.userId.fullName,
+        email: application.userId.email,
+        phone: application.userId.phone,
+        role: application.userId.role,
+        nationality: application.userId.nationality
+      },
+      serviceDetails: {
+        serviceType: application.serviceType,
+        partnerType: application.partnerType,
+        partner: application.partnerId ? {
+          id: application.partnerId._id,
+          name: application.partnerId.fullName,
+          email: application.partnerId.email,
+          phone: application.partnerId.phone
+        } : null,
+        externalCompaniesCount: application.externalCompaniesCount,
+        externalCompaniesDetails: application.externalCompaniesDetails,
+        projectEstimatedValue: application.projectEstimatedValue,
+        familyMembers: application.familyMembers,
+        needVirtualOffice: application.needVirtualOffice
+      },
+      status: {
+        current: application.status,
+        approvedBy: application.approvedBy ? {
+          id: application.approvedBy._id,
+          name: application.approvedBy.fullName,
+          email: application.approvedBy.email
+        } : null,
+        approvedAt: application.approvedAt
+      },
+      assignedEmployees: application.assignedEmployees.map(assignment => ({
+        id: assignment.employeeId._id,
+        name: assignment.employeeId.fullName,
+        email: assignment.employeeId.email,
+        role: assignment.employeeId.role,
+        position: assignment.employeeId.position,
+        task: assignment.task,
+        assignedAt: assignment.assignedAt,
+      })),
+      documents: application.documents || [],
+      timeline: application.timeline || [],
+      payment: application.payment || null,
+      timestamps: {
+        createdAt: application.createdAt,
+        updatedAt: application.updatedAt
+      }
+    };
+
+    res.json({
+      success: true,
+      message: "Application retrieved successfully",
+      data: responseData
+    });
+  } catch (error) {
+    console.error("Get Application Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+    });
+  }
+};
+
+/**
+ * @desc    Get all applications for the authenticated user
+ * @route   GET /api/applications
+ * @access  Private (Client)
+ * @returns {Object} List of user's applications
+ */
+export const getUserApplications = async (req, res) => {
+  try {
+    // Get user ID from the authenticated user (from auth middleware)
+    const userId = req.user.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated"
+      });
+    }
+
+    // Find all applications for this user
+    const applications = await Application.find({ userId })
+      .select('_id serviceType status partnerType externalCompaniesCount needVirtualOffice createdAt updatedAt')
+      .sort({ createdAt: -1 }); // Most recent first
+
+    res.status(200).json({
+      success: true,
+      message: "Applications retrieved successfully",
+      data: applications
+    });
+
+  } catch (error) {
+    console.error("Get User Applications Error:", error);
+    
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : "Something went wrong"
+    });
+  }
+};
+
+
+// Get all applications for admin
+export const getAllApplications = async (req, res) => {
+  try {
+    const applications = await Application.find()
+      .populate("userId", "fullName email phone role nationality")
+      .populate("partnerId", "fullName email phone role")
+      .populate("assignedEmployees.employeeId", "fullName email role position")
+      .populate("approvedBy", "fullName email role")
+      .populate("documents")
+      .populate("timeline")
+      .populate("payment")
+      .sort({ createdAt: -1 }); // Show latest first
+
+    if (!applications || applications.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No applications found",
+        data: [],
+        count: 0,
+      });
+    }
+
+    // Map into structured response
+    const formattedApplications = applications.map((app) => ({
+      applicationId: app._id,
+      client: app.userId
+        ? {
+            id: app.userId._id,
+            name: app.userId.fullName,
+            email: app.userId.email,
+            phone: app.userId.phone,
+            role: app.userId.role,
+            nationality: app.userId.nationality,
+          }
+        : null,
+      serviceDetails: {
+        serviceType: app.serviceType,
+        partnerType: app.partnerType,
+        partner: app.partnerId
+          ? {
+              id: app.partnerId._id,
+              name: app.partnerId.fullName,
+              email: app.partnerId.email,
+              phone: app.partnerId.phone,
+            }
+          : null,
+        externalCompaniesCount: app.externalCompaniesCount,
+        externalCompaniesDetails: app.externalCompaniesDetails,
+        projectEstimatedValue: app.projectEstimatedValue,
+        familyMembers: app.familyMembers,
+        needVirtualOffice: app.needVirtualOffice,
+      },
+      status: {
+        current: app.status,
+        approvedBy: app.approvedBy
+          ? {
+              id: app.approvedBy._id,
+              name: app.approvedBy.fullName,
+              email: app.approvedBy.email,
+            }
+          : null,
+        approvedAt: app.approvedAt,
+      },
+      assignedEmployees: app.assignedEmployees.map((assignment) => ({
+        id: assignment.employeeId._id,
+        name: assignment.employeeId.fullName,
+        email: assignment.employeeId.email,
+        role: assignment.employeeId.role,
+        position: assignment.employeeId.position,
+        task: assignment.task,
+        assignedAt: assignment.assignedAt,
+      })),
+      documents: app.documents || [],
+      timeline: app.timeline || [],
+      payment: app.payment || null,
+      timestamps: {
+        createdAt: app.createdAt,
+        updatedAt: app.updatedAt,
+      },
+    }));
+
+    res.status(200).json({
+      success: true,
+      message: "Applications retrieved successfully",
+      data: formattedApplications,
+    });
+  } catch (error) {
+    console.error("Get All Applications Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Something went wrong",
+    });
+  }
+};
+
+/**
+ * @desc    Assign application to employees
+ * @route   PATCH /api/applications/:applicationId/assign
+ * @access  Private (Internal/Admin)
+ * @param   {string} req.params.applicationId - Application ID
+ * @param   {Array} req.body.employeeIds - Array of employee IDs to assign
+ * @param   {string} req.body.assignedBy - ID of the user assigning the application
+ * @param   {string} [req.body.note] - Optional note about the assignment
+ * @returns {Object} Updated application with assigned employees
+ */
+export const assignApplicationToEmployees = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { employeeIds, assignedBy, note } = req.body;
+
+    // Validate input
+    if (!employeeIds || !Array.isArray(employeeIds) || employeeIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Employee IDs array is required and must not be empty",
+      });
+    }
+
+    if (!assignedBy) {
+      return res.status(400).json({
+        success: false,
+        message: "Assigned by user ID is required",
+      });
+    }
+
+    // Check if application exists
+    const application = await Application.findById(applicationId);
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found",
+      });
+    }
+
+    // Validate that all employee IDs exist and are employees
+    const employees = await User.find({
+      _id: { $in: employeeIds },
+      role: { $in: ['employee', 'admin'] }
+    });
+
+    if (employees.length !== employeeIds.length) {
+      return res.status(400).json({
+        success: false,
+        message: "One or more employee IDs are invalid or not employees",
+      });
+    }
+
+    // Format employee IDs for the schema (array of objects with employeeId, task, assignedAt)
+    const assignedEmployeesData = employeeIds.map(employeeId => ({
+      employeeId: employeeId,
+      task: 'Application processing',
+      assignedAt: new Date()
+    }));
+
+    // Update application with assigned employees
+    const updatedApplication = await Application.findByIdAndUpdate(
+      applicationId,
+      {
+        $set: {
+          assignedEmployees: assignedEmployeesData,
+          status: application.status === 'submitted' ? 'under_review' : application.status,
+        },
+      },
+      { new: true, runValidators: true }
+    ).populate([
+      { path: 'userId', select: 'name email phone nationality role' },
+      { path: 'partnerId', select: 'name email phone nationality role' },
+      { path: 'assignedEmployees.employeeId', select: 'name email phone role' },
+      { path: 'approvedBy', select: 'name email role' }
+    ]);
+
+    // Create timeline entry for assignment
+    await ApplicationTimeline.create({
+      applicationId: applicationId,
+      status: updatedApplication.status,
+      note: note || `Application assigned to ${employees.length} employee(s)`,
+      updatedBy: assignedBy,
+      progress: updatedApplication.status === 'under_review' ? 25 : 0,
+    });
+
+    // Emit assignment notifications
+    const io = req.app.get('io');
+    if (io) {
+      // Notify assigned employees
+      employeeIds.forEach(employeeId => {
+        io.to(`user_${employeeId}`).emit('assignment_notification', {
+          applicationId: applicationId,
+          message: `You have been assigned to handle application ${applicationId}`,
+          assignedBy: req.user.fullName || 'System',
+          timestamp: new Date()
+        });
+      });
+
+      // Notify client
+      const clientMessage = note 
+        ? `Your application has been assigned to our team and is now under review. Note: ${note}`
+        : `Your application has been assigned to our team and is now under review`;
+        
+      io.to(`user_${updatedApplication.userId._id}`).emit('status_update_notification', {
+        applicationId: applicationId,
+        status: updatedApplication.status,
+        message: clientMessage,
+        updatedBy: req.user.fullName || 'System',
+        note: note,
+        timestamp: new Date()
+      });
+    }
+
+    // Format the response
+    const formattedApplication = {
+      applicationId: updatedApplication._id,
+      client: {
+        id: updatedApplication.userId._id,
+        name: updatedApplication.userId.name,
+        email: updatedApplication.userId.email,
+        phone: updatedApplication.userId.phone,
+        role: updatedApplication.userId.role,
+        nationality: updatedApplication.userId.nationality,
+      },
+      serviceDetails: {
+        serviceType: updatedApplication.serviceType,
+        partnerType: updatedApplication.partnerType,
+        partner: updatedApplication.partnerId ? {
+          id: updatedApplication.partnerId._id,
+          name: updatedApplication.partnerId.name,
+          email: updatedApplication.partnerId.email,
+          phone: updatedApplication.partnerId.phone,
+          role: updatedApplication.partnerId.role,
+          nationality: updatedApplication.partnerId.nationality,
+        } : null,
+        externalCompaniesCount: updatedApplication.externalCompaniesCount,
+        externalCompaniesDetails: updatedApplication.externalCompaniesDetails,
+        familyMembers: updatedApplication.familyMembers,
+        needVirtualOffice: updatedApplication.needVirtualOffice,
+      },
+      status: {
+        current: updatedApplication.status,
+        approvedBy: updatedApplication.approvedBy ? {
+          id: updatedApplication.approvedBy._id,
+          name: updatedApplication.approvedBy.name,
+          email: updatedApplication.approvedBy.email,
+          role: updatedApplication.approvedBy.role,
+        } : null,
+        approvedAt: updatedApplication.approvedAt,
+      },
+      assignedEmployees: updatedApplication.assignedEmployees.map(assignment => ({
+        id: assignment.employeeId._id,
+        name: assignment.employeeId.name,
+        email: assignment.employeeId.email,
+        phone: assignment.employeeId.phone,
+        role: assignment.employeeId.role,
+        task: assignment.task,
+        assignedAt: assignment.assignedAt,
+      })),
+      documents: updatedApplication.documents || [],
+      timeline: updatedApplication.timeline || [],
+      payment: updatedApplication.payment || null,
+      timestamps: {
+        createdAt: updatedApplication.createdAt,
+        updatedAt: updatedApplication.updatedAt,
+      },
+    };
+
+    res.status(200).json({
+      success: true,
+      message: `Application successfully assigned to ${employees.length} employee(s)`,
+      data: formattedApplication,
+    });
+
+  } catch (error) {
+    console.error("Assign Application Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Something went wrong",
+    });
+  }
+};
