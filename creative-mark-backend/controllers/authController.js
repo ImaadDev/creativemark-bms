@@ -362,6 +362,14 @@ export const updateProfile = async (req, res) => {
 
     const formData = parseData(req.body);
     
+    // Handle profile picture upload
+    let profilePictureUrl = null;
+    if (req.file) {
+      // File was uploaded via multer and saved to Cloudinary
+      profilePictureUrl = req.file.path;
+      console.log('Profile picture uploaded to Cloudinary:', profilePictureUrl);
+    }
+    
     const {
       fullName,
       email,
@@ -428,7 +436,7 @@ export const updateProfile = async (req, res) => {
       nationality: nationality || user.nationality,
       address: address || user.address,
       bio: bio || user.bio,
-      profilePicture: profilePicture || user.profilePicture
+      profilePicture: profilePictureUrl || profilePicture || user.profilePicture
     };
 
     // Update role-specific details based on user role
@@ -608,6 +616,101 @@ export const updateSettings = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal server error"
+    });
+  }
+};
+
+/**
+ * @desc    Delete user by ID (Admin only)
+ * @route   DELETE /api/auth/users/:id
+ * @access  Private (Admin only)
+ */
+export const deleteUser = async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. Admin privileges required."
+      });
+    }
+
+    const { id } = req.params;
+    const { deletedBy } = req.body;
+
+    // Validate required fields
+    if (!deletedBy) {
+      return res.status(400).json({
+        success: false,
+        message: "Deleted by user ID is required"
+      });
+    }
+
+    // Validate user ID format
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format"
+      });
+    }
+
+    // Find user to ensure it exists
+    const userToDelete = await User.findById(id);
+    if (!userToDelete) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Prevent admin from deleting themselves
+    if (id === req.user.id) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete your own account"
+      });
+    }
+
+    // Verify the user deleting has permission (admin)
+    const deletingUser = await User.findById(deletedBy);
+    if (!deletingUser || deletingUser.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized. Only admin can delete users"
+      });
+    }
+
+    // Delete the user
+    await User.findByIdAndDelete(id);
+
+    // Emit notification if needed (optional)
+    const io = req.app.get('io');
+    if (io) {
+      // You can add notification logic here if needed
+      console.log(`User ${userToDelete.fullName} deleted by ${deletingUser.fullName}`);
+    }
+
+    res.json({
+      success: true,
+      message: "User deleted successfully",
+      data: {
+        userId: id,
+        deletedUser: {
+          name: userToDelete.fullName,
+          email: userToDelete.email,
+          role: userToDelete.role
+        },
+        deletedBy: deletingUser.fullName,
+        deletedAt: new Date()
+      }
+    });
+
+  } catch (error) {
+    console.error("Delete User Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
     });
   }
 };

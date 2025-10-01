@@ -10,11 +10,11 @@ export const getConversations = async (req, res) => {
     const userId = req.user.id;
     const userRole = req.user.role;
 
-    let applications;
-
+    let applications = [];
     if (userRole === "client") {
-      // Get applications where user is the client
+      // Get applications created by the client
       applications = await Application.find({ userId })
+        .populate("userId", "fullName email role")
         .populate("assignedEmployees.employeeId", "fullName email role")
         .sort({ updatedAt: -1 });
     } else if (userRole === "employee") {
@@ -22,12 +22,6 @@ export const getConversations = async (req, res) => {
       applications = await Application.find({
         "assignedEmployees.employeeId": userId
       })
-        .populate("userId", "fullName email role")
-        .populate("assignedEmployees.employeeId", "fullName email role")
-        .sort({ updatedAt: -1 });
-    } else if (userRole === "admin") {
-      // Admins can see all applications
-      applications = await Application.find()
         .populate("userId", "fullName email role")
         .populate("assignedEmployees.employeeId", "fullName email role")
         .sort({ updatedAt: -1 });
@@ -43,20 +37,19 @@ export const getConversations = async (req, res) => {
         })
         .populate("senderId", "fullName email role")
         .sort({ createdAt: -1 });
-
+        
         // Get unread count for this application
         const unreadCount = await Message.getUnreadCount(userId, app._id);
 
         // Determine conversation partner
         let conversationPartner = null;
         if (userRole === "client") {
-          // Client can message with assigned employees and admins
-          conversationPartner = app.assignedEmployees[0]?.employeeId || null;
+          // Client can message with assigned employees
+          if (app.assignedEmployees && app.assignedEmployees.length > 0) {
+            conversationPartner = app.assignedEmployees[0].employeeId;
+          }
         } else if (userRole === "employee") {
-          // Employee can message with the client and admins
-          conversationPartner = app.userId;
-        } else if (userRole === "admin") {
-          // Admin can message with client and assigned employees
+          // Employee can message with the client
           conversationPartner = app.userId;
         }
 
@@ -81,16 +74,17 @@ export const getConversations = async (req, res) => {
       })
     );
 
+    const filteredConversations = conversations.filter(conv => conv.conversationPartner && conv.lastMessage);
+    
     res.json({
       success: true,
-      conversations: conversations.filter(conv => conv.conversationPartner)
+      conversations: filteredConversations
     });
   } catch (error) {
-    console.error("Error getting conversations:", error);
+    console.error("Error fetching conversations:", error);
     res.status(500).json({
       success: false,
-      message: "Error fetching conversations",
-      error: error.message
+      message: "Internal server error"
     });
   }
 };
@@ -121,8 +115,6 @@ export const getConversationMessages = async (req, res) => {
     } else if (userRole === "employee" && 
                application.assignedEmployees.some(emp => emp.employeeId.toString() === userId)) {
       hasAccess = true;
-    } else if (userRole === "admin") {
-      hasAccess = true;
     }
 
     if (!hasAccess) {
@@ -135,13 +127,8 @@ export const getConversationMessages = async (req, res) => {
     // Determine conversation partner
     let conversationPartnerId = null;
     if (userRole === "client") {
-      // Client can message with assigned employees and admins
       conversationPartnerId = application.assignedEmployees[0]?.employeeId || null;
     } else if (userRole === "employee") {
-      // Employee can message with the client and admins
-      conversationPartnerId = application.userId;
-    } else if (userRole === "admin") {
-      // Admin can message with client and assigned employees
       conversationPartnerId = application.userId;
     }
 
@@ -167,24 +154,26 @@ export const getConversationMessages = async (req, res) => {
       .map(msg => msg._id);
 
     if (unreadMessageIds.length > 0) {
-      await Message.markAsRead(unreadMessageIds, userId);
+      await Message.updateMany(
+        { _id: { $in: unreadMessageIds } },
+        { isRead: true }
+      );
     }
 
     res.json({
       success: true,
-      messages: messages.reverse(), // Reverse to show oldest first
+      messages: messages.reverse(), // Return in chronological order
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
-        total: messages.length
+        hasMore: messages.length === parseInt(limit)
       }
     });
   } catch (error) {
-    console.error("Error getting conversation messages:", error);
+    console.error("Error fetching conversation messages:", error);
     res.status(500).json({
       success: false,
-      message: "Error fetching messages",
-      error: error.message
+      message: "Internal server error"
     });
   }
 };
@@ -221,16 +210,14 @@ export const sendMessage = async (req, res) => {
 
     if (userRole === "client" && application.userId.toString() === senderId) {
       hasAccess = true;
-      // Client can message with assigned employees and admins
-      recipientId = application.assignedEmployees[0]?.employeeId || null;
+      // Client can message with assigned employees
+      if (application.assignedEmployees && application.assignedEmployees.length > 0) {
+        recipientId = application.assignedEmployees[0].employeeId;
+      }
     } else if (userRole === "employee" && 
                application.assignedEmployees.some(emp => emp.employeeId.toString() === senderId)) {
       hasAccess = true;
-      // Employee can message with the client and admins
-      recipientId = application.userId;
-    } else if (userRole === "admin") {
-      hasAccess = true;
-      // Admin can message with client and assigned employees
+      // Employee can message with the client
       recipientId = application.userId;
     }
 
@@ -268,15 +255,13 @@ export const sendMessage = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Message sent successfully",
-      data: message
+      message: message
     });
   } catch (error) {
     console.error("Error sending message:", error);
     res.status(500).json({
       success: false,
-      message: "Error sending message",
-      error: error.message
+      message: "Internal server error"
     });
   }
 };
@@ -296,19 +281,24 @@ export const markMessagesAsRead = async (req, res) => {
       });
     }
 
-    const result = await Message.markAsRead(messageIds, userId);
+    await Message.updateMany(
+      { 
+        _id: { $in: messageIds },
+        recipientId: userId,
+        isRead: false
+      },
+      { isRead: true }
+    );
 
     res.json({
       success: true,
-      message: "Messages marked as read",
-      modifiedCount: result.modifiedCount
+      message: "Messages marked as read"
     });
   } catch (error) {
     console.error("Error marking messages as read:", error);
     res.status(500).json({
       success: false,
-      message: "Error marking messages as read",
-      error: error.message
+      message: "Internal server error"
     });
   }
 };
@@ -329,18 +319,16 @@ export const deleteMessage = async (req, res) => {
       });
     }
 
-    // Only sender can delete their own message
+    // Check if user is the sender
     if (message.senderId.toString() !== userId) {
       return res.status(403).json({
         success: false,
-        message: "You can only delete your own messages"
+        message: "Access denied to delete this message"
       });
     }
 
     // Soft delete
     message.isDeleted = true;
-    message.deletedAt = new Date();
-    message.deletedBy = userId;
     await message.save();
 
     res.json({
@@ -351,8 +339,7 @@ export const deleteMessage = async (req, res) => {
     console.error("Error deleting message:", error);
     res.status(500).json({
       success: false,
-      message: "Error deleting message",
-      error: error.message
+      message: "Internal server error"
     });
   }
 };
@@ -363,20 +350,17 @@ export const deleteMessage = async (req, res) => {
 export const getUnreadCount = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { applicationId } = req.query;
-
-    const unreadCount = await Message.getUnreadCount(userId, applicationId);
-
+    const count = await Message.getUnreadCount(userId);
+    
     res.json({
       success: true,
-      unreadCount
+      unreadCount: count
     });
   } catch (error) {
     console.error("Error getting unread count:", error);
     res.status(500).json({
       success: false,
-      message: "Error getting unread count",
-      error: error.message
+      message: "Internal server error"
     });
   }
 };

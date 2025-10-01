@@ -117,13 +117,12 @@ io.on('connection', (socket) => {
       const sender = await User.findById(messageData.senderId);
       
       if (sender.role === 'client') {
-        // Client can message with assigned employees and admins
-        recipientId = application.assignedEmployees[0]?.employeeId || null;
+        // Client can message with assigned employees
+        if (application.assignedEmployees && application.assignedEmployees.length > 0) {
+          recipientId = application.assignedEmployees[0].employeeId;
+        }
       } else if (sender.role === 'employee') {
-        // Employee can message with the client and admins
-        recipientId = application.userId;
-      } else if (sender.role === 'admin') {
-        // Admin can message with client and assigned employees
+        // Employee can message with the client
         recipientId = application.userId;
       }
 

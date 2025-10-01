@@ -17,54 +17,88 @@ export const SocketProvider = ({ children }) => {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
       const newSocket = io(backendUrl, {
         withCredentials: true,
-        transports: ['websocket', 'polling']
+        transports: ['websocket', 'polling'],
+        timeout: 10000,
+        forceNew: true
       });
 
       // Connection event handlers
       newSocket.on('connect', () => {
+        console.log('✅ Socket connected successfully');
         setIsConnected(true);
         
         // Join user's personal room
         newSocket.emit('join_user_room', user.id);
       });
 
-      newSocket.on('disconnect', () => {
-        console.log('Socket disconnected');
+      newSocket.on('disconnect', (reason) => {
+        console.log('❌ Socket disconnected:', reason);
         setIsConnected(false);
       });
 
       newSocket.on('connect_error', (error) => {
-        console.error('Socket connection error:', error);
+        console.error('❌ Socket connection error:', error.message);
         setIsConnected(false);
+      });
+
+      newSocket.on('error', (error) => {
+        console.error('❌ Socket error:', error);
       });
 
       setSocket(newSocket);
 
       // Cleanup on unmount
       return () => {
+        console.log('🧹 Cleaning up socket connection');
         newSocket.close();
       };
+    } else {
+      // If no user, close any existing socket
+      if (socket) {
+        socket.close();
+        setSocket(null);
+        setIsConnected(false);
+      }
     }
   }, [user]);
 
   // Join application room
   const joinApplicationRoom = (applicationId) => {
     if (socket && isConnected) {
-      socket.emit('join_application_room', applicationId);
+      try {
+        socket.emit('join_application_room', applicationId);
+        console.log('📱 Joined application room:', applicationId);
+      } catch (error) {
+        console.error('❌ Error joining application room:', error);
+      }
+    } else {
+      console.warn('⚠️ Socket not connected, cannot join application room');
     }
   };
 
   // Leave application room
   const leaveApplicationRoom = (applicationId) => {
     if (socket && isConnected) {
-      socket.emit('leave_application_room', applicationId);
+      try {
+        socket.emit('leave_application_room', applicationId);
+        console.log('📱 Left application room:', applicationId);
+      } catch (error) {
+        console.error('❌ Error leaving application room:', error);
+      }
     }
   };
 
   // Send message
   const sendMessage = (messageData) => {
     if (socket && isConnected) {
-      socket.emit('send_message', messageData);
+      try {
+        socket.emit('send_message', messageData);
+        console.log('📤 Message sent via socket:', messageData.applicationId);
+      } catch (error) {
+        console.error('❌ Error sending message via socket:', error);
+      }
+    } else {
+      console.warn('⚠️ Socket not connected, message not sent via socket');
     }
   };
 

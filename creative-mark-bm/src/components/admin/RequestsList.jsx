@@ -16,10 +16,13 @@ import {
   FaHourglassHalf,
   FaSearch,
   FaFilter,
-  FaSort
+  FaSort,
+  FaTrash,
+  FaTrashAlt
 } from 'react-icons/fa';
-import { getAllApplications } from '../../services/applicationService';
-import { isAuthenticated } from '../../services/auth';
+import { getAllApplications, deleteApplication } from '../../services/applicationService';
+import { isAuthenticated, getCurrentUser } from '../../services/auth';
+import Swal from 'sweetalert2';
 
 const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestSelect, onRequestAssign, refreshTrigger }) => {
   const router = useRouter();
@@ -30,10 +33,22 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [deletingId, setDeletingId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     loadRequests();
+    loadCurrentUser();
   }, [statusFilter, assignedFilter, currentPage, searchTerm, sortBy, sortOrder, refreshTrigger]);
+
+  const loadCurrentUser = async () => {
+    try {
+      const user = await getCurrentUser();
+      setCurrentUser(user.data);
+    } catch (error) {
+      console.error('Error loading current user:', error);
+    }
+  };
 
   const loadRequests = async () => {
     try {
@@ -169,6 +184,131 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const handleDeleteRequest = async (request) => {
+    if (!currentUser || !["admin", "staff"].includes(currentUser.role)) {
+      Swal.fire({
+        title: 'Permission Denied',
+        text: 'Only admin and staff can delete applications.',
+        icon: 'error',
+        confirmButtonColor: '#dc2626',
+        confirmButtonText: 'OK',
+        background: '#ffffff',
+        customClass: {
+          popup: 'rounded-2xl shadow-2xl',
+          title: 'text-gray-900 font-semibold',
+          content: 'text-gray-600'
+        }
+      });
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Delete Application',
+      html: `
+        <div class="text-left">
+          <p class="text-gray-700 mb-4">
+            Are you sure you want to delete this <strong>${request.serviceDetails?.serviceType || 'application'}</strong> request?
+          </p>
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+            <p class="text-red-800 font-semibold mb-2">⚠️ This action cannot be undone and will permanently remove:</p>
+            <ul class="text-red-700 text-sm space-y-1">
+              <li>• The application</li>
+              <li>• All uploaded documents</li>
+              <li>• Timeline entries</li>
+              <li>• Payment records</li>
+            </ul>
+          </div>
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+            <p class="text-gray-600 text-sm">
+              <strong>Application ID:</strong> ${request.applicationId}
+            </p>
+            <p class="text-gray-600 text-sm">
+              <strong>Client:</strong> ${request.client?.name || 'N/A'}
+            </p>
+          </div>
+        </div>
+      `,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, Delete It!',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+      background: '#ffffff',
+      customClass: {
+        popup: 'rounded-2xl shadow-2xl',
+        title: 'text-gray-900 font-semibold',
+        content: 'text-gray-600',
+        confirmButton: 'rounded-lg font-medium px-6 py-3',
+        cancelButton: 'rounded-lg font-medium px-6 py-3'
+      }
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setDeletingId(request.applicationId);
+        
+        // Show loading alert
+        Swal.fire({
+          title: 'Deleting Application...',
+          text: 'Please wait while we delete the application.',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          background: '#ffffff',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            title: 'text-gray-900 font-semibold'
+          },
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        await deleteApplication(request.applicationId, currentUser.id);
+        
+        // Remove the deleted request from the local state
+        setRequests(prev => prev.filter(req => req.applicationId !== request.applicationId));
+        
+        // Show success alert
+        Swal.fire({
+          title: 'Successfully Deleted!',
+          text: 'The application has been permanently deleted.',
+          icon: 'success',
+          confirmButtonColor: '#059669',
+          confirmButtonText: 'OK',
+          background: '#ffffff',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            title: 'text-gray-900 font-semibold',
+            content: 'text-gray-600',
+            confirmButton: 'rounded-lg font-medium px-6 py-3'
+          }
+        });
+      } catch (error) {
+        console.error('Error deleting application:', error);
+        Swal.fire({
+          title: 'Deletion Failed',
+          text: `Failed to delete application: ${error.message}`,
+          icon: 'error',
+          confirmButtonColor: '#dc2626',
+          confirmButtonText: 'OK',
+          background: '#ffffff',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            title: 'text-gray-900 font-semibold',
+            content: 'text-gray-600',
+            confirmButton: 'rounded-lg font-medium px-6 py-3'
+          }
+        });
+      } finally {
+        setDeletingId(null);
+      }
+    }
   };
 
   const filteredRequests = requests.filter(request =>
@@ -369,6 +509,27 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
                     <FaUserCheck className="mr-2" />
                     Assigned ({request.assignedEmployees.length})
                   </div>
+                )}
+
+                {/* Delete button - only show for admin/staff */}
+                {currentUser && ["admin", "staff"].includes(currentUser.role) && (
+                  <button
+                    onClick={() => handleDeleteRequest(request)}
+                    disabled={deletingId === request.applicationId}
+                    className="flex items-center px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 disabled:from-red-400 disabled:to-red-500 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md"
+                  >
+                    {deletingId === request.applicationId ? (
+                      <>
+                        <FaSpinner className="mr-2 animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <FaTrashAlt className="mr-2" />
+                        Delete
+                      </>
+                    )}
+                  </button>
                 )}
               </div>
             </div>

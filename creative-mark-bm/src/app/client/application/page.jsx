@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Check, Upload, X, Plus, Building2, Users, Fi
 import { createApplication } from "../../../services/applicationService";
 import AuthContext from "../../../contexts/AuthContext";
 import RequirementsModal from "../../../components/client/RequirementsModal";
-import { FullPageLoading, InlineLoading } from "../../../components/LoadingSpinner";
+import { getCurrentUser } from "../../../services/auth";
 
 export default function ModernMultiStepForm() {
   const { user } = useContext(AuthContext);
@@ -16,6 +16,7 @@ export default function ModernMultiStepForm() {
   const [applicationId, setApplicationId] = useState(null);
   const [showRequirementsModal, setShowRequirementsModal] = useState(true);
   const [requirementsAccepted, setRequirementsAccepted] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   
   // Validation state
   const [errors, setErrors] = useState({});
@@ -32,6 +33,8 @@ export default function ModernMultiStepForm() {
     serviceType: "",
     partnerType: "sole",
     partnerId: "",
+    saudiPartnerName: "",
+    saudiPartnerIqama: null,
     projectEstimatedValue: "",
     familyMembers: [],
     needVirtualOffice: false,
@@ -44,6 +47,32 @@ export default function ModernMultiStepForm() {
     approvedAt: "",
     assignedEmployees: []
   });
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        console.log("Current user:", user.data);
+        setCurrentUser(user.data);
+        
+        // Update form with user data
+        if (user.data) {
+          setForm(prev => ({
+            ...prev,
+            fullName: user.data.fullName || prev.fullName,
+            email: user.data.email || prev.email,
+            phone: user.data.phone || prev.phone,
+            nationality: user.data.nationality || prev.nationality,
+            residencyStatus: user.data.residencyStatus || prev.residencyStatus
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
+    fetchCurrentUser();
+  }, []);
+
 
   function getRequirements() {
     const svc = form.serviceType;
@@ -120,9 +149,14 @@ export default function ModernMultiStepForm() {
       case "serviceType":
         if (!value) error = "Service type is required";
         break;
-      case "partnerId":
+      case "saudiPartnerName":
         if (formData.partnerType === "withSaudiPartner" && !value?.trim()) {
-          error = "Saudi partner is required when partner type is 'with Saudi partner'";
+          error = "Saudi partner name is required when partner type is 'with Saudi partner'";
+        }
+        break;
+      case "saudiPartnerIqama":
+        if (formData.partnerType === "withSaudiPartner" && !value) {
+          error = "Saudi partner Iqama/ID card is required when partner type is 'with Saudi partner'";
         }
         break;
       case "projectEstimatedValue":
@@ -150,16 +184,28 @@ export default function ModernMultiStepForm() {
     
     switch (stepNumber) {
       case 1:
-        ["fullName", "email", "phone"].forEach(field => {
-          const error = validateField(field, form[field]);
-          if (error) newErrors[field] = error;
-        });
+        // Only validate phone if name and email are already filled from profile
+        if (form.fullName && form.email) {
+          const phoneError = validateField("phone", form.phone);
+          if (phoneError) newErrors.phone = phoneError;
+        } else {
+          // Validate all fields if not pre-filled
+          ["fullName", "email", "phone"].forEach(field => {
+            const error = validateField(field, form[field]);
+            if (error) newErrors[field] = error;
+          });
+        }
         break;
       case 2:
-        ["nationality", "residencyStatus"].forEach(field => {
-          const error = validateField(field, form[field]);
-          if (error) newErrors[field] = error;
-        });
+        // Only validate if fields are not pre-filled from profile
+        if (!form.nationality) {
+          const nationalityError = validateField("nationality", form.nationality);
+          if (nationalityError) newErrors.nationality = nationalityError;
+        }
+        if (!form.residencyStatus) {
+          const residencyError = validateField("residencyStatus", form.residencyStatus);
+          if (residencyError) newErrors.residencyStatus = residencyError;
+        }
         break;
       case 3:
         const serviceError = validateField("serviceType", form.serviceType);
@@ -172,8 +218,11 @@ export default function ModernMultiStepForm() {
         break;
       case 4:
         if (form.serviceType === "commercial" && form.partnerType === "withSaudiPartner") {
-          const partnerError = validateField("partnerId", form.partnerId);
-          if (partnerError) newErrors.partnerId = partnerError;
+          const partnerNameError = validateField("saudiPartnerName", form.saudiPartnerName);
+          if (partnerNameError) newErrors.saudiPartnerName = partnerNameError;
+          
+          const partnerIqamaError = validateField("saudiPartnerIqama", form.saudiPartnerIqama);
+          if (partnerIqamaError) newErrors.saudiPartnerIqama = partnerIqamaError;
         }
         break;
       case 5:
@@ -275,6 +324,10 @@ export default function ModernMultiStepForm() {
     setForm(prev => ({ ...prev, passportFile: e.target.files?.[0] || null }));
   }
 
+  function handleSaudiPartnerIqamaChange(e) {
+    setForm(prev => ({ ...prev, saudiPartnerIqama: e.target.files?.[0] || null }));
+  }
+
   // Dynamic field management
   function addFamilyMember() {
     setForm(prev => ({
@@ -321,10 +374,17 @@ export default function ModernMultiStepForm() {
       const fieldsToTouch = {};
       switch (step) {
         case 1:
-          ["fullName", "email", "phone"].forEach(field => fieldsToTouch[field] = true);
+          // Only mark phone as touched if name and email are pre-filled
+          if (form.fullName && form.email) {
+            fieldsToTouch.phone = true;
+          } else {
+            ["fullName", "email", "phone"].forEach(field => fieldsToTouch[field] = true);
+          }
           break;
         case 2:
-          ["nationality", "residencyStatus"].forEach(field => fieldsToTouch[field] = true);
+          // Only mark fields as touched if they're not pre-filled
+          if (!form.nationality) fieldsToTouch.nationality = true;
+          if (!form.residencyStatus) fieldsToTouch.residencyStatus = true;
           break;
         case 3:
           fieldsToTouch.serviceType = true;
@@ -332,7 +392,8 @@ export default function ModernMultiStepForm() {
           break;
         case 4:
           if (form.serviceType === "commercial" && form.partnerType === "withSaudiPartner") {
-            fieldsToTouch.partnerId = true;
+            fieldsToTouch.saudiPartnerName = true;
+            fieldsToTouch.saudiPartnerIqama = true;
           }
           break;
         case 5:
@@ -353,31 +414,61 @@ export default function ModernMultiStepForm() {
       return;
     }
 
+    // Validate required fields before submission
+    const validationErrors = {};
+    
+    // Check serviceType
+    if (!form.serviceType || form.serviceType.trim() === "") {
+      validationErrors.serviceType = "Service type is required";
+    }
+    
+    // Check partner type validation
+    if (form.partnerType === "withSaudiPartner" && (!form.saudiPartnerName || form.saudiPartnerName.trim() === "")) {
+      validationErrors.saudiPartnerName = "Saudi partner name is required when partner type is 'with Saudi partner'";
+    }
+    
+    // If there are validation errors, show them and stop submission
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setSubmitError("Please fix the validation errors before submitting.");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError("");
 
     try {
       // Prepare application data for backend
+      console.log("Current user:", user);
+      console.log("User will be authenticated via middleware - not sending userId in body");
       const applicationData = {
-        userId: user.id,
-        serviceType: form.serviceType,
-        partnerType: form.partnerType,
+        // userId removed - will be taken from authenticated user in middleware
+        serviceType: form.serviceType?.trim(), // Ensure no whitespace
+        partnerType: form.partnerType || "sole",
         partnerId: form.partnerId || null,
+        saudiPartnerName: form.saudiPartnerName?.trim() || null,
         externalCompaniesCount: parseInt(form.externalCompaniesCount) || 0,
-        externalCompaniesDetails: form.externalCompaniesDetails,
+        externalCompaniesDetails: form.externalCompaniesDetails || [],
         projectEstimatedValue: form.projectEstimatedValue ? parseFloat(form.projectEstimatedValue) : null,
-        familyMembers: form.familyMembers,
-        needVirtualOffice: form.needVirtualOffice,
-        companyArrangesExternalCompanies: form.companyArrangesExternalCompanies,
+        familyMembers: form.familyMembers || [],
+        needVirtualOffice: Boolean(form.needVirtualOffice),
+        companyArrangesExternalCompanies: Boolean(form.companyArrangesExternalCompanies),
         // Additional fields from backend
-        status: form.status || "submitted",
-        approvedBy: form.approvedBy || null,
-        approvedAt: form.approvedAt || null,
-        assignedEmployees: form.assignedEmployees || []
+        status: "submitted", // Always set to submitted for new applications
+        approvedBy: null, // Never set for client submissions
+        approvedAt: null, // Never set for client submissions
+        assignedEmployees: [] // Never set for client submissions
       };
+
+      // Final validation before sending
+      if (!applicationData.serviceType) {
+        throw new Error("Service type is required");
+      }
 
       console.log("Submitting application:", applicationData);
       console.log("User ID:", user.id);
+      console.log("Service Type:", applicationData.serviceType);
+      console.log("Partner Type:", applicationData.partnerType);
 
       // Prepare files for upload
       const filesToUpload = {};
@@ -390,6 +481,11 @@ export default function ModernMultiStepForm() {
       // Add ID card file if available
       if (form.uploadedFiles.idCard && form.uploadedFiles.idCard.length > 0) {
         filesToUpload.idCard = Array.from(form.uploadedFiles.idCard);
+      }
+
+      // Add Saudi partner Iqama file if available
+      if (form.saudiPartnerIqama) {
+        filesToUpload.saudiPartnerIqama = [form.saudiPartnerIqama];
       }
 
       // Add commercial registration files if user chose to upload docs
@@ -582,6 +678,21 @@ export default function ModernMultiStepForm() {
                   <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                     Let's start with your basic details to create your business profile
                   </p>
+                  
+                  {/* Show pre-filled data notification */}
+                  {(form.fullName || form.email) && (
+                    <div className="mt-6 max-w-md mx-auto">
+                      <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                        <div className="flex items-center gap-2 text-green-800">
+                          <Check className="w-5 h-5 text-green-600" />
+                          <span className="font-medium text-sm">Profile Data Loaded</span>
+                        </div>
+                        <p className="text-green-700 text-sm mt-1">
+                          Your name and email have been automatically filled from your profile. Name and email are locked, but you can update your phone number, nationality, and residency status.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-6">
@@ -589,39 +700,56 @@ export default function ModernMultiStepForm() {
                     <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
                       <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                       Full Name *
+                      {form.fullName && (
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                          From Profile
+                        </span>
+                      )}
                     </label>
                     <input 
                       name="fullName" 
                       value={form.fullName} 
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      readOnly
                       placeholder="Enter your full legal name" 
-                      className={getInputClassName("fullName")} 
+                      className="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50 text-gray-700 font-medium shadow-sm cursor-not-allowed" 
                     />
-                    {renderErrorMessage("fullName")}
+                    {form.fullName && (
+                      <p className="text-xs text-gray-500 mt-1">This field is locked and cannot be changed</p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
                       <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                       Email Address *
+                      {form.email && (
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                          From Profile
+                        </span>
+                      )}
                     </label>
                     <input 
                       name="email" 
                       type="email"
                       value={form.email} 
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      readOnly
                       placeholder="your.email@example.com" 
-                      className={getInputClassName("email")} 
+                      className="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50 text-gray-700 font-medium shadow-sm cursor-not-allowed" 
                     />
-                    {renderErrorMessage("email")}
+                    {form.email && (
+                      <p className="text-xs text-gray-500 mt-1">This field is locked and cannot be changed</p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
                       <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                       Phone Number *
+                      {form.phone && (
+                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                          From Profile (Editable)
+                        </span>
+                      )}
                     </label>
                     <input 
                       name="phone" 
@@ -632,6 +760,9 @@ export default function ModernMultiStepForm() {
                       className={getInputClassName("phone")} 
                     />
                     {renderErrorMessage("phone")}
+                    {form.phone && (
+                      <p className="text-xs text-blue-600 mt-1">You can update your phone number if needed</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -647,7 +778,14 @@ export default function ModernMultiStepForm() {
 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Nationality *</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      Nationality *
+                      {form.nationality && (
+                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                          From Profile (Editable)
+                        </span>
+                      )}
+                    </label>
                     <input 
                       name="nationality" 
                       value={form.nationality} 
@@ -657,10 +795,20 @@ export default function ModernMultiStepForm() {
                       className={getInputClassName("nationality")} 
                     />
                     {renderErrorMessage("nationality")}
+                    {form.nationality && (
+                      <p className="text-xs text-blue-600 mt-1">You can update your nationality if needed</p>
+                    )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Residency Status *</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      Residency Status *
+                      {form.residencyStatus && (
+                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                          From Profile (Editable)
+                        </span>
+                      )}
+                    </label>
                     <select 
                       name="residencyStatus" 
                       value={form.residencyStatus} 
@@ -675,6 +823,9 @@ export default function ModernMultiStepForm() {
                       <option value="foreign">Foreign National</option>
                     </select>
                     {renderErrorMessage("residencyStatus")}
+                    {form.residencyStatus && (
+                      <p className="text-xs text-blue-600 mt-1">You can update your residency status if needed</p>
+                    )}
                   </div>
 
                   <div className="bg-gray-50 rounded-xl p-4">
@@ -799,22 +950,41 @@ export default function ModernMultiStepForm() {
 
                 <div className="space-y-6">
                   {form.serviceType === "commercial" && form.partnerType === "withSaudiPartner" && (
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Saudi Partner *</label>
-                      <select 
-                        name="partnerId" 
-                        value={form.partnerId} 
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={getInputClassName("partnerId")}
-                      >
-                        <option value="">Select your Saudi business partner</option>
-                        <option value="partner1">Ahmed Al-Rashid (Partner ID: P001)</option>
-                        <option value="partner2">Sara Al-Zahra (Partner ID: P002)</option>
-                        <option value="partner3">Mohammed Al-Sheikh (Partner ID: P003)</option>
-                      </select>
-                      {renderErrorMessage("partnerId")}
-                      <p className="text-sm text-gray-600 mt-2">Select your registered Saudi business partner</p>
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Saudi Partner Name *</label>
+                        <input 
+                          name="saudiPartnerName" 
+                          value={form.saudiPartnerName} 
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          placeholder="Enter your Saudi partner's full name" 
+                          className={getInputClassName("saudiPartnerName")} 
+                        />
+                        {renderErrorMessage("saudiPartnerName")}
+                        <p className="text-sm text-gray-600 mt-2">Enter the full legal name of your Saudi business partner</p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Saudi Partner Iqama/ID Card *</label>
+                        <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 transition-colors">
+                          <Upload className="w-8 h-8 mx-auto mb-3 text-gray-400" />
+                          <p className="text-sm text-gray-600 mb-3">Upload your Saudi partner's Iqama or National ID card</p>
+                          <input
+                            type="file"
+                            accept="image/*,.pdf"
+                            onChange={handleSaudiPartnerIqamaChange}
+                            className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700"
+                          />
+                          {form.saudiPartnerIqama && (
+                            <p className="text-sm text-green-600 mt-2 font-medium">
+                              ✓ File selected: {form.saudiPartnerIqama.name}
+                            </p>
+                          )}
+                        </div>
+                        {renderErrorMessage("saudiPartnerIqama")}
+                        <p className="text-sm text-gray-600 mt-2">Upload a clear copy of your Saudi partner's Iqama or National ID card</p>
+                      </div>
                     </div>
                   )}
 
@@ -1444,6 +1614,9 @@ export default function ModernMultiStepForm() {
                         <div className="space-y-1 text-gray-600">
                           <p><span className="font-medium">Service Type:</span> {form.serviceType ? form.serviceType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : "Not selected"}</p>
                           <p><span className="font-medium">Partner Type:</span> {form.partnerType === "sole" ? "Sole Partner" : "With Saudi Partner"}</p>
+                          {form.partnerType === "withSaudiPartner" && form.saudiPartnerName && (
+                            <p><span className="font-medium">Saudi Partner:</span> {form.saudiPartnerName}</p>
+                          )}
                           <p><span className="font-medium">Virtual Office:</span> {form.needVirtualOffice ? "Yes" : "No"}</p>
                           {form.projectEstimatedValue && (
                             <p><span className="font-medium">Project Value:</span> {Number(form.projectEstimatedValue).toLocaleString()} SAR</p>

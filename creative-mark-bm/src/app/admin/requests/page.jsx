@@ -20,20 +20,19 @@ import {
   FaTimes
 } from 'react-icons/fa';
 import RequestsList from '../../../components/admin/RequestsList';
-import RequestDetails from '../../../components/admin/RequestDetails';
 import AssignmentModal from '../../../components/admin/AssignmentModal';
 import { isAuthenticated } from '../../../services/auth';
 
 const InternalRequestsPage = () => {
+  // Updated navigation to use new details page
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('all');
   const [loading, setLoading] = useState(true);
-  const [selectedRequest, setSelectedRequest] = useState(null);
   const [showAssignModal, setShowAssignModal] = useState(false);
+  const [selectedRequestForAssign, setSelectedRequestForAssign] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const requestId = searchParams.get('id');
   const tab = searchParams.get('tab');
 
   useEffect(() => {
@@ -98,17 +97,12 @@ const InternalRequestsPage = () => {
   };
 
   const handleRequestSelect = (request) => {
-    setSelectedRequest(request);
-    router.push(`/admin/requests?id=${request.applicationId}&tab=${activeTab}`);
-  };
-
-  const handleCloseDetails = () => {
-    setSelectedRequest(null);
-    router.push('/admin/requests');
+    // Navigate to the new modernized details page
+    router.push(`/admin/requests/${request.applicationId}`);
   };
 
   const handleAssignRequest = (request) => {
-    setSelectedRequest(request);
+    setSelectedRequestForAssign(request);
     setShowAssignModal(true);
   };
 
@@ -129,26 +123,6 @@ const InternalRequestsPage = () => {
     );
   }
 
-  // Show request details if ID is provided
-  if (requestId && !selectedRequest) {
-    return (
-      <RequestDetails
-        requestId={requestId}
-        onClose={handleCloseDetails}
-        onAssign={handleAssignRequest}
-      />
-    );
-  }
-
-  if (selectedRequest && !showAssignModal) {
-    return (
-      <RequestDetails
-        request={selectedRequest}
-        onClose={handleCloseDetails}
-        onAssign={handleAssignRequest}
-      />
-    );
-  }
 
   return (
     <>
@@ -272,16 +246,16 @@ const InternalRequestsPage = () => {
       </div>
 
       {/* Assignment Modal */}
-      {showAssignModal && selectedRequest && (
+      {showAssignModal && selectedRequestForAssign && (
         <AssignmentModal
-          request={selectedRequest}
+          request={selectedRequestForAssign}
           onClose={() => {
             setShowAssignModal(false);
-            setSelectedRequest(null);
+            setSelectedRequestForAssign(null);
           }}
           onAssigned={() => {
             setShowAssignModal(false);
-            setSelectedRequest(null);
+            setSelectedRequestForAssign(null);
             setRefreshTrigger(prev => prev + 1);
           }}
         />

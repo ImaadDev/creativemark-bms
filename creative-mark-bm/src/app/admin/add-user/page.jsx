@@ -22,7 +22,6 @@ import {
   FaShieldAlt,
   FaUserPlus,
   FaUserTie,
-  FaChartLine,
   FaLock,
   FaEye,
   FaEyeSlash,
@@ -43,19 +42,16 @@ export default function AddUserPage() {
     address: '',
     department: '',
     position: '',
-    bio: '',
     dateOfBirth: '',
     nationality: '',
     profilePicture: null,
     // Employee fields
-    employeeId: '',
     hireDate: '',
     salary: '',
     manager: '',
     permissions: [],
     workLocation: '',
     emergencyContact: '',
-    skills: [],
     // Partner fields
     partnerId: '',
     partnerType: '',
@@ -99,18 +95,6 @@ export default function AddUserPage() {
     'Hybrid'
   ];
 
-  const commonSkills = [
-    'Project Management',
-    'Team Leadership',
-    'Data Analysis',
-    'Client Relations',
-    'Process Improvement',
-    'Budget Management',
-    'Strategic Planning',
-    'Communication',
-    'Problem Solving',
-    'Technical Writing'
-  ];
 
   const partnerTypes = [
     'Service Provider',
@@ -179,14 +163,6 @@ export default function AddUserPage() {
     }
   };
 
-  const handleSkillChange = (skill) => {
-    setFormData(prev => ({
-      ...prev,
-      skills: prev.skills.includes(skill)
-        ? prev.skills.filter(s => s !== skill)
-        : [...prev.skills, skill]
-    }));
-  };
 
   const handleArrayChange = (field, value) => {
     setFormData(prev => ({
@@ -321,19 +297,16 @@ export default function AddUserPage() {
       address: '',
       department: '',
       position: '',
-      bio: '',
       dateOfBirth: '',
       nationality: '',
       profilePicture: null,
       // Employee fields
-      employeeId: '',
       hireDate: '',
       salary: '',
       manager: '',
       permissions: [],
       workLocation: '',
       emergencyContact: '',
-      skills: [],
       // Partner fields
       partnerId: '',
       partnerType: '',
@@ -352,45 +325,89 @@ export default function AddUserPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Modern Header */}
+        <div className="mb-12">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex-1">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <FaUserPlus className="text-white text-xl" />
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl">
+                  <FaUserPlus className="text-2xl text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+                  <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
                     Add New User
                   </h1>
-                  <p className="text-sm text-emerald-600 font-medium uppercase tracking-wider">
-                    User Management
+                  <p className="text-lg text-gray-600 mt-2">
+                    Create a new employee, partner, or administrator account
                   </p>
                 </div>
               </div>
-              <p className="text-base sm:text-lg text-gray-600 font-medium max-w-2xl">
-                Create a new user account with complete profile information
-              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={handleCancel}
+                className="flex items-center px-6 py-3 text-gray-600 hover:text-gray-900 hover:bg-white/50 rounded-xl transition-all duration-200 font-medium"
+              >
+                <FaTimes className="mr-2" />
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress Indicator */}
+        <div className="mb-8">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">Form Progress</h3>
+              <span className="text-sm font-medium text-gray-600">
+                {(() => {
+                  const fields = ['fullName', 'email', 'password', 'userRole'];
+                  const completed = fields.filter(field => formData[field] && formData[field].toString().trim() !== '').length;
+                  return `${completed}/${fields.length} completed`;
+                })()}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div 
+                className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-3 rounded-full transition-all duration-500 ease-out"
+                style={{ 
+                  width: `${(() => {
+                    const fields = ['fullName', 'email', 'password', 'userRole'];
+                    const completed = fields.filter(field => formData[field] && formData[field].toString().trim() !== '').length;
+                    return (completed / fields.length) * 100;
+                  })()}%` 
+                }}
+              ></div>
             </div>
           </div>
         </div>
 
         {/* Success Message */}
         {success && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-200 rounded-lg flex items-center">
-            <FaCheck className="text-emerald-600 mr-3" />
-            <p className="text-emerald-800 font-medium">{success}</p>
+          <div className="mb-8 p-6 bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-200 rounded-2xl flex items-center shadow-lg">
+            <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mr-4">
+              <FaCheck className="text-white text-xl" />
+            </div>
+            <div>
+              <p className="text-emerald-900 font-bold text-lg">{success}</p>
+              <p className="text-emerald-700 text-sm">Redirecting you back to the users list...</p>
+            </div>
           </div>
         )}
 
         {/* Error Message */}
         {errors.general && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-lg flex items-center">
-            <FaExclamationTriangle className="text-red-600 mr-3" />
-            <p className="text-red-800 font-medium">{errors.general}</p>
+          <div className="mb-8 p-6 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-2xl flex items-center shadow-lg">
+            <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mr-4">
+              <FaExclamationTriangle className="text-white text-xl" />
+            </div>
+            <div>
+              <p className="text-red-900 font-bold text-lg">Error</p>
+              <p className="text-red-700 text-sm">{errors.general}</p>
+            </div>
           </div>
         )}
 
@@ -398,7 +415,7 @@ export default function AddUserPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Profile Picture Section */}
             <div className="lg:col-span-1">
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Profile Picture</h3>
                 
                 <div className="text-center">
@@ -447,28 +464,28 @@ export default function AddUserPage() {
               </div>
 
               {/* Action Buttons - Mobile */}
-              <div className="mt-6 lg:hidden space-y-3">
+              <div className="mt-8 lg:hidden space-y-4">
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 disabled:opacity-50 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md"
+                  className="w-full flex items-center justify-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 disabled:opacity-50 transition-all duration-200 font-medium rounded-xl shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100"
                 >
                   {saving ? (
                     <>
                       <FaSpinner className="animate-spin mr-2" />
-                      Creating User...
+                      Creating {formData.userRole === 'employee' ? 'Employee' : formData.userRole === 'partner' ? 'Partner' : 'User'}...
                     </>
                   ) : (
                     <>
                       <FaSave className="mr-2" />
-                      Create User
+                      Create {formData.userRole === 'employee' ? 'Employee' : formData.userRole === 'partner' ? 'Partner' : 'User'}
                     </>
                   )}
                 </button>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md"
+                  className="w-full flex items-center justify-center px-8 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-xl shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   <FaTimes className="mr-2" />
                   Reset Form
@@ -476,7 +493,7 @@ export default function AddUserPage() {
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="w-full flex items-center justify-center px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200 font-medium rounded-lg"
+                  className="w-full flex items-center justify-center px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 transition-all duration-200 font-medium rounded-xl shadow-lg hover:shadow-xl"
                 >
                   Cancel
                 </button>
@@ -498,14 +515,14 @@ export default function AddUserPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                       User Role *
                     </label>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {userRoles.map(role => (
                         <label
                           key={role.value}
-                          className={`relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                          className={`relative flex flex-col items-center p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 group hover:scale-105 ${
                             formData.userRole === role.value
-                              ? 'border-emerald-500 bg-emerald-50'
-                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                              ? 'border-emerald-500 bg-gradient-to-br from-emerald-50 to-emerald-100 shadow-lg shadow-emerald-200/50'
+                              : 'border-gray-200 hover:border-emerald-300 hover:bg-gradient-to-br hover:from-gray-50 hover:to-white shadow-sm hover:shadow-lg'
                           }`}
                         >
                           <input
@@ -516,17 +533,32 @@ export default function AddUserPage() {
                             onChange={handleInputChange}
                             className="sr-only"
                           />
-                          <div className="flex items-center space-x-3">
-                            <span className="text-2xl">{role.icon}</span>
+                          <div className="flex flex-col items-center text-center space-y-3">
+                            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                              formData.userRole === role.value
+                                ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg'
+                                : 'bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-emerald-100 group-hover:to-emerald-200'
+                            }`}>
+                              <span className="text-2xl">{role.icon}</span>
+                            </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">{role.label}</div>
-                              <div className="text-xs text-gray-500">
+                              <div className={`text-lg font-bold transition-colors duration-200 ${
+                                formData.userRole === role.value ? 'text-emerald-900' : 'text-gray-900'
+                              }`}>
+                                {role.label}
+                              </div>
+                              <div className="text-sm text-gray-500 mt-1">
                                 {role.value === 'employee' && 'Internal team member'}
                                 {role.value === 'partner' && 'External service provider'}
                                 {role.value === 'admin' && 'System administrator'}
                               </div>
                             </div>
                           </div>
+                          {formData.userRole === role.value && (
+                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                              <FaCheck className="text-white text-xs" />
+                            </div>
+                          )}
                         </label>
                       ))}
                     </div>
@@ -594,7 +626,7 @@ export default function AddUserPage() {
               </div>
 
               {/* Personal Information */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
                 <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
                   <FaUser className="mr-3 text-emerald-600" />
                   Personal Information
@@ -670,7 +702,7 @@ export default function AddUserPage() {
                       name="dateOfBirth"
                       value={formData.dateOfBirth}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                     />
                   </div>
 
@@ -683,7 +715,7 @@ export default function AddUserPage() {
                       name="nationality"
                       value={formData.nationality}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                       placeholder="Enter nationality"
                     />
                   </div>
@@ -700,35 +732,22 @@ export default function AddUserPage() {
                       value={formData.address}
                       onChange={handleInputChange}
                       rows="3"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                       placeholder="Enter full address"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Employment Information */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              {/* Employment Information - Only show for employees */}
+              {formData.userRole === 'employee' && (
+                <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
                 <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
                   <FaUserTie className="mr-3 text-emerald-600" />
                   Employment Information
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <FaIdCard className="inline mr-2" />
-                      Employee ID
-                    </label>
-                    <input
-                      type="text"
-                      name="employeeId"
-                      value={formData.employeeId}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
-                      placeholder="Enter employee ID"
-                    />
-                  </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -739,7 +758,7 @@ export default function AddUserPage() {
                       name="department"
                       value={formData.department}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                     >
                       <option value="">Select department</option>
                       {departments.map(dept => (
@@ -757,7 +776,7 @@ export default function AddUserPage() {
                       name="position"
                       value={formData.position}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                       placeholder="Enter position"
                     />
                   </div>
@@ -772,7 +791,7 @@ export default function AddUserPage() {
                       name="hireDate"
                       value={formData.hireDate}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                     />
                   </div>
 
@@ -785,7 +804,7 @@ export default function AddUserPage() {
                       name="workLocation"
                       value={formData.workLocation}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                     >
                       <option value="">Select work location</option>
                       {workLocations.map(location => (
@@ -803,7 +822,7 @@ export default function AddUserPage() {
                       name="manager"
                       value={formData.manager}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                       placeholder="Enter manager name"
                     />
                   </div>
@@ -817,16 +836,17 @@ export default function AddUserPage() {
                       name="salary"
                       value={formData.salary}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                       placeholder="Enter salary"
                     />
                   </div>
                 </div>
-              </div>
+                </div>
+              )}
 
               {/* Partner Information - Only show for partners */}
               {formData.userRole === 'partner' && (
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
                   <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
                     <FaHandshake className="mr-3 text-emerald-600" />
                     Partner Information
@@ -843,7 +863,7 @@ export default function AddUserPage() {
                         name="partnerId"
                         value={formData.partnerId}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                         placeholder="Enter partner ID"
                       />
                     </div>
@@ -856,7 +876,7 @@ export default function AddUserPage() {
                         name="partnerType"
                         value={formData.partnerType}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                       >
                         <option value="">Select partner type</option>
                         {partnerTypes.map(type => (
@@ -875,7 +895,7 @@ export default function AddUserPage() {
                         name="contractStartDate"
                         value={formData.contractStartDate}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                       />
                     </div>
 
@@ -889,7 +909,7 @@ export default function AddUserPage() {
                         name="contractEndDate"
                         value={formData.contractEndDate}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                       />
                     </div>
 
@@ -905,7 +925,7 @@ export default function AddUserPage() {
                         min="0"
                         max="100"
                         step="0.1"
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                         placeholder="Enter commission rate"
                       />
                     </div>
@@ -918,7 +938,7 @@ export default function AddUserPage() {
                         name="availability"
                         value={formData.availability}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-md"
                       >
                         {availabilityOptions.map(option => (
                           <option key={option.value} value={option.value}>{option.label}</option>
@@ -989,66 +1009,22 @@ export default function AddUserPage() {
                 </div>
               )}
 
-              {/* Skills & Bio - Show for all roles */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
-                  <FaChartLine className="mr-3 text-emerald-600" />
-                  {formData.userRole === 'partner' ? 'Skills & Services' : 'Skills & Certifications'}
-                </h3>
-                
-                <div className="space-y-6">
-                  {formData.userRole !== 'partner' && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Skills
-                      </label>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {commonSkills.map(skill => (
-                          <label key={skill} className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={formData.skills.includes(skill)}
-                              onChange={() => handleSkillChange(skill)}
-                              className="mr-2 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
-                            />
-                            <span className="text-sm text-gray-700">{skill}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Bio
-                    </label>
-                    <textarea
-                      name="bio"
-                      value={formData.bio}
-                      onChange={handleInputChange}
-                      rows="4"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
-                      placeholder={`Tell us about ${formData.userRole === 'partner' ? 'your services and expertise' : 'your professional background and expertise'}...`}
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Action Buttons - Desktop */}
-            <div className="hidden lg:block mt-8">
-              <div className="flex items-center justify-end space-x-4">
+            <div className="hidden lg:block mt-12">
+              <div className="flex items-center justify-end space-x-6">
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="flex items-center px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200 font-medium rounded-lg"
+                  className="flex items-center px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 transition-all duration-200 font-medium rounded-xl shadow-lg hover:shadow-xl"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="flex items-center px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md"
+                  className="flex items-center px-8 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-xl shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   <FaTimes className="mr-2" />
                   Reset Form
@@ -1056,7 +1032,7 @@ export default function AddUserPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex items-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 disabled:opacity-50 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md"
+                  className="flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 disabled:opacity-50 transition-all duration-200 font-medium rounded-xl shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100"
                 >
                   {saving ? (
                     <>

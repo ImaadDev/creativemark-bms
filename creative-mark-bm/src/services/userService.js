@@ -87,10 +87,13 @@ export const updateUser = async (userId, userData) => {
 /**
  * Delete user
  * @param {string} userId - User ID
+ * @param {string} deletedBy - ID of user performing the deletion
  */
-export const deleteUser = async (userId) => {
+export const deleteUser = async (userId, deletedBy) => {
   try {
-    const res = await api.delete(`/users/${userId}`);
+    const res = await api.delete(`/auth/users/${userId}`, {
+      data: { deletedBy }
+    });
     return res.data;
   } catch (err) {
     console.error("Delete user error:", err);

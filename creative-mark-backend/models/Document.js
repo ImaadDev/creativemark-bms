@@ -4,7 +4,7 @@ const ApplicationDocumentSchema = new mongoose.Schema({
     applicationId: { type: mongoose.Schema.Types.ObjectId, ref: "Application", required: true },
     type: { 
       type: String, 
-      enum: ["passport", "idCard", "commercial_registration", "financial_statement", "articles_of_association", "other"],
+      enum: ["passport", "idCard", "saudiPartnerIqama", "commercial_registration", "financial_statement", "articles_of_association", "other"],
       required: true,
     },
     fileUrl: { type: String, required: true }, // S3 / Cloud / Local

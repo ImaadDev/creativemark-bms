@@ -33,6 +33,8 @@ import {
   FaHandshake
 } from 'react-icons/fa';
 import { getAllApplications } from '../../services/applicationService';
+import { getAllEmployees } from '../../services/employeeApi';
+import { getAllClients } from '../../services/clientApi';
 import { isAuthenticated } from '../../services/auth';
 import { FullPageLoading } from '../../components/LoadingSpinner';
 
@@ -44,7 +46,9 @@ export default function InternalDashboard() {
     inProgress: 0,
     completed: 0,
     clients: 0,
+    activeClients: 0,
     employees: 0,
+    activeEmployees: 0,
     revenue: 0,
     thisMonth: 0,
   });
@@ -65,26 +69,43 @@ export default function InternalDashboard() {
         return;
       }
 
-      // Load all applications from the API
-      const response = await getAllApplications();
-      console.log("API Response:", response);
+      // Load all applications, employees, and clients from the API
+      const [applicationsResponse, employeesResponse, clientsResponse] = await Promise.all([
+        getAllApplications(),
+        getAllEmployees(),
+        getAllClients()
+      ]);
+      
+      console.log("Applications API Response:", applicationsResponse);
+      console.log("Employees API Response:", employeesResponse);
+      console.log("Clients API Response:", clientsResponse);
       
       // Handle the response structure - the data is in response.data
-      const applications = response.data || [];
+      const applications = applicationsResponse.data || [];
+      const employees = employeesResponse.success ? (employeesResponse.data || []) : [];
+      const clients = clientsResponse.success ? (clientsResponse.data || []) : [];
+      
       console.log("Applications data:", applications);
+      console.log("Employees data:", employees);
+      console.log("Clients data:", clients);
 
       // Calculate stats based on application status
       // Use static values to prevent hydration mismatch
       const currentMonth = 0; // January
       const currentYear = 2024;
       
+      const activeEmployees = employees.filter(emp => emp.status === 'active' || emp.status === 'Active' || !emp.status).length;
+      const activeClients = clients.filter(client => client.status === 'active' || client.status === 'Active' || !client.status).length;
+      
       const newStats = {
         total: applications.length,
         pending: applications.filter(app => app.status?.current === 'submitted').length,
         inProgress: applications.filter(app => app.status?.current === 'under_review' || app.status?.current === 'in_process').length,
         completed: applications.filter(app => app.status?.current === 'completed' || app.status?.current === 'approved').length,
-        clients: [...new Set(applications.map(app => app.client?.email || app.client?.name))].length,
-        employees: 12, // Mock data - replace with actual employee count
+        clients: clients.length, // Real client count from API
+        activeClients: activeClients, // Active clients count
+        employees: employees.length, // Real employee count from API
+        activeEmployees: activeEmployees, // Active employees count
         revenue: applications.filter(app => app.status?.current === 'completed' || app.status?.current === 'approved').length * 1500, // Mock calculation
         thisMonth: applications.filter(app => {
           const appDate = new Date(app.timestamps?.createdAt || app.createdAt);
@@ -111,7 +132,9 @@ export default function InternalDashboard() {
         inProgress: 0,
         completed: 0,
         clients: 0,
+        activeClients: 0,
         employees: 0,
+        activeEmployees: 0,
         revenue: 0,
         thisMonth: 0,
       });
@@ -123,7 +146,7 @@ export default function InternalDashboard() {
 
   const StatCard = ({ title, value, icon: Icon, color, onClick, trend, subtitle }) => (
     <div 
-      className="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-6 cursor-pointer hover:shadow-lg hover:border-emerald-200 transition-all duration-300 ease-out"
+      className="group relative bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-6 cursor-pointer hover:shadow-lg hover:border-emerald-200 transition-all duration-300 ease-out"
       onClick={onClick}
     >
       {/* Gradient overlay on hover */}
@@ -131,22 +154,22 @@ export default function InternalDashboard() {
       
       <div className="relative flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
-          <p className="text-3xl font-bold text-gray-900 mb-1">{value}</p>
+          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{title}</p>
+          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">{value}</p>
           {subtitle && (
             <p className="text-xs text-gray-500">{subtitle}</p>
           )}
           {trend && (
-            <div className="flex items-center mt-2">
+            <div className="flex items-center mt-1 sm:mt-2">
               <span className={`text-xs font-medium ${trend > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                 {trend > 0 ? '+' : ''}{trend}%
               </span>
-              <span className="text-xs text-gray-500 ml-1">vs last month</span>
+              <span className="text-xs text-gray-500 ml-1 hidden sm:inline">vs last month</span>
             </div>
           )}
         </div>
-        <div className={`p-4 rounded-xl bg-gradient-to-br from-${color}-100 to-${color}-200 group-hover:from-${color}-200 group-hover:to-${color}-300 transition-all duration-300`}>
-          <Icon className={`text-2xl text-${color}-600 group-hover:text-${color}-700 transition-colors duration-300`} />
+        <div className={`p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl bg-gradient-to-br from-${color}-100 to-${color}-200 group-hover:from-${color}-200 group-hover:to-${color}-300 transition-all duration-300`}>
+          <Icon className={`text-lg sm:text-xl lg:text-2xl text-${color}-600 group-hover:text-${color}-700 transition-colors duration-300`} />
         </div>
       </div>
       
@@ -206,60 +229,60 @@ export default function InternalDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 xl:px-8 pt-4 sm:pt-6 pb-6 sm:pb-8">
         {/* Modern Welcome Header */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 text-white shadow-2xl rounded-2xl mb-8">
+        <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 text-white shadow-2xl rounded-xl sm:rounded-2xl mb-6 sm:mb-8">
           <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 transform rotate-45 translate-x-32 -translate-y-32"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 transform -rotate-45 -translate-x-16 translate-y-16"></div>
+          <div className="absolute top-0 right-0 w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 bg-white/5 transform rotate-45 translate-x-16 sm:translate-x-24 lg:translate-x-32 -translate-y-16 sm:-translate-y-24 lg:-translate-y-32"></div>
+          <div className="absolute bottom-0 left-0 w-32 sm:w-48 lg:w-64 h-32 sm:h-48 lg:h-64 bg-white/5 transform -rotate-45 -translate-x-8 sm:-translate-x-12 lg:-translate-x-16 translate-y-8 sm:translate-y-12 lg:translate-y-16"></div>
           
-          <div className="relative p-8 lg:p-12">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          <div className="relative p-4 sm:p-6 lg:p-8 xl:p-12">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <FaTachometerAlt className="text-2xl" />
+                <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-white/20 backdrop-blur-sm flex items-center justify-center rounded-lg sm:rounded-xl">
+                    <FaTachometerAlt className="text-lg sm:text-xl lg:text-2xl" />
                   </div>
                   <div>
-                    <h1 className="text-xl lg:text-4xl font-bold mb-2">
+                    <h1 className="text-lg sm:text-xl lg:text-2xl xl:text-4xl font-bold mb-1 sm:mb-2">
                       Admin Dashboard
                     </h1>
-                    <p className="text-emerald-100 text-sm md:text-lg">
+                    <p className="text-emerald-100 text-xs sm:text-sm lg:text-base xl:text-lg">
                       Creative Mark Management Portal • Monitor and manage all operations
                     </p>
                   </div>
                 </div>
                 
-                <div className="flex flex-wrap gap-4 mt-6">
-                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2">
-                    <FaFileAlt className="text-green-300" />
-                    <span className="text-sm">Total Applications: {stats.total}</span>
+                <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 mt-4 sm:mt-6">
+                  <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
+                    <FaFileAlt className="text-green-300 text-xs sm:text-sm lg:text-base" />
+                    <span className="text-xs sm:text-sm">Total Applications: {stats.total}</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2">
-                    <FaClock className="text-yellow-300" />
-                    <span className="text-sm">Pending: {stats.pending}</span>
+                  <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
+                    <FaClock className="text-yellow-300 text-xs sm:text-sm lg:text-base" />
+                    <span className="text-xs sm:text-sm">Pending: {stats.pending}</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2">
-                    <FaCheckCircle className="text-green-300" />
-                    <span className="text-sm">Completed: {stats.completed}</span>
+                  <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
+                    <FaCheckCircle className="text-green-300 text-xs sm:text-sm lg:text-base" />
+                    <span className="text-xs sm:text-sm">Completed: {stats.completed}</span>
                   </div>
                 </div>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4">
                 <button 
                   onClick={loadDashboardData}
                   disabled={loading}
-                  className="group bg-white rounded-2xl text-emerald-600 px-8 py-4 font-semibold hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-3"
+                  className="group bg-white rounded-xl sm:rounded-2xl text-emerald-600 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 font-semibold hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
                 >
-                  <FaSpinner className={`text-sm md:text-lg ${loading ? 'animate-spin' : 'group-hover:rotate-180'} transition-transform duration-300`} />
+                  <FaSpinner className={`text-xs sm:text-sm lg:text-base ${loading ? 'animate-spin' : 'group-hover:rotate-180'} transition-transform duration-300`} />
                   Refresh Data
                 </button>
                 <button 
                   onClick={() => router.push('/admin/requests')}
-                  className="group bg-white/10 rounded-2xl backdrop-blur-sm text-white border border-white/20 px-8 py-4 font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3"
+                  className="group bg-white/10 rounded-xl sm:rounded-2xl backdrop-blur-sm text-white border border-white/20 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
                 >
-                  <FaFileAlt className="text-sm md:text-lg" />
+                  <FaFileAlt className="text-xs sm:text-sm lg:text-base" />
                   View All Requests
                 </button>
               </div>
@@ -269,21 +292,21 @@ export default function InternalDashboard() {
 
         {/* Error Display */}
         {error && (
-          <div className="mb-6 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-xl p-6 shadow-sm">
+          <div className="mb-4 sm:mb-6 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm">
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                  <FaExclamationTriangle className="text-red-600 text-lg" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <FaExclamationTriangle className="text-red-600 text-sm sm:text-lg" />
                 </div>
               </div>
-              <div className="ml-4 flex-1">
-                <h3 className="text-sm font-semibold text-red-800 mb-1">Error loading dashboard data</h3>
-                <p className="text-sm text-red-700 mb-3">{error}</p>
+              <div className="ml-3 sm:ml-4 flex-1">
+                <h3 className="text-xs sm:text-sm font-semibold text-red-800 mb-1">Error loading dashboard data</h3>
+                <p className="text-xs sm:text-sm text-red-700 mb-2 sm:mb-3">{error}</p>
                 <button 
                   onClick={loadDashboardData}
-                  className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
+                  className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-red-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
                 >
-                  <FaSpinner className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
+                  <FaSpinner className={`mr-1 sm:mr-2 ${loading ? 'animate-spin' : ''}`} />
                   Retry
                 </button>
               </div>
@@ -292,7 +315,7 @@ export default function InternalDashboard() {
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <StatCard
             title="Total Applications"
             value={stats.total}
@@ -332,13 +355,13 @@ export default function InternalDashboard() {
         </div>
 
         {/* Secondary Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <StatCard
             title="Active Clients"
             value={stats.clients}
             icon={FaUsers}
             color="purple"
-            subtitle="Registered users"
+            subtitle={`${stats.activeClients} active • ${stats.clients} total`}
             trend={22}
             onClick={() => router.push('/admin/clients')}
           />
@@ -347,7 +370,7 @@ export default function InternalDashboard() {
             value={stats.employees}
             icon={FaUserTie}
             color="indigo"
-            subtitle="Active employees"
+            subtitle={`${stats.activeEmployees} active • ${stats.employees} total`}
             trend={0}
             onClick={() => router.push('/admin/all-employees')}
           />
@@ -372,22 +395,22 @@ export default function InternalDashboard() {
         </div>
 
         {/* Recent Requests & Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Recent Requests List */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+          <div className="lg:col-span-2 bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 lg:py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                    <FaFileAlt className="text-white text-sm" />
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                    <FaFileAlt className="text-white text-xs sm:text-sm" />
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-900">Recent Applications</h2>
+                  <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900">Recent Applications</h2>
                 </div>
                 <button 
                   onClick={() => router.push('/admin/requests')}
-                  className="text-emerald-600 hover:text-emerald-700 text-sm font-medium flex items-center px-3 py-1.5 rounded-lg hover:bg-emerald-50 transition-colors duration-200"
+                  className="text-emerald-600 hover:text-emerald-700 text-xs sm:text-sm font-medium flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg hover:bg-emerald-50 transition-colors duration-200"
                 >
-                  View All <FaArrowRight className="ml-1" />
+                  View All <FaArrowRight className="ml-1 text-xs sm:text-sm" />
                 </button>
               </div>
             </div>
@@ -399,7 +422,7 @@ export default function InternalDashboard() {
                     <div 
                       key={application.applicationId}
                       className="group border border-gray-100 rounded-lg p-4 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-blue-50/50 hover:border-emerald-200 cursor-pointer transition-all duration-200"
-                      onClick={() => router.push(`/internal/requests?id=${application.applicationId}`)}
+                      onClick={() => router.push(`/admin/requests/${application.applicationId}`)}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -433,7 +456,7 @@ export default function InternalDashboard() {
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No recent applications</h3>
                   <p className="text-gray-500 mb-4">New applications will appear here</p>
                   <button 
-                    onClick={() => router.push('/internal/requests')}
+                    onClick={() => router.push('/admin/requests')}
                     className="text-emerald-600 hover:text-emerald-700 font-medium"
                   >
                     View All Applications

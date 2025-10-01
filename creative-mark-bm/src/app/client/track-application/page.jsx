@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getUserApplications } from "../../../services/applicationService";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function MyApplicationsPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,7 +21,10 @@ export default function MyApplicationsPage() {
     try {
       setLoading(true);
       setError(null);
+      console.log("Current user in track application:", user);
+      console.log("Fetching user applications...");
       const response = await getUserApplications();
+      console.log("Applications response:", response);
       setApplications(response.data || []);
     } catch (err) {
       console.error("Error fetching applications:", err);

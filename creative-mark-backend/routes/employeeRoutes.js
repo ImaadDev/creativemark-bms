@@ -8,7 +8,8 @@ import {
   getEmployeeDeadlines,
   getEmployeeNotifications,
   getEmployeeApplicationDetails,
-  updateEmployeeApplicationData
+  updateEmployeeApplicationData,
+  deleteEmployee
 } from "../controllers/employeeController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 
@@ -16,6 +17,9 @@ const router = express.Router();
 
 // Get all employees (Admin/Staff only)
 router.get("/", authMiddleware, getAllEmployees);
+
+// Delete employee (Admin only)
+router.delete("/:employeeId", authMiddleware, deleteEmployee);
 
 // Employee Dashboard Routes
 router.get("/dashboard/stats", authMiddleware, getEmployeeDashboardStats);

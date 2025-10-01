@@ -51,8 +51,8 @@ export default function Support() {
               </div>
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="text-gray-800 font-bold text-lg sm:text-xl lg:text-2xl truncate">Support Center</h1>
-              <p className="text-gray-600 text-xs sm:text-sm font-medium">24/7 Secure messaging</p>
+              <h1 className="text-gray-800 font-bold text-lg sm:text-xl lg:text-2xl truncate">Support</h1>
+              <p className="text-gray-600 text-xs sm:text-sm font-medium">Message your team</p>
             </div>
           </div>
           
@@ -166,7 +166,10 @@ export default function Support() {
                         ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
                         : 'bg-yellow-100 text-yellow-700 border border-yellow-200'
                     }`}>
-                      {selectedConversation.application.status.replace('_', ' ')}
+                      {typeof selectedConversation.application.status === 'object' 
+                        ? selectedConversation.application.status.current?.replace('_', ' ') || 'Unknown'
+                        : selectedConversation.application.status?.replace('_', ' ') || 'Unknown'
+                      }
                     </span>
                     
                     <button className="p-1.5 sm:p-2 hover:bg-gray-200 rounded-xl sm:rounded-2xl transition-all duration-200 group">
@@ -202,9 +205,9 @@ export default function Support() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 text-gray-800">Welcome to Support Chat</h3>
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 text-gray-800">Select a Conversation</h3>
                 <p className="text-gray-600 leading-relaxed mb-4 sm:mb-6 lg:mb-8 text-sm sm:text-base">
-                  Select a conversation from the list to start messaging with your assigned team member. We're here to help you 24/7.
+                  Choose a conversation from the list to start messaging with your assigned team member.
                 </p>
                 <button
                   onClick={() => setIsMobileMenuOpen(true)}

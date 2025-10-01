@@ -9,6 +9,9 @@ import Application from "../models/Application.js";
  */
 export const createTask = async (req, res) => {
   try {
+    console.log('Create task request body:', req.body);
+    console.log('User from auth:', req.user);
+    
     const {
       title,
       description,
@@ -22,9 +25,21 @@ export const createTask = async (req, res) => {
 
     // Validate required fields
     if (!title || !description || !assignedTo || !dueDate) {
+      console.log('Validation failed - missing required fields:', {
+        title: !!title,
+        description: !!description,
+        assignedTo: !!assignedTo,
+        dueDate: !!dueDate
+      });
       return res.status(400).json({
         success: false,
         message: "Title, description, assignedTo, and dueDate are required",
+        details: {
+          title: !!title,
+          description: !!description,
+          assignedTo: !!assignedTo,
+          dueDate: !!dueDate
+        }
       });
     }
 

@@ -105,6 +105,14 @@ export const createApplication = async (applicationData, files = null) => {
                         error.message || 
                         "Failed to create application";
     
+    // Log detailed error information for debugging
+    console.error("Detailed error information:", {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      message: errorMessage
+    });
+    
     throw new Error(errorMessage);
   }
 };
@@ -223,6 +231,31 @@ export const assignApplicationToEmployees = async (applicationId, employeeIds, a
       error.message ||
       "Failed to assign application"
     );
+  }
+};
+
+/**
+ * Delete an application
+ * @param {string} applicationId - Application ID
+ * @param {string} deletedBy - User ID of the person deleting
+ */
+export const deleteApplication = async (applicationId, deletedBy) => {
+  try {
+    const response = await api.delete(`/applications/${applicationId}`, {
+      data: { deletedBy }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Delete Application Error:", error);
+    console.error("Error response:", error.response?.data);
+    console.error("Error status:", error.response?.status);
+    
+    const errorMessage = error.response?.data?.message || 
+                        error.response?.data?.error ||
+                        error.message || 
+                        "Failed to delete application";
+    
+    throw new Error(errorMessage);
   }
 };
 

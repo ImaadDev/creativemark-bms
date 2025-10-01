@@ -158,10 +158,22 @@ export default function EmployeeProfile() {
       setError('');
       setSuccess('');
 
-      const updateData = {
-        ...formData,
-        profilePicture
-      };
+      // Create FormData for file upload
+      const updateData = new FormData();
+      
+      // Add all form fields to FormData
+      updateData.append('fullName', formData.fullName);
+      updateData.append('email', formData.email);
+      updateData.append('phone', formData.phone);
+      updateData.append('nationality', formData.nationality);
+      updateData.append('bio', formData.bio);
+      updateData.append('address', JSON.stringify(formData.address));
+      updateData.append('employeeDetails', JSON.stringify(formData.employeeDetails));
+      
+      // Add profile picture if selected
+      if (profilePicture) {
+        updateData.append('profilePicture', profilePicture);
+      }
 
       const response = await updateUserProfile(updateData);
       
@@ -173,6 +185,8 @@ export default function EmployeeProfile() {
         if (setUser) {
           setUser(response.data);
         }
+        // Dispatch event to update navbar profile picture
+        window.dispatchEvent(new CustomEvent('profileUpdated'));
         setTimeout(() => setSuccess(''), 3000);
       } else {
         setError(response.message || 'Failed to update profile');

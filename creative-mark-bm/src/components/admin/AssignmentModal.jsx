@@ -13,6 +13,7 @@ import {
 import { assignApplicationToEmployees } from '../../services/applicationService';
 import { getAllEmployees } from '../../services/employeeApi';
 import { getCurrentUser } from '../../services/auth';
+import Swal from 'sweetalert2';
 
 const AssignmentModal = ({ request, onClose, onAssigned }) => {
   const [employees, setEmployees] = useState([]);
@@ -52,44 +53,180 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
 
   const handleAssign = async () => {
     if (!formData.selectedEmployees || formData.selectedEmployees.length === 0) {
-      alert('Please select at least one employee to assign this application to.');
+      Swal.fire({
+        title: 'No Employees Selected',
+        text: 'Please select at least one employee to assign this application to.',
+        icon: 'warning',
+        confirmButtonColor: '#059669',
+        confirmButtonText: 'OK',
+        background: '#ffffff',
+        customClass: {
+          popup: 'rounded-2xl shadow-2xl',
+          title: 'text-gray-900 font-semibold',
+          content: 'text-gray-600',
+          confirmButton: 'rounded-lg font-medium px-6 py-3'
+        }
+      });
       return;
     }
 
-    try {
-      setAssigning(true);
-      
-      // Get current user ID (assignedBy)
-      const currentUser = await getCurrentUser();
-      if (!currentUser || !currentUser.data) {
-        alert('You must be logged in to assign applications.');
-        return;
+    // Get selected employee names for confirmation
+    const selectedEmployeeNames = formData.selectedEmployees
+      .map(empId => employees.find(emp => emp.id === empId)?.fullName || empId)
+      .join(', ');
+
+    const result = await Swal.fire({
+      title: 'Assign Application',
+      html: `
+        <div class="text-left">
+          <p class="text-gray-700 mb-4">
+            Are you sure you want to assign this <strong>${request.serviceDetails?.serviceType || 'application'}</strong> request?
+          </p>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <p class="text-blue-800 font-semibold mb-2">📋 Assignment Details:</p>
+            <ul class="text-blue-700 text-sm space-y-1">
+              <li><strong>Application ID:</strong> ${request.applicationId || request._id}</li>
+              <li><strong>Client:</strong> ${request.client?.name || 'N/A'}</li>
+              <li><strong>Service Type:</strong> ${request.serviceDetails?.serviceType || 'N/A'}</li>
+              <li><strong>Assigned to:</strong> ${selectedEmployeeNames}</li>
+              ${formData.note ? `<li><strong>Note:</strong> ${formData.note}</li>` : ''}
+            </ul>
+          </div>
+        </div>
+      `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#059669',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, Assign It!',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+      background: '#ffffff',
+      customClass: {
+        popup: 'rounded-2xl shadow-2xl',
+        title: 'text-gray-900 font-semibold',
+        content: 'text-gray-600',
+        confirmButton: 'rounded-lg font-medium px-6 py-3',
+        cancelButton: 'rounded-lg font-medium px-6 py-3'
       }
-      
-      const applicationId = request.applicationId || request._id;
-      console.log('Assigning application:', applicationId, 'to employees:', formData.selectedEmployees);
-      
-      const response = await assignApplicationToEmployees(
-        applicationId,
-        formData.selectedEmployees,
-        currentUser.data._id, // assignedBy
-        formData.note || `Application assigned via dashboard`
-      );
-      
-      console.log('Assignment response:', response);
-      
-      if (response.success) {
-        alert(`Application successfully assigned to ${formData.selectedEmployees.length} employee(s)!`);
-        onAssigned();
-      } else {
-        alert('Failed to assign application. Please try again.');
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setAssigning(true);
+        
+        // Get current user ID (assignedBy)
+        const currentUser = await getCurrentUser();
+        if (!currentUser || !currentUser.data) {
+          Swal.fire({
+            title: 'Authentication Error',
+            text: 'You must be logged in to assign applications.',
+            icon: 'error',
+            confirmButtonColor: '#dc2626',
+            confirmButtonText: 'OK',
+            background: '#ffffff',
+            customClass: {
+              popup: 'rounded-2xl shadow-2xl',
+              title: 'text-gray-900 font-semibold',
+              content: 'text-gray-600',
+              confirmButton: 'rounded-lg font-medium px-6 py-3'
+            }
+          });
+          return;
+        }
+        
+        const applicationId = request.applicationId || request._id;
+        console.log('Assigning application:', applicationId, 'to employees:', formData.selectedEmployees);
+        
+        // Show loading alert
+        Swal.fire({
+          title: 'Assigning Application...',
+          text: 'Please wait while we assign the application to employees.',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          background: '#ffffff',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            title: 'text-gray-900 font-semibold'
+          },
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        const response = await assignApplicationToEmployees(
+          applicationId,
+          formData.selectedEmployees,
+          currentUser.data._id, // assignedBy
+          formData.note || `Application assigned via dashboard`
+        );
+        
+        console.log('Assignment response:', response);
+        
+        if (response.success) {
+          // Show success alert
+          Swal.fire({
+            title: 'Successfully Assigned!',
+            html: `
+              <div class="text-left">
+                <p class="text-gray-700 mb-3">The application has been assigned to:</p>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <p class="text-green-800 font-medium">${selectedEmployeeNames}</p>
+                </div>
+              </div>
+            `,
+            icon: 'success',
+            confirmButtonColor: '#059669',
+            confirmButtonText: 'OK',
+            background: '#ffffff',
+            customClass: {
+              popup: 'rounded-2xl shadow-2xl',
+              title: 'text-gray-900 font-semibold',
+              content: 'text-gray-600',
+              confirmButton: 'rounded-lg font-medium px-6 py-3'
+            }
+          }).then(() => {
+            onAssigned();
+            onClose();
+          });
+        } else {
+          Swal.fire({
+            title: 'Assignment Failed',
+            text: 'Failed to assign application. Please try again.',
+            icon: 'error',
+            confirmButtonColor: '#dc2626',
+            confirmButtonText: 'OK',
+            background: '#ffffff',
+            customClass: {
+              popup: 'rounded-2xl shadow-2xl',
+              title: 'text-gray-900 font-semibold',
+              content: 'text-gray-600',
+              confirmButton: 'rounded-lg font-medium px-6 py-3'
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error assigning application:', error);
+        const errorMessage = error.message || 'Error assigning application. Please try again.';
+        Swal.fire({
+          title: 'Assignment Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonColor: '#dc2626',
+          confirmButtonText: 'OK',
+          background: '#ffffff',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            title: 'text-gray-900 font-semibold',
+            content: 'text-gray-600',
+            confirmButton: 'rounded-lg font-medium px-6 py-3'
+          }
+        });
+      } finally {
+        setAssigning(false);
       }
-    } catch (error) {
-      console.error('Error assigning application:', error);
-      const errorMessage = error.message || 'Error assigning application. Please try again.';
-      alert(errorMessage);
-    } finally {
-      setAssigning(false);
     }
   };
 

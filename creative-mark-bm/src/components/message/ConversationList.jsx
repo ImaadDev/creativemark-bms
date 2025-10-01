@@ -96,7 +96,7 @@ const ConversationList = ({ onSelectConversation, selectedApplicationId }) => {
 
   return (
     <div className="divide-y divide-[#1f3933]">
-      {conversations.map((conversation) => {
+      {conversations.map((conversation, index) => {
         const isSelected = selectedApplicationId === conversation.applicationId;
         
         return (
@@ -125,9 +125,11 @@ const ConversationList = ({ onSelectConversation, selectedApplicationId }) => {
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <h3 className="font-semibold text-white text-sm truncate">
-                    {conversation.conversationPartner?.fullName || "Support Team"}
-                  </h3>
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <h3 className="font-semibold text-white text-sm truncate">
+                      {conversation.conversationPartner?.fullName || "Support Team"}
+                    </h3>
+                  </div>
                   {conversation.lastMessage && (
                     <span className="text-[10px] text-green-300/60 font-medium flex-shrink-0">
                       {formatDate(conversation.lastMessage.createdAt)}
@@ -159,7 +161,10 @@ const ConversationList = ({ onSelectConversation, selectedApplicationId }) => {
                   ? 'bg-emerald-500/20 text-emerald-400'
                   : 'bg-yellow-500/20 text-yellow-400'
               }`}>
-                {conversation.application.status.replace('_', ' ')}
+                {typeof conversation.application.status === 'object' 
+                  ? conversation.application.status.current?.replace('_', ' ') || 'Unknown'
+                  : conversation.application.status?.replace('_', ' ') || 'Unknown'
+                }
               </span>
             </div>
           </div>

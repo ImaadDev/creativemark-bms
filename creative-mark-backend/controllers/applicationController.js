@@ -13,6 +13,7 @@ import User from "../models/User.js";
  * @param   {string} req.body.serviceType - Service type (required)
  * @param   {string} [req.body.partnerType] - Partner type (default: "sole")
  * @param   {string} [req.body.partnerId] - Saudi partner ID
+ * @param   {string} [req.body.saudiPartnerName] - Saudi partner name
  * @param   {number} [req.body.externalCompaniesCount] - Number of external companies (default: 0)
  * @param   {Array} [req.body.externalCompaniesDetails] - External companies details
  * @param   {number} [req.body.projectEstimatedValue] - Project estimated value
@@ -29,11 +30,17 @@ import User from "../models/User.js";
 export const addApplication = async (req, res) => {
     try {
   
+    // Get the authenticated user from the middleware (security fix)
+    const authenticatedUserId = req.user.id;
+    console.log("Authenticated user from middleware:", authenticatedUserId);
+    console.log("User from request body:", req.body.userId);
+    
     const {
-      userId,
+      userId, // This should be ignored for security - use authenticated user instead
       serviceType,
       partnerType,
       partnerId,
+      saudiPartnerName,
       externalCompaniesCount,
       externalCompaniesDetails,
       projectEstimatedValue,
@@ -48,20 +55,37 @@ export const addApplication = async (req, res) => {
     } = req.body;
   
       
-      if (!userId || !serviceType) {
-        console.log("Validation failed: Missing required fields");
+      if (!authenticatedUserId || !serviceType) {
+        console.log("Validation failed: Missing required fields", { authenticatedUserId, serviceType });
+        const missingFields = [];
+        if (!authenticatedUserId) missingFields.push("Authenticated User ID");
+        if (!serviceType) missingFields.push("Service Type");
+        
         return res.status(400).json({
           success: false,
-          message: "User ID and service type are required",
+          message: `Missing required fields: ${missingFields.join(", ")}`,
+          missingFields: missingFields,
+        });
+      }
+
+      // Validate serviceType enum
+      const validServiceTypes = ["commercial", "engineering", "real_estate", "industrial", "agricultural", "service", "advertising"];
+      if (!validServiceTypes.includes(serviceType)) {
+        console.log("Validation failed: Invalid service type", { serviceType, validServiceTypes });
+        return res.status(400).json({
+          success: false,
+          message: `Invalid service type. Must be one of: ${validServiceTypes.join(", ")}`,
+          providedServiceType: serviceType,
+          validServiceTypes: validServiceTypes,
         });
       }
   
-      // Verify user exists
-      const user = await User.findById(userId);
+      // Verify authenticated user exists
+      const user = await User.findById(authenticatedUserId);
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: "User not found",
+          message: "Authenticated user not found",
         });
       }
   
@@ -129,10 +153,11 @@ export const addApplication = async (req, res) => {
    
       
       const application = new Application({
-        userId,
+        userId: authenticatedUserId, // Use authenticated user ID for security
         serviceType,
         partnerType: partnerType || "sole",
         partnerId: partnerId || null,
+        saudiPartnerName: saudiPartnerName || null,
         externalCompaniesCount: externalCompaniesCount || 0,
         externalCompaniesDetails: parsedExternalCompanies,
         projectEstimatedValue,
@@ -147,6 +172,12 @@ export const addApplication = async (req, res) => {
       });
 
       await application.save();
+      console.log("Application saved successfully:");
+      console.log("  - Application ID:", application._id);
+      console.log("  - User ID:", application.userId, "(type:", typeof application.userId, ")");
+      console.log("  - Service Type:", application.serviceType);
+      console.log("  - Status:", application.status);
+      console.log("  - Created At:", application.createdAt);
   
       // Handle document uploads (req.files from Cloudinary)
       if (req.files && Object.keys(req.files).length > 0) {
@@ -162,7 +193,7 @@ export const addApplication = async (req, res) => {
                 applicationId: application._id,
                 type: field,
                 fileUrl: file.path, // 🔑 Cloudinary URL stored here
-                uploadedBy: userId,
+                uploadedBy: authenticatedUserId,
               })
             );
           }
@@ -178,7 +209,7 @@ export const addApplication = async (req, res) => {
         status: "submitted",
         note: "Application submitted by client",
         progress: 0,
-        updatedBy: userId,
+        updatedBy: authenticatedUserId,
       });
 
       // Notify admins about new application submission
@@ -187,6 +218,9 @@ export const addApplication = async (req, res) => {
         try {
           const admins = await User.find({ role: 'admin' }).select('_id fullName');
           const clientName = user.fullName || user.name || 'Client';
+          
+          console.log(`Notifying ${admins.length} admins about new application:`, application._id);
+          console.log('Admins to notify:', admins.map(admin => ({ id: admin._id, name: admin.fullName })));
           
           admins.forEach(admin => {
             const notificationData = {
@@ -199,12 +233,17 @@ export const addApplication = async (req, res) => {
               timestamp: new Date()
             };
             
+            console.log(`Sending notification to admin ${admin._id} (${admin.fullName})`);
             io.to(`user_${admin._id}`).emit('new_application_notification', notificationData);
           });
+          
+          console.log('Admin notifications sent successfully');
         } catch (notificationError) {
           console.error('Error sending admin notifications:', notificationError);
           // Continue with response even if notifications fail
         }
+      } else {
+        console.warn('Socket.IO not available - cannot send notifications');
       }
   
       res.status(201).json({
@@ -215,6 +254,7 @@ export const addApplication = async (req, res) => {
           status: application.status,
           serviceType: application.serviceType,
           partnerType: application.partnerType,
+          saudiPartnerName: application.saudiPartnerName,
           externalCompaniesCount: application.externalCompaniesCount,
           needVirtualOffice: application.needVirtualOffice,
           approvedBy: application.approvedBy,
@@ -646,6 +686,7 @@ export const getApplication = async (req, res) => {
           email: application.partnerId.email,
           phone: application.partnerId.phone
         } : null,
+        saudiPartnerName: application.saudiPartnerName,
         externalCompaniesCount: application.externalCompaniesCount,
         externalCompaniesDetails: application.externalCompaniesDetails,
         projectEstimatedValue: application.projectEstimatedValue,
@@ -704,6 +745,8 @@ export const getUserApplications = async (req, res) => {
   try {
     // Get user ID from the authenticated user (from auth middleware)
     const userId = req.user.id;
+    console.log("Get User Applications - User ID:", userId);
+    console.log("Get User Applications - User:", req.user);
 
     if (!userId) {
       return res.status(401).json({
@@ -713,9 +756,20 @@ export const getUserApplications = async (req, res) => {
     }
 
     // Find all applications for this user
+    console.log("Searching for applications with userId:", userId, "Type:", typeof userId);
+    
+    // First, let's check if there are any applications in the database at all
+    const allApplications = await Application.find({}).select('_id userId serviceType createdAt');
+    console.log("All applications in database:", allApplications.length);
+    allApplications.forEach(app => {
+      console.log(`App ${app._id}: userId=${app.userId} (${typeof app.userId}), serviceType=${app.serviceType}, createdAt=${app.createdAt}`);
+    });
+    
     const applications = await Application.find({ userId })
       .select('_id serviceType status partnerType externalCompaniesCount needVirtualOffice createdAt updatedAt')
       .sort({ createdAt: -1 }); // Most recent first
+
+    console.log("Found applications for user:", applications.length, applications);
 
     res.status(200).json({
       success: true,
@@ -1010,6 +1064,176 @@ export const assignApplicationToEmployees = async (req, res) => {
 
   } catch (error) {
     console.error("Assign Application Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Something went wrong",
+    });
+  }
+};
+
+/**
+ * @desc    Delete an application
+ * @route   DELETE /api/applications/:applicationId
+ * @access  Private (Admin/Staff)
+ * @param   {string} req.params.applicationId - Application ID
+ * @param   {string} req.body.deletedBy - User ID of the person deleting
+ * @returns {Object} Deletion result
+ */
+export const deleteApplication = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { deletedBy } = req.body;
+
+    // Validate required fields
+    if (!deletedBy) {
+      return res.status(400).json({
+        success: false,
+        message: "Deleted by user ID is required"
+      });
+    }
+
+    // Validate application ID format
+    if (!applicationId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid application ID format"
+      });
+    }
+
+    // Find application to ensure it exists
+    const application = await Application.findById(applicationId);
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found"
+      });
+    }
+
+    // Verify the user deleting has permission (admin or staff)
+    const user = await User.findById(deletedBy);
+    if (!user || !["admin", "staff"].includes(user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized. Only admin and staff can delete applications"
+      });
+    }
+
+    // Delete related documents
+    await ApplicationDocument.deleteMany({ applicationId });
+
+    // Delete related timeline entries
+    await ApplicationTimeline.deleteMany({ applicationId });
+
+    // Delete related payments
+    await Payment.deleteMany({ applicationId });
+
+    // Delete the application itself
+    await Application.findByIdAndDelete(applicationId);
+
+    // Emit notification to client about deletion
+    const io = req.app.get('io');
+    if (io) {
+      io.to(`user_${application.userId}`).emit('application_deleted_notification', {
+        applicationId: applicationId,
+        message: `Your ${application.serviceType} application has been deleted by ${user.fullName}`,
+        deletedBy: user.fullName,
+        deletedAt: new Date(),
+        timestamp: new Date()
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Application deleted successfully",
+      data: {
+        applicationId: applicationId,
+        deletedBy: user.fullName,
+        deletedAt: new Date(),
+        serviceType: application.serviceType,
+        clientId: application.userId
+      }
+    });
+
+  } catch (error) {
+    console.error("Delete Application Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+    });
+  }
+};
+
+/**
+ * @desc    Get applications assigned to current employee
+ * @route   GET /api/applications/assigned-to-me
+ * @access  Private (Employee)
+ * @param   {Object} req.user - Authenticated user
+ * @returns {Object} Applications assigned to the current employee
+ */
+export const getAssignedApplications = async (req, res) => {
+  try {
+    const employeeId = req.user.id;
+
+    // Find applications where the current employee is assigned
+    const applications = await Application.find({
+      "assignedEmployees.employeeId": employeeId
+    })
+      .populate("userId", "fullName email phone nationality")
+      .populate("partnerId", "fullName email phone nationality")
+      .populate("assignedEmployees.employeeId", "fullName email role position")
+      .populate("approvedBy", "fullName email role")
+      .populate("documents")
+      .populate("timeline")
+      .populate("payment")
+      .sort({ createdAt: -1 });
+
+    // Format the applications for response
+    const formattedApplications = applications.map(app => ({
+      _id: app._id,
+      serviceType: app.serviceType,
+      status: {
+        current: app.status,
+        approvedBy: app.approvedBy ? {
+          id: app.approvedBy._id,
+          name: app.approvedBy.fullName,
+          email: app.approvedBy.email
+        } : null,
+        approvedAt: app.approvedAt
+      },
+      clientName: app.userId?.fullName || app.userId?.name || 'Unknown Client',
+      clientEmail: app.userId?.email,
+      clientPhone: app.userId?.phone,
+      partnerType: app.partnerType,
+      externalCompaniesCount: app.externalCompaniesCount,
+      needVirtualOffice: app.needVirtualOffice,
+      companyArrangesExternalCompanies: app.companyArrangesExternalCompanies,
+      assignedEmployees: app.assignedEmployees.map(assignment => ({
+        id: assignment.employeeId._id,
+        name: assignment.employeeId.fullName,
+        email: assignment.employeeId.email,
+        role: assignment.employeeId.role,
+        position: assignment.employeeId.position,
+        assignedAt: assignment.assignedAt
+      })),
+      createdAt: app.createdAt,
+      updatedAt: app.updatedAt,
+      dueDate: app.dueDate,
+      priority: app.priority
+    }));
+
+    res.status(200).json({
+      success: true,
+      message: "Assigned applications retrieved successfully",
+      data: formattedApplications,
+    });
+
+  } catch (error) {
+    console.error("Get Assigned Applications Error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",

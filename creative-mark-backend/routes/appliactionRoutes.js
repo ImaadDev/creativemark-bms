@@ -7,6 +7,8 @@ import {
   getUserApplications,
   getAllApplications,
   assignApplicationToEmployees,
+  getAssignedApplications,
+  deleteApplication,
 } from "../controllers/applicationController.js";
 import upload, { handleUploadError } from "../config/upload.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
@@ -19,9 +21,11 @@ router.get("/", authMiddleware, getUserApplications);
 // Client submits application
 router.post(
   "/",
+  authMiddleware, // Add authentication middleware
   upload.fields([
     { name: "passport", maxCount: 1 },
     { name: "idCard", maxCount: 1 },
+    { name: "saudiPartnerIqama", maxCount: 1 },
     { name: "commercial_registration" },
     { name: "financial_statement" },
     { name: "articles_of_association" },
@@ -44,5 +48,11 @@ router.get("/:applicationId", authMiddleware, getApplication);
 
 // Assign application to employees
 router.patch("/:applicationId/assign", authMiddleware, assignApplicationToEmployees);
+
+// Get applications assigned to current employee
+router.get("/assigned-to-me", authMiddleware, getAssignedApplications);
+
+// Delete application (Admin/Staff only)
+router.delete("/:applicationId", authMiddleware, deleteApplication);
 
 export default router;

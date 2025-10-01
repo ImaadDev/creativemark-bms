@@ -86,7 +86,19 @@ const AdminTasksPage = () => {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post('/tasks', formData);
+      // Prepare data for API call
+      const taskData = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        priority: formData.priority,
+        assignedTo: formData.assignedTo,
+        dueDate: formData.dueDate,
+        estimatedHours: formData.estimatedHours ? parseFloat(formData.estimatedHours) : null,
+        applicationId: formData.applicationId || null,
+        tags: formData.tags || []
+      };
+      
+      const response = await api.post('/tasks', taskData);
       if (response.data.success) {
         setTasks(prev => [response.data.data, ...prev]);
         setShowCreateModal(false);
@@ -100,9 +112,21 @@ const AdminTasksPage = () => {
           estimatedHours: '',
           tags: []
         });
+        
+        // Show success message
+        alert('Task created successfully! The assigned employee will be notified.');
       }
     } catch (error) {
       console.error('Error creating task:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Form data being sent:', taskData);
+      
+      // Show user-friendly error message
+      if (error.response?.data?.message) {
+        alert(`Error creating task: ${error.response.data.message}`);
+      } else {
+        alert('Error creating task. Please check the console for details.');
+      }
     }
   };
 
@@ -229,6 +253,73 @@ const AdminTasksPage = () => {
             </div>
           </div>
 
+          {/* Task Analytics Dashboard */}
+          <div className="mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Total Tasks</p>
+                    <p className="text-2xl font-bold text-gray-900">{tasks.length}</p>
+                    <p className="text-xs text-gray-500 mt-1">All time</p>
+                  </div>
+                  <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                    <FaTasks className="w-6 h-6 text-emerald-600" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">In Progress</p>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {tasks.filter(task => task.status === 'in_progress').length}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {tasks.length > 0 ? Math.round((tasks.filter(task => task.status === 'in_progress').length / tasks.length) * 100) : 0}% of total
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <FaClock className="w-6 h-6 text-blue-600" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Completed</p>
+                    <p className="text-2xl font-bold text-green-600">
+                      {tasks.filter(task => task.status === 'completed').length}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {tasks.length > 0 ? Math.round((tasks.filter(task => task.status === 'completed').length / tasks.length) * 100) : 0}% completion rate
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                    <FaCheckCircle className="w-6 h-6 text-green-600" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Overdue</p>
+                    <p className="text-2xl font-bold text-red-600">
+                      {tasks.filter(task => isOverdue(task.dueDate, task.status)).length}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">Need attention</p>
+                  </div>
+                  <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                    <FaExclamationTriangle className="w-6 h-6 text-red-600" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Modern Tab Navigation */}
           <div className="mb-8">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-2">
@@ -271,13 +362,29 @@ const AdminTasksPage = () => {
           {/* Tasks Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredTasks.map((task) => (
-              <div key={task._id} className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
+              <div key={task._id} className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 group">
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
-                        {task.title}
-                      </h3>
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-emerald-600 transition-colors">
+                          {task.title}
+                        </h3>
+                        {task.tags && task.tags.length > 0 && (
+                          <div className="flex gap-1">
+                            {task.tags.slice(0, 2).map((tag, index) => (
+                              <span key={index} className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">
+                                {tag}
+                              </span>
+                            ))}
+                            {task.tags.length > 2 && (
+                              <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                +{task.tags.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
                       <p className="text-sm text-gray-600 line-clamp-3">
                         {task.description}
                       </p>
@@ -288,7 +395,7 @@ const AdminTasksPage = () => {
                           setSelectedTask(task);
                           setShowTaskModal(true);
                         }}
-                        className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                        className="p-2 text-gray-400 hover:text-emerald-600 transition-colors"
                         title="View Details"
                       >
                         <FaEye className="w-4 h-4" />
@@ -319,31 +426,34 @@ const AdminTasksPage = () => {
                   </div>
 
                   {task.applicationId && (
-                    <div className="mb-4 p-2 bg-gray-50 rounded-lg">
-                      <p className="text-xs text-gray-600">
-                        Related to: {task.applicationId.serviceType?.replace('_', ' ')} application
-                      </p>
+                    <div className="mb-4 p-3 bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl border border-emerald-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm font-semibold text-emerald-900">📋 Related Application</span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              typeof task.applicationId.status === 'object' 
+                                ? task.applicationId.status.current === 'approved' ? 'bg-green-100 text-green-800' :
+                                  task.applicationId.status.current === 'in_process' ? 'bg-blue-100 text-blue-800' :
+                                  task.applicationId.status.current === 'under_review' ? 'bg-yellow-100 text-yellow-800' :
+                                  'bg-gray-100 text-gray-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {typeof task.applicationId.status === 'object' ? task.applicationId.status.current : task.applicationId.status || 'Unknown'}
+                            </span>
+                          </div>
+                          <p className="text-sm text-emerald-800 font-medium">
+                            {typeof task.applicationId === 'object' 
+                              ? task.applicationId.serviceType?.replace('_', ' ') || 'Unknown Service'
+                              : 'Application'
+                            }
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   )}
 
-                  <div className="flex gap-2">
-                    {task.status === 'open' && (
-                      <button
-                        onClick={() => handleStatusUpdate(task._id, 'in_progress')}
-                        className="flex-1 px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm font-medium rounded-lg transition-colors"
-                      >
-                        Start
-                      </button>
-                    )}
-                    {task.status === 'in_progress' && (
-                      <button
-                        onClick={() => handleStatusUpdate(task._id, 'completed')}
-                        className="flex-1 px-3 py-2 bg-green-100 hover:bg-green-200 text-green-800 text-sm font-medium rounded-lg transition-colors"
-                      >
-                        Complete
-                      </button>
-                    )}
-                  </div>
+              
                 </div>
               </div>
             ))}
@@ -373,13 +483,21 @@ const AdminTasksPage = () => {
       {/* Create Task Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-100">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-green-50">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">Create New Task</h2>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center">
+                    <FaPlus className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Create New Task</h2>
+                    <p className="text-sm text-emerald-600 font-medium">Assign tasks to your team members</p>
+                  </div>
+                </div>
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-white/50 rounded-lg transition-colors"
                 >
                   <FaTimes className="w-5 h-5 text-gray-500" />
                 </button>
@@ -387,18 +505,20 @@ const AdminTasksPage = () => {
             </div>
 
             <form onSubmit={handleCreateTask} className="p-6 space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Task Title *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                  placeholder="Enter task title"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Task Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.title}
+                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                    placeholder="Enter a clear, descriptive task title"
+                  />
+                </div>
               </div>
 
               <div>
@@ -410,42 +530,42 @@ const AdminTasksPage = () => {
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                  placeholder="Enter task description"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors resize-none"
+                  placeholder="Provide detailed instructions and requirements for this task..."
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Priority
+                    Priority Level
                   </label>
                   <select
                     value={formData.priority}
                     onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
                   >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="urgent">Urgent</option>
+                    <option value="low">🟢 Low Priority</option>
+                    <option value="medium">🟡 Medium Priority</option>
+                    <option value="high">🟠 High Priority</option>
+                    <option value="urgent">🔴 Urgent</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Assign To *
+                    Assign To Employee *
                   </label>
                   <select
                     required
                     value={formData.assignedTo}
                     onChange={(e) => setFormData(prev => ({ ...prev, assignedTo: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
                   >
-                    <option value="">Select Employee</option>
-                    {employees.map(employee => (
-                      <option key={employee._id} value={employee._id}>
-                        {employee.fullName || employee.name} ({employee.role})
+                    <option value="">👤 Select Employee</option>
+                    {employees.map((employee, index) => (
+                      <option key={employee._id || `employee-${index}`} value={employee._id}>
+                        {employee.fullName || employee.name} - {employee.role}
                       </option>
                     ))}
                   </select>
@@ -455,20 +575,20 @@ const AdminTasksPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Due Date *
+                    📅 Due Date & Time *
                   </label>
                   <input
                     type="datetime-local"
                     required
                     value={formData.dueDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Estimated Hours
+                    ⏱️ Estimated Hours
                   </label>
                   <input
                     type="number"
@@ -476,42 +596,62 @@ const AdminTasksPage = () => {
                     step="0.5"
                     value={formData.estimatedHours}
                     onChange={(e) => setFormData(prev => ({ ...prev, estimatedHours: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                    placeholder="e.g., 8"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                    placeholder="e.g., 8 hours"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Related Application (Optional)
-                </label>
-                <select
-                  value={formData.applicationId}
-                  onChange={(e) => setFormData(prev => ({ ...prev, applicationId: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                >
-                  <option value="">No related application</option>
-                  {applications.map(app => (
-                    <option key={app._id} value={app._id}>
-                      {app.serviceType?.replace('_', ' ')} - {app.status}
-                    </option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    📋 Related Application (Optional)
+                  </label>
+                  <select
+                    value={formData.applicationId}
+                    onChange={(e) => setFormData(prev => ({ ...prev, applicationId: e.target.value }))}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                  >
+                    <option value="">No related application</option>
+                    {applications.map((app, index) => (
+                      <option key={app._id || `app-${index}`} value={app._id}>
+                        {app.serviceType?.replace('_', ' ')} - {typeof app.status === 'object' ? app.status.current : app.status}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    🏷️ Tags (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.tags.join(', ')}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      tags: e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag)
+                    }))}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                    placeholder="e.g., frontend, urgent, client-work"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Separate tags with commas</p>
+                </div>
               </div>
 
               <div className="flex justify-end gap-4 pt-6 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-6 py-2 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-6 py-3 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+                  className="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors font-medium shadow-lg hover:shadow-xl flex items-center gap-2"
                 >
+                  <FaPlus className="w-4 h-4" />
                   Create Task
                 </button>
               </div>

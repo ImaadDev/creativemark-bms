@@ -4,6 +4,7 @@ const ApplicationSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Client
     partnerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Saudi Partner (if any)
+    saudiPartnerName: { type: String }, // Saudi Partner Name (if any)
 
     serviceType: {
       type: String,

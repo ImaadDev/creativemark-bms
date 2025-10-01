@@ -3,6 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "../contexts/AuthContext";
 import { SocketProvider } from "../contexts/SocketContext";
 import { NotificationProvider } from "../contexts/NotificationContext";
+import { MessageNotificationProvider } from "../contexts/MessageNotificationContext";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -21,7 +22,9 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <SocketProvider>
             <NotificationProvider>
-              {children}
+              <MessageNotificationProvider>
+                {children}
+              </MessageNotificationProvider>
             </NotificationProvider>
           </SocketProvider>
         </AuthProvider>

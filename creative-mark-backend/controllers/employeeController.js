@@ -974,3 +974,92 @@ export const updateEmployeeApplicationData = async (req, res) => {
   }
 };
 
+// Delete employee (Admin only)
+export const deleteEmployee = async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+    const { deletedBy } = req.body;
+
+    // Validate required fields
+    if (!deletedBy) {
+      return res.status(400).json({
+        success: false,
+        message: "Deleted by user ID is required"
+      });
+    }
+
+    // Validate employee ID format
+    if (!employeeId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid employee ID format"
+      });
+    }
+
+    // Find employee to ensure it exists
+    const employee = await User.findById(employeeId);
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee not found"
+      });
+    }
+
+    // Verify the user deleting has permission (admin only)
+    const user = await User.findById(deletedBy);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized. Only admins can delete employees"
+      });
+    }
+
+    // Check if employee is assigned to any applications
+    const assignedApplications = await Application.find({
+      'assignedEmployees.employeeId': employeeId
+    });
+
+    if (assignedApplications.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot delete employee. They are currently assigned to ${assignedApplications.length} application(s). Please reassign these applications first.`,
+        assignedApplications: assignedApplications.length
+      });
+    }
+
+    // Delete the employee
+    await User.findByIdAndDelete(employeeId);
+
+    // Emit notification to other admins about deletion
+    const io = req.app.get('io');
+    if (io) {
+      io.to('admin_room').emit('employee_deleted_notification', {
+        employeeId: employeeId,
+        employeeName: employee.fullName,
+        deletedBy: user.fullName,
+        deletedAt: new Date(),
+        timestamp: new Date()
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Employee deleted successfully",
+      data: {
+        employeeId: employeeId,
+        employeeName: employee.fullName,
+        deletedBy: user.fullName,
+        deletedAt: new Date()
+      }
+    });
+
+  } catch (error) {
+    console.error("Delete Employee Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+    });
+  }
+};
+

@@ -154,3 +154,24 @@ export const rejectRequest = async (requestId, rejectionData) => {
     };
   }
 };
+
+// Delete employee
+export const deleteEmployee = async (employeeId, deletedBy) => {
+  try {
+    const response = await api.delete(`/employees/${employeeId}`, {
+      data: { deletedBy }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Delete Employee Error:", error);
+    console.error("Error response:", error.response?.data);
+    console.error("Error status:", error.response?.status);
+
+    const errorMessage = error.response?.data?.message ||
+                        error.response?.data?.error ||
+                        error.message ||
+                        "Failed to delete employee";
+
+    throw new Error(errorMessage);
+  }
+};

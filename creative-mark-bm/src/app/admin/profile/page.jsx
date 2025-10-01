@@ -233,6 +233,9 @@ export default function AdminProfilePage() {
         if (formData[key] !== null && formData[key] !== '') {
           if (Array.isArray(formData[key])) {
             updateData.append(key, JSON.stringify(formData[key]));
+          } else if (key === 'profilePicture' && formData[key] instanceof File) {
+            // Handle file upload
+            updateData.append(key, formData[key]);
           } else {
             updateData.append(key, formData[key]);
           }
@@ -245,6 +248,8 @@ export default function AdminProfilePage() {
         setCurrentUser(response.data);
         setEditing(false);
         setSuccess('Profile updated successfully!');
+        // Dispatch event to update navbar profile picture
+        window.dispatchEvent(new CustomEvent('profileUpdated'));
         setTimeout(() => setSuccess(''), 3000);
       } else {
         setErrors({ general: response.message || 'Failed to update profile' });

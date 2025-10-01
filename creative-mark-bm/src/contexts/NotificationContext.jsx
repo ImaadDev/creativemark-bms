@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useSocket } from "./SocketContext";
+import { useAuth } from "./AuthContext";
 
 const NotificationContext = createContext();
 
@@ -9,6 +10,7 @@ export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const { socket, isConnected } = useSocket();
+  const { user } = useAuth();
 
   // Load notifications from localStorage on mount
   useEffect(() => {
@@ -98,10 +100,14 @@ export const NotificationProvider = ({ children }) => {
     }
   }, [socket, isConnected]);
 
-  // Listen for new application notifications (for admins)
+  // Listen for new application notifications (for admins only)
   useEffect(() => {
-    if (socket && isConnected) {
+    if (socket && isConnected && user && user.role === 'admin') {
+      console.log('🔔 Admin notification listener set up for user:', user.fullName, user.id);
+      
       const handleNewApplicationNotification = (notificationData) => {
+        console.log('🔔 Received new application notification:', notificationData);
+        
         const notification = {
           id: Date.now() + Math.random(),
           type: 'new_application',
@@ -116,24 +122,37 @@ export const NotificationProvider = ({ children }) => {
           read: false
         };
 
+        console.log('🔔 Adding notification to list:', notification);
         setNotifications(prev => [notification, ...prev.slice(0, 49)]);
 
+        // Show browser notification
         if (Notification.permission === 'granted') {
           new Notification(notification.title, {
             body: notification.message,
             icon: '/favicon.ico',
             tag: `new-application-${notificationData.applicationId}`
           });
+          console.log('🔔 Browser notification shown');
+        } else {
+          console.log('🔔 Browser notification permission not granted');
         }
       };
 
       socket.on('new_application_notification', handleNewApplicationNotification);
+      console.log('🔔 Socket listener registered for new_application_notification');
 
       return () => {
         socket.off('new_application_notification', handleNewApplicationNotification);
+        console.log('🔔 Socket listener removed for new_application_notification');
       };
+    } else {
+      console.log('🔔 Admin notification listener not set up:', { 
+        socket: !!socket, 
+        isConnected, 
+        user: user ? `${user.fullName} (${user.role})` : 'none' 
+      });
     }
-  }, [socket, isConnected]);
+  }, [socket, isConnected, user]);
 
   // Listen for task assignment notifications
   useEffect(() => {
