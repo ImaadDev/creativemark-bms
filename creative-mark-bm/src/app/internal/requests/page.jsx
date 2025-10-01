@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   FaPlus, 
@@ -25,7 +25,7 @@ import AssignmentModal from '../../../components/admin/AssignmentModal';
 import { isAuthenticated } from '../../../services/auth';
 import api from '../../../services/api';
 
-const InternalRequestsPage = () => {
+const InternalRequestsContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('all');
@@ -300,6 +300,21 @@ const InternalRequestsPage = () => {
         }
       `}</style>
     </>
+  );
+};
+
+const InternalRequestsPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30 flex items-center justify-center">
+        <div className="text-center">
+          <FaSpinner className="h-8 w-8 animate-spin text-emerald-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading requests...</p>
+        </div>
+      </div>
+    }>
+      <InternalRequestsContent />
+    </Suspense>
   );
 };
 

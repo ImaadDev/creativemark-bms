@@ -1,9 +1,9 @@
 "use client";
 
-import { forwardRef, useState, useEffect } from 'react';
+import { forwardRef, useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-const Tabs = forwardRef(({ 
+const TabsContent = forwardRef(({ 
   tabs, 
   defaultTab,
   className = '',
@@ -96,6 +96,16 @@ const Tabs = forwardRef(({
         {activeTabData?.content}
       </div>
     </div>
+  );
+});
+
+TabsContent.displayName = 'TabsContent';
+
+const Tabs = forwardRef((props, ref) => {
+  return (
+    <Suspense fallback={<div className="animate-pulse bg-gray-200 h-10 rounded"></div>}>
+      <TabsContent {...props} ref={ref} />
+    </Suspense>
   );
 });
 

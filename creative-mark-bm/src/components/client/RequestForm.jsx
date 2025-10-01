@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   FaUser, 
@@ -27,7 +27,7 @@ import {
 import { submitApplication, getMockApplications } from '../../services/clientService';
 import { isAuthenticated } from '../../services/auth';
 
-const RequestForm = () => {
+const RequestFormContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const draftId = searchParams.get('draftId');
@@ -473,6 +473,21 @@ const RequestForm = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const RequestForm = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30 flex items-center justify-center">
+        <div className="text-center">
+          <FaSpinner className="h-8 w-8 animate-spin text-emerald-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading form...</p>
+        </div>
+      </div>
+    }>
+      <RequestFormContent />
+    </Suspense>
   );
 };
 
