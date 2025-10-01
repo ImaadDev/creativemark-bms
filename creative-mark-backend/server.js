@@ -42,7 +42,7 @@ app.set('io', io);
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000', // Frontend URL
+  origin: process.env.CLIENT_URL, // Frontend URL
   credentials: true // Allow cookies
 }));
 app.use(express.json());
