@@ -86,35 +86,50 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
 
   return (
-    <header className="shadow-xl sticky top-0 z-20" style={{ backgroundColor: '#242021', borderBottom: '2px solid #ffd17a' }}>
-      <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-20 backdrop-blur-sm"
+            style={{
+              background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+              borderBottom: '1px solid rgba(255, 209, 122, 0.2)',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
+            }}>
+      <div className="flex items-center justify-between h-18 sm:h-20 lg:h-22 px-6 sm:px-8 lg:px-12">
         
         {/* Left Section */}
         <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
           {/* Mobile Menu Toggle */}
           <button
             onClick={onToggleSidebar}
-            className="lg:hidden p-2 sm:p-3 rounded-lg transition-all duration-200"
+            className="lg:hidden p-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:scale-105"
             style={{ color: '#ffd17a' }}
             aria-label="Toggle sidebar"
           >
             {isSidebarOpen ? (
-              <FaTimes className="h-4 w-4 sm:h-5 sm:w-5" />
+              <FaTimes className="h-5 w-5" />
             ) : (
-              <FaBars className="h-4 w-4 sm:h-5 sm:w-5" />
+              <FaBars className="h-5 w-5" />
             )}
           </button>
 
           {/* Breadcrumb/Title */}
-          <div className="flex items-center space-x-1 sm:space-x-2">
-            <div className="hidden sm:flex items-center space-x-1 sm:space-x-2" style={{ color: '#ffd17a' }}>
-              <span className="text-xs sm:text-sm font-medium">Dashboard</span>
-              <span className="text-xs sm:text-sm" style={{ color: 'gray' }}>/</span>
-              <span className="text-xs sm:text-sm" style={{ color: 'gray' }}>Overview</span>
+          <div className="flex items-center space-x-3">
+            <div className="hidden sm:flex items-center space-x-2">
+              <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full"
+                   style={{
+                     backgroundColor: 'rgba(255, 209, 122, 0.1)',
+                     border: '1px solid rgba(255, 209, 122, 0.2)'
+                   }}>
+                <span className="text-sm font-medium" style={{ color: '#ffd17a' }}>Dashboard</span>
+                <span className="text-sm" style={{ color: 'rgba(255, 209, 122, 0.6)' }}>/</span>
+                <span className="text-sm" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Overview</span>
+              </div>
             </div>
             {/* Mobile title when sidebar is closed */}
-            <div className="sm:hidden" style={{ color: '#ffd17a' }}>
-              <span className="text-xs sm:text-sm font-medium">Creative Mark</span>
+            <div className="sm:hidden flex items-center space-x-2 px-3 py-1.5 rounded-full"
+                 style={{
+                   backgroundColor: 'rgba(255, 209, 122, 0.1)',
+                   border: '1px solid rgba(255, 209, 122, 0.2)'
+                 }}>
+              <span className="text-sm font-medium" style={{ color: '#ffd17a' }}>Creative Mark</span>
             </div>
           </div>
         </div>
@@ -122,7 +137,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
       
 
         {/* Right Section */}
-        <div className="flex items-center space-x-1 sm:space-x-2">
+        <div className="flex items-center space-x-3 sm:space-x-4">
           
       
 
@@ -130,13 +145,13 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
           {/* Help - Only visible for clients */}
           {currentUser && currentUser.role === 'client' && (
-            <button 
+            <button
               onClick={() => setShowHelpModal(true)}
-              className="hidden sm:block p-2 lg:p-3 rounded-lg transition-all duration-200 relative group"
+              className="hidden sm:flex items-center justify-center p-3 rounded-xl transition-all duration-300 relative group hover:bg-white/10 hover:scale-105"
               style={{ color: '#ffd17a' }}
             >
-              <FaQuestionCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-              <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap shadow-lg">
+              <FaQuestionCircle className="h-5 w-5" />
+              <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap shadow-xl z-50">
                 Help & Support
                 <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
               </div>
@@ -145,7 +160,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
           {/* Notifications */}
           <div className="relative">
-            <div className="p-2 sm:p-3 rounded-lg transition-all duration-200 relative group">
+            <div className="p-3 rounded-xl transition-all duration-300 relative group hover:bg-white/10 hover:scale-105">
               <NotificationBell />
             </div>
           </div>
@@ -153,18 +168,22 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
         
 
           {/* Divider - Hidden on small screens */}
-          <div className="hidden sm:block h-4 sm:h-6 w-px mx-1 sm:mx-2" style={{ backgroundColor: 'rgba(255, 209, 122, 0.3)' }}></div>
+          <div className="hidden sm:block h-6 w-px mx-2" style={{ backgroundColor: 'rgba(255, 209, 122, 0.2)' }}></div>
 
           {/* User Menu */}
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:p-3 transition-all duration-200 rounded-lg"
+              className="flex items-center space-x-3 p-3 transition-all duration-300 rounded-xl hover:bg-white/10 hover:scale-105"
               style={{ color: '#ffd17a' }}
             >
               <div className="flex items-center space-x-2">
                 <div className="relative">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center shadow-lg overflow-hidden" style={{ backgroundColor: '#ffd17a' }}>
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-xl flex items-center justify-center shadow-lg overflow-hidden transition-all duration-300 hover:scale-105"
+                       style={{
+                         background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                         boxShadow: '0 4px 12px rgba(255, 209, 122, 0.3)'
+                       }}>
                     {loading || refreshing ? (
                       <FaSpinner className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" style={{ color: '#242021' }} />
                     ) : currentUser?.profilePicture ? (
@@ -184,7 +203,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                   </div>
                 </div>
                 <div className="hidden sm:block text-left">
-                  <div className="text-xs sm:text-sm font-medium leading-none" style={{ color: '#ffd17a' }}>
+                  <div className="text-sm font-semibold leading-none" style={{ color: '#ffd17a' }}>
                     {loading || refreshing ? (
                       <div className="flex items-center space-x-2">
                         <FaSpinner className="animate-spin h-3 w-3" />
@@ -194,11 +213,11 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                       currentUser?.fullName || currentUser?.name || user?.fullName || user?.name || 'User'
                     )}
                   </div>
-                  <p className="text-xs leading-none mt-0.5" style={{ color: 'gray' }}>
+                  <p className="text-xs leading-none mt-1" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                     {currentUser?.role || user?.role || 'User'}
                   </p>
                 </div>
-                <FaChevronDown className={`hidden sm:block h-3 w-3 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} style={{ color: 'gray' }} />
+                <FaChevronDown className={`hidden sm:block h-4 w-4 transition-transform duration-300 ${showUserMenu ? 'rotate-180' : ''}`} style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
               </div>
             </button>
 
@@ -209,10 +228,22 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                   className="fixed inset-0 z-10" 
                   onClick={() => setShowUserMenu(false)}
                 ></div>
-                <div className="absolute right-0 mt-3 w-64 sm:w-72 bg-white border-2 border-gray-200 shadow-2xl rounded-lg z-20 overflow-hidden">
-                  <div className="p-4 border-b border-gray-200" style={{ backgroundColor: '#ffd17a' }}>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-lg flex items-center justify-center shadow-lg overflow-hidden" style={{ backgroundColor: '#242021' }}>
+                <div className="absolute right-0 mt-4 w-72 bg-white border-0 shadow-2xl rounded-2xl z-20 overflow-hidden"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                       boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+                       border: '1px solid rgba(255, 209, 122, 0.1)'
+                     }}>
+                  <div className="p-6 border-b" style={{
+                    background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                    borderBottomColor: 'rgba(36, 32, 33, 0.1)'
+                  }}>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-xl overflow-hidden transition-all duration-300 hover:scale-105"
+                           style={{
+                             background: 'linear-gradient(135deg, #242021 0%, #2a2422 100%)',
+                             boxShadow: '0 8px 20px rgba(36, 32, 33, 0.3)'
+                           }}>
                         {loading || refreshing ? (
                           <FaSpinner className="h-5 w-5 animate-spin" style={{ color: '#ffd17a' }} />
                         ) : currentUser?.profilePicture ? (
@@ -231,72 +262,92 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                         )}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold" style={{ color: '#242021' }}>
+                        <p className="text-base font-bold" style={{ color: '#242021' }}>
                           {currentUser?.fullName || currentUser?.name || user?.fullName || user?.name || 'User'}
                         </p>
-                        <p className="text-xs" style={{ color: '#242021' }}>
+                        <p className="text-sm" style={{ color: 'rgba(36, 32, 33, 0.7)' }}>
                           {currentUser?.email || user?.email || 'user@example.com'}
                         </p>
-                        <p className="text-xs font-medium" style={{ color: '#242021' }}>
+                        <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'rgba(36, 32, 33, 0.8)' }}>
                           {currentUser?.role || user?.role || 'User'}
                         </p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="py-2">
-                    <button 
+                  <div className="py-4 space-y-2">
+                    <button
                       onClick={() => {
                         setShowUserMenu(false);
                         const userRole = currentUser?.role || user?.role || 'client';
                         const rolePath = userRole === 'admin' ? 'admin' : userRole === 'partner' ? 'partner' : userRole;
                         router.push(`/${rolePath}/profile`);
                       }}
-                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200 rounded-lg mx-2"
+                      className="flex items-center w-full px-5 py-4 text-sm font-semibold text-gray-800 hover:bg-white hover:shadow-md transition-all duration-300 rounded-xl mx-3 group"
+                      style={{ backgroundColor: 'rgba(248, 249, 250, 0.8)' }}
                     >
-                      <div className="p-2 rounded-xl bg-gray-100 mr-3 shadow-sm">
-                        <FaUser className="h-4 w-4" />
+                      <div className="p-3 rounded-xl mr-4 shadow-sm group-hover:scale-110 transition-transform duration-300"
+                           style={{
+                             background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                             boxShadow: '0 4px 12px rgba(255, 209, 122, 0.3)'
+                           }}>
+                        <FaUser className="h-5 w-5" style={{ color: '#242021' }} />
                       </div>
                       Profile Settings
                     </button>
-                    <button 
+                    <button
                       onClick={() => {
                         setShowUserMenu(false);
                         const userRole = currentUser?.role || user?.role || 'client';
                         const rolePath = userRole === 'internal' ? 'admin' : userRole === 'external' ? 'partner' : userRole;
                         router.push(`/${rolePath}/settings`);
                       }}
-                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200 rounded-lg mx-2"
+                      className="flex items-center w-full px-5 py-4 text-sm font-semibold text-gray-800 hover:bg-white hover:shadow-md transition-all duration-300 rounded-xl mx-3 group"
+                      style={{ backgroundColor: 'rgba(248, 249, 250, 0.8)' }}
                     >
-                      <div className="p-2 rounded-xl bg-gray-100 mr-3 shadow-sm">
-                        <FaCog className="h-4 w-4" />
+                      <div className="p-3 rounded-xl mr-4 shadow-sm group-hover:scale-110 transition-transform duration-300"
+                           style={{
+                             background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                             boxShadow: '0 4px 12px rgba(255, 209, 122, 0.3)'
+                           }}>
+                        <FaCog className="h-5 w-5" style={{ color: '#242021' }} />
                       </div>
                       Account Settings
                     </button>
-                    
-                    <button 
+
+                    <button
                       onClick={refreshUserData}
                       disabled={refreshing}
-                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-blue-600 hover:bg-blue-50 transition-all duration-200 disabled:opacity-50 rounded-xl mx-2"
+                      className="flex items-center w-full px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-50 transition-all duration-300 disabled:opacity-50 rounded-xl mx-3 group"
+                      style={{ backgroundColor: 'rgba(59, 130, 246, 0.05)' }}
                     >
-                      <div className="p-2 rounded-xl bg-blue-100 mr-3 shadow-sm">
+                      <div className="p-3 rounded-xl mr-4 shadow-sm group-hover:scale-110 transition-transform duration-300"
+                           style={{
+                             background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                             boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                           }}>
                         {refreshing ? (
-                          <FaSpinner className="h-4 w-4 animate-spin" />
+                          <FaSpinner className="h-5 w-5 animate-spin" style={{ color: 'white' }} />
                         ) : (
-                          <FaUser className="h-4 w-4" />
+                          <FaUser className="h-5 w-5" style={{ color: 'white' }} />
                         )}
                       </div>
                       {refreshing ? 'Refreshing...' : 'Refresh Profile'}
                     </button>
 
-                    
-                    <div className="border-t border-gray-100 mt-2 pt-2">
-                      <button 
+
+                    <div className="border-t mt-4 pt-4" style={{ borderTopColor: 'rgba(255, 209, 122, 0.2)' }}>
+                      <button
                         onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-all duration-200 rounded-xl mx-2"
+                        className="flex items-center w-full px-5 py-4 text-sm font-semibold text-red-700 hover:bg-red-50 transition-all duration-300 rounded-xl mx-3 group"
+                        style={{ backgroundColor: 'rgba(239, 68, 68, 0.05)' }}
                       >
-                        <div className="p-2 rounded-xl bg-red-100 mr-3 shadow-sm">
-                          <FaSignOutAlt className="h-4 w-4" />
+                        <div className="p-3 rounded-xl mr-4 shadow-sm group-hover:scale-110 transition-transform duration-300"
+                             style={{
+                               background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                               boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+                             }}>
+                          <FaSignOutAlt className="h-5 w-5" style={{ color: 'white' }} />
                         </div>
                         Sign Out
                       </button>

@@ -367,41 +367,51 @@ const ClientDashboard = () => {
   }
 
   return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
         {/* Header Section */}
-        <div className="border-b-2" style={{ backgroundColor: '#242021', borderBottomColor: '#ffd17a' }}>
-        <div className="max-w-6xl  mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="flex flex-col space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div className="backdrop-blur-sm border-b" style={{
+          background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+          borderBottomColor: 'rgba(255, 209, 122, 0.2)'
+        }}>
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
+          <div className="flex flex-col space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
               <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2" style={{ color: '#ffd17a' }}>
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
+                  <span className="text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Dashboard</span>
+                </div>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4" style={{ color: '#ffd17a' }}>
                   Welcome back, {dashboardData.user.name}!
                 </h1>
-                <p className="text-sm sm:text-base" style={{ color: 'gray' }}>
+                <p className="text-base sm:text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   Member since {dashboardData.user.memberSince} • Last login: {dashboardData.user.lastLogin}
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <Link 
+              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                <Link
                   href="/client/track-application"
-                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border transition-all duration-200"
-                  style={{ 
-                    backgroundColor: 'transparent', 
-                    color: '#ffd17a', 
-                    borderColor: '#ffd17a' 
+                  className="w-full sm:w-auto px-8 py-4 text-sm font-semibold uppercase tracking-wider border transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg group"
+                  style={{
+                    backgroundColor: 'rgba(255, 209, 122, 0.1)',
+                    color: '#ffd17a',
+                    borderColor: 'rgba(255, 209, 122, 0.3)',
+                    borderRadius: '12px'
                   }}
                 >
-                  Track Applications
+                  <span className="group-hover:scale-105 transition-transform duration-300">Track Applications</span>
                 </Link>
-                <Link 
-                  href="/client/application" 
-                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-200 shadow-lg"
-                  style={{ 
-                    backgroundColor: '#ffd17a', 
-                    color: '#242021' 
+                <Link
+                  href="/client/application"
+                  className="w-full sm:w-auto px-8 py-4 text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-lg group"
+                  style={{
+                    background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                    color: '#242021',
+                    borderRadius: '12px',
+                    boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
                   }}
                 >
-                  + New Application
+                  <span className="group-hover:scale-105 transition-transform duration-300">+ New Application</span>
                 </Link>
               </div>
             </div>
@@ -409,85 +419,129 @@ const ClientDashboard = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 px-8 md:px-0 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white border-2 border-gray-200 overflow-hidden">
-            <div className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <div className="group bg-white border-0 overflow-hidden hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '20px',
+                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(255, 209, 122, 0.1)'
+               }}>
+            <div className="p-8">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
                     Total Applications
                   </h3>
-                  <p className="text-3xl font-bold text-gray-900 mb-2">{dashboardData.statistics.totalRequests}</p>
-                  <div className="flex items-center text-xs text-amber-600">
-                    <FaTrendingUp className="mr-1 text-xs" />
+                  <p className="text-4xl font-bold text-gray-900 mb-3">{dashboardData.statistics.totalRequests}</p>
+                  <div className="flex items-center text-sm font-medium" style={{ color: '#ffd17a' }}>
+                    <FaTrendingUp className="mr-2 text-sm" />
                     <span>All time</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                  <FaFileContract className="text-lg" style={{ color: '#242021' }} />
+                <div className="w-16 h-16 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                       borderRadius: '16px',
+                       boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                     }}>
+                  <FaFileContract className="text-xl" style={{ color: '#242021' }} />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 overflow-hidden">
-            <div className="p-6">
+          <div className="group bg-white border-0 overflow-hidden hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '20px',
+                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(255, 209, 122, 0.1)'
+               }}>
+            <div className="p-8">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
                     In Progress
                   </h3>
-                  <p className="text-3xl font-bold text-gray-900 mb-2">{dashboardData.statistics.inProgressRequests}</p>
-                  <div className="flex items-center text-xs text-amber-600">
-                    <FaHourglassHalf className="mr-1 text-xs" />
+                  <p className="text-4xl font-bold text-gray-900 mb-3">{dashboardData.statistics.inProgressRequests}</p>
+                  <div className="flex items-center text-sm font-medium" style={{ color: '#ffd17a' }}>
+                    <FaHourglassHalf className="mr-2 text-sm" />
                     <span>Active processes</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                  <FaClock className="text-lg" style={{ color: '#242021' }} />
+                <div className="w-16 h-16 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                       borderRadius: '16px',
+                       boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                     }}>
+                  <FaClock className="text-xl" style={{ color: '#242021' }} />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 overflow-hidden">
-            <div className="p-6">
+          <div className="group bg-white border-0 overflow-hidden hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '20px',
+                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(255, 209, 122, 0.1)'
+               }}>
+            <div className="p-8">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
                     Completed
                   </h3>
-                  <p className="text-3xl font-bold text-gray-900 mb-2">{dashboardData.statistics.completedRequests}</p>
-                  <div className="flex items-center text-xs text-amber-600">
-                    <FaCheckCircle className="mr-1 text-xs" />
+                  <p className="text-4xl font-bold text-gray-900 mb-3">{dashboardData.statistics.completedRequests}</p>
+                  <div className="flex items-center text-sm font-medium" style={{ color: '#ffd17a' }}>
+                    <FaCheckCircle className="mr-2 text-sm" />
                     <span>Successfully finished</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                  <FaCheckCircle className="text-lg" style={{ color: '#242021' }} />
+                <div className="w-16 h-16 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                       borderRadius: '16px',
+                       boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                     }}>
+                  <FaCheckCircle className="text-xl" style={{ color: '#242021' }} />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 overflow-hidden">
-            <div className="p-6">
+          <div className="group bg-white border-0 overflow-hidden hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '20px',
+                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(255, 209, 122, 0.1)'
+               }}>
+            <div className="p-8">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
                     Total Investment
                   </h3>
-                  <p className="text-xl font-bold text-gray-900 mb-2">{dashboardData.statistics.totalSpent.toLocaleString()} SAR</p>
-                  <div className="flex items-center text-xs text-amber-600">
-                    <FaDollarSign className="mr-1 text-xs" />
+                  <p className="text-2xl font-bold text-gray-900 mb-3">{dashboardData.statistics.totalSpent.toLocaleString()} SAR</p>
+                  <div className="flex items-center text-sm font-medium" style={{ color: '#ffd17a' }}>
+                    <FaDollarSign className="mr-2 text-sm" />
                     <span>Service investments</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                  <FaDollarSign className="text-lg" style={{ color: '#242021' }} />
+                <div className="w-16 h-16 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                       borderRadius: '16px',
+                       boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                     }}>
+                  <FaDollarSign className="text-xl" style={{ color: '#242021' }} />
                 </div>
               </div>
             </div>
@@ -495,62 +549,108 @@ const ClientDashboard = () => {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Recent Applications */}
-          <div className="lg:col-span-2 bg-white border-2 border-gray-200 overflow-hidden">
-            <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
+          <div className="lg:col-span-2 bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '24px',
+                 boxShadow: '0 12px 40px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(255, 209, 122, 0.1)'
+               }}>
+            <div className="p-8" style={{
+              background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+              borderRadius: '24px 24px 0 0'
+            }}>
               <div className="flex justify-between items-center">
-                <h2 className="text-base md:text-xl font-bold">Recent Applications</h2>
-                <Link 
-                  href="/client/track-application" 
-                  className="text-xs md:text-sm font-semibold uppercase tracking-wider transition-colors"
-                  style={{ color: 'gray' }}
+                <div className="flex items-center space-x-4">
+                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
+                  <h2 className="text-xl md:text-2xl font-bold" style={{ color: '#ffd17a' }}>Recent Applications</h2>
+                </div>
+                <Link
+                  href="/client/track-application"
+                  className="px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-md"
+                  style={{
+                    backgroundColor: 'rgba(255, 209, 122, 0.1)',
+                    color: '#ffd17a',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(255, 209, 122, 0.2)'
+                  }}
                 >
                   View All
                 </Link>
               </div>
             </div>
-            <div className="p-6">
-              <div className="space-y-4">
+            <div className="p-8">
+              <div className="space-y-6">
                 {dashboardData.recentRequests.length > 0 ? (
                   dashboardData.recentRequests.map((request) => (
-                    <div key={request.id} className="bg-white border-2 border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200">
-                      <div className="p-4 space-y-4">
-                        <div className="flex items-start justify-between gap-3">
+                    <div key={request.id} className="group bg-white border-0 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                         style={{
+                           background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                           borderRadius: '16px',
+                           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                           border: '1px solid rgba(255, 209, 122, 0.1)'
+                         }}>
+                      <div className="p-6 space-y-6">
+                        <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
-                              Application Type
-                            </h3>
-                            <p className="text-sm font-medium text-gray-900 mb-2">{request.type}</p>
-                            <p className="text-xs text-gray-600">ID: {request.id.slice(-8).toUpperCase()}</p>
-                            <p className="text-xs text-gray-500">{request.date}</p>
+                            <div className="flex items-center space-x-3 mb-3">
+                              <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: '#ffd17a' }}></div>
+                              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                                Application Details
+                              </h3>
+                            </div>
+                            <p className="text-lg font-semibold text-gray-900 mb-3">{request.type}</p>
+                            <div className="flex items-center space-x-4 text-sm">
+                              <div className="flex items-center space-x-2" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>
+                                <FaFileAlt className="text-sm" />
+                                <span className="font-medium">ID: {request.id.slice(-8).toUpperCase()}</span>
+                              </div>
+                              <div className="flex items-center space-x-2 text-gray-500">
+                                <FaCalendarAlt className="text-sm" />
+                                <span>{request.date}</span>
+                              </div>
+                            </div>
                           </div>
-                          <span className={`flex-shrink-0 px-3 py-1 text-xs font-bold uppercase tracking-wide ${getStatusColor(request.status)}`}>
+                          <span className={`flex-shrink-0 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 group-hover:scale-105 ${getStatusColor(request.status)}`}
+                                style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)' }}>
                             {request.status}
                           </span>
                         </div>
-                        
+
                         {/* Progress Bar */}
-                        <div>
-                          <div className="flex justify-between text-xs text-gray-600 mb-2">
-                            <span className="font-medium">Progress</span>
-                            <span className="font-semibold">{request.progress}%</span>
+                        <div className="space-y-3">
+                          <div className="flex justify-between text-sm font-medium text-gray-700">
+                            <span>Progress</span>
+                            <span className="font-bold" style={{ color: '#ffd17a' }}>{request.progress}%</span>
                           </div>
-                          <div className="w-full bg-gray-200 h-2">
-                            <div 
-                              className="bg-gradient-to-r from-amber-500 to-amber-600 h-2 transition-all duration-500"
-                              style={{ width: `${request.progress}%` }}
+                          <div className="w-full bg-gray-100 h-3" style={{ borderRadius: '8px', overflow: 'hidden' }}>
+                            <div
+                              className="h-3 transition-all duration-1000 ease-out"
+                              style={{
+                                width: `${request.progress}%`,
+                                background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                                borderRadius: '8px',
+                                boxShadow: '0 2px 8px rgba(255, 209, 122, 0.3)'
+                              }}
                             ></div>
                           </div>
                         </div>
-                        
-                        <div className="flex justify-between items-center">
-                          <p className="text-xs text-gray-600 font-medium">{request.nextAction}</p>
-                          <Link 
+
+                        <div className="flex justify-between items-center pt-2">
+                          <p className="text-sm font-medium text-gray-600">{request.nextAction}</p>
+                          <Link
                             href={`/client/track-application/${request._id}`}
-                            className="px-5 py-2 bg-amber-900 hover:bg-amber-950 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200"
+                            className="px-6 py-3 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg group"
+                            style={{
+                              background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                              color: '#242021',
+                              borderRadius: '12px',
+                              boxShadow: '0 6px 20px rgba(255, 209, 122, 0.3)'
+                            }}
                           >
-                            View Details
+                            <span className="group-hover:scale-105 transition-transform duration-300">View Details</span>
                           </Link>
                         </div>
                       </div>
@@ -584,27 +684,44 @@ const ClientDashboard = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Notifications */}
-            <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
-                <h3 className="text-lg font-bold">Recent Notifications</h3>
+            <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                 style={{
+                   background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                   borderRadius: '20px',
+                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                   border: '1px solid rgba(255, 209, 122, 0.1)'
+                 }}>
+              <div className="p-6" style={{
+                background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                borderRadius: '20px 20px 0 0'
+              }}>
+                <div className="flex items-center space-x-3">
+                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
+                  <h3 className="text-lg font-bold" style={{ color: '#ffd17a' }}>Recent Notifications</h3>
+                </div>
               </div>
-              <div className="p-4">
-                <div className="space-y-3">
+              <div className="p-6">
+                <div className="space-y-4">
                   {dashboardData.notifications && dashboardData.notifications.length > 0 ? (
                     dashboardData.notifications.slice(0, 3).map((notification) => (
-                      <Link 
-                        key={notification.id} 
+                      <Link
+                        key={notification.id}
                         href={notification.actionUrl}
-                        className="block p-3 bg-gray-50 hover:bg-amber-50 border border-gray-200 hover:border-amber-200 transition-all duration-200"
+                        className="block p-4 bg-gray-50 border-0 hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 group"
+                        style={{ borderRadius: '12px' }}
                       >
-                        <div className="flex items-start gap-3">
-                          <div className="w-6 h-6 bg-amber-500 flex items-center justify-center flex-shrink-0 mt-1">
+                        <div className="flex items-start gap-4">
+                          <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm group-hover:scale-110 transition-transform duration-300"
+                               style={{
+                                 background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                                 borderRadius: '8px'
+                               }}>
                             {getNotificationIcon(notification.type)}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-gray-900">{notification.title}</p>
-                            <p className="text-xs text-gray-600 mt-1 line-clamp-2">{notification.message}</p>
-                            <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                            <p className="text-sm font-semibold text-gray-900 mb-1">{notification.title}</p>
+                            <p className="text-xs text-gray-600 mb-2 line-clamp-2">{notification.message}</p>
+                            <p className="text-xs text-gray-500 flex items-center gap-2">
                               <FaClock className="text-xs" />
                               {notification.time}
                             </p>
@@ -614,17 +731,23 @@ const ClientDashboard = () => {
                     ))
                   ) : (
                     <div className="text-center py-8">
-                      <div className="w-12 h-12 bg-gray-100 mx-auto mb-3 flex items-center justify-center">
-                        <FaBell className="text-gray-400" />
+                      <div className="w-16 h-16 bg-gray-50 mx-auto mb-4 flex items-center justify-center" style={{ borderRadius: '12px' }}>
+                        <FaBell className="text-2xl text-gray-400" />
                       </div>
                       <p className="text-sm text-gray-500">No recent notifications</p>
                     </div>
                   )}
                 </div>
-                <div className="mt-4">
-                  <Link 
-                    href="/client/notifications" 
-                    className="text-amber-600 hover:text-amber-800 text-sm font-semibold uppercase tracking-wider transition-colors"
+                <div className="mt-6 pt-4 border-t" style={{ borderTopColor: 'rgba(255, 209, 122, 0.1)' }}>
+                  <Link
+                    href="/client/notifications"
+                    className="inline-flex items-center px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-md"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255, 209, 122, 0.1) 0%, rgba(255, 209, 122, 0.05) 100%)',
+                      color: '#ffd17a',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(255, 209, 122, 0.2)'
+                    }}
                   >
                     View All Notifications
                   </Link>
@@ -633,29 +756,42 @@ const ClientDashboard = () => {
             </div>
 
             {/* Upcoming Deadlines */}
-            <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
-                <h3 className="text-lg font-bold">Upcoming Deadlines</h3>
+            <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                 style={{
+                   background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                   borderRadius: '20px',
+                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                   border: '1px solid rgba(255, 209, 122, 0.1)'
+                 }}>
+              <div className="p-6" style={{
+                background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                borderRadius: '20px 20px 0 0'
+              }}>
+                <div className="flex items-center space-x-3">
+                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
+                  <h3 className="text-lg font-bold" style={{ color: '#ffd17a' }}>Upcoming Deadlines</h3>
+                </div>
               </div>
-              <div className="p-4">
-                <div className="space-y-3">
+              <div className="p-6">
+                <div className="space-y-4">
                   {!isClient ? (
                     <div className="text-center py-8">
-                      <div className="w-12 h-12 bg-gray-100 mx-auto mb-3 flex items-center justify-center">
-                        <FaCalendarAlt className="text-gray-400" />
+                      <div className="w-16 h-16 bg-gray-50 mx-auto mb-4 flex items-center justify-center" style={{ borderRadius: '12px' }}>
+                        <FaCalendarAlt className="text-2xl text-gray-400" />
                       </div>
                       <p className="text-sm text-gray-500">Loading deadlines...</p>
                     </div>
                   ) : dashboardData.upcomingDeadlines && dashboardData.upcomingDeadlines.length > 0 ? (
                     dashboardData.upcomingDeadlines.map((deadline) => (
-                      <div key={deadline.id} className="bg-gray-50 border border-gray-200 p-3 hover:bg-amber-50 hover:border-amber-200 transition-all duration-200">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="text-sm font-semibold text-gray-900">{deadline.title}</h4>
-                          <span className={`px-2 py-1 text-xs font-bold ${
-                            deadline.priority === 'high' ? 'bg-red-100 text-red-800' : 
-                            deadline.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                      <div key={deadline.id} className="bg-gray-50 border-0 p-4 hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 group"
+                           style={{ borderRadius: '12px' }}>
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="text-sm font-semibold text-gray-900 group-hover:text-gray-800">{deadline.title}</h4>
+                          <span className={`px-3 py-1 text-xs font-bold transition-all duration-300 group-hover:scale-105 ${
+                            deadline.priority === 'high' ? 'bg-red-100 text-red-800' :
+                            deadline.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
                             'bg-amber-100 text-amber-800'
-                          }`}>
+                          }`} style={{ borderRadius: '8px' }}>
                             {deadline.daysLeft} days left
                           </span>
                         </div>
@@ -667,8 +803,8 @@ const ClientDashboard = () => {
                     ))
                   ) : (
                     <div className="text-center py-8">
-                      <div className="w-12 h-12 bg-gray-100 mx-auto mb-3 flex items-center justify-center">
-                        <FaCalendarAlt className="text-gray-400" />
+                      <div className="w-16 h-16 bg-gray-50 mx-auto mb-4 flex items-center justify-center" style={{ borderRadius: '12px' }}>
+                        <FaCalendarAlt className="text-2xl text-gray-400" />
                       </div>
                       <p className="text-sm text-gray-500">No upcoming deadlines</p>
                     </div>
@@ -678,22 +814,37 @@ const ClientDashboard = () => {
             </div>
 
             {/* Quick Stats */}
-            <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
-                <h3 className="text-lg font-bold">Quick Stats</h3>
+            <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                 style={{
+                   background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                   borderRadius: '20px',
+                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                   border: '1px solid rgba(255, 209, 122, 0.1)'
+                 }}>
+              <div className="p-6" style={{
+                background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                borderRadius: '20px 20px 0 0'
+              }}>
+                <div className="flex items-center space-x-3">
+                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
+                  <h3 className="text-lg font-bold" style={{ color: '#ffd17a' }}>Quick Stats</h3>
+                </div>
               </div>
-              <div className="p-4 space-y-3">
-                <div className="flex justify-between items-center p-3 bg-amber-50 border border-amber-200">
+              <div className="p-6 space-y-4">
+                <div className="flex justify-between items-center p-4 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group"
+                     style={{ borderRadius: '12px' }}>
                   <span className="text-sm font-medium text-gray-700">Documents Uploaded</span>
-                  <span className="font-bold text-amber-600">{dashboardData.statistics.documentsUploaded}</span>
+                  <span className="font-bold text-lg" style={{ color: '#ffd17a' }}>{dashboardData.statistics.documentsUploaded}</span>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-amber-50 border border-amber-200">
+                <div className="flex justify-between items-center p-4 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group"
+                     style={{ borderRadius: '12px' }}>
                   <span className="text-sm font-medium text-gray-700">Avg. Processing Time</span>
-                  <span className="font-bold text-amber-600">{dashboardData.statistics.avgProcessingTime} days</span>
+                  <span className="font-bold text-lg" style={{ color: '#ffd17a' }}>{dashboardData.statistics.avgProcessingTime} days</span>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-amber-50 border border-amber-200">
+                <div className="flex justify-between items-center p-4 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group"
+                     style={{ borderRadius: '12px' }}>
                   <span className="text-sm font-medium text-gray-700">Success Rate</span>
-                  <span className="font-bold text-amber-600">95%</span>
+                  <span className="font-bold text-lg" style={{ color: '#ffd17a' }}>95%</span>
                 </div>
               </div>
             </div>
@@ -701,50 +852,98 @@ const ClientDashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white border-2 border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
-            <h2 className="text-xl font-bold">Quick Actions</h2>
+        <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+             style={{
+               background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+               borderRadius: '24px',
+               boxShadow: '0 12px 40px rgba(0, 0, 0, 0.1)',
+               border: '1px solid rgba(255, 209, 122, 0.1)'
+             }}>
+          <div className="p-8" style={{
+            background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+            borderRadius: '24px 24px 0 0'
+          }}>
+            <div className="flex items-center space-x-4">
+              <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
+              <h2 className="text-2xl font-bold" style={{ color: '#ffd17a' }}>Quick Actions</h2>
+            </div>
           </div>
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Link 
-                href="/client/application" 
-                className="group flex flex-col items-center p-6 bg-amber-50 border-2 border-amber-200 hover:bg-amber-100 hover:border-amber-300 transition-all duration-200"
+          <div className="p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <Link
+                href="/client/application"
+                className="group flex flex-col items-center p-8 bg-gray-50 border-0 hover:bg-white hover:shadow-lg hover:-translate-y-2 transition-all duration-300"
+                style={{
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255, 209, 122, 0.1)'
+                }}
               >
-                <div className="w-12 h-12 bg-amber-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <FaPlus className="text-white text-lg" />
+                <div className="w-16 h-16 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                       borderRadius: '12px',
+                       boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                     }}>
+                  <FaPlus className="text-xl" style={{ color: '#242021' }} />
                 </div>
-                <span className="font-semibold text-gray-900 text-center text-sm uppercase tracking-wider">New Application</span>
+                <span className="font-bold text-gray-900 text-center text-sm uppercase tracking-wider group-hover:scale-105 transition-transform duration-300">New Application</span>
               </Link>
-              
-              <Link 
-                href="/client/track-application" 
-                className="group flex flex-col items-center p-6 bg-amber-50 border-2 border-amber-200 hover:bg-amber-100 hover:border-amber-300 transition-all duration-200"
+
+              <Link
+                href="/client/track-application"
+                className="group flex flex-col items-center p-8 bg-gray-50 border-0 hover:bg-white hover:shadow-lg hover:-translate-y-2 transition-all duration-300"
+                style={{
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255, 209, 122, 0.1)'
+                }}
               >
-                <div className="w-12 h-12 bg-amber-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <FaEye className="text-white text-lg" />
+                <div className="w-16 h-16 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                       borderRadius: '12px',
+                       boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                     }}>
+                  <FaEye className="text-xl" style={{ color: '#242021' }} />
                 </div>
-                <span className="font-semibold text-gray-900 text-center text-sm uppercase tracking-wider">Track Applications</span>
+                <span className="font-bold text-gray-900 text-center text-sm uppercase tracking-wider group-hover:scale-105 transition-transform duration-300">Track Applications</span>
               </Link>
-              
-              <Link 
-                href="/client/payments" 
-                className="group flex flex-col items-center p-6 bg-amber-50 border-2 border-amber-200 hover:bg-amber-100 hover:border-amber-300 transition-all duration-200"
+
+              <Link
+                href="/client/payments"
+                className="group flex flex-col items-center p-8 bg-gray-50 border-0 hover:bg-white hover:shadow-lg hover:-translate-y-2 transition-all duration-300"
+                style={{
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255, 209, 122, 0.1)'
+                }}
               >
-                <div className="w-12 h-12 bg-amber-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <FaDollarSign className="text-white text-lg" />
+                <div className="w-16 h-16 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                       borderRadius: '12px',
+                       boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                     }}>
+                  <FaDollarSign className="text-xl" style={{ color: '#242021' }} />
                 </div>
-                <span className="font-semibold text-gray-900 text-center text-sm uppercase tracking-wider">View Payments</span>
+                <span className="font-bold text-gray-900 text-center text-sm uppercase tracking-wider group-hover:scale-105 transition-transform duration-300">View Payments</span>
               </Link>
-              
-              <Link 
-                href="/client/support" 
-                className="group flex flex-col items-center p-6 bg-amber-50 border-2 border-amber-200 hover:bg-amber-100 hover:border-amber-300 transition-all duration-200"
+
+              <Link
+                href="/client/support"
+                className="group flex flex-col items-center p-8 bg-gray-50 border-0 hover:bg-white hover:shadow-lg hover:-translate-y-2 transition-all duration-300"
+                style={{
+                  borderRadius: '16px',
+                  border: '1px solid rgba(255, 209, 122, 0.1)'
+                }}
               >
-                <div className="w-12 h-12 bg-amber-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <FaHandshake className="text-white text-lg" />
+                <div className="w-16 h-16 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                       borderRadius: '12px',
+                       boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                     }}>
+                  <FaHandshake className="text-xl" style={{ color: '#242021' }} />
                 </div>
-                <span className="font-semibold text-gray-900 text-center text-sm uppercase tracking-wider">Contact Support</span>
+                <span className="font-bold text-gray-900 text-center text-sm uppercase tracking-wider group-hover:scale-105 transition-transform duration-300">Contact Support</span>
               </Link>
             </div>
           </div>

@@ -150,19 +150,30 @@ export default function Sidebar({ role, isOpen, onClose }) {
           fixed lg:static inset-y-0 left-0 z-30 hide-scrollbar
           w-72
           transform transition-transform duration-300 ease-in-out
-          flex flex-col h-full shadow-lg
+          flex flex-col h-full shadow-2xl shadow-black/20
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `} style={{ backgroundColor: '#242021' }}>
+        `} style={{
+          background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+          borderRight: '1px solid rgba(255, 209, 122, 0.2)',
+          backdropFilter: 'blur(10px)'
+        }}>
         
         {/* Header */}
-        <div className="h-16 px-4 flex items-center border-b" style={{ borderBottomColor: 'rgba(255, 209, 122, 0.1)' }}>
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-              <span className="font-bold text-sm" style={{ color: '#242021' }}>CM</span>
+        <div className="h-18 px-6 flex items-center border-b backdrop-blur-md" style={{
+          borderBottomColor: 'rgba(255, 209, 122, 0.2)',
+          background: 'linear-gradient(135deg, rgba(36, 32, 33, 0.9) 0%, rgba(42, 36, 34, 0.8) 100%)'
+        }}>
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105" style={{
+              background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+              boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)',
+              borderRadius: '14px'
+            }}>
+              <span className="font-bold text-lg" style={{ color: '#242021' }}>CM</span>
             </div>
             <div>
-              <h1 className="text-sm font-semibold" style={{ color: '#ffd17a' }}>Creative Mark</h1>
-              <p className="text-xs text-gray-400 uppercase tracking-wide">{role}</p>
+              <h1 className="text-lg font-bold tracking-tight" style={{ color: '#ffd17a' }}>Creative Mark</h1>
+              <p className="text-sm text-gray-300 uppercase tracking-wider font-semibold">{role} Portal</p>
             </div>
           </div>
         </div>
@@ -170,53 +181,65 @@ export default function Sidebar({ role, isOpen, onClose }) {
         
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 overflow-y-auto scrollbar-hide">
-          <div className="space-y-1">
+        <nav className="flex-1 px-5 py-6 overflow-y-auto scrollbar-hide">
+          <div className="space-y-3">
             {links[role]?.map((link, index) => {
               const IconComponent = getIcon(link.icon);
               const isActive = isActiveLink(link.href);
-              
+
               return (
                 <Link
                   key={link.name}
                   href={link.href}
                   onClick={onClose}
                   className={`
-                    group relative flex items-center px-3 py-2.5 text-sm font-medium
-                    transition-all duration-200 ease-out
-                    ${isActive 
-                      ? 'shadow-sm' 
-                      : 'hover:bg-opacity-10'
+                    group relative flex items-center px-5 py-4 text-sm font-semibold
+                    transition-all duration-300 ease-out
+                    ${isActive
+                      ? 'shadow-xl backdrop-blur-sm'
+                      : 'hover:bg-white/8 hover:shadow-lg hover:translate-x-2 hover:scale-[1.02]'
                     }
                   `}
                   style={{
-                    backgroundColor: isActive ? '#ffd17a' : 'transparent',
-                    color: isActive ? '#242021' : '#ffd17a'
+                    backgroundColor: isActive ? 'rgba(255, 209, 122, 0.2)' : 'transparent',
+                    color: isActive ? '#ffd17a' : '#ffd17a',
+                    borderRadius: '16px',
+                    border: isActive ? '1px solid rgba(255, 209, 122, 0.4)' : '1px solid transparent'
                   }}
                 >
                   {/* Active indicator */}
                   <div className={`
-                    absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-6 transition-all duration-300
-                    ${isActive ? 'opacity-100' : 'opacity-0'}
-                  `} style={{ backgroundColor: '#242021' }}></div>
-                  
-                  <div className={`
-                    flex items-center justify-center w-8 h-8 mr-3 transition-all duration-200
+                    absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-10 transition-all duration-300
+                    ${isActive ? 'opacity-100 shadow-xl' : 'opacity-0'}
                   `} style={{
-                    backgroundColor: isActive ? '#242021' : 'rgba(255, 209, 122, 0.1)',
-                    color: isActive ? '#ffd17a' : '#ffd17a'
+                    background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                    borderRadius: '0 6px 6px 0',
+                    boxShadow: '0 0 12px rgba(255, 209, 122, 0.5)'
+                  }}></div>
+
+                  <div className={`
+                    flex items-center justify-center w-10 h-10 mr-5 transition-all duration-300 shadow-md
+                  `} style={{
+                    backgroundColor: isActive ? 'rgba(36, 32, 33, 0.9)' : 'rgba(255, 209, 122, 0.15)',
+                    color: isActive ? '#ffd17a' : '#ffd17a',
+                    borderRadius: '12px',
+                    backdropFilter: 'blur(10px)',
+                    border: isActive ? '1px solid rgba(255, 209, 122, 0.3)' : '1px solid rgba(255, 209, 122, 0.1)'
                   }}>
-                    <IconComponent className="w-4 h-4" />
+                    <IconComponent className="w-5 h-5" />
                   </div>
-                  
-                  <span className="flex-1">{link.name}</span>
-                  
+
+                  <span className="flex-1 font-semibold tracking-wide">{link.name}</span>
+
                   {/* Badge */}
                   {link.badge && (
-                    <span className="ml-2 px-2 py-0.5 text-xs font-bold"
+                    <span className="ml-4 px-3 py-1.5 text-xs font-bold shadow-lg transition-all duration-300 group-hover:scale-105"
                       style={{
-                        backgroundColor: isActive ? '#242021' : 'rgba(255, 209, 122, 0.2)',
-                        color: isActive ? '#ffd17a' : '#ffd17a'
+                        background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                        color: '#242021',
+                        borderRadius: '20px',
+                        boxShadow: '0 4px 12px rgba(255, 209, 122, 0.4)',
+                        border: '1px solid rgba(36, 32, 33, 0.1)'
                       }}
                     >
                       {link.badge}
@@ -231,51 +254,65 @@ export default function Sidebar({ role, isOpen, onClose }) {
        
 
         {/* User Profile */}
-        <div className="p-3 border-t" style={{ borderTopColor: 'rgba(255, 209, 122, 0.1)' }}>
-          <div className="flex items-center space-x-3 p-2 transition-all duration-200"
-            style={{ backgroundColor: 'rgba(255, 209, 122, 0.05)' }}
+        <div className="p-5 border-t" style={{ borderTopColor: 'rgba(255, 209, 122, 0.2)' }}>
+          <div className="flex items-center space-x-4 p-4 transition-all duration-300 hover:shadow-xl hover:translate-x-2 hover:scale-[1.02]"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255, 209, 122, 0.12) 0%, rgba(255, 209, 122, 0.06) 100%)',
+              borderRadius: '16px',
+              border: '1px solid rgba(255, 209, 122, 0.15)'
+            }}
           >
-            <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-              {loading || refreshing ? (
-                <FaSpinner className="text-sm animate-spin" style={{ color: '#242021' }} />
-              ) : (
-                <span className="text-xs font-bold" style={{ color: '#242021' }}>
-                  {currentUser?.fullName || currentUser?.name || user?.fullName || user?.name
-                    ? (currentUser?.fullName || currentUser?.name || user?.fullName || user?.name).split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-                    : 'U'
-                  }
-                </span>
-              )}
+            <div className="relative">
+              <div className="w-12 h-12 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110" style={{
+                background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                borderRadius: '14px',
+                boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)',
+                border: '2px solid rgba(255, 255, 255, 0.2)'
+              }}>
+                {loading || refreshing ? (
+                  <FaSpinner className="text-lg animate-spin" style={{ color: '#242021' }} />
+                ) : (
+                  <span className="text-base font-bold" style={{ color: '#242021' }}>
+                    {currentUser?.fullName || currentUser?.name || user?.fullName || user?.name
+                      ? (currentUser?.fullName || currentUser?.name || user?.fullName || user?.name).split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+                      : 'U'
+                    }
+                  </span>
+                )}
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 border-3 border-white rounded-full shadow-md animate-pulse"
+                style={{ backgroundColor: '#ffd17a' }}></div>
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate" style={{ color: '#ffd17a' }}>
+              <div className="text-base font-bold truncate" style={{ color: '#ffd17a' }}>
                 {loading || refreshing ? (
                   <div className="flex items-center space-x-2">
-                    <FaSpinner className="animate-spin h-3 w-3" />
-                    <span className="text-xs">Loading...</span>
+                    <FaSpinner className="animate-spin h-4 w-4" />
+                    <span className="text-sm">Loading...</span>
                   </div>
                 ) : (
                   currentUser?.fullName || currentUser?.name || user?.fullName || user?.name || 'User'
                 )}
               </div>
-              <p className="text-xs text-gray-400 capitalize">
+              <p className="text-sm text-gray-300 capitalize font-semibold">
                 {currentUser?.role || user?.role || role || 'User'}
               </p>
             </div>
-            <button 
+            <button
               onClick={refreshUserData}
               disabled={refreshing}
-              className="p-1.5 transition-all duration-200 disabled:opacity-50"
-              style={{ 
+              className="p-3 transition-all duration-300 disabled:opacity-50 hover:bg-white/10 hover:scale-105"
+              style={{
                 color: '#ffd17a',
-                backgroundColor: 'transparent'
+                backgroundColor: 'transparent',
+                borderRadius: '10px'
               }}
               title="Refresh Profile"
             >
               {refreshing ? (
-                <FaSpinner className="w-4 h-4 animate-spin" />
+                <FaSpinner className="w-5 h-5 animate-spin" />
               ) : (
-                <FaUser className="w-4 h-4" />
+                <FaUser className="w-5 h-5" />
               )}
             </button>
           </div>
