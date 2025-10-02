@@ -630,37 +630,28 @@ export default function ModernMultiStepForm() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         {/* Header Section */}
-        <div className="backdrop-blur-sm border-b" style={{
-          background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-          borderBottomColor: 'rgba(255, 209, 122, 0.2)'
-        }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
-          <div className="flex flex-col space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+        <div className="backdrop-blur-sm border-b border-amber-200/20 bg-[#242021]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="flex flex-col space-y-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
               <div className="flex-1">
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
-                  <span className="text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Application</span>
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
+                  <span className="text-sm font-medium uppercase tracking-wider text-amber-400/80">Application</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4" style={{ color: '#ffd17a' }}>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-3 text-amber-400">
                   Business Registration Application
                 </h1>
-                <p className="text-base sm:text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                <p className="text-sm sm:text-base lg:text-lg text-white/70">
                   Complete your business registration in just a few simple steps
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                 <button
                   onClick={() => window.location.href = '/client'}
-                  className="w-full sm:w-auto px-8 py-4 text-sm font-semibold uppercase tracking-wider border transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg group"
-                  style={{
-                    backgroundColor: 'rgba(255, 209, 122, 0.1)',
-                    color: '#ffd17a',
-                    borderColor: 'rgba(255, 209, 122, 0.3)',
-                    borderRadius: '12px'
-                  }}
+                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border border-amber-400/30 bg-amber-400/10 text-amber-400 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-amber-400/20 group"
                 >
                   <span className="group-hover:scale-105 transition-transform duration-300">Back to Dashboard</span>
                 </button>
@@ -670,53 +661,39 @@ export default function ModernMultiStepForm() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Progress Steps */}
-        <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300 mb-10"
-             style={{
-               background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-               borderRadius: '5px',
-               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-               border: '1px solid rgba(255, 209, 122, 0.1)'
-             }}>
-          <div className="p-8" style={{
-            background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-            borderRadius: '20px 20px 0 0'
-          }}>
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
+        <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 mb-8 sm:mb-10 rounded-lg shadow-sm">
+          <div className="p-4 sm:p-6 lg:p-8 bg-[#242021]">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-6">
               <div className="flex-1">
-                <div className="flex items-center space-x-4 mb-3">
-                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
-                  <span className="text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Progress</span>
+                <div className="flex items-center space-x-3 mb-2 sm:mb-3">
+                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
+                  <span className="text-sm font-medium uppercase tracking-wider text-amber-400/80">Progress</span>
                 </div>
-                <h2 className="text-2xl font-bold mb-2" style={{ color: '#ffd17a' }}>Step {step} of {steps.length}</h2>
-                <p className="text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>{steps[step - 1]?.title} - {steps[step - 1]?.description}</p>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 text-amber-400">Step {step} of {steps.length}</h2>
+                <p className="text-sm sm:text-base text-white/70">{steps[step - 1]?.title} - {steps[step - 1]?.description}</p>
               </div>
               <div className="text-center sm:text-right">
-                <div className="text-4xl font-bold mb-1" style={{ color: '#ffd17a' }}>
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 text-amber-400">
                   {Math.round((step / steps.length) * 100)}%
                 </div>
-                <p className="text-sm font-semibold" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Complete</p>
+                <p className="text-xs sm:text-sm font-semibold text-amber-400/80">Complete</p>
               </div>
             </div>
           </div>
-          <div className="p-8">
+          <div className="p-4 sm:p-6 lg:p-8">
 
             {/* Progress Bar */}
-            <div className="w-full bg-gray-100 h-3 mb-8" style={{ borderRadius: '8px', overflow: 'hidden' }}>
+            <div className="w-full bg-gray-200 h-2 sm:h-3 mb-6 sm:mb-8 rounded-lg overflow-hidden">
               <div
-                className="h-3 transition-all duration-1000 ease-out"
-                style={{
-                  width: `${(step / steps.length) * 100}%`,
-                  background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                  borderRadius: '8px',
-                  boxShadow: '0 2px 8px rgba(255, 209, 122, 0.3)'
-                }}
+                className="h-2 sm:h-3 transition-all duration-1000 ease-out bg-gradient-to-r from-amber-400 to-amber-500 rounded-lg"
+                style={{ width: `${(step / steps.length) * 100}%` }}
               />
             </div>
 
             {/* Step Icons */}
-            <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-4 sm:gap-6">
+            <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-3 sm:gap-4 lg:gap-6">
               {steps.map((stepItem) => {
                 const Icon = stepItem.icon;
                 const isActive = step === stepItem.id;
@@ -725,26 +702,19 @@ export default function ModernMultiStepForm() {
                 return (
                   <div key={stepItem.id} className="flex flex-col items-center group">
                     <div className={`
-                      w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center transition-all duration-300
+                      w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 flex items-center justify-center transition-all duration-300 rounded-lg
                       ${isActive
-                        ? 'shadow-xl scale-110'
+                        ? 'shadow-lg scale-110 bg-gradient-to-br from-amber-400 to-amber-500 text-gray-900'
                         : isCompleted
-                        ? 'shadow-lg'
-                        : 'bg-gray-50 border-2 border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600 hover:scale-105'
+                        ? 'shadow-md bg-gradient-to-br from-amber-400 to-amber-500 text-gray-900'
+                        : 'bg-gray-50 border border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600 hover:scale-105'
                       }
-                    `} style={{
-                      backgroundColor: isActive ? '#ffd17a' : isCompleted ? '#ffd17a' : undefined,
-                      color: isActive ? '#242021' : isCompleted ? '#242021' : undefined,
-                      borderRadius: '12px',
-                      borderColor: isActive ? 'rgba(255, 209, 122, 0.3)' : undefined
-                    }}>
-                      {isCompleted ? <Check className="w-5 h-5 sm:w-6 sm:h-6" /> : <Icon className="w-5 h-5 sm:w-6 sm:h-6" />}
+                    `}>
+                      {isCompleted ? <Check className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" /> : <Icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />}
                     </div>
-                    <span className={`mt-3 text-xs font-semibold text-center transition-all duration-300 ${
-                      isActive ? 'font-bold scale-105' : isCompleted ? '' : 'text-gray-500'
-                    }`} style={{
-                      color: isActive ? '#ffd17a' : isCompleted ? '#ffd17a' : undefined
-                    }}>
+                    <span className={`mt-2 sm:mt-3 text-xs font-semibold text-center transition-all duration-300 ${
+                      isActive ? 'font-bold scale-105 text-amber-600' : isCompleted ? 'text-amber-600' : 'text-gray-500'
+                    }`}>
                       {stepItem.title}
                     </span>
                   </div>
@@ -755,33 +725,19 @@ export default function ModernMultiStepForm() {
         </div>
 
         {/* Form Container */}
-        <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
-             style={{
-               background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-               borderRadius: '20px',
-               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-               border: '1px solid rgba(255, 209, 122, 0.1)'
-             }}>
-        <div className="p-8" style={{
-          background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-          borderRadius: '20px 20px 0 0'
-        }}>
-          <div className="flex items-center gap-6">
-            <div className="w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
-                 style={{
-                   background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                   borderRadius: '14px',
-                   boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
-                 }}>
-              {React.createElement(steps[step - 1]?.icon, { className: "w-7 h-7", style: { color: '#242021' } })}
+        <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+        <div className="p-4 sm:p-6 lg:p-8 bg-[#242021]">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+              {React.createElement(steps[step - 1]?.icon, { className: "w-6 h-6 sm:w-7 sm:h-7 text-gray-900" })}
             </div>
             <div>
-              <h2 className="text-2xl font-bold" style={{ color: '#ffd17a' }}>{steps[step - 1]?.title}</h2>
-              <p className="text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>{steps[step - 1]?.description}</p>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">{steps[step - 1]?.title}</h2>
+              <p className="text-sm sm:text-base text-white/70">{steps[step - 1]?.description}</p>
             </div>
           </div>
         </div>
-          <div className="p-6 sm:p-8">
+          <div className="p-4 sm:p-6 lg:p-8">
             
             {/* Step 1: Personal Information */}
             {step === 1 && (
@@ -1819,15 +1775,15 @@ export default function ModernMultiStepForm() {
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between mt-8 pt-6 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200">
               {step > 1 && (
                 <button 
                   type="button" 
                   onClick={prevStep}
-                  className="group flex items-center justify-center gap-3 px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/50 text-gray-700 font-semibold hover:bg-white hover:border-gray-300 hover:text-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" 
+                  className="group flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-white border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md rounded-lg" 
                 >
-                  <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
-                  Previous Step
+                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform duration-300" />
+                  <span className="text-sm sm:text-base">Previous Step</span>
                 </button>
               )}
               
@@ -1837,33 +1793,31 @@ export default function ModernMultiStepForm() {
                 <button 
                   type="button" 
                   onClick={nextStep}
-                  className="group flex items-center justify-center gap-3 px-8 py-4 text-white font-bold transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-3xl"
-                  style={{ backgroundColor: '#ffd17a', color: '#242021' }}
+                  className="group flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl rounded-lg"
                 >
-                  Continue
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  <span className="text-sm sm:text-base">Continue</span>
+                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </button>
               ) : (
                 <button 
                   type="button" 
                   onClick={submitForm}
                   disabled={isSubmitting}
-                  className={`group flex items-center justify-center gap-3 px-10 py-4 font-bold transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-3xl ${
+                  className={`group flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-10 py-3 sm:py-4 font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl rounded-lg ${
                     isSubmitting 
                       ? "bg-gray-400 text-gray-200 cursor-not-allowed scale-100" 
-                      : ""
+                      : "bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900"
                   }`}
-                  style={!isSubmitting ? { backgroundColor: '#ffd17a', color: '#242021' } : {}}
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Submitting Application...
+                      <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-sm sm:text-base">Submitting Application...</span>
                     </>
                   ) : (
                     <>
-                      Submit Application
-                      <Check className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+                      <span className="text-sm sm:text-base">Submit Application</span>
+                      <Check className="w-4 h-4 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform duration-300" />
                     </>
                   )}
                 </button>

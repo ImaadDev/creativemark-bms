@@ -165,70 +165,61 @@ export default function ApplicationDetailPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header Section */}
-      <div className="backdrop-blur-sm border-b" style={{
-        background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-        borderBottomColor: 'rgba(255, 209, 122, 0.2)'
-      }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
-          <div className="flex flex-col space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+      <div className="backdrop-blur-sm border-b border-amber-200/20 bg-[#242021]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="flex flex-col space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
               <div className="flex-1">
                 <button
                   onClick={() => router.back()}
-                  className="inline-flex items-center mb-6 group transition-all duration-300 hover:translate-x-[-2px]"
-                  style={{ color: 'gray' }}
+                  className="inline-flex items-center mb-4 sm:mb-6 group transition-all duration-300 hover:translate-x-[-2px] text-gray-300 hover:text-white"
                 >
-                  <div className="mr-3 p-2 group-hover:bg-white/10 transition-colors duration-300" style={{ borderRadius: '8px' }}>
-                    <FaArrowLeft className="w-5 h-5" />
+                  <div className="mr-3 p-2 group-hover:bg-white/10 transition-colors duration-300 rounded-lg">
+                    <FaArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <span className="font-medium text-sm sm:text-base">Back to Applications</span>
                 </button>
 
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
-                  <span className="text-xs sm:text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Application Details</span>
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
+                  <span className="text-xs sm:text-sm font-medium uppercase tracking-wider text-amber-300">Application Details</span>
                 </div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-4" style={{ color: '#ffd17a' }}>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-3 sm:mb-4 text-amber-400">
                   Application Details
                 </h1>
-                <p className="text-sm sm:text-base lg:text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                <p className="text-sm sm:text-base text-gray-300">
                   Track and monitor your application progress
                 </p>
-                <div className="mt-6 flex items-center space-x-3">
-                  <div className="px-4 py-2" style={{
-                    backgroundColor: 'rgba(255, 209, 122, 0.1)',
-                    borderRadius: '8px',
-                    border: '1px solid rgba(255, 209, 122, 0.2)'
-                  }}>
-                    <p className="text-xs sm:text-sm font-mono font-semibold" style={{ color: 'gray' }}>ID: {application._id}</p>
+                <div className="mt-4 sm:mt-6 flex items-center space-x-3">
+                  <div className="px-3 py-2 sm:px-4 sm:py-2 bg-amber-400/10 border border-amber-400/20 rounded-lg">
+                    <p className="text-xs sm:text-sm font-mono font-semibold text-gray-300">ID: {application._id}</p>
                   </div>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                 <div className="text-center">
-                  <p className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3" style={{ color: 'gray' }}>Status</p>
-                  <span className={`inline-flex items-center px-5 py-3 text-xs sm:text-sm font-bold uppercase transition-all duration-300 hover:scale-105 ${getStatusStyle(progressData?.currentStatus || application.status?.current || application.status)}`}
-                        style={{ borderRadius: '10px', boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)' }}>
-                    <div className="w-2 h-2 bg-white rounded-full mr-3 animate-pulse"></div>
+                  <p className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-2 sm:mb-3 text-gray-300">Status</p>
+                  <span className={`inline-flex items-center px-4 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm font-bold uppercase transition-all duration-300 hover:scale-105 rounded-lg shadow-lg ${getStatusStyle(progressData?.currentStatus || application.status?.current || application.status)}`}>
+                    <div className="w-2 h-2 bg-white rounded-full mr-2 sm:mr-3 animate-pulse"></div>
                     {formatStatus(progressData?.currentStatus || application.status?.current || application.status)}
                   </span>
                 </div>
 
                 <div className="text-center">
-                  <p className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3" style={{ color: 'gray' }}>Progress</p>
+                  <p className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-2 sm:mb-3 text-gray-300">Progress</p>
                   <div className="flex items-center space-x-2">
-                    <div className="relative w-24 h-2 bg-white/20 rounded-full overflow-hidden">
+                    <div className="relative w-20 sm:w-24 h-2 bg-white/20 rounded-full overflow-hidden">
                       <div 
-                        className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out shadow-sm"
-                        style={{ backgroundColor: '#ffd17a', width: `${getProgressPercentage()}%` }}
+                        className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out shadow-sm bg-amber-400"
+                        style={{ width: `${getProgressPercentage()}%` }}
                       >
                         <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
                       </div>
                     </div>
-                    <span className="text-xs font-bold" style={{ color: 'gray' }}>
+                    <span className="text-xs font-bold text-gray-300">
                       {getProgressPercentage()}%
                     </span>
                   </div>
@@ -239,77 +230,46 @@ export default function ApplicationDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
-
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 lg:gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-8">
           {/* Main Content */}
-          <div className="xl:col-span-2 space-y-8">
+          <div className="xl:col-span-2 space-y-6 sm:space-y-8">
             {/* Client Information */}
-            <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
-                 style={{
-                   background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                   borderRadius: '12px',
-                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                   border: '1px solid rgba(255, 209, 122, 0.1)'
-                 }}>
-              <div className="p-8" style={{
-                background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-                borderRadius: '12px 12px 0 0'
-              }}>
-                <div className="flex items-center gap-6">
-                  <div className="w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
-                       style={{
-                         background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                         borderRadius: '10px',
-                         boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
-                       }}>
-                    <FaUser className="w-7 h-7" style={{ color: '#242021' }} />
+            <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+              <div className="p-4 sm:p-6 lg:p-8 bg-[#242021]">
+                <div className="flex items-center gap-4 sm:gap-6">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                    <FaUser className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Client Information</h2>
-                    <p className="text-sm sm:text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Personal details and contact information</p>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Client Information</h2>
+                    <p className="text-sm sm:text-base text-gray-300">Personal details and contact information</p>
                   </div>
                 </div>
               </div>
-              <div className="p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="p-4 sm:p-6 lg:p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                   <div className="group">
-                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Full Name</label>
-                    <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                         style={{
-                           borderRadius: '8px',
-                           border: '1px solid rgba(255, 209, 122, 0.1)'
-                         }}>
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Full Name</label>
+                    <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                       <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.name || application.serviceDetails?.client?.name || "N/A"}</p>
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Email</label>
-                    <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                         style={{
-                           borderRadius: '8px',
-                           border: '1px solid rgba(255, 209, 122, 0.1)'
-                         }}>
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Email</label>
+                    <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                       <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.email || "N/A"}</p>
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Phone</label>
-                    <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                         style={{
-                           borderRadius: '8px',
-                           border: '1px solid rgba(255, 209, 122, 0.1)'
-                         }}>
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Phone</label>
+                    <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                       <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.phone || "N/A"}</p>
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Nationality</label>
-                    <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                         style={{
-                           borderRadius: '8px',
-                           border: '1px solid rgba(255, 209, 122, 0.1)'
-                         }}>
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Nationality</label>
+                    <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                       <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.nationality || "N/A"}</p>
                     </div>
                   </div>
@@ -319,61 +279,35 @@ export default function ApplicationDetailPage() {
 
             {/* Partner Information */}
             {(application.partner || application.serviceDetails?.partner) && (
-              <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
-                   style={{
-                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                     borderRadius: '12px',
-                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                     border: '1px solid rgba(255, 209, 122, 0.1)'
-                   }}>
-                <div className="p-8" style={{
-                  background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-                  borderRadius: '12px 12px 0 0'
-                }}>
-                  <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
-                         style={{
-                           background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                           borderRadius: '10px',
-                           boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
-                         }}>
-                      <FaUser className="w-7 h-7" style={{ color: '#242021' }} />
+              <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+                <div className="p-4 sm:p-6 lg:p-8 bg-[#242021]">
+                  <div className="flex items-center gap-4 sm:gap-6">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                      <FaUser className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Partner Information</h2>
-                      <p className="text-sm sm:text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Business partner details</p>
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Partner Information</h2>
+                      <p className="text-sm sm:text-base text-gray-300">Business partner details</p>
                     </div>
                   </div>
                 </div>
-                <div className="p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                     <div className="group">
-                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Partner Name</label>
-                      <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                           style={{
-                             borderRadius: '8px',
-                             border: '1px solid rgba(255, 209, 122, 0.1)'
-                           }}>
+                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Partner Name</label>
+                      <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                         <p className="text-sm sm:text-base font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.name || "N/A"}</p>
                       </div>
                     </div>
                     <div className="group">
-                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Email</label>
-                      <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                           style={{
-                             borderRadius: '8px',
-                             border: '1px solid rgba(255, 209, 122, 0.1)'
-                           }}>
+                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Email</label>
+                      <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                         <p className="text-sm sm:text-base font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.email || "N/A"}</p>
                       </div>
                     </div>
                     <div className="group">
-                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Phone</label>
-                      <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                           style={{
-                             borderRadius: '8px',
-                             border: '1px solid rgba(255, 209, 122, 0.1)'
-                           }}>
+                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Phone</label>
+                      <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                         <p className="text-sm sm:text-base font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.phone || "N/A"}</p>
                       </div>
                     </div>
@@ -383,55 +317,41 @@ export default function ApplicationDetailPage() {
             )}
 
             {/* Application Overview */}
-            <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
-                 style={{
-                   background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                   borderRadius: '12px',
-                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                   border: '1px solid rgba(255, 209, 122, 0.1)'
-                 }}>
-              <div className="p-8" style={{
-                background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-                borderRadius: '12px 12px 0 0'
-              }}>
-                <div className="flex items-center gap-6">
-                  <div className="w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
-                       style={{
-                         background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                         borderRadius: '10px',
-                         boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
-                       }}>
-                    <FaFileAlt className="w-7 h-7" style={{ color: '#242021' }} />
+            <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+              <div className="p-4 sm:p-6 lg:p-8 bg-[#242021]">
+                <div className="flex items-center gap-4 sm:gap-6">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                    <FaFileAlt className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Application Overview</h2>
-                    <p className="text-sm sm:text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Service details and business information</p>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Application Overview</h2>
+                    <p className="text-sm sm:text-base text-gray-300">Service details and business information</p>
                   </div>
                 </div>
               </div>
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-4 sm:p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Service Type</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200">
+                    <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                       <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.serviceType || application.serviceType || "N/A"}</p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Partner Type</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200">
+                    <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                       <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.partnerType || application.partnerType || "N/A"}</p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">External Companies</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200">
+                    <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                       <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.externalCompaniesCount || application.externalCompaniesCount || 0}</p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Virtual Office</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200">
+                    <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                       <div className="flex items-center space-x-2">
                         <div className={`w-3 h-3 rounded-full ${(application.serviceDetails?.needVirtualOffice || application.needVirtualOffice) ? 'bg-green-500' : 'bg-red-500'}`}></div>
                         <p className="text-sm font-medium text-gray-900">
@@ -443,7 +363,7 @@ export default function ApplicationDetailPage() {
                   {(application.serviceDetails?.projectEstimatedValue || application.projectEstimatedValue) && (
                     <div className="md:col-span-2">
                       <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Project Estimated Value</label>
-                      <div className="p-4 bg-gray-50 border border-gray-200">
+                      <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                         <p className="text-lg font-bold text-gray-900">
                           {(() => {
                             const value = application.serviceDetails?.projectEstimatedValue || application.projectEstimatedValue;
@@ -459,40 +379,40 @@ export default function ApplicationDetailPage() {
 
             {/* External Companies Details */}
             {((application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails) && (application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).length > 0) && (
-              <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-                      <FaBuilding className="w-6 h-6 text-white" />
+              <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+                <div className="p-4 sm:p-6 lg:p-8 bg-[#242021]">
+                  <div className="flex items-center gap-4 sm:gap-6">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                      <FaBuilding className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold">External Companies</h2>
-                      <p className="text-amber-100 text-sm">External company details and ownership</p>
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">External Companies</h2>
+                      <p className="text-gray-300 text-sm sm:text-base">External company details and ownership</p>
                     </div>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="space-y-4">
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <div className="space-y-4 sm:space-y-6">
                     {(application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).map((company, index) => (
-                      <div key={index} className="p-4 bg-gray-50 border border-gray-200">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-sm font-bold text-gray-900">Company #{index + 1}</h3>
-                          <span className="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
+                      <div key={index} className="p-4 sm:p-6 bg-gray-50 border border-amber-100/50 rounded-lg">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6">
+                          <h3 className="text-sm sm:text-base font-bold text-gray-900">Company #{index + 1}</h3>
+                          <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
                             {company.sharePercentage || 0}% Share
                           </span>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                           <div>
-                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Company Name</label>
-                            <p className="text-sm font-medium text-gray-900">{company.companyName || "N/A"}</p>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Company Name</label>
+                            <p className="text-sm sm:text-base font-medium text-gray-900">{company.companyName || "N/A"}</p>
                           </div>
                           <div>
-                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Country</label>
-                            <p className="text-sm font-medium text-gray-900">{company.country || "N/A"}</p>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Country</label>
+                            <p className="text-sm sm:text-base font-medium text-gray-900">{company.country || "N/A"}</p>
                           </div>
                           <div className="md:col-span-2">
-                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">CR Number</label>
-                            <p className="text-sm font-mono font-medium text-gray-900">{company.crNumber || "N/A"}</p>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">CR Number</label>
+                            <p className="text-sm sm:text-base font-mono font-medium text-gray-900">{company.crNumber || "N/A"}</p>
                           </div>
                         </div>
                       </div>
@@ -504,69 +424,39 @@ export default function ApplicationDetailPage() {
 
             {/* Family Members */}
             {((application.serviceDetails?.familyMembers || application.familyMembers) && (application.serviceDetails?.familyMembers || application.familyMembers).length > 0) && (
-              <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
-                   style={{
-                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                     borderRadius: '12px',
-                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                     border: '1px solid rgba(255, 209, 122, 0.1)'
-                   }}>
-                <div className="p-8" style={{
-                  background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-                  borderRadius: '12px 12px 0 0'
-                }}>
-                  <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
-                         style={{
-                           background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                           borderRadius: '10px',
-                           boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
-                         }}>
-                      <FaUsers className="w-7 h-7" style={{ color: '#242021' }} />
+              <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+                <div className="p-4 sm:p-6 lg:p-8 bg-[#242021]">
+                  <div className="flex items-center gap-4 sm:gap-6">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                      <FaUsers className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Family Members</h2>
-                      <p className="text-sm sm:text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Family members requiring residency</p>
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Family Members</h2>
+                      <p className="text-sm sm:text-base text-gray-300">Family members requiring residency</p>
                     </div>
                   </div>
                 </div>
-                <div className="p-8">
-                  <div className="space-y-6">
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <div className="space-y-4 sm:space-y-6">
                     {(application.serviceDetails?.familyMembers || application.familyMembers).map((member, index) => (
-                      <div key={index} className="p-6 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group"
-                           style={{
-                             borderRadius: '8px',
-                             border: '1px solid rgba(255, 209, 122, 0.1)'
-                           }}>
-                        <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-6">Family Member #{index + 1}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div key={index} className="p-4 sm:p-6 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group rounded-lg">
+                        <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-6">Family Member #{index + 1}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                           <div className="group">
-                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Full Name</label>
-                            <div className="p-4 bg-white border-0 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                                 style={{
-                                   borderRadius: '8px',
-                                   border: '1px solid rgba(255, 209, 122, 0.1)'
-                                 }}>
+                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Full Name</label>
+                            <div className="p-4 bg-white border border-amber-100/50 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                               <p className="text-sm sm:text-base font-semibold text-gray-900">{member.name || "N/A"}</p>
                             </div>
                           </div>
                           <div className="group">
-                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Relationship</label>
-                            <div className="p-4 bg-white border-0 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                                 style={{
-                                   borderRadius: '8px',
-                                   border: '1px solid rgba(255, 209, 122, 0.1)'
-                                 }}>
+                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Relationship</label>
+                            <div className="p-4 bg-white border border-amber-100/50 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                               <p className="text-sm sm:text-base font-semibold text-gray-900">{member.relation || "N/A"}</p>
                             </div>
                           </div>
                           <div className="group">
-                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Passport Number</label>
-                            <div className="p-4 bg-white border-0 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                                 style={{
-                                   borderRadius: '8px',
-                                   border: '1px solid rgba(255, 209, 122, 0.1)'
-                                 }}>
+                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Passport Number</label>
+                            <div className="p-4 bg-white border border-amber-100/50 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                               <p className="text-sm sm:text-base font-mono font-semibold text-gray-900">{member.passportNo || "N/A"}</p>
                             </div>
                           </div>
@@ -580,32 +470,32 @@ export default function ApplicationDetailPage() {
 
             {/* Documents */}
             {application.documents && application.documents.length > 0 && (
-              <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-                      <FaFileAlt className="w-6 h-6 text-white" />
+              <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+                <div className="p-4 sm:p-6 lg:p-8 bg-[#242021]">
+                  <div className="flex items-center gap-4 sm:gap-6">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                      <FaFileAlt className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold">Uploaded Documents</h2>
-                      <p className="text-amber-100 text-sm">Application documents and files</p>
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Uploaded Documents</h2>
+                      <p className="text-gray-300 text-sm sm:text-base">Application documents and files</p>
                     </div>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     {application.documents.map((doc, index) => (
-                      <div key={index} className="p-4 bg-gray-50 border border-gray-200">
+                      <div key={index} className="p-4 sm:p-6 bg-gray-50 border border-amber-100/50 rounded-lg">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="text-sm font-bold text-gray-900 mb-1">{doc.type}</h3>
-                            <p className="text-xs text-gray-500">Uploaded on {formatDate(doc.createdAt)}</p>
+                            <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-2">{doc.type}</h3>
+                            <p className="text-xs sm:text-sm text-gray-500">Uploaded on {formatDate(doc.createdAt)}</p>
                           </div>
                           <a
                             href={doc.fileUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ml-3 inline-flex items-center px-3 py-1 bg-amber-900 hover:bg-amber-950 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200"
+                            className="ml-3 inline-flex items-center px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200 rounded-lg"
                           >
                             <FaEye className="w-3 h-3 mr-1" />
                             View
@@ -620,21 +510,21 @@ export default function ApplicationDetailPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Application Timeline */}
-            <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                    <FaClock className="w-5 h-5" style={{ color: '#242021' }} />
+            <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+              <div className="p-4 sm:p-6 bg-[#242021]">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-amber-400 rounded-lg">
+                    <FaClock className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold">Timeline</h3>
-                    <p className="text-xs" style={{ color: 'gray' }}>Application progress tracking</p>
+                    <h3 className="text-base sm:text-lg font-bold text-amber-400">Timeline</h3>
+                    <p className="text-xs sm:text-sm text-gray-300">Application progress tracking</p>
                   </div>
                 </div>
               </div>
-              <div className="p-4">
+              <div className="p-4 sm:p-6">
                 <Timeline 
                   events={progressData?.timeline || application.timeline || []} 
                   currentStatus={progressData?.currentStatus || application.status?.current || application.status}
@@ -644,41 +534,41 @@ export default function ApplicationDetailPage() {
             </div>
 
             {/* Application Info */}
-            <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                    <FaCog className="w-5 h-5" style={{ color: '#242021' }} />
+            <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+              <div className="p-4 sm:p-6 bg-[#242021]">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-amber-400 rounded-lg">
+                    <FaCog className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold">Application Info</h3>
-                    <p className="text-xs" style={{ color: 'gray' }}>Key application details</p>
+                    <h3 className="text-base sm:text-lg font-bold text-amber-400">Application Info</h3>
+                    <p className="text-xs sm:text-sm text-gray-300">Key application details</p>
                   </div>
                 </div>
               </div>
-              <div className="p-4 space-y-3">
-                <div className="p-3 bg-gray-50 border border-gray-200">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Application ID</label>
-                  <p className="text-gray-900 font-mono text-xs break-all">{application.applicationId || application._id}</p>
+              <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+                <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Application ID</label>
+                  <p className="text-gray-900 font-mono text-xs sm:text-sm break-all">{application.applicationId || application._id}</p>
                 </div>
-                <div className="p-3 bg-gray-50 border border-gray-200">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Submitted</label>
-                  <p className="text-gray-900 font-medium text-sm">{formatDate(application.timestamps?.createdAt || application.createdAt)}</p>
+                <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Submitted</label>
+                  <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(application.timestamps?.createdAt || application.createdAt)}</p>
                 </div>
-                <div className="p-3 bg-gray-50 border border-gray-200">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Last Updated</label>
-                  <p className="text-gray-900 font-medium text-sm">{formatDate(application.timestamps?.updatedAt || application.updatedAt)}</p>
+                <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Last Updated</label>
+                  <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(application.timestamps?.updatedAt || application.updatedAt)}</p>
                 </div>
                 {(application.status?.approvedBy || application.approvedBy) && (
-                  <div className="p-3 bg-gray-50 border border-gray-200">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Approved By</label>
-                    <p className="text-gray-900 font-medium text-sm">{(application.status?.approvedBy || application.approvedBy)?.fullName || (application.status?.approvedBy || application.approvedBy)?.name || "N/A"}</p>
+                  <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Approved By</label>
+                    <p className="text-gray-900 font-medium text-sm sm:text-base">{(application.status?.approvedBy || application.approvedBy)?.fullName || (application.status?.approvedBy || application.approvedBy)?.name || "N/A"}</p>
                   </div>
                 )}
                 {(application.status?.approvedAt || application.approvedAt) && (
-                  <div className="p-3 bg-gray-50 border border-gray-200">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Approved At</label>
-                    <p className="text-gray-900 font-medium text-sm">{formatDate(application.status?.approvedAt || application.approvedAt)}</p>
+                  <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Approved At</label>
+                    <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(application.status?.approvedAt || application.approvedAt)}</p>
                   </div>
                 )}
               </div>
@@ -686,34 +576,34 @@ export default function ApplicationDetailPage() {
 
             {/* Assigned Employees */}
             {application.assignedEmployees && application.assignedEmployees.length > 0 && (
-              <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                      <FaUsers className="w-5 h-5" style={{ color: '#242021' }} />
+              <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+                <div className="p-4 sm:p-6 bg-[#242021]">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-amber-400 rounded-lg">
+                      <FaUsers className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold">Assigned Team</h3>
-                      <p className="text-xs" style={{ color: 'gray' }}>Team members handling your application</p>
+                      <h3 className="text-base sm:text-lg font-bold text-amber-400">Assigned Team</h3>
+                      <p className="text-xs sm:text-sm text-gray-300">Team members handling your application</p>
                     </div>
                   </div>
                 </div>
-                <div className="p-4">
-                  <div className="space-y-3">
+                <div className="p-4 sm:p-6">
+                  <div className="space-y-3 sm:space-y-4">
                     {application.assignedEmployees.map((employee, index) => (
-                      <div key={index} className="p-3 bg-gray-50 border border-gray-200">
-                        <div className="flex items-start space-x-3">
+                      <div key={index} className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                        <div className="flex items-start space-x-3 sm:space-x-4">
                           <div className="flex-shrink-0">
-                            <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                              <span className="font-bold text-xs" style={{ color: '#242021' }}>
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-amber-400 rounded-lg">
+                              <span className="font-bold text-xs sm:text-sm text-gray-900">
                                 {employee.fullName?.charAt(0).toUpperCase() || "?"}
                               </span>
                             </div>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-semibold text-gray-900 truncate">{employee.fullName || employee.name}</h3>
-                            <p className="text-xs text-gray-600 font-medium">{employee.position || employee.role}</p>
-                            <p className="text-xs text-gray-500">{employee.email}</p>
+                            <h3 className="text-sm sm:text-base font-semibold text-gray-900 truncate">{employee.fullName || employee.name}</h3>
+                            <p className="text-xs sm:text-sm text-gray-600 font-medium">{employee.position || employee.role}</p>
+                            <p className="text-xs sm:text-sm text-gray-500">{employee.email}</p>
                           </div>
                         </div>
                       </div>
@@ -725,42 +615,42 @@ export default function ApplicationDetailPage() {
 
             {/* Payment Information */}
             {application.payment && (
-              <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                      <FaDollarSign className="w-5 h-5" style={{ color: '#242021' }} />
+              <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+                <div className="p-4 sm:p-6 bg-[#242021]">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-amber-400 rounded-lg">
+                      <FaDollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold">Payment Info</h3>
-                      <p className="text-xs" style={{ color: 'gray' }}>Payment details and status</p>
+                      <h3 className="text-base sm:text-lg font-bold text-amber-400">Payment Info</h3>
+                      <p className="text-xs sm:text-sm text-gray-300">Payment details and status</p>
                     </div>
                   </div>
                 </div>
-                <div className="p-4 space-y-3">
-                  <div className="p-3 bg-gray-50 border border-gray-200">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Amount</label>
-                    <p className="text-lg font-bold text-gray-900">{application.payment?.amount || 0} SAR</p>
+                <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+                  <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Amount</label>
+                    <p className="text-lg sm:text-xl font-bold text-gray-900">{application.payment?.amount || 0} SAR</p>
                   </div>
-                  <div className="p-3 bg-gray-50 border border-gray-200">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Method</label>
-                    <p className="text-gray-900 font-medium text-sm">{application.payment?.method || "N/A"}</p>
+                  <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Method</label>
+                    <p className="text-gray-900 font-medium text-sm sm:text-base">{application.payment?.method || "N/A"}</p>
                   </div>
-                  <div className="p-3 bg-gray-50 border border-gray-200">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Status</label>
+                  <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Status</label>
                     <div className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${
                         application.payment?.status === 'paid' ? 'bg-green-500' : 
                         application.payment?.status === 'pending' ? 'bg-yellow-500' : 
                         'bg-red-500'
                       }`}></div>
-                      <p className="text-gray-900 font-medium text-sm capitalize">{application.payment?.status || "N/A"}</p>
+                      <p className="text-gray-900 font-medium text-sm sm:text-base capitalize">{application.payment?.status || "N/A"}</p>
                     </div>
                   </div>
                   {application.payment?.paidAt && (
-                    <div className="p-3 bg-gray-50 border border-gray-200">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Paid At</label>
-                      <p className="text-gray-900 font-medium text-sm">{formatDate(application.payment.paidAt)}</p>
+                    <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Paid At</label>
+                      <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(application.payment.paidAt)}</p>
                     </div>
                   )}
                 </div>

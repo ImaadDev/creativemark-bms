@@ -72,50 +72,35 @@ export default function MyApplicationsPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         {/* Header Section */}
-        <div className="backdrop-blur-sm border-b" style={{
-          background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-          borderBottomColor: 'rgba(255, 209, 122, 0.2)'
-        }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
-          <div className="flex flex-col space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+        <div className="backdrop-blur-sm border-b border-amber-200/20 bg-[#242021]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="flex flex-col space-y-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
               <div className="flex-1">
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
-                  <span className="text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Applications</span>
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
+                  <span className="text-sm font-medium uppercase tracking-wider text-amber-400/80">Applications</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4" style={{ color: '#ffd17a' }}>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-3 text-amber-400">
                   My Applications
                 </h1>
-                <p className="text-base sm:text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                <p className="text-sm sm:text-base lg:text-lg text-white/70">
                   Track and manage your business applications
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                 <button
                   onClick={fetchApplications}
                   disabled={loading}
-                  className="w-full sm:w-auto px-8 py-4 text-sm font-semibold uppercase tracking-wider border transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg group"
-                  style={{
-                    backgroundColor: 'rgba(255, 209, 122, 0.1)',
-                    color: '#ffd17a',
-                    borderColor: 'rgba(255, 209, 122, 0.3)',
-                    borderRadius: '12px'
-                  }}
+                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border border-amber-400/30 bg-amber-400/10 text-amber-400 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-amber-400/20 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="group-hover:scale-105 transition-transform duration-300">{loading ? "Loading..." : "Refresh"}</span>
                 </button>
                 <button
                   onClick={() => router.push("/client/application")}
-                  className="w-full sm:w-auto px-8 py-4 text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-lg group"
-                  style={{
-                    background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                    color: '#242021',
-                    borderRadius: '12px',
-                    boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
-                  }}
+                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group"
                 >
                   <span className="group-hover:scale-105 transition-transform duration-300">+ New Application</span>
                 </button>
@@ -125,42 +110,25 @@ export default function MyApplicationsPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Error State */}
         {error && (
-          <div className="mb-8 bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
-               style={{
-                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                 borderRadius: '20px',
-                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                 border: '1px solid rgba(239, 68, 68, 0.2)'
-               }}>
-            <div className="p-8">
-              <div className="flex flex-col sm:flex-row sm:items-start gap-6">
+          <div className="mb-6 sm:mb-8 bg-white border border-red-200/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+            <div className="p-4 sm:p-6 lg:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 flex items-center justify-center shadow-lg"
-                       style={{
-                         background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                         borderRadius: '12px',
-                         boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
-                       }}>
-                    <svg className="h-6 w-6 text-white" viewBox="0 0 20 20" fill="currentColor">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg bg-gradient-to-br from-red-500 to-red-600 rounded-lg">
+                    <svg className="h-5 w-5 sm:h-6 sm:w-6 text-white" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Error Loading Applications</h3>
-                  <p className="text-base text-gray-700 mb-6">{error}</p>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">Error Loading Applications</h3>
+                  <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">{error}</p>
                   <button
                     onClick={fetchApplications}
-                    className="px-8 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-lg group"
-                    style={{
-                      background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                      color: 'white',
-                      borderRadius: '12px',
-                      boxShadow: '0 6px 20px rgba(239, 68, 68, 0.3)'
-                    }}
+                    className="px-6 sm:px-8 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg"
                   >
                     <span className="group-hover:scale-105 transition-transform duration-300">Try Again</span>
                   </button>
@@ -172,26 +140,15 @@ export default function MyApplicationsPage() {
 
         {/* Loading State */}
         {loading && (
-          <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
-               style={{
-                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                 borderRadius: '20px',
-                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                 border: '1px solid rgba(255, 209, 122, 0.1)'
-               }}>
-            <div className="p-16">
-              <div className="flex flex-col items-center justify-center gap-6">
+          <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+            <div className="p-12 sm:p-16">
+              <div className="flex flex-col items-center justify-center gap-4 sm:gap-6">
                 <div className="relative">
-                  <div className="w-16 h-16 flex items-center justify-center shadow-xl"
-                       style={{
-                         background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                         borderRadius: '16px',
-                         boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
-                       }}>
-                    <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center shadow-lg bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                    <div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-4 border-white border-t-transparent rounded-full"></div>
                   </div>
                 </div>
-                <span className="text-lg font-semibold text-gray-700">Loading applications...</span>
+                <span className="text-base sm:text-lg font-semibold text-gray-700">Loading applications...</span>
               </div>
             </div>
           </div>
@@ -200,63 +157,53 @@ export default function MyApplicationsPage() {
         {/* Desktop Table View */}
         {!loading && !error && applications.length > 0 && (
           <>
-            <div className="hidden lg:block bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
-                 style={{
-                   background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                   borderRadius: '20px',
-                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                   border: '1px solid rgba(255, 209, 122, 0.1)'
-                 }}>
+            <div className="hidden lg:block bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
               <table className="w-full">
                 <thead>
-                  <tr className="text-white" style={{
-                    background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)'
-                  }}>
-                    <th className="px-8 py-6 text-left text-xs font-bold uppercase tracking-wider">
+                  <tr className="text-white bg-[#242021]">
+                    <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
                       Application ID
                     </th>
-                    <th className="px-8 py-6 text-left text-xs font-bold uppercase tracking-wider">
+                    <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
                       Service Type
                     </th>
-                    <th className="px-8 py-6 text-left text-xs font-bold uppercase tracking-wider">
+                    <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-8 py-6 text-left text-xs font-bold uppercase tracking-wider">
+                    <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
                       Submitted Date
                     </th>
-                    <th className="px-8 py-6 text-center text-xs font-bold uppercase tracking-wider">
+                    <th className="px-6 lg:px-8 py-4 lg:py-6 text-center text-xs font-bold uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y" style={{ borderColor: 'rgba(255, 209, 122, 0.1)' }}>
+                <tbody className="divide-y divide-amber-100/30">
                   {applications.map((app) => (
                     <tr
                       key={app._id}
-                      className="hover:bg-white/50 transition-all duration-300 group"
-                      style={{ backgroundColor: 'rgba(248, 249, 250, 0.8)' }}
+                      className="hover:bg-gray-50/50 transition-all duration-300 group bg-white"
                     >
-                      <td className="px-8 py-5">
+                      <td className="px-6 lg:px-8 py-4 lg:py-5">
                         <span className="font-mono text-sm text-gray-900 font-semibold">
                           {app._id}
                         </span>
                       </td>
-                      <td className="px-8 py-5">
+                      <td className="px-6 lg:px-8 py-4 lg:py-5">
                         <span className="text-sm font-semibold text-gray-900">
                           {app.serviceType}
                         </span>
                       </td>
-                      <td className="px-8 py-5">
+                      <td className="px-6 lg:px-8 py-4 lg:py-5">
                         <span
-                          className={`inline-block px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-300 group-hover:scale-105 ${getStatusBadgeStyle(
+                          className={`inline-block px-3 py-1.5 lg:px-4 lg:py-2 text-xs font-bold uppercase tracking-wide transition-all duration-300 group-hover:scale-105 ${getStatusBadgeStyle(
                             app.status
-                          )}`}
-                          style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)' }}
+                          )} rounded-lg shadow-sm`}
                         >
                           {app.status.replace("_", " ")}
                         </span>
                       </td>
-                      <td className="px-8 py-5">
+                      <td className="px-6 lg:px-8 py-4 lg:py-5">
                         <span className="text-sm font-medium text-gray-700">
                           {new Date(app.createdAt || app.submittedAt).toLocaleDateString("en-US", {
                             year: "numeric",
@@ -265,16 +212,10 @@ export default function MyApplicationsPage() {
                           })}
                         </span>
                       </td>
-                      <td className="px-8 py-5 text-center">
+                      <td className="px-6 lg:px-8 py-4 lg:py-5 text-center">
                         <button
                           onClick={() => router.push(`/client/track-application/${app._id}`)}
-                          className="px-6 py-3 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-lg group"
-                          style={{
-                            background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                            color: '#242021',
-                            borderRadius: '12px',
-                            boxShadow: '0 6px 20px rgba(255, 209, 122, 0.3)'
-                          }}
+                          className="px-4 lg:px-6 py-2 lg:py-3 text-xs lg:text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg"
                         >
                           <span className="group-hover:scale-105 transition-transform duration-300">View Details</span>
                         </button>
@@ -286,45 +227,38 @@ export default function MyApplicationsPage() {
             </div>
 
             {/* Mobile Card View */}
-            <div className="lg:hidden space-y-6">
+            <div className="lg:hidden space-y-4 sm:space-y-6">
               {applications.map((app) => (
                 <div
                   key={app._id}
-                  className="bg-white border-0 overflow-hidden group hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
-                  style={{
-                    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                    borderRadius: '5px',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                    border: '1px solid rgba(255, 209, 122, 0.1)'
-                  }}
+                  className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg shadow-sm"
                 >
-                  <div className="p-6 space-y-6">
+                  <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-3 mb-3">
-                          <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: '#ffd17a' }}></div>
+                        <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+                          <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-amber-400"></div>
                           <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
                             Application Details
                           </h3>
                         </div>
-                        <p className="font-mono text-sm font-semibold text-gray-900 break-all mb-2">
+                        <p className="font-mono text-xs sm:text-sm font-semibold text-gray-900 break-all mb-2">
                           {app._id}
                         </p>
                       </div>
                       <span
-                        className={`flex-shrink-0 px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-300 group-hover:scale-105 ${getStatusBadgeStyle(
+                        className={`flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-bold uppercase tracking-wide transition-all duration-300 group-hover:scale-105 ${getStatusBadgeStyle(
                           app.status
-                        )}`}
-                        style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)' }}
+                        )} rounded-lg shadow-sm`}
                       >
                         {app.status.replace("_", " ")}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <div>
                         <div className="flex items-center space-x-2 mb-2">
-                          <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: '#ffd17a' }}></div>
+                          <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-amber-400"></div>
                           <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
                             Service Type
                           </h3>
@@ -335,7 +269,7 @@ export default function MyApplicationsPage() {
                       </div>
                       <div>
                         <div className="flex items-center space-x-2 mb-2">
-                          <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: '#ffd17a' }}></div>
+                          <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-amber-400"></div>
                           <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
                             Submitted
                           </h3>
@@ -350,16 +284,10 @@ export default function MyApplicationsPage() {
                       </div>
                     </div>
 
-                    <div className="flex justify-center pt-4">
+                    <div className="flex justify-center pt-2 sm:pt-4">
                       <button
                         onClick={() => router.push(`/client/track-application/${app._id}`)}
-                        className="px-8 py-4 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-lg group"
-                        style={{
-                          background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                          color: '#242021',
-                          borderRadius: '12px',
-                          boxShadow: '0 6px 20px rgba(255, 209, 122, 0.3)'
-                        }}
+                        className="px-6 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg"
                       >
                         <span className="group-hover:scale-105 transition-transform duration-300">View Details</span>
                       </button>
@@ -373,42 +301,25 @@ export default function MyApplicationsPage() {
 
         {/* Empty State */}
         {!loading && !error && applications.length === 0 && (
-          <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
-               style={{
-                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                 borderRadius: '20px',
-                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                 border: '1px solid rgba(255, 209, 122, 0.1)'
-               }}>
-            <div className="text-center p-16 sm:p-24">
+          <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+            <div className="text-center p-12 sm:p-16 lg:p-24">
               <div className="max-w-lg mx-auto">
-                <div className="relative mb-8">
-                  <div className="w-24 h-24 flex items-center justify-center mx-auto shadow-xl"
-                       style={{
-                         background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                         borderRadius: '20px',
-                         boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
-                       }}>
-                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="relative mb-6 sm:mb-8">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 flex items-center justify-center mx-auto shadow-lg bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                    <svg className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
                   No Applications Yet
                 </h3>
-                <p className="text-gray-600 text-base sm:text-lg mb-10 leading-relaxed">
+                <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-8 sm:mb-10 leading-relaxed">
                   You haven't submitted any applications yet. Start your first business registration application today.
                 </p>
                 <button
                   onClick={() => router.push("/client/application")}
-                  className="px-10 py-5 text-base font-bold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-lg group"
-                  style={{
-                    background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                    color: '#242021',
-                    borderRadius: '12px',
-                    boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
-                  }}
+                  className="px-8 sm:px-10 py-4 sm:py-5 text-sm sm:text-base font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg"
                 >
                   <span className="group-hover:scale-105 transition-transform duration-300">Start New Application</span>
                 </button>

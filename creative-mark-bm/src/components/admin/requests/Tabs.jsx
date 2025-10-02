@@ -43,8 +43,8 @@ const TabsContent = forwardRef(({
   return (
     <div ref={ref} className={className} {...props}>
       {/* Tab Navigation */}
-      <div className="border-b border-gray-200 mb-8">
-        <nav className="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+      <div className="border-b border-gray-200/50 mb-6 sm:mb-8">
+        <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto" aria-label="Tabs">
           {tabs.map((tab) => {
             const isActive = tab.id === activeTab;
             const Icon = tab.icon;
@@ -54,9 +54,9 @@ const TabsContent = forwardRef(({
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}
                 className={`
-                  group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 whitespace-nowrap
+                  group inline-flex items-center py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors duration-200 whitespace-nowrap
                   ${isActive 
-                    ? 'border-emerald-500 text-emerald-600' 
+                    ? 'border-[#ffd17a] text-[#ffd17a]' 
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }
                   ${tabClassName}
@@ -68,8 +68,8 @@ const TabsContent = forwardRef(({
                 {Icon && (
                   <Icon 
                     className={`
-                      mr-3 w-5 h-5 transition-colors duration-200
-                      ${isActive ? 'text-emerald-500' : 'text-gray-400 group-hover:text-gray-500'}
+                      mr-2 sm:mr-3 w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-200
+                      ${isActive ? 'text-[#ffd17a]' : 'text-gray-400 group-hover:text-gray-500'}
                     `} 
                   />
                 )}
@@ -78,7 +78,7 @@ const TabsContent = forwardRef(({
                   <span className={`
                     ml-2 px-2 py-0.5 rounded-full text-xs font-medium
                     ${isActive 
-                      ? 'bg-emerald-100 text-emerald-600' 
+                      ? 'bg-[#ffd17a]/20 text-[#ffd17a]' 
                       : 'bg-gray-100 text-gray-600'
                     }
                   `}>

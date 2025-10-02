@@ -365,16 +365,16 @@ export default function ReportsPage() {
 
   if (loading && !analytics) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="text-center bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
+        <div className="text-center bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-6 sm:p-8">
           <div className="relative">
-            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FaSpinner className="animate-spin text-2xl text-white" />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#242021] rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-4">
+              <FaSpinner className="animate-spin text-lg sm:text-2xl text-white" />
             </div>
-            <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-400 border-2 border-white rounded-full"></div>
+            <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-[#ffd17a] border-2 border-white rounded-full"></div>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Loading Reports</h3>
-          <p className="text-gray-600">Fetching analytics and performance data...</p>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Loading Reports</h3>
+          <p className="text-sm sm:text-base text-gray-600">Fetching analytics and performance data...</p>
         </div>
       </div>
     );
@@ -382,16 +382,16 @@ export default function ReportsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="text-center bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FaExclamationTriangle className="text-2xl text-red-600" />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
+        <div className="text-center bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-6 sm:p-8">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-4">
+            <FaExclamationTriangle className="text-lg sm:text-2xl text-red-600" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Reports</h3>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Error Loading Reports</h3>
+          <p className="text-sm sm:text-base text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-emerald-600 text-white hover:bg-emerald-700 transition-colors font-medium rounded-lg"
+            className="px-4 sm:px-6 py-2.5 sm:py-3 bg-[#242021] text-white hover:bg-[#242021]/90 transition-colors font-medium rounded-lg"
           >
             Retry
           </button>
@@ -401,61 +401,80 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div className="flex-1">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="w-12 h-12 bg-[#242021] rounded-xl flex items-center justify-center shadow-lg">
-                  <FaChartBar className="text-white text-xl" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Modern Header - Matching Admin Dashboard Style */}
+        <div className="relative overflow-hidden bg-[#242021] text-white shadow-2xl rounded-xl sm:rounded-2xl mb-6 sm:mb-8">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute top-0 right-0 w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 bg-[#ffd17a]/10 transform rotate-45 translate-x-16 sm:translate-x-24 lg:translate-x-32 -translate-y-16 sm:-translate-y-24 lg:-translate-y-32"></div>
+          <div className="absolute bottom-0 left-0 w-32 sm:w-48 lg:w-64 h-32 sm:h-48 lg:h-64 bg-[#ffd17a]/10 transform -rotate-45 -translate-x-8 sm:-translate-x-12 lg:-translate-x-16 translate-y-8 sm:translate-y-12 lg:translate-y-16"></div>
+          
+          <div className="relative p-4 sm:p-6 lg:p-8 xl:p-12">
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 sm:gap-6">
+              <div className="flex-1">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#ffd17a] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg sm:shadow-xl">
+                    <FaChartBar className="text-lg sm:text-2xl text-[#242021]" />
+                  </div>
+                  <div className="flex-1">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">
+                      Reports & Analytics
+                    </h1>
+                    <p className="text-[#ffd17a] text-sm sm:text-base lg:text-lg">
+                      Creative Mark BMS • Admin Portal • Business Intelligence Dashboard
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
-                    Reports & Analytics
-                  </h1>
-                  <p className="text-sm text-[#242021] font-medium uppercase tracking-wider">
-                    Creative Mark Admin Portal
-                  </p>
+                
+                <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 mt-4 sm:mt-6">
+                  <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
+                    <FaFileAlt className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
+                    <span className="text-xs sm:text-sm">Total Applications: {formatNumber(comprehensiveStats.totalApplications)}</span>
+                  </div>
+                  <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
+                    <FaUsers className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
+                    <span className="text-xs sm:text-sm">Total Clients: {formatNumber(comprehensiveStats.totalClients)}</span>
+                  </div>
+                  <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
+                    <FaDollarSign className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
+                    <span className="text-xs sm:text-sm">Revenue: {formatCurrency(comprehensiveStats.totalRevenue)}</span>
+                  </div>
                 </div>
               </div>
-              <p className="text-base sm:text-lg text-gray-600 font-medium max-w-2xl">
-                Comprehensive insights and performance metrics for business intelligence
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <button className="flex items-center justify-center px-4 py-3 bg-white border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 rounded-xl shadow-sm">
-                <FaDownload className="mr-2" />
-                Export Data
-              </button>
-              <button className="flex items-center justify-center px-6 py-3 bg-[#242021] text-white font-medium hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 rounded-xl shadow-lg hover:shadow-xl">
-                <FaPrint className="mr-2" />
-                Print Report
-              </button>
+              
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <button className="group bg-white/10 rounded-lg sm:rounded-xl backdrop-blur-sm text-white border border-white/20 px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base">
+                  <FaDownload className="text-sm sm:text-base" />
+                  Export Data
+                </button>
+                <button className="group bg-[#ffd17a] rounded-lg sm:rounded-xl text-[#242021] px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-[#ffd17a]/90 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base">
+                  <FaPrint className="text-sm sm:text-base" />
+                  Generate Report
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Date Range Filter */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
             <div className="flex items-center">
-              <FaCalendarAlt className="mr-2 text-emerald-500" />
-              <span className="text-sm font-medium text-gray-700">Date Range:</span>
+              <FaCalendarAlt className="mr-2 text-[#ffd17a] w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-sm sm:text-base font-medium text-gray-700">Date Range:</span>
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <input
                 type="date"
                 value={dateRange.startDate}
                 onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
-                className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                className="px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-200/50 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 text-sm sm:text-base"
               />
               <input
                 type="date"
                 value={dateRange.endDate}
                 onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
-                className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200"
+                className="px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-200/50 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 text-sm sm:text-base"
               />
               <button
                 onClick={() => {
@@ -464,7 +483,7 @@ export default function ReportsPage() {
                     handleTabChange(activeTab);
                   }
                 }}
-                className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors rounded-lg"
+                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors rounded-lg sm:rounded-xl text-sm sm:text-base"
               >
                 Clear
               </button>
@@ -473,7 +492,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
+        <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl mb-6 sm:mb-8">
           <nav className="flex overflow-x-auto">
             {[
               { id: 'overview', label: 'Overview', icon: FaChartBar },
@@ -488,13 +507,13 @@ export default function ReportsPage() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center justify-center py-4 px-6 text-base font-medium transition-all duration-200 flex-1 ${
+                  className={`flex items-center justify-center py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-base font-medium transition-all duration-200 flex-1 ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-emerald-50 to-emerald-100 text-emerald-700 border-b-2 border-emerald-600'
+                      ? 'bg-gradient-to-r from-[#ffd17a]/10 to-[#ffd17a]/20 text-[#ffd17a] border-b-2 border-[#ffd17a]'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-700'
                   }`}
                 >
-                  <Icon className="mr-2 text-lg" />
+                  <Icon className="mr-2 text-sm sm:text-lg" />
                   {tab.label}
                 </button>
               );
@@ -503,7 +522,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl overflow-hidden">
           {activeTab === 'overview' && analytics && (
             <div className="p-6">
               {/* Enhanced Overview Stats */}

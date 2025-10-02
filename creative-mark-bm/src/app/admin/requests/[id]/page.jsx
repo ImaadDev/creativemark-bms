@@ -111,13 +111,13 @@ const ApplicationDetailsPage = () => {
   // Loading skeleton
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {/* Header Skeleton */}
-          <div className="mb-8">
-            <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl p-8 animate-pulse">
+          <div className="mb-6 sm:mb-8">
+            <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-6 sm:p-8 animate-pulse">
               <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
+                <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
                 <div className="space-y-2">
                   <div className="h-8 w-64 bg-gray-200 rounded"></div>
                   <div className="h-4 w-48 bg-gray-200 rounded"></div>
@@ -127,29 +127,29 @@ const ApplicationDetailsPage = () => {
           </div>
 
           {/* Summary Stats Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-xl p-6 animate-pulse">
+              <div key={i} className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-lg sm:rounded-xl p-4 sm:p-6 animate-pulse">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-lg"></div>
                 </div>
                 <div className="space-y-2">
-                  <div className="h-8 w-20 bg-gray-200 rounded"></div>
-                  <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                  <div className="h-6 sm:h-8 w-20 bg-gray-200 rounded"></div>
+                  <div className="h-3 sm:h-4 w-24 bg-gray-200 rounded"></div>
                 </div>
               </div>
             ))}
           </div>
 
           {/* Content Skeleton */}
-          <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl p-8 animate-pulse">
-            <div className="space-y-6">
-              <div className="h-8 w-48 bg-gray-200 rounded"></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-6 sm:p-8 animate-pulse">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="h-6 sm:h-8 w-48 bg-gray-200 rounded"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="space-y-2">
-                    <div className="h-4 w-32 bg-gray-200 rounded"></div>
-                    <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+                    <div className="h-3 sm:h-4 w-32 bg-gray-200 rounded"></div>
+                    <div className="h-10 sm:h-12 w-full bg-gray-200 rounded-lg"></div>
                   </div>
                 ))}
               </div>
@@ -163,16 +163,16 @@ const ApplicationDetailsPage = () => {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white/90 backdrop-blur-sm border border-red-200/50 rounded-2xl p-8 shadow-xl">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="bg-white/95 backdrop-blur-sm border border-red-200/50 rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-lg">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0 bg-red-100 rounded-full p-2">
-                <FaExclamationTriangle className="h-6 w-6 text-red-600" />
+                <FaExclamationTriangle className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-red-900">Error loading application</h3>
-                <p className="mt-2 text-red-700">{error}</p>
+                <h3 className="text-base sm:text-lg font-semibold text-red-900">Error loading application</h3>
+                <p className="mt-2 text-sm sm:text-base text-red-700">{error}</p>
                 <div className="mt-4 space-x-3">
                   <button
                     onClick={loadApplicationDetails}
@@ -193,14 +193,14 @@ const ApplicationDetailsPage = () => {
   // No application found
   if (!application) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl p-12 text-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-8 sm:p-12 text-center">
             <div className="bg-gray-100 rounded-full p-4 w-16 h-16 mx-auto mb-4">
               <FaFileAlt className="w-8 h-8 text-gray-400 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Application not found</h3>
-            <p className="text-gray-600 mb-6">The requested application could not be found.</p>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Application not found</h3>
+            <p className="text-sm sm:text-base text-gray-600 mb-6">The requested application could not be found.</p>
           </div>
         </div>
       </div>
@@ -482,13 +482,13 @@ const ApplicationDetailsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Modern Header */}
         <ApplicationHeader application={application} />
 
         {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <SummaryStat
             title="Client Name"
             value={application.client?.name || 'N/A'}
@@ -516,7 +516,7 @@ const ApplicationDetailsPage = () => {
                 </div>
                 
         {/* Modern Tabs Interface */}
-        <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl overflow-hidden">
           <Tabs tabs={tabs} defaultTab="overview" />
         </div>
       </div>
