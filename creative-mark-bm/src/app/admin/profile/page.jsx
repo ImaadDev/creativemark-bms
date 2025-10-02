@@ -312,7 +312,7 @@ export default function AdminProfilePage() {
                   <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
                     Admin Profile
                   </h1>
-                  <p className="text-sm text-emerald-600 font-medium uppercase tracking-wider">
+                  <p className="text-sm text-[#242021] font-medium uppercase tracking-wider">
                     System Administrator
                   </p>
                 </div>

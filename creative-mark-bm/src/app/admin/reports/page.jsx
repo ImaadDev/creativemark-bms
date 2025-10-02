@@ -408,14 +408,14 @@ export default function ReportsPage() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 bg-[#242021] rounded-xl flex items-center justify-center shadow-lg">
                   <FaChartBar className="text-white text-xl" />
                 </div>
                 <div>
                   <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
                     Reports & Analytics
                   </h1>
-                  <p className="text-sm text-emerald-600 font-medium uppercase tracking-wider">
+                  <p className="text-sm text-[#242021] font-medium uppercase tracking-wider">
                     Creative Mark Admin Portal
                   </p>
                 </div>
@@ -429,7 +429,7 @@ export default function ReportsPage() {
                 <FaDownload className="mr-2" />
                 Export Data
               </button>
-              <button className="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-medium hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 rounded-xl shadow-lg hover:shadow-xl">
+              <button className="flex items-center justify-center px-6 py-3 bg-[#242021] text-white font-medium hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 rounded-xl shadow-lg hover:shadow-xl">
                 <FaPrint className="mr-2" />
                 Print Report
               </button>

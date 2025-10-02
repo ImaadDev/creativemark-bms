@@ -332,7 +332,7 @@ export default function AddUserPage() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center space-x-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <div className="w-16 h-16 bg-[#242021] rounded-2xl flex items-center justify-center shadow-xl">
                   <FaUserPlus className="text-2xl text-white" />
                 </div>
                 <div>

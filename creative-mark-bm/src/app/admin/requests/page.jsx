@@ -125,14 +125,14 @@ const InternalRequestsContent = () => {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <div className="w-12 h-12 bg-[#242021] rounded-xl flex items-center justify-center shadow-lg">
                     <FaFileAlt className="text-white text-xl" />
                   </div>
                   <div>
                     <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
                       Application Management
                     </h1>
-                    <p className="text-sm text-emerald-600 font-medium uppercase tracking-wider">
+                    <p className="text-sm text-[#242021] font-medium uppercase tracking-wider">
                       Creative Mark Admin Portal
                     </p>
                   </div>
@@ -159,7 +159,7 @@ const InternalRequestsContent = () => {
                         onClick={() => setActiveTab(tab.id)}
                         className={`group relative flex-1 flex items-center justify-center py-4 px-6 rounded-lg font-medium text-sm transition-all duration-300 ${
                           isActive
-                            ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-lg'
+                            ? 'bg-[#242021] text-white shadow-lg'
                             : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                         }`}
                       >
