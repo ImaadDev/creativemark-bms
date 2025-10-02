@@ -60,10 +60,11 @@ export const registerUser = async (req, res) => {
     const token = generateToken(user._id, user.role);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-domain cookies
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
+    
 
     res.status(201).json({
       success: true,
@@ -102,23 +103,17 @@ export const loginUser = async (req, res) => {
     }
 
     const token = generateToken(user._id, user.role);
-    console.log("Login - Generated token:", token ? "Token generated" : "No token");
-    console.log("Login - Setting cookie with options:", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+  
     
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-domain cookies
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
     
-    console.log("Login - Cookie set, sending response");
-    console.log("Login - Response headers:", res.getHeaders());
+    
+   
 
     res.json({
       success: true,
@@ -142,11 +137,13 @@ export const loginUser = async (req, res) => {
  * @access  Public
  */
 export const logoutUser = (req, res) => {
-  res.clearCookie("token", {
+  res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-domain cookies
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
+  
 
   res.json({ success: true, message: "Logged out successfully" });
 };
