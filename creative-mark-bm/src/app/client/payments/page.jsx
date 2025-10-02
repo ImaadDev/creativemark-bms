@@ -121,17 +121,24 @@ const PaymentsPage = () => {
     .reduce((sum, payment) => sum + payment.amount, 0);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
       {/* Header Section */}
-      <div className="border-b-2" style={{ backgroundColor: '#242021', borderBottomColor: '#ffd17a' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="flex flex-col space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div className="backdrop-blur-sm border-b" style={{
+        background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+        borderBottomColor: 'rgba(255, 209, 122, 0.2)'
+      }}>
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
+          <div className="flex flex-col space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
               <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2" style={{ color: '#ffd17a' }}>
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
+                  <span className="text-xs sm:text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Payments</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-4" style={{ color: '#ffd17a' }}>
                   Payment History
                 </h1>
-                <p className="text-sm sm:text-base" style={{ color: 'gray' }}>
+                <p className="text-sm sm:text-base lg:text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   Track and manage all your payments
                 </p>
               </div>
@@ -140,34 +147,60 @@ const PaymentsPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
         {/* Action Buttons */}
-        <div className="mb-6">
-          <button className="flex items-center gap-2 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold uppercase tracking-wider transition-all duration-200">
-            <FaPlus className="w-4 h-4" />
-            New Payment
+        <div className="mb-8">
+          <button className="px-8 py-4 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-lg group"
+                  style={{
+                    background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                    color: '#242021',
+                    borderRadius: '12px',
+                    boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                  }}>
+            <span className="group-hover:scale-105 transition-transform duration-300">
+              <FaPlus className="inline mr-3" />
+              New Payment
+            </span>
           </button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white border-2 border-gray-200 overflow-hidden">
-            <div className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+          <div className="bg-white border-0 overflow-hidden group hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '20px',
+                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(255, 209, 122, 0.1)'
+               }}>
+            <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
+                  <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2">
                     Total Payments
                   </h3>
-                  <p className="text-3xl font-bold text-gray-900 mb-2">{payments.length}</p>
+                  <p className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">{payments.length}</p>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
-                <FaCreditCard className="w-6 h-6 text-white" />
+                <div className="w-16 h-16 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300"
+                     style={{
+                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                       borderRadius: '16px',
+                       boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                     }}>
+                  <FaCreditCard className="w-8 h-8" style={{ color: '#242021' }} />
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 overflow-hidden">
-            <div className="p-6">
+          <div className="bg-white border-0 overflow-hidden group hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '20px',
+                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(255, 209, 122, 0.1)'
+               }}>
+            <div className="p-8">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
@@ -321,7 +354,7 @@ const PaymentsPage = () => {
       </div>
     </div>
     </div>
-    </div>
+    
   );
 };
 

@@ -169,12 +169,29 @@ export default function ClientProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="bg-gray-50 border-l-4 border-amber-600 p-8 sm:p-12">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <div className="animate-spin h-8 w-8 border-4 border-amber-600 border-t-transparent"></div>
-              <span className="text-gray-700 font-medium">Loading profile...</span>
+      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
+          <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '20px',
+                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(255, 209, 122, 0.1)'
+               }}>
+            <div className="p-16">
+              <div className="flex flex-col items-center justify-center gap-6">
+                <div className="relative">
+                  <div className="w-16 h-16 flex items-center justify-center shadow-xl"
+                       style={{
+                         background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                         borderRadius: '16px',
+                         boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                       }}>
+                    <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
+                  </div>
+                </div>
+                <span className="text-lg font-semibold text-gray-700">Loading profile...</span>
+              </div>
             </div>
           </div>
         </div>
@@ -183,17 +200,24 @@ export default function ClientProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
       {/* Header Section */}
-      <div className="border-b-2" style={{ backgroundColor: '#242021', borderBottomColor: '#ffd17a' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="flex flex-col space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div className="backdrop-blur-sm border-b" style={{
+        background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+        borderBottomColor: 'rgba(255, 209, 122, 0.2)'
+      }}>
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
+          <div className="flex flex-col space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
               <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2" style={{ color: '#ffd17a' }}>
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
+                  <span className="text-xs sm:text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Profile</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-4" style={{ color: '#ffd17a' }}>
                   My Profile
                 </h1>
-                <p className="text-sm sm:text-base" style={{ color: 'gray' }}>
+                <p className="text-sm sm:text-base lg:text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   Manage your personal information
                 </p>
               </div>
@@ -202,43 +226,67 @@ export default function ClientProfile() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
         {/* Action Buttons */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3">
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
             {!editing ? (
               <button
                 onClick={() => setEditing(true)}
-                className="flex items-center px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold uppercase tracking-wider transition-all duration-200"
+                className="w-full sm:w-auto px-8 py-4 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-lg group"
+                style={{
+                  background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                  color: '#242021',
+                  borderRadius: '12px',
+                  boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                }}
               >
-                <FaEdit className="mr-2" />
+                <span className="group-hover:scale-105 transition-transform duration-300">
+                  <FaEdit className="inline mr-3" />
                 Edit Profile
+                </span>
               </button>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                 <button
                   onClick={handleCancel}
-                  className="flex items-center px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200 text-sm font-semibold uppercase tracking-wider"
+                  className="w-full sm:w-auto px-8 py-4 text-sm font-semibold uppercase tracking-wider border transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg group"
+                  style={{
+                    backgroundColor: 'rgba(255, 209, 122, 0.1)',
+                    color: '#ffd17a',
+                    borderColor: 'rgba(255, 209, 122, 0.3)',
+                    borderRadius: '12px'
+                  }}
                 >
-                  <FaTimes className="mr-2" />
+                  <span className="group-hover:scale-105 transition-transform duration-300">
+                    <FaTimes className="inline mr-3" />
                   Cancel
+                  </span>
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={saving}
-                  className="flex items-center px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white disabled:opacity-50 transition-all duration-200 text-sm font-semibold uppercase tracking-wider"
+                  className="w-full sm:w-auto px-8 py-4 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-lg group disabled:opacity-50"
+                  style={{
+                    background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                    color: '#242021',
+                    borderRadius: '12px',
+                    boxShadow: '0 8px 25px rgba(255, 209, 122, 0.3)'
+                  }}
                 >
+                  <span className="group-hover:scale-105 transition-transform duration-300">
                   {saving ? (
                     <>
-                      <FaSpinner className="animate-spin mr-2" />
+                        <FaSpinner className="animate-spin inline mr-3" />
                       Saving...
                     </>
                   ) : (
                     <>
-                      <FaSave className="mr-2" />
+                        <FaSave className="inline mr-3" />
                       Save Changes
                     </>
                   )}
+                  </span>
                 </button>
               </div>
             )}
@@ -247,60 +295,123 @@ export default function ClientProfile() {
 
         {/* Success/Error Messages */}
         {success && (
-          <div className="mb-6 bg-emerald-50 border-l-4 border-emerald-600 p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+          <div className="mb-8 bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '12px',
+                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(34, 197, 94, 0.2)'
+               }}>
+            <div className="p-8">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-6">
               <div className="flex-shrink-0">
-                <FaCheckCircle className="h-6 w-6 text-emerald-600" />
+                  <div className="w-12 h-12 flex items-center justify-center shadow-lg"
+                       style={{
+                         background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                         borderRadius: '12px',
+                         boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
+                       }}>
+                    <FaCheckCircle className="h-6 w-6 text-white" />
+                  </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-base font-semibold text-emerald-900 mb-1">Success</h3>
-                <p className="text-sm text-emerald-800">{success}</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Success!</h3>
+                  <p className="text-base text-gray-700 mb-6">{success}</p>
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {error && (
-          <div className="mb-6 bg-red-50 border-l-4 border-red-600 p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+          <div className="mb-8 bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+               style={{
+                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                 borderRadius: '12px',
+                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                 border: '1px solid rgba(239, 68, 68, 0.2)'
+               }}>
+            <div className="p-8">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-6">
               <div className="flex-shrink-0">
-                <FaExclamationTriangle className="h-6 w-6 text-red-600" />
+                  <div className="w-12 h-12 flex items-center justify-center shadow-lg"
+                       style={{
+                         background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                         borderRadius: '12px',
+                         boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+                       }}>
+                    <FaExclamationTriangle className="h-6 w-6 text-white" />
+                  </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-base font-semibold text-red-900 mb-1">Error</h3>
-                <p className="text-sm text-red-800">{error}</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Error</h3>
+                  <p className="text-base text-gray-700 mb-6">{error}</p>
+                </div>
               </div>
             </div>
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
             
             {/* Profile Picture Section */}
             <div className="lg:col-span-1">
-              <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                  <h3 className="text-lg font-bold">Profile Picture</h3>
+              <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                   style={{
+                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                     borderRadius: '20px',
+                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                     border: '1px solid rgba(255, 209, 122, 0.1)'
+                   }}>
+                <div className="p-8" style={{
+                  background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                  borderRadius: '20px 20px 0 0'
+                }}>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 flex items-center justify-center shadow-lg"
+                         style={{
+                           background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                           borderRadius: '8px',
+                           boxShadow: '0 4px 12px rgba(255, 209, 122, 0.3)'
+                         }}>
+                      <FaCamera className="w-5 h-5" style={{ color: '#242021' }} />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-bold" style={{ color: '#ffd17a' }}>Profile Picture</h3>
+                  </div>
                 </div>
-                <div className="p-6">
+                <div className="p-8">
                 
                   <div className="text-center">
-                    <div className="relative inline-block">
-                      <div className="w-24 h-24 bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg flex items-center justify-center border-2 border-gray-200">
+                    <div className="relative inline-block group">
+                      <div className="w-32 h-32 bg-gray-50 border-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105"
+                           style={{
+                             background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
+                             borderRadius: '16px',
+                             border: '2px solid rgba(255, 209, 122, 0.2)',
+                             boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)'
+                           }}>
                         {previewImage ? (
                           <img
                             src={previewImage}
                             alt="Profile"
-                            className="w-full h-full object-cover rounded-lg"
+                            className="w-full h-full object-cover"
+                            style={{ borderRadius: '14px' }}
                           />
                         ) : (
-                          <FaUser className="text-2xl text-amber-600" />
+                          <FaUser className="text-4xl" style={{ color: '#ffd17a' }} />
                         )}
                       </div>
                       {editing && (
-                        <label className="absolute -bottom-1 -right-1 bg-amber-600 text-white p-1 rounded-full cursor-pointer hover:bg-amber-700 transition-colors">
-                          <FaCamera className="h-3 w-3" />
+                        <label className="absolute -bottom-2 -right-2 w-10 h-10 flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-all duration-300"
+                               style={{
+                                 background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                                 borderRadius: '50%',
+                                 boxShadow: '0 4px 12px rgba(255, 209, 122, 0.4)',
+                                 border: '2px solid rgba(255, 255, 255, 0.8)'
+                               }}>
+                          <FaCamera className="h-5 w-5" style={{ color: '#242021' }} />
                           <input
                             type="file"
                             accept="image/*"
@@ -311,11 +422,17 @@ export default function ClientProfile() {
                       )}
                     </div>
                     
-                    <div className="mt-4">
-                      <h4 className="text-sm font-semibold text-gray-900">{formData.fullName}</h4>
-                      <p className="text-xs text-gray-600">Client</p>
+                    <div className="mt-6 text-center">
+                      <h4 className="text-base sm:text-lg font-bold text-gray-900 mb-1">{formData.fullName}</h4>
+                      <p className="text-sm text-gray-600 mb-2">Client</p>
                       {formData.clientId && (
-                        <p className="text-xs text-amber-600 font-medium mt-1">
+                        <p className="text-xs sm:text-sm font-semibold px-3 py-1 inline-block"
+                           style={{
+                             backgroundColor: 'rgba(255, 209, 122, 0.1)',
+                             color: '#ffd17a',
+                             borderRadius: '8px',
+                             border: '1px solid rgba(255, 209, 122, 0.2)'
+                           }}>
                           ID: {formData.clientId}
                         </p>
                       )}
@@ -326,21 +443,37 @@ export default function ClientProfile() {
             </div>
 
             {/* Profile Information */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-8">
               
               {/* Personal Information */}
-              <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                  <h3 className="text-lg font-bold flex items-center">
-                    <FaUser className="mr-3" style={{ color: 'gray' }} />
-                    Personal Information
-                  </h3>
+              <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                   style={{
+                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                     borderRadius: '20px',
+                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                     border: '1px solid rgba(255, 209, 122, 0.1)'
+                   }}>
+                <div className="p-8" style={{
+                  background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                  borderRadius: '20px 20px 0 0'
+                }}>
+                  <div className="flex items-center gap-6">
+                    <div className="w-12 h-12 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
+                         style={{
+                           background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                           borderRadius: '10px',
+                           boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
+                         }}>
+                      <FaUser className="w-6 h-6" style={{ color: '#242021' }} />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Personal Information</h3>
+                  </div>
                 </div>
-                <div className="p-6">
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
+                <div className="p-8">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="group">
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       Full Name *
                     </label>
                     <input
@@ -349,13 +482,20 @@ export default function ClientProfile() {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border-2 border-gray-200 focus:border-amber-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                      className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md ${
+                        editing ? 'focus:ring-amber-100/50' : ''
+                      }`}
+                      style={{
+                        backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                        borderRadius: '10px',
+                        border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                      }}
                       placeholder="Enter your full name"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="group">
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       Email Address *
                     </label>
                     <input
@@ -364,13 +504,20 @@ export default function ClientProfile() {
                       value={formData.email}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                      className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md ${
+                        editing ? 'focus:ring-amber-100/50' : ''
+                      }`}
+                      style={{
+                        backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                        borderRadius: '10px',
+                        border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                      }}
                       placeholder="Enter your email"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="group">
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       Phone Number
                     </label>
                     <input
@@ -379,13 +526,20 @@ export default function ClientProfile() {
                       value={formData.phone}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                      className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md ${
+                        editing ? 'focus:ring-amber-100/50' : ''
+                      }`}
+                      style={{
+                        backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                        borderRadius: '10px',
+                        border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                      }}
                       placeholder="Enter your phone number"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="group">
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       Nationality
                     </label>
                     <input
@@ -394,13 +548,20 @@ export default function ClientProfile() {
                       value={formData.nationality}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                      className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md ${
+                        editing ? 'focus:ring-amber-100/50' : ''
+                      }`}
+                      style={{
+                        backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                        borderRadius: '10px',
+                        border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                      }}
                       placeholder="Enter your nationality"
                     />
                   </div>
 
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="md:col-span-2 group">
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       Bio
                     </label>
                     <textarea
@@ -408,8 +569,15 @@ export default function ClientProfile() {
                       value={formData.bio}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      rows="4"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                      rows={4}
+                      className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md resize-none ${
+                        editing ? 'focus:ring-amber-100/50' : ''
+                      }`}
+                      style={{
+                        backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                        borderRadius: '10px',
+                        border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                      }}
                       placeholder="Tell us about yourself..."
                     />
                   </div>
@@ -417,15 +585,33 @@ export default function ClientProfile() {
               </div>
 
               {/* Address Information */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
-                  <FaMapMarkerAlt className="mr-3 text-emerald-600" />
-                  Address Information
-                </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                   style={{
+                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                     borderRadius: '20px',
+                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                     border: '1px solid rgba(255, 209, 122, 0.1)'
+                   }}>
+                <div className="p-8" style={{
+                  background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                  borderRadius: '20px 20px 0 0'
+                }}>
+                  <div className="flex items-center gap-6">
+                    <div className="w-12 h-12 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
+                         style={{
+                           background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                           borderRadius: '10px',
+                           boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
+                         }}>
+                      <FaMapMarkerAlt className="w-6 h-6" style={{ color: '#242021' }} />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Address Information</h3>
+                  </div>
+                </div>
+                <div className="p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="md:col-span-2 group">
+                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       Street Address
                     </label>
                     <input
@@ -434,13 +620,21 @@ export default function ClientProfile() {
                       value={formData.address.street}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                        className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md ${
+                          editing ? 'focus:ring-amber-100/50' : ''
+                        }`}
+                        style={{
+                          backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                          borderRadius: '10px',
+                          border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                        }}
                       placeholder="Enter street address"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                      <div className="group">
+                        <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       City
                     </label>
                     <input
@@ -449,13 +643,20 @@ export default function ClientProfile() {
                       value={formData.address.city}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                          className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md ${
+                            editing ? 'focus:ring-amber-100/50' : ''
+                          }`}
+                          style={{
+                            backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                            borderRadius: '10px',
+                            border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                          }}
                       placeholder="Enter city"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <div className="group">
+                        <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       State/Province
                     </label>
                     <input
@@ -464,13 +665,20 @@ export default function ClientProfile() {
                       value={formData.address.state}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                          className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md ${
+                            editing ? 'focus:ring-amber-100/50' : ''
+                          }`}
+                          style={{
+                            backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                            borderRadius: '10px',
+                            border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                          }}
                       placeholder="Enter state/province"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <div className="group">
+                        <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       ZIP/Postal Code
                     </label>
                     <input
@@ -479,13 +687,20 @@ export default function ClientProfile() {
                       value={formData.address.zipCode}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                          className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md ${
+                            editing ? 'focus:ring-amber-100/50' : ''
+                          }`}
+                          style={{
+                            backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                            borderRadius: '10px',
+                            border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                          }}
                       placeholder="Enter ZIP/postal code"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <div className="group">
+                        <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       Country
                     </label>
                     <input
@@ -494,39 +709,73 @@ export default function ClientProfile() {
                       value={formData.address.country}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                          className={`w-full px-5 py-4 border-0 focus:ring-4 transition-all duration-300 disabled:bg-gray-50 disabled:text-gray-500 group-hover:shadow-md ${
+                            editing ? 'focus:ring-amber-100/50' : ''
+                          }`}
+                          style={{
+                            backgroundColor: editing ? 'rgba(248, 249, 250, 0.8)' : 'rgba(243, 244, 246, 0.5)',
+                            borderRadius: '10px',
+                            border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
+                          }}
                       placeholder="Enter country"
                     />
+                      </div>
                   </div>
                 </div>
               </div>
 
               {/* Client Information */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
-                  <FaIdCard className="mr-3 text-emerald-600" />
-                  Client Information
-                </h3>
+              <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                   style={{
+                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                     borderRadius: '20px',
+                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                     border: '1px solid rgba(255, 209, 122, 0.1)'
+                   }}>
+                <div className="p-8" style={{
+                  background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                  borderRadius: '20px 20px 0 0'
+                }}>
+                  <div className="flex items-center gap-6">
+                    <div className="w-12 h-12 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
+                         style={{
+                           background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                           borderRadius: '10px',
+                           boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
+                         }}>
+                      <FaIdCard className="w-6 h-6" style={{ color: '#242021' }} />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Client Information</h3>
+                  </div>
+                </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="p-8">
+                  <div className="grid grid-cols-1 gap-8">
+                    <div className="group">
+                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
                       Client ID
                     </label>
-                    <input
-                      type="text"
-                      value={formData.clientId}
-                      disabled
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
-                      placeholder="Auto-generated"
-                    />
-                  </div>
+                      <div className="p-5 bg-gray-50 border-0"
+                           style={{
+                             borderRadius: '10px',
+                             border: '2px solid rgba(156, 163, 175, 0.2)',
+                             backgroundColor: 'rgba(243, 244, 246, 0.5)'
+                           }}>
+                        <p className="text-sm sm:text-base font-semibold text-gray-900">{formData.clientId || "Auto-generated"}</p>
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>
           </div>
           </div>
+          </div>
+          </div>
+          
         </form>
+        
+ 
+ 
       </div>
     </div>
   );

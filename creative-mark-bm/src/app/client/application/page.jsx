@@ -675,7 +675,7 @@ export default function ModernMultiStepForm() {
         <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300 mb-10"
              style={{
                background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-               borderRadius: '20px',
+               borderRadius: '5px',
                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                border: '1px solid rgba(255, 209, 122, 0.1)'
              }}>

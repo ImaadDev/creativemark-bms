@@ -165,48 +165,60 @@ export default function ApplicationDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
       {/* Header Section */}
-      <div className="border-b-2" style={{ backgroundColor: '#242021', borderBottomColor: '#ffd17a' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="flex flex-col space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div className="backdrop-blur-sm border-b" style={{
+        background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+        borderBottomColor: 'rgba(255, 209, 122, 0.2)'
+      }}>
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
+          <div className="flex flex-col space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
               <div className="flex-1">
                 <button
                   onClick={() => router.back()}
-                  className="inline-flex items-center mb-6 group transition-all duration-200"
+                  className="inline-flex items-center mb-6 group transition-all duration-300 hover:translate-x-[-2px]"
                   style={{ color: 'gray' }}
                 >
-                  <div className="mr-2 p-1 group-hover:bg-white/10 transition-colors duration-200">
+                  <div className="mr-3 p-2 group-hover:bg-white/10 transition-colors duration-300" style={{ borderRadius: '8px' }}>
                     <FaArrowLeft className="w-5 h-5" />
                   </div>
-                  <span className="font-medium">Back to Applications</span>
+                  <span className="font-medium text-sm sm:text-base">Back to Applications</span>
                 </button>
-                
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2" style={{ color: '#ffd17a' }}>
+
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
+                  <span className="text-xs sm:text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Application Details</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-4" style={{ color: '#ffd17a' }}>
                   Application Details
                 </h1>
-                <p className="text-sm sm:text-base" style={{ color: 'gray' }}>
+                <p className="text-sm sm:text-base lg:text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   Track and monitor your application progress
                 </p>
-                <div className="mt-4 flex items-center space-x-2">
-                  <div className="px-3 py-1" style={{ backgroundColor: 'rgba(255, 209, 122, 0.1)' }}>
-                    <p className="text-sm font-mono" style={{ color: 'gray' }}>ID: {application._id}</p>
+                <div className="mt-6 flex items-center space-x-3">
+                  <div className="px-4 py-2" style={{
+                    backgroundColor: 'rgba(255, 209, 122, 0.1)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 209, 122, 0.2)'
+                  }}>
+                    <p className="text-xs sm:text-sm font-mono font-semibold" style={{ color: 'gray' }}>ID: {application._id}</p>
                   </div>
                 </div>
               </div>
-              
-              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+
+              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                 <div className="text-center">
-                  <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: 'gray' }}>Status</p>
-                  <span className={`inline-flex items-center px-4 py-2 text-xs font-bold uppercase rounded-lg shadow-lg ${getStatusStyle(progressData?.currentStatus || application.status?.current || application.status)}`}>
-                    <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                  <p className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3" style={{ color: 'gray' }}>Status</p>
+                  <span className={`inline-flex items-center px-5 py-3 text-xs sm:text-sm font-bold uppercase transition-all duration-300 hover:scale-105 ${getStatusStyle(progressData?.currentStatus || application.status?.current || application.status)}`}
+                        style={{ borderRadius: '10px', boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)' }}>
+                    <div className="w-2 h-2 bg-white rounded-full mr-3 animate-pulse"></div>
                     {formatStatus(progressData?.currentStatus || application.status?.current || application.status)}
                   </span>
                 </div>
-                
+
                 <div className="text-center">
-                  <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: 'gray' }}>Progress</p>
+                  <p className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-3" style={{ color: 'gray' }}>Progress</p>
                   <div className="flex items-center space-x-2">
                     <div className="relative w-24 h-2 bg-white/20 rounded-full overflow-hidden">
                       <div 
@@ -227,48 +239,78 @@ export default function ApplicationDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 lg:gap-10">
           {/* Main Content */}
-          <div className="xl:col-span-2 space-y-6">
+          <div className="xl:col-span-2 space-y-8">
             {/* Client Information */}
-            <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                    <FaUser className="w-6 h-6" style={{ color: '#242021' }} />
+            <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                 style={{
+                   background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                   borderRadius: '12px',
+                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                   border: '1px solid rgba(255, 209, 122, 0.1)'
+                 }}>
+              <div className="p-8" style={{
+                background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                borderRadius: '12px 12px 0 0'
+              }}>
+                <div className="flex items-center gap-6">
+                  <div className="w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
+                       style={{
+                         background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                         borderRadius: '10px',
+                         boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
+                       }}>
+                    <FaUser className="w-7 h-7" style={{ color: '#242021' }} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold">Client Information</h2>
-                    <p className="text-sm" style={{ color: 'gray' }}>Personal details and contact information</p>
+                    <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Client Information</h2>
+                    <p className="text-sm sm:text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Personal details and contact information</p>
                   </div>
                 </div>
               </div>
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Full Name</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200">
-                      <p className="text-sm font-medium text-gray-900">{application.client?.name || application.serviceDetails?.client?.name || "N/A"}</p>
+              <div className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="group">
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Full Name</label>
+                    <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                         style={{
+                           borderRadius: '8px',
+                           border: '1px solid rgba(255, 209, 122, 0.1)'
+                         }}>
+                      <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.name || application.serviceDetails?.client?.name || "N/A"}</p>
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Email</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200">
-                      <p className="text-sm font-medium text-gray-900">{application.client?.email || "N/A"}</p>
+                  <div className="group">
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Email</label>
+                    <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                         style={{
+                           borderRadius: '8px',
+                           border: '1px solid rgba(255, 209, 122, 0.1)'
+                         }}>
+                      <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.email || "N/A"}</p>
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Phone</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200">
-                      <p className="text-sm font-medium text-gray-900">{application.client?.phone || "N/A"}</p>
+                  <div className="group">
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Phone</label>
+                    <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                         style={{
+                           borderRadius: '8px',
+                           border: '1px solid rgba(255, 209, 122, 0.1)'
+                         }}>
+                      <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.phone || "N/A"}</p>
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Nationality</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200">
-                      <p className="text-sm font-medium text-gray-900">{application.client?.nationality || "N/A"}</p>
+                  <div className="group">
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Nationality</label>
+                    <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                         style={{
+                           borderRadius: '8px',
+                           border: '1px solid rgba(255, 209, 122, 0.1)'
+                         }}>
+                      <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.nationality || "N/A"}</p>
                     </div>
                   </div>
                 </div>
@@ -277,36 +319,62 @@ export default function ApplicationDetailPage() {
 
             {/* Partner Information */}
             {(application.partner || application.serviceDetails?.partner) && (
-              <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                      <FaUser className="w-6 h-6" style={{ color: '#242021' }} />
+              <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                   style={{
+                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                     borderRadius: '12px',
+                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                     border: '1px solid rgba(255, 209, 122, 0.1)'
+                   }}>
+                <div className="p-8" style={{
+                  background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                  borderRadius: '12px 12px 0 0'
+                }}>
+                  <div className="flex items-center gap-6">
+                    <div className="w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
+                         style={{
+                           background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                           borderRadius: '10px',
+                           boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
+                         }}>
+                      <FaUser className="w-7 h-7" style={{ color: '#242021' }} />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold">Partner Information</h2>
-                      <p className="text-sm" style={{ color: 'gray' }}>Business partner details</p>
+                      <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Partner Information</h2>
+                      <p className="text-sm sm:text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Business partner details</p>
                     </div>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Partner Name</label>
-                      <div className="p-4 bg-gray-50 border border-gray-200">
-                        <p className="text-sm font-medium text-gray-900">{(application.partner || application.serviceDetails?.partner)?.name || "N/A"}</p>
+                <div className="p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="group">
+                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Partner Name</label>
+                      <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                           style={{
+                             borderRadius: '8px',
+                             border: '1px solid rgba(255, 209, 122, 0.1)'
+                           }}>
+                        <p className="text-sm sm:text-base font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.name || "N/A"}</p>
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Email</label>
-                      <div className="p-4 bg-gray-50 border border-gray-200">
-                        <p className="text-sm font-medium text-gray-900">{(application.partner || application.serviceDetails?.partner)?.email || "N/A"}</p>
+                    <div className="group">
+                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Email</label>
+                      <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                           style={{
+                             borderRadius: '8px',
+                             border: '1px solid rgba(255, 209, 122, 0.1)'
+                           }}>
+                        <p className="text-sm sm:text-base font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.email || "N/A"}</p>
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Phone</label>
-                      <div className="p-4 bg-gray-50 border border-gray-200">
-                        <p className="text-sm font-medium text-gray-900">{(application.partner || application.serviceDetails?.partner)?.phone || "N/A"}</p>
+                    <div className="group">
+                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Phone</label>
+                      <div className="p-5 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                           style={{
+                             borderRadius: '8px',
+                             border: '1px solid rgba(255, 209, 122, 0.1)'
+                           }}>
+                        <p className="text-sm sm:text-base font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.phone || "N/A"}</p>
                       </div>
                     </div>
                   </div>
@@ -315,15 +383,29 @@ export default function ApplicationDetailPage() {
             )}
 
             {/* Application Overview */}
-            <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                    <FaFileAlt className="w-6 h-6" style={{ color: '#242021' }} />
+            <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                 style={{
+                   background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                   borderRadius: '12px',
+                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                   border: '1px solid rgba(255, 209, 122, 0.1)'
+                 }}>
+              <div className="p-8" style={{
+                background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                borderRadius: '12px 12px 0 0'
+              }}>
+                <div className="flex items-center gap-6">
+                  <div className="w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
+                       style={{
+                         background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                         borderRadius: '10px',
+                         boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
+                       }}>
+                    <FaFileAlt className="w-7 h-7" style={{ color: '#242021' }} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold">Application Overview</h2>
-                    <p className="text-sm" style={{ color: 'gray' }}>Service details and business information</p>
+                    <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Application Overview</h2>
+                    <p className="text-sm sm:text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Service details and business information</p>
                   </div>
                 </div>
               </div>
@@ -422,35 +504,71 @@ export default function ApplicationDetailPage() {
 
             {/* Family Members */}
             {((application.serviceDetails?.familyMembers || application.familyMembers) && (application.serviceDetails?.familyMembers || application.familyMembers).length > 0) && (
-              <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                      <FaUsers className="w-6 h-6" style={{ color: '#242021' }} />
+              <div className="bg-white border-0 overflow-hidden group hover:shadow-xl transition-all duration-300"
+                   style={{
+                     background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                     borderRadius: '12px',
+                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                     border: '1px solid rgba(255, 209, 122, 0.1)'
+                   }}>
+                <div className="p-8" style={{
+                  background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                  borderRadius: '12px 12px 0 0'
+                }}>
+                  <div className="flex items-center gap-6">
+                    <div className="w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-105"
+                         style={{
+                           background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                           borderRadius: '10px',
+                           boxShadow: '0 6px 16px rgba(255, 209, 122, 0.4)'
+                         }}>
+                      <FaUsers className="w-7 h-7" style={{ color: '#242021' }} />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold">Family Members</h2>
-                      <p className="text-sm" style={{ color: 'gray' }}>Family members requiring residency</p>
+                      <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Family Members</h2>
+                      <p className="text-sm sm:text-base" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Family members requiring residency</p>
                     </div>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="space-y-4">
+                <div className="p-8">
+                  <div className="space-y-6">
                     {(application.serviceDetails?.familyMembers || application.familyMembers).map((member, index) => (
-                      <div key={index} className="p-4 bg-gray-50 border border-gray-200">
-                        <h3 className="text-sm font-bold text-gray-900 mb-3">Family Member #{index + 1}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Full Name</label>
-                            <p className="text-sm font-medium text-gray-900">{member.name || "N/A"}</p>
+                      <div key={index} className="p-6 bg-gray-50 border-0 hover:bg-white hover:shadow-sm transition-all duration-300 group"
+                           style={{
+                             borderRadius: '8px',
+                             border: '1px solid rgba(255, 209, 122, 0.1)'
+                           }}>
+                        <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-6">Family Member #{index + 1}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="group">
+                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Full Name</label>
+                            <div className="p-4 bg-white border-0 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                                 style={{
+                                   borderRadius: '8px',
+                                   border: '1px solid rgba(255, 209, 122, 0.1)'
+                                 }}>
+                              <p className="text-sm sm:text-base font-semibold text-gray-900">{member.name || "N/A"}</p>
+                            </div>
                           </div>
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Relationship</label>
-                            <p className="text-sm font-medium text-gray-900">{member.relation || "N/A"}</p>
+                          <div className="group">
+                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Relationship</label>
+                            <div className="p-4 bg-white border-0 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                                 style={{
+                                   borderRadius: '8px',
+                                   border: '1px solid rgba(255, 209, 122, 0.1)'
+                                 }}>
+                              <p className="text-sm sm:text-base font-semibold text-gray-900">{member.relation || "N/A"}</p>
+                            </div>
                           </div>
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Passport Number</label>
-                            <p className="text-sm font-mono font-medium text-gray-900">{member.passportNo || "N/A"}</p>
+                          <div className="group">
+                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">Passport Number</label>
+                            <div className="p-4 bg-white border-0 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
+                                 style={{
+                                   borderRadius: '8px',
+                                   border: '1px solid rgba(255, 209, 122, 0.1)'
+                                 }}>
+                              <p className="text-sm sm:text-base font-mono font-semibold text-gray-900">{member.passportNo || "N/A"}</p>
+                            </div>
                           </div>
                         </div>
                       </div>
