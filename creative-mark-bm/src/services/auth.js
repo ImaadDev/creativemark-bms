@@ -40,9 +40,12 @@ export const login = async (credentials) => {
 export const logout = async () => {
   try {
     const res = await api.post("/auth/logout");
+    console.log("Logout successful:", res.data);
     return res.data; // Return the data property from axios response
   } catch (err) {
     console.error("Logout error:", err);
+    // Even if logout fails on backend, we should still clear local state
+    // The cookie will be cleared by the browser or expire
     throw new Error(err.response?.data?.message || err.message || "Logout failed");
   }
 };

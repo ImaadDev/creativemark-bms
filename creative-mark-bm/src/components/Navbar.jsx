@@ -2,8 +2,8 @@
 "use client";
 import { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AuthContext from "../contexts/AuthContext";
 import { logout, getCurrentUser } from "../services/auth";
+import { useAuth } from "../contexts/AuthContext";
 import NotificationBell from "./notifications/NotificationBell";
 import { 
   FaBell, 
@@ -29,32 +29,17 @@ import {
 } from "react-icons/fa";
 
 export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
-  const { user } = useContext(AuthContext);
+  const { user: currentUser, updateUser, handleLogout: authHandleLogout } = useAuth();
   const router = useRouter();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showHelpModal, setShowHelpModal] = useState(false);
 
-  // Fetch user data on component mount
+  // Set loading to false when user data is available from AuthContext
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setLoading(true);
-        const response = await getCurrentUser();
-        if (response.success) {
-          setCurrentUser(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+    setLoading(false);
+  }, [currentUser]);
 
   // Listen for profile updates and refresh user data
   useEffect(() => {
@@ -73,10 +58,8 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
   const refreshUserData = async () => {
     setRefreshing(true);
     try {
-      const response = await getCurrentUser();
-      if (response.success) {
-        setCurrentUser(response.data);
-      }
+      // User data is managed by AuthContext, no need to fetch here
+      // The AuthContext will handle refreshing user data
     } catch (error) {
       console.error('Error refreshing user data:', error);
     } finally {
@@ -86,10 +69,18 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
   const handleLogout = async () => {
     try {
+      // First, clear user from AuthContext to prevent authentication warnings
+      authHandleLogout();
+      
+      // Then call the backend logout
       await logout();
+      
+      // Redirect to home page
       router.push('/');
     } catch (err) {
       console.error("Logout failed:", err);
+      // Even if logout fails, user is already cleared from AuthContext
+      router.push('/');
     }
   };
 

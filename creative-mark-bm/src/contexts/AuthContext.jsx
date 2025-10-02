@@ -9,6 +9,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);   // Stores the current logged-in user
   const [loading, setLoading] = useState(true); // Tracks if user is being loaded
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // Tracks if user is logging out
   const router = useRouter();
   const pathname = usePathname();
 
@@ -45,6 +46,17 @@ export const AuthProvider = ({ children }) => {
 
   // Function to update user manually (after login, profile update, etc.)
   const updateUser = (userData) => setUser(userData);
+
+  // Function to handle logout
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    setUser(null);
+    
+    // Reset logout state after a short delay to allow navigation
+    setTimeout(() => {
+      setIsLoggingOut(false);
+    }, 2000);
+  };
 
   // Function to refresh user data from backend
   const refreshUser = async () => {
@@ -90,6 +102,7 @@ export const AuthProvider = ({ children }) => {
   // Function to check authentication for protected routes
   const requireAuth = (allowedRoles = []) => {
     if (loading) return false; // Still loading, don't redirect yet
+    if (isLoggingOut) return false; // Don't redirect during logout
     
     if (!user) {
       redirectToHome();
@@ -120,7 +133,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAuthenticated, updateUser, refreshUser, requireAuth, redirectToHome }}>
+    <AuthContext.Provider value={{ user, loading, isAuthenticated, updateUser, refreshUser, requireAuth, redirectToHome, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );
