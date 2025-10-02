@@ -103,10 +103,8 @@ export const NotificationProvider = ({ children }) => {
   // Listen for new application notifications (for admins only)
   useEffect(() => {
     if (socket && isConnected && user && user.role === 'admin') {
-      console.log('🔔 Admin notification listener set up for user:', user.fullName, user.id);
       
       const handleNewApplicationNotification = (notificationData) => {
-        console.log('🔔 Received new application notification:', notificationData);
         
         const notification = {
           id: Date.now() + Math.random(),
@@ -122,7 +120,6 @@ export const NotificationProvider = ({ children }) => {
           read: false
         };
 
-        console.log('🔔 Adding notification to list:', notification);
         setNotifications(prev => [notification, ...prev.slice(0, 49)]);
 
         // Show browser notification
@@ -132,18 +129,15 @@ export const NotificationProvider = ({ children }) => {
             icon: '/favicon.ico',
             tag: `new-application-${notificationData.applicationId}`
           });
-          console.log('🔔 Browser notification shown');
         } else {
           console.log('🔔 Browser notification permission not granted');
         }
       };
 
       socket.on('new_application_notification', handleNewApplicationNotification);
-      console.log('🔔 Socket listener registered for new_application_notification');
 
       return () => {
         socket.off('new_application_notification', handleNewApplicationNotification);
-        console.log('🔔 Socket listener removed for new_application_notification');
       };
     } else {
       console.log('🔔 Admin notification listener not set up:', { 

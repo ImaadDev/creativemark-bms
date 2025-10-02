@@ -15,7 +15,6 @@ export const SocketProvider = ({ children }) => {
     if (user) {
       // Initialize socket connection
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
-      console.log('🔌 Attempting to connect to Socket.IO server:', backendUrl);
       const newSocket = io(backendUrl, {
         withCredentials: true,
         transports: ['websocket', 'polling'],
@@ -26,7 +25,6 @@ export const SocketProvider = ({ children }) => {
 
       // Connection event handlers
       newSocket.on('connect', () => {
-        console.log('✅ Socket connected successfully');
         setIsConnected(true);
         
         // Join user's personal room
@@ -34,7 +32,6 @@ export const SocketProvider = ({ children }) => {
       });
 
       newSocket.on('disconnect', (reason) => {
-        console.log('❌ Socket disconnected:', reason);
         setIsConnected(false);
       });
 
@@ -70,7 +67,6 @@ export const SocketProvider = ({ children }) => {
     if (socket && isConnected) {
       try {
         socket.emit('join_application_room', applicationId);
-        console.log('📱 Joined application room:', applicationId);
       } catch (error) {
         console.error('❌ Error joining application room:', error);
       }
@@ -84,7 +80,6 @@ export const SocketProvider = ({ children }) => {
     if (socket && isConnected) {
       try {
         socket.emit('leave_application_room', applicationId);
-        console.log('📱 Left application room:', applicationId);
       } catch (error) {
         console.error('❌ Error leaving application room:', error);
       }
@@ -96,7 +91,6 @@ export const SocketProvider = ({ children }) => {
     if (socket && isConnected) {
       try {
         socket.emit('send_message', messageData);
-        console.log('📤 Message sent via socket:', messageData.applicationId);
       } catch (error) {
         console.error('❌ Error sending message via socket:', error);
       }

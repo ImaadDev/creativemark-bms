@@ -169,80 +169,108 @@ export default function ClientProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30 flex items-center justify-center">
-        <div className="text-center">
-          <FaSpinner className="animate-spin text-6xl text-emerald-600 mb-6 mx-auto" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading Profile</h2>
-          <p className="text-gray-600">Fetching your profile data...</p>
+      <div className="min-h-screen bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="bg-gray-50 border-l-4 border-amber-600 p-8 sm:p-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="animate-spin h-8 w-8 border-4 border-amber-600 border-t-transparent"></div>
+              <span className="text-gray-700 font-medium">Loading profile...</span>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">My Profile</h1>
-              <p className="text-gray-600">Manage your personal information</p>
+    <div className="min-h-screen bg-white">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="flex flex-col space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="flex-1">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">
+                  My Profile
+                </h1>
+                <p className="text-amber-100 text-sm sm:text-base">
+                  Manage your personal information
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              {!editing ? (
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Action Buttons */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3">
+            {!editing ? (
+              <button
+                onClick={() => setEditing(true)}
+                className="flex items-center px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold uppercase tracking-wider transition-all duration-200"
+              >
+                <FaEdit className="mr-2" />
+                Edit Profile
+              </button>
+            ) : (
+              <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setEditing(true)}
-                  className="flex items-center px-4 py-2 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md"
+                  onClick={handleCancel}
+                  className="flex items-center px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200 text-sm font-semibold uppercase tracking-wider"
                 >
-                  <FaEdit className="mr-2" />
-                  Edit Profile
+                  <FaTimes className="mr-2" />
+                  Cancel
                 </button>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleCancel}
-                    className="flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200 font-medium rounded-lg"
-                  >
-                    <FaTimes className="mr-2" />
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSubmit}
-                    disabled={saving}
-                    className="flex items-center px-4 py-2 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 disabled:opacity-50 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md"
-                  >
-                    {saving ? (
-                      <>
-                        <FaSpinner className="animate-spin mr-2" />
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <FaSave className="mr-2" />
-                        Save Changes
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-            </div>
+                <button
+                  onClick={handleSubmit}
+                  disabled={saving}
+                  className="flex items-center px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white disabled:opacity-50 transition-all duration-200 text-sm font-semibold uppercase tracking-wider"
+                >
+                  {saving ? (
+                    <>
+                      <FaSpinner className="animate-spin mr-2" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <FaSave className="mr-2" />
+                      Save Changes
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Success/Error Messages */}
         {success && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-emerald-50 to-green-100 border border-emerald-200 rounded-lg flex items-center">
-            <FaCheckCircle className="text-emerald-600 mr-3" />
-            <p className="text-emerald-800 font-medium">{success}</p>
+          <div className="mb-6 bg-emerald-50 border-l-4 border-emerald-600 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+              <div className="flex-shrink-0">
+                <FaCheckCircle className="h-6 w-6 text-emerald-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-base font-semibold text-emerald-900 mb-1">Success</h3>
+                <p className="text-sm text-emerald-800">{success}</p>
+              </div>
+            </div>
           </div>
         )}
 
         {error && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-lg flex items-center">
-            <FaExclamationTriangle className="text-red-600 mr-3" />
-            <p className="text-red-800 font-medium">{error}</p>
+          <div className="mb-6 bg-red-50 border-l-4 border-red-600 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+              <div className="flex-shrink-0">
+                <FaExclamationTriangle className="h-6 w-6 text-red-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-base font-semibold text-red-900 mb-1">Error</h3>
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -251,43 +279,47 @@ export default function ClientProfile() {
             
             {/* Profile Picture Section */}
             <div className="lg:col-span-1">
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Profile Picture</h3>
+              <div className="bg-white border-2 border-gray-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                  <h3 className="text-lg font-bold">Profile Picture</h3>
+                </div>
+                <div className="p-6">
                 
-                <div className="text-center">
-                  <div className="relative inline-block">
-                    <div className="w-32 h-32 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl flex items-center justify-center shadow-sm border-4 border-white">
-                      {previewImage ? (
-                        <img
-                          src={previewImage}
-                          alt="Profile"
-                          className="w-full h-full object-cover rounded-2xl"
-                        />
-                      ) : (
-                        <FaUser className="text-4xl text-emerald-600" />
+                  <div className="text-center">
+                    <div className="relative inline-block">
+                      <div className="w-24 h-24 bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg flex items-center justify-center border-2 border-gray-200">
+                        {previewImage ? (
+                          <img
+                            src={previewImage}
+                            alt="Profile"
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                        ) : (
+                          <FaUser className="text-2xl text-amber-600" />
+                        )}
+                      </div>
+                      {editing && (
+                        <label className="absolute -bottom-1 -right-1 bg-amber-600 text-white p-1 rounded-full cursor-pointer hover:bg-amber-700 transition-colors">
+                          <FaCamera className="h-3 w-3" />
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="hidden"
+                          />
+                        </label>
                       )}
                     </div>
-                    {editing && (
-                      <label className="absolute -bottom-2 -right-2 bg-emerald-600 text-white p-2 rounded-full cursor-pointer hover:bg-emerald-700 transition-colors shadow-lg">
-                        <FaCamera className="h-4 w-4" />
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          className="hidden"
-                        />
-                      </label>
-                    )}
-                  </div>
-                  
-                  <div className="mt-4">
-                    <h4 className="font-semibold text-gray-900">{formData.fullName}</h4>
-                    <p className="text-sm text-gray-600">Client</p>
-                    {formData.clientId && (
-                      <p className="text-xs text-emerald-600 font-medium mt-1">
-                        ID: {formData.clientId}
-                      </p>
-                    )}
+                    
+                    <div className="mt-4">
+                      <h4 className="text-sm font-semibold text-gray-900">{formData.fullName}</h4>
+                      <p className="text-xs text-gray-600">Client</p>
+                      {formData.clientId && (
+                        <p className="text-xs text-amber-600 font-medium mt-1">
+                          ID: {formData.clientId}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -297,15 +329,18 @@ export default function ClientProfile() {
             <div className="lg:col-span-2 space-y-6">
               
               {/* Personal Information */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
-                  <FaUser className="mr-3 text-emerald-600" />
-                  Personal Information
-                </h3>
+              <div className="bg-white border-2 border-gray-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                  <h3 className="text-lg font-bold flex items-center">
+                    <FaUser className="mr-3 text-amber-100" />
+                    Personal Information
+                  </h3>
+                </div>
+                <div className="p-6">
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
                       Full Name *
                     </label>
                     <input
@@ -314,7 +349,7 @@ export default function ClientProfile() {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                      className="w-full px-4 py-3 border-2 border-gray-200 focus:border-amber-500 transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -489,6 +524,7 @@ export default function ClientProfile() {
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </form>
       </div>

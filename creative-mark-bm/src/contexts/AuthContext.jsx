@@ -17,11 +17,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        console.log("AuthContext - Fetching current user from backend");
         const response = await getCurrentUser(); // cookie is sent automatically via axios withCredentials
         if (response.success) {
           setUser(response.data);
-          console.log("AuthContext - User loaded:", response.data);
         } else {
           setUser(null);
         }
@@ -61,7 +59,6 @@ export const AuthProvider = ({ children }) => {
   // Function to refresh user data from backend
   const refreshUser = async () => {
     try {
-      console.log("AuthContext - Refreshing user data from backend");
       const response = await getCurrentUser();
       if (response.success) {
         setUser(response.data);

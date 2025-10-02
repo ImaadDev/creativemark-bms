@@ -8,9 +8,7 @@ const NotificationBell = () => {
   const { unreadCount, notifications, addNotification } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Debug logging
-  console.log('🔔 NotificationBell - Unread count:', unreadCount);
-  console.log('🔔 NotificationBell - All notifications:', notifications);
+ 
 
   // Test function to add a notification manually
   const testNotification = () => {

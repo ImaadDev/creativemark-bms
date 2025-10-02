@@ -7,7 +7,6 @@ import api from "./api";
  */
 export const createApplication = async (applicationData, files = null) => {
   try {
-    console.log("Creating application with data:", applicationData);
     
     // Normalize payload to match backend enum requirements
     const normalizedData = { ...applicationData };
@@ -28,7 +27,6 @@ export const createApplication = async (applicationData, files = null) => {
     
     if (normalizedData.serviceType && serviceTypeMapping[normalizedData.serviceType]) {
       normalizedData.serviceType = serviceTypeMapping[normalizedData.serviceType];
-      console.log(`Mapped serviceType: ${applicationData.serviceType} -> ${normalizedData.serviceType}`);
     }
     
     // Normalize partnerType to backend enum values
@@ -42,13 +40,11 @@ export const createApplication = async (applicationData, files = null) => {
     
     if (normalizedData.partnerType && partnerTypeMapping[normalizedData.partnerType]) {
       normalizedData.partnerType = partnerTypeMapping[normalizedData.partnerType];
-      console.log(`Mapped partnerType: ${applicationData.partnerType} -> ${normalizedData.partnerType}`);
     }
     
     // Ensure status is 'submitted' for new applications
     normalizedData.status = 'submitted';
     
-    console.log("Normalized application data:", normalizedData);
     
     // Create FormData for file uploads
     const formData = new FormData();
@@ -84,7 +80,6 @@ export const createApplication = async (applicationData, files = null) => {
       });
     }
 
-    console.log("FormData contents:", Array.from(formData.entries()));
     
     const response = await api.post("/applications", formData, {
       headers: {

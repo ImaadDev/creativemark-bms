@@ -1,7 +1,29 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
-import { ChevronLeft, ChevronRight, Check, Upload, X, Plus, Building2, Users, FileText, CreditCard, Eye, Shield } from "lucide-react";
+import React, { useState, useEffect, useContext } from "react";
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Check, 
+  Upload, 
+  X, 
+  Plus, 
+  Building2, 
+  Users, 
+  FileText, 
+  CreditCard, 
+  Eye, 
+  Shield,
+  User,
+  Globe,
+  Briefcase,
+  Handshake,
+  Building,
+  Heart,
+  FileImage,
+  DollarSign,
+  CheckCircle
+} from "lucide-react";
 import { createApplication } from "../../../services/applicationService";
 import AuthContext from "../../../contexts/AuthContext";
 import RequirementsModal from "../../../components/client/RequirementsModal";
@@ -299,7 +321,7 @@ export default function ModernMultiStepForm() {
     if (hasError) {
       return `${baseClasses} border-red-300 bg-red-50/50 focus:border-red-500 focus:ring-4 focus:ring-red-100/50`;
     }
-    return `${baseClasses} border-gray-200/50 bg-white/80 hover:border-emerald-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100/50 backdrop-blur-sm`;
+    return `${baseClasses} border-gray-200/50 bg-white/80 hover:border-amber-300 focus:border-amber-500 focus:ring-4 focus:ring-amber-100/50 backdrop-blur-sm`;
   };
 
   const renderErrorMessage = (fieldName) => {
@@ -536,15 +558,15 @@ export default function ModernMultiStepForm() {
   }
 
   const steps = [
-    { id: 1, title: "Personal Info", icon: Users },
-    { id: 2, title: "Background", icon: FileText },
-    { id: 3, title: "Service Type", icon: Building2 },
-    { id: 4, title: "Partnerships", icon: Users },
-    { id: 5, title: "Companies", icon: Building2 },
-    { id: 6, title: "Family", icon: Users },
-    { id: 7, title: "Documents", icon: Upload },
-    { id: 8, title: "Payment", icon: CreditCard },
-    { id: 9, title: "Review", icon: Eye }
+    { id: 1, title: "Personal Info", icon: User, description: "Basic information" },
+    { id: 2, title: "Background", icon: Globe, description: "Nationality & status" },
+    { id: 3, title: "Service Type", icon: Briefcase, description: "Business activity" },
+    { id: 4, title: "Partnerships", icon: Handshake, description: "Partner details" },
+    { id: 5, title: "Companies", icon: Building, description: "External companies" },
+    { id: 6, title: "Family", icon: Heart, description: "Family members" },
+    { id: 7, title: "Documents", icon: FileImage, description: "File uploads" },
+    { id: 8, title: "Payment", icon: DollarSign, description: "Fee details" },
+    { id: 9, title: "Review", icon: CheckCircle, description: "Final review" }
   ];
 
   // Handle requirements modal acceptance
@@ -575,107 +597,151 @@ export default function ModernMultiStepForm() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="w-10 h-10 text-green-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Application Submitted!</h2>
-          <p className="text-gray-600 mb-6">
-            Your application has been submitted successfully. You will receive updates via email.
-          </p>
-          {applicationId && (
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-              <p className="text-sm font-medium text-blue-900">
-                Application ID: <span className="font-mono">{applicationId}</span>
+      <div className="min-h-screen bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="text-center py-16 sm:py-24 bg-gray-50 border-2 border-gray-200">
+            <div className="max-w-md mx-auto px-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center mx-auto mb-6">
+                <Check className="w-10 h-10 text-amber-900" />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                Application Submitted!
+              </h3>
+              <p className="text-gray-600 text-sm sm:text-base mb-8 leading-relaxed">
+                Your application has been submitted successfully. You will receive updates via email.
               </p>
+              {applicationId && (
+                <div className="bg-white border-2 border-gray-200 p-4 mb-6">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Application ID</p>
+                  <p className="font-mono text-sm font-medium text-gray-900">{applicationId}</p>
+                </div>
+              )}
+              <button 
+                onClick={() => window.location.href = '/client/track-application'}
+                className="w-full sm:w-auto px-8 py-4 bg-amber-900 hover:bg-amber-950 text-white text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg"
+              >
+                Track Your Application
+              </button>
             </div>
-          )}
-          <button 
-            onClick={() => window.location.reload()}
-            className="w-full py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors"
-          >
-            Submit New Application
-          </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30">
-    
-
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-        {/* Ultra Modern Progress Steps */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 mb-8 shadow-sm">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">Step {step} of {steps.length}</h2>
-              <p className="text-gray-600 font-medium">{steps[step - 1]?.title}</p>
-            </div>
-            <div className="text-right">
-              <div className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">
-                {Math.round((step / steps.length) * 100)}%
+    <div className="min-h-screen bg-white">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="flex flex-col space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="flex-1">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">
+                  Business Registration Application
+                </h1>
+                <p className="text-amber-100 text-sm sm:text-base">
+                  Complete your business registration in just a few simple steps
+                </p>
               </div>
-              <p className="text-sm text-gray-600 font-medium">Complete</p>
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <button 
+                  onClick={() => window.location.href = '/client'}
+                  className="w-full sm:w-auto px-6 py-3 bg-white/10 hover:bg-white/20 text-white text-sm font-semibold uppercase tracking-wider border border-white/30 transition-all duration-200"
+                >
+                  Back to Dashboard
+                </button>
+              </div>
             </div>
           </div>
-          
-          {/* Ultra Modern Progress Bar */}
-          <div className="w-full bg-gray-200/50 rounded-full h-3 mb-6 overflow-hidden">
-            <div 
-              className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 h-3 rounded-full transition-all duration-700 ease-out shadow-lg"
-              style={{ width: `${(step / steps.length) * 100}%` }}
-            />
-          </div>
+        </div>
+      </div>
 
-          {/* Ultra Modern Step Icons */}
-          <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-3 sm:gap-6">
-            {steps.map((stepItem) => {
-              const Icon = stepItem.icon;
-              const isActive = step === stepItem.id;
-              const isCompleted = step > stepItem.id;
-              
-              return (
-                <div key={stepItem.id} className="flex flex-col items-center group">
-                  <div className={`
-                    w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-500 transform group-hover:scale-105
-                    ${isActive 
-                      ? 'bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white shadow-2xl scale-110 ring-4 ring-emerald-200' 
-                      : isCompleted 
-                      ? 'bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg' 
-                      : 'bg-white/60 border-2 border-gray-200 text-gray-400 hover:border-emerald-300 hover:text-emerald-500'
-                    }
-                  `}>
-                    {isCompleted ? <Check className="w-6 h-6 sm:w-7 sm:h-7" /> : <Icon className="w-6 h-6 sm:w-7 sm:h-7" />}
-                  </div>
-                  <span className={`mt-3 text-xs sm:text-sm font-semibold text-center transition-colors duration-300 ${
-                    isActive ? 'text-emerald-600' : isCompleted ? 'text-emerald-600' : 'text-gray-500 group-hover:text-emerald-500'
-                  }`}>
-                    {stepItem.title}
-                  </span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Progress Steps */}
+        <div className="bg-white border-2 border-gray-200 overflow-hidden mb-8">
+          <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold mb-1">Step {step} of {steps.length}</h2>
+                <p className="text-amber-100 text-sm">{steps[step - 1]?.title} - {steps[step - 1]?.description}</p>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-amber-100">
+                  {Math.round((step / steps.length) * 100)}%
                 </div>
-              );
-            })}
+                <p className="text-xs text-amber-200 font-medium">Complete</p>
+              </div>
+            </div>
+          </div>
+          <div className="p-6">
+          
+            {/* Progress Bar */}
+            <div className="w-full bg-gray-200 h-2 mb-6">
+              <div 
+                className="bg-gradient-to-r from-amber-500 to-amber-600 h-2 transition-all duration-700 ease-out"
+                style={{ width: `${(step / steps.length) * 100}%` }}
+              />
+            </div>
+
+            {/* Step Icons */}
+            <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-3 sm:gap-6">
+              {steps.map((stepItem) => {
+                const Icon = stepItem.icon;
+                const isActive = step === stepItem.id;
+                const isCompleted = step > stepItem.id;
+                
+                return (
+                  <div key={stepItem.id} className="flex flex-col items-center group">
+                    <div className={`
+                      w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center transition-all duration-300
+                      ${isActive 
+                        ? 'bg-amber-600 text-white shadow-lg' 
+                        : isCompleted 
+                        ? 'bg-amber-500 text-white' 
+                        : 'bg-gray-100 border-2 border-gray-200 text-gray-400 hover:border-amber-300 hover:text-amber-500'
+                      }
+                    `}>
+                      {isCompleted ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : <Icon className="w-4 h-4 sm:w-5 sm:h-5" />}
+                    </div>
+                    <span className={`mt-2 text-xs font-medium text-center transition-colors duration-300 ${
+                      isActive ? 'text-amber-600 font-bold' : isCompleted ? 'text-amber-500' : 'text-gray-500'
+                    }`}>
+                      {stepItem.title}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        {/* Ultra Modern Form Container */}
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-          <div className="p-8 sm:p-12">
+        {/* Form Container */}
+        <div className="bg-white border-2 border-gray-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
+                {React.createElement(steps[step - 1]?.icon, { className: "w-6 h-6 text-white" })}
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">{steps[step - 1]?.title}</h2>
+                <p className="text-amber-100 text-sm">{steps[step - 1]?.description}</p>
+              </div>
+            </div>
+          </div>
+          <div className="p-6 sm:p-8">
             
             {/* Step 1: Personal Information */}
             {step === 1 && (
               <div className="space-y-6">
-                <div className="text-center mb-12">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-600 to-emerald-700 mb-6 shadow-xl">
-                    <Users className="w-8 h-8 text-white" />
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
+                    <User className="w-8 h-8 text-white" />
                   </div>
-                  <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent mb-4">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                     Personal Information
-                  </h2>
-                  <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                  </h3>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
                     Let's start with your basic details to create your business profile
                   </p>
                   
@@ -698,7 +764,7 @@ export default function ModernMultiStepForm() {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
                       Full Name *
                       {form.fullName && (
                         <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
@@ -720,7 +786,7 @@ export default function ModernMultiStepForm() {
 
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
                       Email Address *
                       {form.email && (
                         <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
@@ -743,7 +809,7 @@ export default function ModernMultiStepForm() {
 
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
                       Phone Number *
                       {form.phone && (
                         <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
@@ -772,8 +838,15 @@ export default function ModernMultiStepForm() {
             {step === 2 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Background Information</h2>
-                  <p className="text-gray-600">Tell us about your background and requirements</p>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
+                    <Globe className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                    Background Information
+                  </h3>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Tell us about your background and requirements
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -851,8 +924,15 @@ export default function ModernMultiStepForm() {
             {step === 3 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Service Selection</h2>
-                  <p className="text-gray-600">Choose the type of business service you need</p>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
+                    <Briefcase className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                    Service Selection
+                  </h3>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Choose the type of business service you need
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -944,8 +1024,15 @@ export default function ModernMultiStepForm() {
             {step === 4 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Partnership Details</h2>
-                  <p className="text-gray-600">Configure your business partnerships</p>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
+                    <Handshake className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                    Partnership Details
+                  </h3>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Configure your business partnerships
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -1004,8 +1091,15 @@ export default function ModernMultiStepForm() {
             {step === 5 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">External Companies</h2>
-                  <p className="text-gray-600">Manage your external company details</p>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
+                    <Building className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                    External Companies
+                  </h3>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Manage your external company details
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -1172,8 +1266,15 @@ export default function ModernMultiStepForm() {
             {step === 6 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Family Members</h2>
-                  <p className="text-gray-600">Add family members who will need residency</p>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
+                    <Heart className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                    Family Members
+                  </h3>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Add family members who will need residency
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -1256,8 +1357,15 @@ export default function ModernMultiStepForm() {
             {step === 7 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Document Upload</h2>
-                  <p className="text-gray-600">Upload required documents for your application</p>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
+                    <FileImage className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                    Document Upload
+                  </h3>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Upload required documents for your application
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -1481,8 +1589,15 @@ export default function ModernMultiStepForm() {
             {step === 8 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Payment Details</h2>
-                  <p className="text-gray-600">Review fees and payment information</p>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
+                    <DollarSign className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                    Payment Details
+                  </h3>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Review fees and payment information
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -1552,8 +1667,15 @@ export default function ModernMultiStepForm() {
             {step === 9 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Application Review</h2>
-                  <p className="text-gray-600">Please review your application before submission</p>
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
+                    <CheckCircle className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                    Application Review
+                  </h3>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Please review your application before submission
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -1650,7 +1772,7 @@ export default function ModernMultiStepForm() {
                 <button 
                   type="button" 
                   onClick={prevStep}
-                  className="group flex items-center justify-center gap-3 px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/50 text-gray-700 font-semibold rounded-2xl hover:bg-white hover:border-emerald-300 hover:text-emerald-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" 
+                  className="group flex items-center justify-center gap-3 px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/50 text-gray-700 font-semibold rounded-2xl hover:bg-white hover:border-amber-300 hover:text-amber-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" 
                 >
                   <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
                   Previous Step
@@ -1663,7 +1785,7 @@ export default function ModernMultiStepForm() {
                 <button 
                   type="button" 
                   onClick={nextStep}
-                  className="group flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 text-white font-bold rounded-2xl hover:from-emerald-700 hover:via-emerald-800 hover:to-emerald-900 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-3xl"
+                  className="group flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white font-bold rounded-2xl hover:from-amber-700 hover:via-amber-800 hover:to-amber-900 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-3xl"
                 >
                   Continue
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -1676,7 +1798,7 @@ export default function ModernMultiStepForm() {
                   className={`group flex items-center justify-center gap-3 px-10 py-4 font-bold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-3xl ${
                     isSubmitting 
                       ? "bg-gray-400 text-gray-200 cursor-not-allowed scale-100" 
-                      : "bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 text-white hover:from-emerald-700 hover:via-green-700 hover:to-teal-700"
+                      : "bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white hover:from-amber-700 hover:via-amber-800 hover:to-amber-900"
                   }`}
                 >
                   {isSubmitting ? (

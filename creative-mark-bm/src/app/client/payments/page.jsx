@@ -121,66 +121,91 @@ const PaymentsPage = () => {
     .reduce((sum, payment) => sum + payment.amount, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold" style={{ color: '#242021' }}>
-                Payment History
-              </h1>
-              <p className="text-gray-600 mt-2">Track and manage all your payments</p>
+    <div className="min-h-screen bg-white">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="flex flex-col space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="flex-1">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">
+                  Payment History
+                </h1>
+                <p className="text-amber-100 text-sm sm:text-base">
+                  Track and manage all your payments
+                </p>
+              </div>
             </div>
-            <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-2xl hover:from-emerald-700 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-              <FaPlus className="w-4 h-4" />
-              New Payment
-            </button>
           </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Action Buttons */}
+        <div className="mb-6">
+          <button className="flex items-center gap-2 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold uppercase tracking-wider transition-all duration-200">
+            <FaPlus className="w-4 h-4" />
+            New Payment
+          </button>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white border-2 border-emerald-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Payments</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{payments.length}</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center">
+          <div className="bg-white border-2 border-gray-200 overflow-hidden">
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
+                    Total Payments
+                  </h3>
+                  <p className="text-3xl font-bold text-gray-900 mb-2">{payments.length}</p>
+                </div>
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
                 <FaCreditCard className="w-6 h-6 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-emerald-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Amount</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{totalAmount.toLocaleString()} SAR</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center">
-                <FaCheckCircle className="w-6 h-6 text-white" />
+          <div className="bg-white border-2 border-gray-200 overflow-hidden">
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
+                    Total Amount
+                  </h3>
+                  <p className="text-3xl font-bold text-gray-900 mb-2">{totalAmount.toLocaleString()} SAR</p>
+                </div>
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+                  <FaCheckCircle className="w-6 h-6 text-white" />
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-emerald-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Completed</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{completedAmount.toLocaleString()} SAR</p>
-              </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center">
-                <FaCheckCircle className="w-6 h-6 text-white" />
+          <div className="bg-white border-2 border-gray-200 overflow-hidden">
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">
+                    Completed
+                  </h3>
+                  <p className="text-3xl font-bold text-gray-900 mb-2">{completedAmount.toLocaleString()} SAR</p>
+                </div>
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+                  <FaCheckCircle className="w-6 h-6 text-white" />
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white border-2 border-emerald-200 rounded-2xl p-6 mb-8 shadow-lg">
-          <div className="flex flex-col md:flex-row gap-4">
+        <div className="bg-white border-2 border-gray-200 overflow-hidden mb-8">
+          <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+            <h3 className="text-lg font-bold">Search & Filter</h3>
+          </div>
+          <div className="p-6">
+            <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -189,7 +214,7 @@ const PaymentsPage = () => {
                   placeholder="Search payments..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-2xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all duration-300"
+                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 focus:border-amber-500 transition-all duration-200"
                 />
               </div>
             </div>
@@ -197,7 +222,7 @@ const PaymentsPage = () => {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-4 py-3 border-2 border-gray-200 rounded-2xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all duration-300"
+                className="px-4 py-3 border-2 border-gray-200 focus:border-amber-500 transition-all duration-200"
               >
                 <option value="all">All Status</option>
                 <option value="completed">Completed</option>
@@ -294,6 +319,8 @@ const PaymentsPage = () => {
           </div>
         )}
       </div>
+    </div>
+    </div>
     </div>
   );
 };

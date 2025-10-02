@@ -165,100 +165,109 @@ export default function ApplicationDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-            <div className="flex-1">
-              <button
-                onClick={() => router.back()}
-                className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6 group transition-all duration-200"
-              >
-                <div className="mr-2 p-1 rounded-full group-hover:bg-gray-100 transition-colors duration-200">
-                  <FaArrowLeft className="w-5 h-5" />
-                </div>
-                <span className="font-medium">Back to Applications</span>
-              </button>
-              
-              <div className="space-y-2">
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+    <div className="min-h-screen bg-white">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="flex flex-col space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="flex-1">
+                <button
+                  onClick={() => router.back()}
+                  className="inline-flex items-center text-amber-100 hover:text-white mb-6 group transition-all duration-200"
+                >
+                  <div className="mr-2 p-1 rounded-full group-hover:bg-white/10 transition-colors duration-200">
+                    <FaArrowLeft className="w-5 h-5" />
+                  </div>
+                  <span className="font-medium">Back to Applications</span>
+                </button>
+                
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">
                   Application Details
                 </h1>
-                <div className="flex items-center space-x-2">
-                  <div className="px-3 py-1 bg-gray-100 rounded-full">
-                    <p className="text-sm font-mono text-gray-600">ID: {application._id}</p>
+                <p className="text-amber-100 text-sm sm:text-base">
+                  Track and monitor your application progress
+                </p>
+                <div className="mt-4 flex items-center space-x-2">
+                  <div className="px-3 py-1 bg-white/10 rounded-full">
+                    <p className="text-sm font-mono text-amber-100">ID: {application._id}</p>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="flex items-center space-x-6">
-              <div className="text-center">
-                <p className="text-sm font-medium text-gray-500 mb-2">Status</p>
-                <span className={`inline-flex items-center px-6 py-3 text-sm font-bold uppercase rounded-xl shadow-lg ${getStatusStyle(progressData?.currentStatus || application.status?.current || application.status)}`}>
-                  <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
-                  {formatStatus(progressData?.currentStatus || application.status?.current || application.status)}
-                </span>
-              </div>
               
-              <div className="text-center">
-                <p className="text-sm font-medium text-gray-500 mb-2">Progress</p>
-                <div className="flex items-center space-x-3">
-                  <div className="relative w-32 h-3 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all duration-1000 ease-out shadow-sm"
-                      style={{ width: `${getProgressPercentage()}%` }}
-                    >
-                      <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
-                    </div>
-                  </div>
-                  <span className="text-sm font-bold text-gray-700">
-                    {getProgressPercentage()}%
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <div className="text-center">
+                  <p className="text-xs font-bold uppercase tracking-wide text-amber-200 mb-2">Status</p>
+                  <span className={`inline-flex items-center px-4 py-2 text-xs font-bold uppercase rounded-lg shadow-lg ${getStatusStyle(progressData?.currentStatus || application.status?.current || application.status)}`}>
+                    <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                    {formatStatus(progressData?.currentStatus || application.status?.current || application.status)}
                   </span>
+                </div>
+                
+                <div className="text-center">
+                  <p className="text-xs font-bold uppercase tracking-wide text-amber-200 mb-2">Progress</p>
+                  <div className="flex items-center space-x-2">
+                    <div className="relative w-24 h-2 bg-white/20 rounded-full overflow-hidden">
+                      <div 
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all duration-1000 ease-out shadow-sm"
+                        style={{ width: `${getProgressPercentage()}%` }}
+                      >
+                        <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold text-amber-100">
+                      {getProgressPercentage()}%
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="xl:col-span-2 space-y-8">
+          <div className="xl:col-span-2 space-y-6">
             {/* Client Information */}
-            <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-              <div className="px-8 py-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200/50">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-blue-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                    <FaUser className="w-5 h-5 text-blue-600" />
+            <div className="bg-white border-2 border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
+                    <FaUser className="w-6 h-6 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900">Client Information</h2>
+                  <div>
+                    <h2 className="text-xl font-bold">Client Information</h2>
+                    <p className="text-amber-100 text-sm">Personal details and contact information</p>
+                  </div>
                 </div>
               </div>
-              <div className="p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Full Name</label>
-                    <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
-                      <p className="text-lg font-semibold text-gray-900">{application.client?.name || application.serviceDetails?.client?.name || "N/A"}</p>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Full Name</label>
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">{application.client?.name || application.serviceDetails?.client?.name || "N/A"}</p>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Email</label>
-                    <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
-                      <p className="text-lg font-semibold text-gray-900">{application.client?.email || "N/A"}</p>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Email</label>
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">{application.client?.email || "N/A"}</p>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
-                    <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
-                      <p className="text-lg font-semibold text-gray-900">{application.client?.phone || "N/A"}</p>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Phone</label>
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">{application.client?.phone || "N/A"}</p>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Nationality</label>
-                    <div className="p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border border-orange-100">
-                      <p className="text-lg font-semibold text-gray-900">{application.client?.nationality || "N/A"}</p>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Nationality</label>
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">{application.client?.nationality || "N/A"}</p>
                     </div>
                   </div>
                 </div>
@@ -267,33 +276,36 @@ export default function ApplicationDetailPage() {
 
             {/* Partner Information */}
             {(application.partner || application.serviceDetails?.partner) && (
-              <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-                <div className="px-8 py-6 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-200/50">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-purple-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                      <FaUser className="w-5 h-5 text-purple-600" />
+              <div className="bg-white border-2 border-gray-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
+                      <FaUser className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900">Partner Information</h2>
+                    <div>
+                      <h2 className="text-xl font-bold">Partner Information</h2>
+                      <p className="text-amber-100 text-sm">Business partner details</p>
+                    </div>
                   </div>
                 </div>
-                <div className="p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-3">
-                      <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Partner Name</label>
-                      <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
-                      <p className="text-lg font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.name || "N/A"}</p>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Partner Name</label>
+                      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <p className="text-sm font-medium text-gray-900">{(application.partner || application.serviceDetails?.partner)?.name || "N/A"}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Email</label>
-                    <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
-                      <p className="text-lg font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.email || "N/A"}</p>
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Email</label>
+                      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <p className="text-sm font-medium text-gray-900">{(application.partner || application.serviceDetails?.partner)?.email || "N/A"}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
-                    <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
-                      <p className="text-lg font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.phone || "N/A"}</p>
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Phone</label>
+                      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <p className="text-sm font-medium text-gray-900">{(application.partner || application.serviceDetails?.partner)?.phone || "N/A"}</p>
                       </div>
                     </div>
                   </div>
@@ -302,51 +314,54 @@ export default function ApplicationDetailPage() {
             )}
 
             {/* Application Overview */}
-            <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-              <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-gray-100/50 border-b border-gray-200/50">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-indigo-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                    <FaFileAlt className="w-5 h-5 text-indigo-600" />
+            <div className="bg-white border-2 border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
+                    <FaFileAlt className="w-6 h-6 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900">Application Overview</h2>
+                  <div>
+                    <h2 className="text-xl font-bold">Application Overview</h2>
+                    <p className="text-amber-100 text-sm">Service details and business information</p>
+                  </div>
                 </div>
               </div>
-              <div className="p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Service Type</label>
-                    <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
-                      <p className="text-lg font-semibold text-gray-900">{application.serviceDetails?.serviceType || application.serviceType || "N/A"}</p>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Service Type</label>
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.serviceType || application.serviceType || "N/A"}</p>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Partner Type</label>
-                    <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
-                      <p className="text-lg font-semibold text-gray-900">{application.serviceDetails?.partnerType || application.partnerType || "N/A"}</p>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Partner Type</label>
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.partnerType || application.partnerType || "N/A"}</p>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">External Companies</label>
-                    <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
-                      <p className="text-lg font-semibold text-gray-900">{application.serviceDetails?.externalCompaniesCount || application.externalCompaniesCount || 0}</p>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">External Companies</label>
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.externalCompaniesCount || application.externalCompaniesCount || 0}</p>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Virtual Office</label>
-                    <div className="p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border border-orange-100">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Virtual Office</label>
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
                       <div className="flex items-center space-x-2">
                         <div className={`w-3 h-3 rounded-full ${(application.serviceDetails?.needVirtualOffice || application.needVirtualOffice) ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                        <p className="text-lg font-semibold text-gray-900">
+                        <p className="text-sm font-medium text-gray-900">
                           {(application.serviceDetails?.needVirtualOffice || application.needVirtualOffice) ? "Yes" : "No"}
                         </p>
                       </div>
                     </div>
                   </div>
                   {(application.serviceDetails?.projectEstimatedValue || application.projectEstimatedValue) && (
-                    <div className="md:col-span-2 space-y-3">
-                      <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide">Project Estimated Value</label>
-                      <div className="p-6 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200">
-                        <p className="text-2xl font-bold text-gray-900">
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Project Estimated Value</label>
+                      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <p className="text-lg font-bold text-gray-900">
                           {(() => {
                             const value = application.serviceDetails?.projectEstimatedValue || application.projectEstimatedValue;
                             return typeof value === 'number' ? value.toLocaleString() : value;
@@ -361,37 +376,40 @@ export default function ApplicationDetailPage() {
 
             {/* External Companies Details */}
             {((application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails) && (application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).length > 0) && (
-              <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-                <div className="px-8 py-6 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-200/50">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-purple-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                      <FaBuilding className="w-5 h-5 text-purple-600" />
+              <div className="bg-white border-2 border-gray-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
+                      <FaBuilding className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900">External Companies</h2>
+                    <div>
+                      <h2 className="text-xl font-bold">External Companies</h2>
+                      <p className="text-amber-100 text-sm">External company details and ownership</p>
+                    </div>
                   </div>
                 </div>
-                <div className="p-8">
-                  <div className="grid gap-6">
+                <div className="p-6">
+                  <div className="space-y-4">
                     {(application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).map((company, index) => (
-                      <div key={index} className="p-6 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-200">
-                        <div className="flex items-center justify-between mb-6">
-                          <h3 className="text-lg font-bold text-gray-900">Company #{index + 1}</h3>
-                          <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                      <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-sm font-bold text-gray-900">Company #{index + 1}</h3>
+                          <span className="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
                             {company.sharePercentage || 0}% Share
-                          </div>
+                          </span>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-semibold text-gray-500 mb-2">Company Name</label>
-                            <p className="text-gray-900 font-medium">{company.companyName || "N/A"}</p>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Company Name</label>
+                            <p className="text-sm font-medium text-gray-900">{company.companyName || "N/A"}</p>
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold text-gray-500 mb-2">Country</label>
-                            <p className="text-gray-900 font-medium">{company.country || "N/A"}</p>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Country</label>
+                            <p className="text-sm font-medium text-gray-900">{company.country || "N/A"}</p>
                           </div>
                           <div className="md:col-span-2">
-                            <label className="block text-sm font-semibold text-gray-500 mb-2">CR Number</label>
-                            <p className="text-gray-900 font-mono font-medium">{company.crNumber || "N/A"}</p>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">CR Number</label>
+                            <p className="text-sm font-mono font-medium text-gray-900">{company.crNumber || "N/A"}</p>
                           </div>
                         </div>
                       </div>
@@ -403,32 +421,35 @@ export default function ApplicationDetailPage() {
 
             {/* Family Members */}
             {((application.serviceDetails?.familyMembers || application.familyMembers) && (application.serviceDetails?.familyMembers || application.familyMembers).length > 0) && (
-              <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-                <div className="px-8 py-6 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200/50">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-green-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                      <FaUsers className="w-5 h-5 text-green-600" />
+              <div className="bg-white border-2 border-gray-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
+                      <FaUsers className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900">Family Members</h2>
+                    <div>
+                      <h2 className="text-xl font-bold">Family Members</h2>
+                      <p className="text-amber-100 text-sm">Family members requiring residency</p>
+                    </div>
                   </div>
                 </div>
-                <div className="p-8">
-                  <div className="grid gap-6">
+                <div className="p-6">
+                  <div className="space-y-4">
                     {(application.serviceDetails?.familyMembers || application.familyMembers).map((member, index) => (
-                      <div key={index} className="p-6 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-200">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4">Family Member #{index + 1}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <h3 className="text-sm font-bold text-gray-900 mb-3">Family Member #{index + 1}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
-                            <label className="block text-sm font-semibold text-gray-500 mb-2">Full Name</label>
-                            <p className="text-gray-900 font-medium">{member.name || "N/A"}</p>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Full Name</label>
+                            <p className="text-sm font-medium text-gray-900">{member.name || "N/A"}</p>
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold text-gray-500 mb-2">Relationship</label>
-                            <p className="text-gray-900 font-medium">{member.relation || "N/A"}</p>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Relationship</label>
+                            <p className="text-sm font-medium text-gray-900">{member.relation || "N/A"}</p>
                           </div>
                           <div>
-                            <label className="block text-sm font-semibold text-gray-500 mb-2">Passport Number</label>
-                            <p className="text-gray-900 font-mono font-medium">{member.passportNo || "N/A"}</p>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Passport Number</label>
+                            <p className="text-sm font-mono font-medium text-gray-900">{member.passportNo || "N/A"}</p>
                           </div>
                         </div>
                       </div>
@@ -440,31 +461,34 @@ export default function ApplicationDetailPage() {
 
             {/* Documents */}
             {application.documents && application.documents.length > 0 && (
-              <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-                <div className="px-8 py-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-b border-amber-200/50">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-amber-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                      <FaFileAlt className="w-5 h-5 text-amber-600" />
+              <div className="bg-white border-2 border-gray-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
+                      <FaFileAlt className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900">Uploaded Documents</h2>
+                    <div>
+                      <h2 className="text-xl font-bold">Uploaded Documents</h2>
+                      <p className="text-amber-100 text-sm">Application documents and files</p>
+                    </div>
                   </div>
                 </div>
-                <div className="p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {application.documents.map((doc, index) => (
-                      <div key={index} className="p-6 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-200 group/doc">
+                      <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="text-lg font-bold text-gray-900 mb-2">{doc.type}</h3>
-                            <p className="text-sm text-gray-500">Uploaded on {formatDate(doc.createdAt)}</p>
+                            <h3 className="text-sm font-bold text-gray-900 mb-1">{doc.type}</h3>
+                            <p className="text-xs text-gray-500">Uploaded on {formatDate(doc.createdAt)}</p>
                           </div>
                           <a
                             href={doc.fileUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ml-4 inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl group-hover/doc:scale-105"
+                            className="ml-3 inline-flex items-center px-3 py-1 bg-amber-900 hover:bg-amber-950 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200"
                           >
-                            <FaEye className="w-4 h-4 mr-2" />
+                            <FaEye className="w-3 h-3 mr-1" />
                             View
                           </a>
                         </div>
@@ -477,18 +501,21 @@ export default function ApplicationDetailPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Application Timeline */}
-            <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-              <div className="px-6 py-5 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-200/50">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-indigo-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                    <FaClock className="w-4 h-4 text-indigo-600" />
+            <div className="bg-white border-2 border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-amber-600 flex items-center justify-center rounded-lg">
+                    <FaClock className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">Timeline</h2>
+                  <div>
+                    <h3 className="text-lg font-bold">Timeline</h3>
+                    <p className="text-amber-100 text-xs">Application progress tracking</p>
+                  </div>
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-4">
                 <Timeline 
                   events={progressData?.timeline || application.timeline || []} 
                   currentStatus={progressData?.currentStatus || application.status?.current || application.status}
@@ -498,38 +525,41 @@ export default function ApplicationDetailPage() {
             </div>
 
             {/* Application Info */}
-            <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-              <div className="px-6 py-5 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200/50">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-blue-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                    <FaCog className="w-4 h-4 text-blue-600" />
+            <div className="bg-white border-2 border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-amber-600 flex items-center justify-center rounded-lg">
+                    <FaCog className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">Application Info</h2>
+                  <div>
+                    <h3 className="text-lg font-bold">Application Info</h3>
+                    <p className="text-amber-100 text-xs">Key application details</p>
+                  </div>
                 </div>
               </div>
-              <div className="p-6 space-y-6">
-                <div className="p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg border border-gray-200">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Application ID</label>
-                  <p className="text-gray-900 font-mono text-sm break-all">{application.applicationId || application._id}</p>
+              <div className="p-4 space-y-3">
+                <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Application ID</label>
+                  <p className="text-gray-900 font-mono text-xs break-all">{application.applicationId || application._id}</p>
                 </div>
-                <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Submitted</label>
-                  <p className="text-gray-900 font-medium">{formatDate(application.timestamps?.createdAt || application.createdAt)}</p>
+                <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Submitted</label>
+                  <p className="text-gray-900 font-medium text-sm">{formatDate(application.timestamps?.createdAt || application.createdAt)}</p>
                 </div>
-                <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Last Updated</label>
-                  <p className="text-gray-900 font-medium">{formatDate(application.timestamps?.updatedAt || application.updatedAt)}</p>
+                <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Last Updated</label>
+                  <p className="text-gray-900 font-medium text-sm">{formatDate(application.timestamps?.updatedAt || application.updatedAt)}</p>
                 </div>
                 {(application.status?.approvedBy || application.approvedBy) && (
-                  <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Approved By</label>
-                    <p className="text-gray-900 font-medium">{(application.status?.approvedBy || application.approvedBy)?.fullName || (application.status?.approvedBy || application.approvedBy)?.name || "N/A"}</p>
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Approved By</label>
+                    <p className="text-gray-900 font-medium text-sm">{(application.status?.approvedBy || application.approvedBy)?.fullName || (application.status?.approvedBy || application.approvedBy)?.name || "N/A"}</p>
                   </div>
                 )}
                 {(application.status?.approvedAt || application.approvedAt) && (
-                  <div className="p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border border-orange-200">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Approved At</label>
-                    <p className="text-gray-900 font-medium">{formatDate(application.status?.approvedAt || application.approvedAt)}</p>
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Approved At</label>
+                    <p className="text-gray-900 font-medium text-sm">{formatDate(application.status?.approvedAt || application.approvedAt)}</p>
                   </div>
                 )}
               </div>
@@ -537,31 +567,34 @@ export default function ApplicationDetailPage() {
 
             {/* Assigned Employees */}
             {application.assignedEmployees && application.assignedEmployees.length > 0 && (
-              <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-                <div className="px-6 py-5 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200/50">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-green-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                      <FaUsers className="w-4 h-4 text-green-600" />
+              <div className="bg-white border-2 border-gray-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-amber-600 flex items-center justify-center rounded-lg">
+                      <FaUsers className="w-5 h-5 text-white" />
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900">Assigned Team</h2>
+                    <div>
+                      <h3 className="text-lg font-bold">Assigned Team</h3>
+                      <p className="text-amber-100 text-xs">Team members handling your application</p>
+                    </div>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="space-y-4">
+                <div className="p-4">
+                  <div className="space-y-3">
                     {application.assignedEmployees.map((employee, index) => (
-                      <div key={index} className="p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-200">
-                        <div className="flex items-start space-x-4">
+                      <div key={index} className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                        <div className="flex items-start space-x-3">
                           <div className="flex-shrink-0">
-                            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                              <span className="text-white font-bold text-sm">
+                            <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">
                                 {employee.fullName?.charAt(0).toUpperCase() || "?"}
                               </span>
                             </div>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-lg font-semibold text-gray-900 truncate">{employee.fullName || employee.name}</h3>
-                            <p className="text-sm text-gray-600 font-medium">{employee.position || employee.role}</p>
-                            <p className="text-sm text-gray-500">{employee.email}</p>
+                            <h3 className="text-sm font-semibold text-gray-900 truncate">{employee.fullName || employee.name}</h3>
+                            <p className="text-xs text-gray-600 font-medium">{employee.position || employee.role}</p>
+                            <p className="text-xs text-gray-500">{employee.email}</p>
                           </div>
                         </div>
                       </div>
@@ -573,39 +606,42 @@ export default function ApplicationDetailPage() {
 
             {/* Payment Information */}
             {application.payment && (
-              <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-                <div className="px-6 py-5 bg-gradient-to-r from-yellow-50 to-orange-50 border-b border-yellow-200/50">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-yellow-100 rounded-lg group-hover:scale-110 transition-transform duration-200">
-                      <FaDollarSign className="w-4 h-4 text-yellow-600" />
+              <div className="bg-white border-2 border-gray-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-amber-600 flex items-center justify-center rounded-lg">
+                      <FaDollarSign className="w-5 h-5 text-white" />
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900">Payment Info</h2>
+                    <div>
+                      <h3 className="text-lg font-bold">Payment Info</h3>
+                      <p className="text-amber-100 text-xs">Payment details and status</p>
+                    </div>
                   </div>
                 </div>
-                <div className="p-6 space-y-6">
-                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Amount</label>
-                    <p className="text-2xl font-bold text-gray-900">{application.payment?.amount || 0} SAR</p>
+                <div className="p-4 space-y-3">
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Amount</label>
+                    <p className="text-lg font-bold text-gray-900">{application.payment?.amount || 0} SAR</p>
                   </div>
-                  <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Method</label>
-                    <p className="text-gray-900 font-medium">{application.payment?.method || "N/A"}</p>
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Method</label>
+                    <p className="text-gray-900 font-medium text-sm">{application.payment?.method || "N/A"}</p>
                   </div>
-                  <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Status</label>
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Status</label>
                     <div className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${
                         application.payment?.status === 'paid' ? 'bg-green-500' : 
                         application.payment?.status === 'pending' ? 'bg-yellow-500' : 
                         'bg-red-500'
                       }`}></div>
-                      <p className="text-gray-900 font-medium capitalize">{application.payment?.status || "N/A"}</p>
+                      <p className="text-gray-900 font-medium text-sm capitalize">{application.payment?.status || "N/A"}</p>
                     </div>
                   </div>
                   {application.payment?.paidAt && (
-                    <div className="p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border border-orange-200">
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Paid At</label>
-                      <p className="text-gray-900 font-medium">{formatDate(application.payment.paidAt)}</p>
+                    <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Paid At</label>
+                      <p className="text-gray-900 font-medium text-sm">{formatDate(application.payment.paidAt)}</p>
                     </div>
                   )}
                 </div>
