@@ -15,11 +15,13 @@ export const SocketProvider = ({ children }) => {
     if (user) {
       // Initialize socket connection
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      console.log('🔌 Attempting to connect to Socket.IO server:', backendUrl);
       const newSocket = io(backendUrl, {
         withCredentials: true,
         transports: ['websocket', 'polling'],
         timeout: 10000,
-        forceNew: true
+        forceNew: true,
+        autoConnect: true
       });
 
       // Connection event handlers
@@ -38,6 +40,7 @@ export const SocketProvider = ({ children }) => {
 
       newSocket.on('connect_error', (error) => {
         console.error('❌ Socket connection error:', error.message);
+        console.error('❌ Socket error details:', error);
         setIsConnected(false);
       });
 

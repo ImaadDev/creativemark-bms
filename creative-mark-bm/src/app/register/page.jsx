@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../contexts/AuthContext";
 import { register } from "../../services/auth";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { updateUser } = useAuth();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -69,8 +71,8 @@ export default function RegisterPage() {
       if (response.success) {
         setSuccess("Registration successful! Redirecting...");
         
-        // Store user data in localStorage
-        localStorage.setItem("user", JSON.stringify(response.user));
+        // Update AuthContext with user data
+        updateUser(response.user);
         
         // Redirect to client dashboard after a short delay
         setTimeout(() => {

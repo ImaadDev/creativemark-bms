@@ -1,18 +1,38 @@
 "use client";
+// Version: 2024-12-19-15:30 - Fixed 401 errors on auth pages
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
+import { usePathname } from "next/navigation";
 
 const MessageNotificationContext = createContext();
 
-export const MessageNotificationProvider = ({ children }) => {
+const MessageNotificationProviderContent = ({ children }) => {
   const { user } = useAuth();
+  const pathname = usePathname();
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
 
+  // Check if we're on an authentication page
+  const isAuthPage = pathname === '/' || pathname === '/login' || pathname === '/register';
+  
+
   // Poll for new messages every 30 seconds
   useEffect(() => {
-    if (!user) return;
+    // Don't poll if user is not authenticated, if we're on auth pages, or if no token exists
+    if (!user || !user.id || isAuthPage) {
+      setUnreadCount(0);
+      setNotifications([]);
+      return;
+    }
+
+    // Additional check for token existence
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (!token) {
+      setUnreadCount(0);
+      setNotifications([]);
+      return;
+    }
 
     const pollForMessages = async () => {
       try {
@@ -23,8 +43,15 @@ export const MessageNotificationProvider = ({ children }) => {
           setUnreadCount(response.unreadCount);
         }
       } catch (error) {
+        // Handle different types of errors
+        if (error.response?.status === 401 || error.message === 'User not authenticated') {
+          // User is not authenticated, don't log this as an error
+          setUnreadCount(0);
+          return;
+        }
+        
         // Only log error if it's not a network error (backend not running)
-        if (!error.message.includes('Network Error') && !error.code === 'ECONNREFUSED') {
+        if (!error.message.includes('Network Error') && error.code !== 'ECONNREFUSED') {
           console.error("Error polling for messages:", error);
         }
         // Set unread count to 0 if backend is not available
@@ -39,7 +66,7 @@ export const MessageNotificationProvider = ({ children }) => {
     const interval = setInterval(pollForMessages, 30000); // 30 seconds
 
     return () => clearInterval(interval);
-  }, [user]);
+  }, [user, isAuthPage]);
 
   // Add notification
   const addNotification = (notification) => {
@@ -77,6 +104,31 @@ export const MessageNotificationProvider = ({ children }) => {
       {children}
     </MessageNotificationContext.Provider>
   );
+};
+
+export const MessageNotificationProvider = ({ children }) => {
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // Check if we're on an authentication page
+  const isAuthPage = pathname === '/' || pathname === '/login' || pathname === '/register';
+  
+  // Don't render anything until mounted (prevents SSR issues)
+  if (!mounted) {
+    return children;
+  }
+  
+  // If we're on auth pages, just return children without the provider
+  if (isAuthPage) {
+    return children;
+  }
+  
+  // Otherwise, use the full provider
+  return <MessageNotificationProviderContent>{children}</MessageNotificationProviderContent>;
 };
 
 export const useMessageNotifications = () => {

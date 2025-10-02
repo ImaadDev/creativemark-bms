@@ -1,10 +1,14 @@
 "use client";
 import { useState } from "react";
+import { useAuthGuard } from "../../hooks/useAuthGuard";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
 
 export default function ClientLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  // Protect client routes - only allow client role
+  const isAuthenticated = useAuthGuard(['client']);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -13,6 +17,11 @@ export default function ClientLayout({ children }) {
   const closeSidebar = () => {
     setIsSidebarOpen(false);
   };
+
+  // Don't render the layout if not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">

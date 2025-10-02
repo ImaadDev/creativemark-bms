@@ -6,7 +6,6 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import connectDB from './config/db.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
-import authMiddleware from './middlewares/authMiddleware.js';
 
 
 // Routes
@@ -29,9 +28,10 @@ const app = express();
 const server = createServer(app);
 
 // Socket.IO setup
+console.log("Socket.IO CORS Configuration - CLIENT_URL:", process.env.CLIENT_URL);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -40,9 +40,28 @@ const io = new Server(server, {
 // Make io instance available to routes
 app.set('io', io);
 
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('✅ User connected:', socket.id);
+  
+  socket.on('join_user_room', (userId) => {
+    console.log(`👤 User ${userId} joined personal room`);
+    socket.join(`user_${userId}`);
+  });
+  
+  socket.on('disconnect', () => {
+    console.log('❌ User disconnected:', socket.id);
+  });
+  
+  socket.on('error', (error) => {
+    console.error('❌ Socket error:', error);
+  });
+});
+
 // Middleware
+console.log("CORS Configuration - CLIENT_URL:", process.env.CLIENT_URL);
 app.use(cors({
-  origin: process.env.CLIENT_URL, // Frontend URL
+  origin: process.env.CLIENT_URL || "http://localhost:3000", // Frontend URL
   credentials: true // Allow cookies
 }));
 app.use(express.json());

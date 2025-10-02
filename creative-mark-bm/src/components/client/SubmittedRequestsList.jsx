@@ -13,7 +13,6 @@ import {
   FaHourglassHalf
 } from 'react-icons/fa';
 import { getMockApplications } from '../../services/clientService';
-import { isAuthenticated } from '../../services/auth';
 
 const SubmittedRequestsList = () => {
   const router = useRouter();
@@ -29,12 +28,6 @@ const SubmittedRequestsList = () => {
     try {
       setLoading(true);
       
-      // Check authentication
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       // Load requests
       await loadRequests();

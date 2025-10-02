@@ -21,7 +21,6 @@ import {
 } from 'react-icons/fa';
 import RequestsList from '../../../components/admin/RequestsList';
 import AssignmentModal from '../../../components/admin/AssignmentModal';
-import { isAuthenticated } from '../../../services/auth';
 
 const InternalRequestsContent = () => {
   // Updated navigation to use new details page
@@ -38,18 +37,11 @@ const InternalRequestsContent = () => {
   useEffect(() => {
     const initializePage = async () => {
       try {
-        const authenticated = await isAuthenticated();
-        if (!authenticated) {
-          router.push('/login');
-          return;
-        }
-
         if (tab) {
           setActiveTab(tab);
         }
       } catch (error) {
         console.error('Error initializing page:', error);
-        router.push('/login');
       } finally {
         setLoading(false);
       }

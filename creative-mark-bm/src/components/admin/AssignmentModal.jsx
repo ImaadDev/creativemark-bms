@@ -12,10 +12,11 @@ import {
 } from 'react-icons/fa';
 import { assignApplicationToEmployees } from '../../services/applicationService';
 import { getAllEmployees } from '../../services/employeeApi';
-import { getCurrentUser } from '../../services/auth';
+import { useAuth } from '../../contexts/AuthContext';
 import Swal from 'sweetalert2';
 
 const AssignmentModal = ({ request, onClose, onAssigned }) => {
+  const { user: currentUser } = useAuth();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [assigning, setAssigning] = useState(false);
@@ -115,9 +116,8 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
       try {
         setAssigning(true);
         
-        // Get current user ID (assignedBy)
-        const currentUser = await getCurrentUser();
-        if (!currentUser || !currentUser.data) {
+        // Check if current user is available
+        if (!currentUser || !currentUser._id) {
           Swal.fire({
             title: 'Authentication Error',
             text: 'You must be logged in to assign applications.',
@@ -159,7 +159,7 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
         const response = await assignApplicationToEmployees(
           applicationId,
           formData.selectedEmployees,
-          currentUser.data._id, // assignedBy
+          currentUser._id, // assignedBy
           formData.note || `Application assigned via dashboard`
         );
         

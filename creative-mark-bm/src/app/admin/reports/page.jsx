@@ -39,7 +39,6 @@ import { getDashboardAnalytics, getApplicationReports, getEmployeeReports, getFi
 import { getAllApplications } from "../../../services/applicationService";
 import { getAllEmployees } from "../../../services/employeeApi";
 import { getAllClients } from "../../../services/clientApi";
-import { isAuthenticated } from "../../../services/auth";
 
 export default function ReportsPage() {
   const router = useRouter();
@@ -79,11 +78,6 @@ export default function ReportsPage() {
   useEffect(() => {
     const initializePage = async () => {
       try {
-        const authenticated = await isAuthenticated();
-        if (!authenticated) {
-          router.push('/login');
-          return;
-        }
         await loadDashboardData();
       } catch (error) {
         console.error('Error initializing reports page:', error);

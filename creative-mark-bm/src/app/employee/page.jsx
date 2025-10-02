@@ -38,7 +38,6 @@ import {
   FaFilter,
   FaCog
 } from 'react-icons/fa';
-import { isAuthenticated } from '../../services/auth';
 import { FullPageLoading } from '../../components/LoadingSpinner';
 import AuthContext from '../../contexts/AuthContext';
 import { 
@@ -90,11 +89,6 @@ export default function EmployeeDashboard() {
       setLoading(true);
       setError(null);
 
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       // Fetch all dashboard data in parallel
       const [

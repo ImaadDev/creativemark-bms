@@ -26,7 +26,6 @@ import {
   approveRequest,
   rejectRequest
 } from '../../services/employeeApi';
-import { isAuthenticated } from '../../services/auth';
 
 const RequestDetails = ({ requestId, request: initialRequest, onClose, onAssign }) => {
   const router = useRouter();
@@ -54,11 +53,6 @@ const RequestDetails = ({ requestId, request: initialRequest, onClose, onAssign 
     try {
       setLoading(true);
       
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       const response = await getRequestDetails(requestId);
       console.log(response)

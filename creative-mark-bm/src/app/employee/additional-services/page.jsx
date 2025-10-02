@@ -23,7 +23,6 @@ import {
   FaTag
 } from 'react-icons/fa';
 import { getEmployeeApplications } from '../../../services/employeeDashboardService';
-import { isAuthenticated } from '../../../services/auth';
 
 export default function AdditionalServicesPage() {
   const router = useRouter();
@@ -45,11 +44,6 @@ export default function AdditionalServicesPage() {
       setLoading(true);
       setError(null);
 
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       // Generate services from request data and add some additional services
       const response = await getEmployeeApplications({ limit: 100 });

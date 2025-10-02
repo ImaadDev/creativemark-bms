@@ -28,7 +28,6 @@ import {
 import {
   getApplication
 } from '../../services/applicationService';
-import { isAuthenticated } from '../../services/auth';
 
 const RequestDetails = ({ requestId, request: initialRequest, onClose, onAssign }) => {
   const router = useRouter();
@@ -58,14 +57,8 @@ const RequestDetails = ({ requestId, request: initialRequest, onClose, onAssign 
     try {
       setLoading(true);
       
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       const response = await getApplication(requestId);
-      console.log('Application details response:', response.data);
       
       if (response.success && response.data) {
         const application = response.data;
@@ -86,9 +79,6 @@ const RequestDetails = ({ requestId, request: initialRequest, onClose, onAssign 
       }
     } catch (error) {
       console.error('Error loading request details:', error);
-      if (error.response?.status === 401) {
-        router.push('/login');
-      }
     } finally {
       setLoading(false);
     }

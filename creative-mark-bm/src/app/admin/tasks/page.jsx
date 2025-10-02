@@ -21,7 +21,6 @@ import {
   FaTrash,
   FaEye
 } from 'react-icons/fa';
-import { isAuthenticated } from '../../../services/auth';
 import api from '../../../services/api';
 
 const AdminTasksPage = () => {
@@ -56,11 +55,6 @@ const AdminTasksPage = () => {
   ];
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.push('/');
-      return;
-    }
-
     fetchData();
   }, [router]);
 

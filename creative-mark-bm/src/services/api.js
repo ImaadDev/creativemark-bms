@@ -34,7 +34,12 @@ api.interceptors.response.use(
     const url = error.config?.url || 'Unknown URL';
     const data = error.response?.data || error.message;
     
-    console.error(`API Error: ${status} ${url}`, data);
+    // Don't log 401 errors for /auth/me as they're expected when user is not authenticated
+    if (status === 401 && url.includes('/auth/me')) {
+      console.log(`API Info: ${status} ${url} - User not authenticated (expected)`);
+    } else {
+      console.error(`API Error: ${status} ${url}`, data);
+    }
     
     // Handle specific error cases
     if (error.code === 'ECONNREFUSED' || error.message.includes('Network Error')) {

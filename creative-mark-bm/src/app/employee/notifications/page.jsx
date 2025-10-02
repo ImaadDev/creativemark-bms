@@ -20,7 +20,6 @@ import {
   FaFileAlt
 } from 'react-icons/fa';
 import { getEmployeeApplications } from '../../../services/employeeDashboardService';
-import { isAuthenticated } from '../../../services/auth';
 
 export default function NotificationsPage() {
   const router = useRouter();
@@ -40,11 +39,6 @@ export default function NotificationsPage() {
       setLoading(true);
       setError(null);
 
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       // Generate notifications from request data
       const response = await getEmployeeApplications({ limit: 100 });

@@ -1,12 +1,15 @@
-// Internal-specific layout
-// /src/app/internal/layout.jsx
+// Admin-specific layout
 "use client";
 import { useState } from "react";
+import { useAuthGuard } from "../../hooks/useAuthGuard";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
 
-export default function InternalLayout({ children }) {
+export default function AdminLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  // Protect admin routes - only allow admin role
+  const isAuthenticated = useAuthGuard(['admin']);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -15,6 +18,11 @@ export default function InternalLayout({ children }) {
   const closeSidebar = () => {
     setIsSidebarOpen(false);
   };
+
+  // Don't render the layout if not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">

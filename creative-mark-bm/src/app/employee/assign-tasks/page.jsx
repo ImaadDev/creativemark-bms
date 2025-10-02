@@ -20,7 +20,6 @@ import {
   FaClipboardList,
   FaPlay
 } from 'react-icons/fa';
-import { isAuthenticated } from '../../../services/auth';
 import api from '../../../services/api';
 
 const AssignTasksPage = () => {
@@ -42,11 +41,6 @@ const AssignTasksPage = () => {
   ];
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.push('/');
-      return;
-    }
-
     fetchAssignedTasks();
   }, [router]);
 

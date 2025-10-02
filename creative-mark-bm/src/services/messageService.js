@@ -2,10 +2,14 @@ import api from './api';
 
 export const getConversations = async () => {
   try {
+  
     const response = await api.get('/messages/conversations');
     return response.data;
   } catch (error) {
-    console.error('Error fetching conversations:', error);
+    // Don't log 401 errors as they're expected when user is not authenticated
+    if (error.response?.status !== 401) {
+      console.error('Error fetching conversations:', error);
+    }
     throw error;
   }
 };
@@ -54,11 +58,15 @@ export const deleteMessage = async (messageId) => {
 
 export const getUnreadCount = async (applicationId = null) => {
   try {
+   
     const params = applicationId ? { applicationId } : {};
     const response = await api.get('/messages/unread-count', { params });
     return response.data;
   } catch (error) {
-    console.error('Error getting unread count:', error);
+    // Don't log 401 errors as they're expected when user is not authenticated
+    if (error.response?.status !== 401) {
+      console.error('Error getting unread count:', error);
+    }
     throw error;
   }
 };

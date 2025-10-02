@@ -32,7 +32,6 @@ import {
   getEmployeeApplicationDetails,
   updateEmployeeApplicationData
 } from "../../../../services/employeeDashboardService";
-import { isAuthenticated } from "../../../../services/auth";
 
 export default function TaskDetailsPage() {
   const { id } = useParams();
@@ -59,11 +58,6 @@ export default function TaskDetailsPage() {
       setLoading(true);
       setError(null);
 
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       // First try to get detailed application data
       try {

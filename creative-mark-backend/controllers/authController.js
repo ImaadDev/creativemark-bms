@@ -61,7 +61,7 @@ export const registerUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -102,12 +102,23 @@ export const loginUser = async (req, res) => {
     }
 
     const token = generateToken(user._id, user.role);
+    console.log("Login - Generated token:", token ? "Token generated" : "No token");
+    console.log("Login - Setting cookie with options:", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+    
+    console.log("Login - Cookie set, sending response");
+    console.log("Login - Response headers:", res.getHeaders());
 
     res.json({
       success: true,
@@ -134,7 +145,7 @@ export const logoutUser = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax",
   });
 
   res.json({ success: true, message: "Logged out successfully" });

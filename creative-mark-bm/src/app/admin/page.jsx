@@ -35,7 +35,6 @@ import {
 import { getAllApplications } from '../../services/applicationService';
 import { getAllEmployees } from '../../services/employeeApi';
 import { getAllClients } from '../../services/clientApi';
-import { isAuthenticated } from '../../services/auth';
 import { FullPageLoading } from '../../components/LoadingSpinner';
 
 export default function InternalDashboard() {
@@ -63,11 +62,7 @@ export default function InternalDashboard() {
   const loadDashboardData = async () => {
     try {
       setError(null);
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/');
-        return;
-      }
+    
 
       // Load all applications, employees, and clients from the API
       const [applicationsResponse, employeesResponse, clientsResponse] = await Promise.all([
@@ -76,18 +71,13 @@ export default function InternalDashboard() {
         getAllClients()
       ]);
       
-      console.log("Applications API Response:", applicationsResponse);
-      console.log("Employees API Response:", employeesResponse);
-      console.log("Clients API Response:", clientsResponse);
       
       // Handle the response structure - the data is in response.data
       const applications = applicationsResponse.data || [];
       const employees = employeesResponse.success ? (employeesResponse.data || []) : [];
       const clients = clientsResponse.success ? (clientsResponse.data || []) : [];
       
-      console.log("Applications data:", applications);
-      console.log("Employees data:", employees);
-      console.log("Clients data:", clients);
+      
 
       // Calculate stats based on application status
       // Use static values to prevent hydration mismatch
@@ -113,7 +103,6 @@ export default function InternalDashboard() {
         }).length,
       };
 
-      console.log("Calculated stats:", newStats);
       setStats(newStats);
       
       // Sort by creation date and get 5 most recent

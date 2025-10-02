@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../contexts/AuthContext";
 import { login } from "../services/auth";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { updateUser } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -32,28 +34,39 @@ export default function LoginPage() {
     
     try {
       // Call backend login API
+      console.log("Frontend: Attempting login with:", formData);
       const response = await login({
         email: formData.email,
         password: formData.password
       });
       
+      console.log("Frontend: Login response received:", response);
+      
       if (response.success) {
-        // Store user data in localStorage
-        localStorage.setItem("user", JSON.stringify(response.user));
+        console.log("Frontend: Login successful, user data:", response.user);
+        console.log("Frontend: Cookies after login:", document.cookie);
         
-        // Role-based navigation
+        // Update AuthContext with user data
+        updateUser(response.user);
+        
+        // Navigate to appropriate page
+        console.log("Frontend: Navigating to role:", response.user.role);
         switch (response.user.role) {
           case 'employee':
+            console.log("Frontend: Redirecting to /employee");
             router.push('/employee');
             break;
           case 'partner':
+            console.log("Frontend: Redirecting to /partner");
             router.push('/partner');
             break;
           case 'admin':
+            console.log("Frontend: Redirecting to /admin");
             router.push('/admin');
             break;
           case 'client':
           default:
+            console.log("Frontend: Redirecting to /client");
             router.push('/client');
             break;
         }

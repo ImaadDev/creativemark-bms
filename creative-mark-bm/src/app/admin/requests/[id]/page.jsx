@@ -27,7 +27,6 @@ import {
   FaEnvelope
 } from 'react-icons/fa';
 import { getApplication } from '../../../../services/applicationService';
-import { isAuthenticated } from '../../../../services/auth';
 import Timeline from '../../../../components/Timeline';
 import { SERVICE_TYPES, PARTNER_TYPES, STATUS_PROGRESS } from '../../../../utils/constants';
 
@@ -59,11 +58,6 @@ const ApplicationDetailsPage = () => {
       setLoading(true);
       setError(null);
       
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       if (!applicationId) {
         setError('Application ID is required');
@@ -221,7 +215,7 @@ const ApplicationDetailsPage = () => {
       icon: FaFileAlt,
       content: (
         <div className="space-y-8">
-          {/* Client Information */}
+            {/* Client Information */}
           <Section title="Client Information" icon={FaUser} color="blue">
             <KeyValueList
               items={[
@@ -246,7 +240,7 @@ const ApplicationDetailsPage = () => {
             />
           </Section>
 
-          {/* Application Overview */}
+            {/* Application Overview */}
           <Section title="Application Overview" icon={FaBuilding} color="gray">
             <KeyValueList
               items={[
@@ -274,7 +268,7 @@ const ApplicationDetailsPage = () => {
                 {
                   label: 'Company Arranges External Companies',
                   value: (
-                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${(application.serviceDetails?.companyArrangesExternalCompanies || application.companyArrangesExternalCompanies) ? 'bg-green-500' : 'bg-red-500'}`}></div>
                       <span className="text-lg font-semibold text-gray-900">{(application.serviceDetails?.companyArrangesExternalCompanies || application.companyArrangesExternalCompanies) ? 'Yes' : 'No'}</span>
                     </div>
@@ -289,7 +283,7 @@ const ApplicationDetailsPage = () => {
             />
           </Section>
 
-          {/* Partner Information */}
+            {/* Partner Information */}
           {((application.partner || application.serviceDetails?.partner) || (application.serviceDetails?.saudiPartnerName || application.saudiPartnerName)) && (
             <Section title="Partner Information" icon={FaHandshake} color="purple">
               {(application.serviceDetails?.saudiPartnerName || application.saudiPartnerName) && (
@@ -298,17 +292,17 @@ const ApplicationDetailsPage = () => {
                     items={[{
                       label: 'Saudi Partner Name',
                       value: (
-                        <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3">
                           <FaIdCard className="w-5 h-5 text-purple-600" />
                           <span className="text-xl font-semibold text-gray-900">{application.serviceDetails?.saudiPartnerName || application.saudiPartnerName}</span>
-                        </div>
+                    </div>
                       )
                     }]}
                     columns={1}
                   />
-                </div>
-              )}
-              
+              </div>
+            )}
+
               {(application.partner || application.serviceDetails?.partner) && (
                 <KeyValueList
                   items={[
@@ -332,17 +326,17 @@ const ApplicationDetailsPage = () => {
           )}
 
           {/* External Companies */}
-          {((application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails) && (application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).length > 0) && (
+            {((application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails) && (application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).length > 0) && (
             <Section title="External Companies" icon={FaBuilding} color="purple">
-              <div className="grid gap-6">
-                {(application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).map((company, index) => (
-                  <div key={index} className="p-6 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-200">
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-lg font-bold text-gray-900">Company #{index + 1}</h3>
-                      <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                        {company.sharePercentage || 0}% Share
-                      </div>
-                    </div>
+                  <div className="grid gap-6">
+                    {(application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).map((company, index) => (
+                      <div key={index} className="p-6 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-200">
+                        <div className="flex items-center justify-between mb-6">
+                          <h3 className="text-lg font-bold text-gray-900">Company #{index + 1}</h3>
+                          <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                            {company.sharePercentage || 0}% Share
+                          </div>
+                        </div>
                     <KeyValueList
                       items={[
                         {
@@ -364,15 +358,15 @@ const ApplicationDetailsPage = () => {
                 ))}
               </div>
             </Section>
-          )}
+            )}
 
-          {/* Family Members */}
-          {((application.serviceDetails?.familyMembers || application.familyMembers) && (application.serviceDetails?.familyMembers || application.familyMembers).length > 0) && (
+            {/* Family Members */}
+            {((application.serviceDetails?.familyMembers || application.familyMembers) && (application.serviceDetails?.familyMembers || application.familyMembers).length > 0) && (
             <Section title="Family Members" icon={FaUsers} color="green">
-              <div className="grid gap-6">
-                {(application.serviceDetails?.familyMembers || application.familyMembers).map((member, index) => (
-                  <div key={index} className="p-6 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-200">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">Family Member #{index + 1}</h3>
+                  <div className="grid gap-6">
+                    {(application.serviceDetails?.familyMembers || application.familyMembers).map((member, index) => (
+                      <div key={index} className="p-6 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-200">
+                        <h3 className="text-lg font-bold text-gray-900 mb-4">Family Member #{index + 1}</h3>
                     <KeyValueList
                       items={[
                         {
@@ -395,7 +389,7 @@ const ApplicationDetailsPage = () => {
               </div>
             </Section>
           )}
-        </div>
+                    </div>
       )
     },
     {
@@ -406,18 +400,18 @@ const ApplicationDetailsPage = () => {
       content: (
         <Section title="Uploaded Documents" icon={FaFileAlt} color="amber">
           {application.documents && application.documents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {application.documents.map((doc, index) => (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {application.documents.map((doc, index) => (
                 <DocumentCard key={index} document={doc} />
-              ))}
-            </div>
+                    ))}
+                  </div>
           ) : (
             <div className="text-center py-12">
               <FaFileAlt className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No documents uploaded</h3>
               <p className="text-gray-500">This application doesn't have any uploaded documents yet.</p>
-            </div>
-          )}
+              </div>
+            )}
         </Section>
       )
     },
@@ -427,10 +421,10 @@ const ApplicationDetailsPage = () => {
       icon: FaClock,
       content: (
         <Section title="Application Timeline" icon={FaClock} color="indigo">
-          <Timeline 
-            events={application.timeline || []} 
-            currentStatus={application.status?.current || application.status}
-          />
+                <Timeline 
+                  events={application.timeline || []} 
+                  currentStatus={application.status?.current || application.status}
+                />
         </Section>
       )
     },
@@ -441,47 +435,47 @@ const ApplicationDetailsPage = () => {
       content: (
         <Section title="Admin Actions" icon={FaUserCheck} color="emerald">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <button 
-              onClick={loadApplicationDetails}
+                <button 
+                  onClick={loadApplicationDetails}
               className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg hover:shadow-xl"
-            >
+                >
               <FaSpinner className="mr-2" />
-              Refresh Data
-            </button>
-            
-            {application.status?.current === 'submitted' && (
-              <>
+                  Refresh Data
+                </button>
+                
+                {application.status?.current === 'submitted' && (
+                  <>
                 <button className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl">
-                  <FaCheck className="mr-2" />
-                  Approve Application
-                </button>
+                      <FaCheck className="mr-2" />
+                      Approve Application
+                    </button>
                 <button className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-lg hover:shadow-xl">
-                  <FaBan className="mr-2" />
-                  Reject Application
-                </button>
-              </>
-            )}
-            
+                      <FaBan className="mr-2" />
+                      Reject Application
+                    </button>
+                  </>
+                )}
+                
             <button className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white font-medium rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-all duration-200 shadow-lg hover:shadow-xl">
-              <FaComments className="mr-2" />
-              Add Internal Note
-            </button>
-            
+                  <FaComments className="mr-2" />
+                  Add Internal Note
+                </button>
+                
             <button className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-lg hover:shadow-xl">
               <FaUserCheck className="mr-2" />
-              Assign Employee
-            </button>
-            
+                  Assign Employee
+                </button>
+                
             <button className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-medium rounded-lg hover:from-indigo-700 hover:to-indigo-800 transition-all duration-200 shadow-lg hover:shadow-xl">
-              <FaFileExport className="mr-2" />
-              Export Report
-            </button>
-            
+                  <FaFileExport className="mr-2" />
+                  Export Report
+                </button>
+                
             <button className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white font-medium rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl">
-              <FaHistory className="mr-2" />
-              View Audit Log
-            </button>
-          </div>
+                  <FaHistory className="mr-2" />
+                  View Audit Log
+                </button>
+              </div>
         </Section>
       )
     }
@@ -519,8 +513,8 @@ const ApplicationDetailsPage = () => {
             icon={FaFileAlt}
             color="orange"
           />
-        </div>
-
+                </div>
+                
         {/* Modern Tabs Interface */}
         <div className="bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 rounded-2xl overflow-hidden">
           <Tabs tabs={tabs} defaultTab="overview" />

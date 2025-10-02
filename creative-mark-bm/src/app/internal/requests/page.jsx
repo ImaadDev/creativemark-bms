@@ -22,7 +22,6 @@ import {
 import RequestsList from '../../../components/admin/RequestsList';
 import RequestDetails from '../../../components/admin/RequestDetails';
 import AssignmentModal from '../../../components/admin/AssignmentModal';
-import { isAuthenticated } from '../../../services/auth';
 import api from '../../../services/api';
 
 const InternalRequestsContent = () => {
@@ -40,11 +39,6 @@ const InternalRequestsContent = () => {
   useEffect(() => {
     const initializePage = async () => {
       try {
-        const authenticated = await isAuthenticated();
-        if (!authenticated) {
-          router.push('/login');
-          return;
-        }
 
         if (tab) {
           setActiveTab(tab);

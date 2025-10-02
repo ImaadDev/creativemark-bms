@@ -21,11 +21,12 @@ import {
   FaTrashAlt
 } from 'react-icons/fa';
 import { getAllApplications, deleteApplication } from '../../services/applicationService';
-import { isAuthenticated, getCurrentUser } from '../../services/auth';
+import { useAuth } from '../../contexts/AuthContext';
 import Swal from 'sweetalert2';
 
 const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestSelect, onRequestAssign, refreshTrigger }) => {
   const router = useRouter();
+  const { user: currentUser } = useAuth();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,39 +35,22 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
   const [deletingId, setDeletingId] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     loadRequests();
-    loadCurrentUser();
   }, [statusFilter, assignedFilter, currentPage, searchTerm, sortBy, sortOrder, refreshTrigger]);
 
-  const loadCurrentUser = async () => {
-    try {
-      const user = await getCurrentUser();
-      setCurrentUser(user.data);
-    } catch (error) {
-      console.error('Error loading current user:', error);
-    }
-  };
 
   const loadRequests = async () => {
     try {
       setLoading(true);
-      
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
+    
 
       const response = await getAllApplications();
-      console.log('Applications API response:', response);
       
             if (response.success && response.data) {
               let applications = response.data;
-              console.log('Loaded applications:', applications);
-              console.log('First application assignedEmployees:', applications[0]?.assignedEmployees);
+            
         
         // Filter by status if needed
         if (statusFilter !== 'all') {
@@ -86,22 +70,15 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
         setRequests(applications);
         setTotalPages(1); // For now, we'll show all applications without pagination
       } else {
-        console.error('Invalid API response:', response);
         setRequests([]);
         setTotalPages(1);
       }
     } catch (error) {
-      console.error('Error loading applications:', error);
       setRequests([]);
       setTotalPages(1);
       
-      if (error.response?.status === 401) {
-        router.push('/login');
-        return;
-      }
-      
       // Show user-friendly error message
-      alert('Failed to load applications. Please try again.');
+      console.error('Failed to load applications:', error);
     } finally {
       setLoading(false);
     }
@@ -269,7 +246,7 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
           }
         });
 
-        await deleteApplication(request.applicationId, currentUser.id);
+        await deleteApplication(request.applicationId, currentUser._id);
         
         // Remove the deleted request from the local state
         setRequests(prev => prev.filter(req => req.applicationId !== request.applicationId));

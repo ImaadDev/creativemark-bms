@@ -25,7 +25,6 @@ import {
   ReviewStep 
 } from '../request/RequestSteps';
 import { submitApplication, getMockApplications } from '../../services/clientService';
-import { isAuthenticated } from '../../services/auth';
 
 const RequestFormContent = () => {
   const router = useRouter();
@@ -99,11 +98,6 @@ const RequestFormContent = () => {
     const initializeForm = async () => {
       setLoading(true);
       try {
-        const authenticated = await isAuthenticated();
-        if (!authenticated) {
-          router.push('/login');
-          return;
-        }
         if (draftId) {
           try {
             const draftData = await clientService.getRequestById(draftId);

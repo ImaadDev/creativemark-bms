@@ -19,7 +19,6 @@ import {
   FaSort
 } from 'react-icons/fa';
 import { getEmployeeApplications } from '../../services/employeeDashboardService';
-import { isAuthenticated } from '../../services/auth';
 
 const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestSelect, onRequestAssign }) => {
   const router = useRouter();
@@ -39,11 +38,6 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
     try {
       setLoading(true);
       
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       const filters = {
         status: statusFilter,

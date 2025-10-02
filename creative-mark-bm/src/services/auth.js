@@ -22,7 +22,11 @@ export const register = async (userData) => {
  */
 export const login = async (credentials) => {
   try {
+    console.log("Login attempt with credentials:", credentials);
     const res = await api.post("/auth/login", credentials);
+    console.log("Login response:", res.data);
+    console.log("Login response headers:", res.headers);
+    console.log("Login response cookies:", document.cookie);
     return res.data; // Return the data property from axios response
   } catch (err) {
     console.error("Login error:", err);
@@ -48,22 +52,15 @@ export const logout = async () => {
  */
 export const getCurrentUser = async () => {
   try {
+    console.log("getCurrentUser - Making API call to /auth/me");
+    console.log("getCurrentUser - Current cookies:", document.cookie);
     const res = await api.get("/auth/me");
+    console.log("getCurrentUser - API response:", res.data);
     return res.data;
   } catch (err) {
+    console.log("getCurrentUser - API error:", err);
+    console.log("getCurrentUser - Error response:", err.response?.data);
     throw new Error(err.response?.data?.message || err.message || "Not authenticated");
-  }
-};
-
-/**
- * Check if user is authenticated
- */
-export const isAuthenticated = async () => {
-  try {
-    await getCurrentUser();
-    return true;
-  } catch {
-    return false;
   }
 };
 

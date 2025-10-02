@@ -1,26 +1,37 @@
 "use client";
 import { createContext, useState, useEffect, useContext } from "react";
-import { useRouter } from "next/navigation";
-import { login as authLogin, logout as authLogout, getCurrentUser } from "../services/auth";
+import { useRouter, usePathname } from "next/navigation";
+import { getCurrentUser } from "../services/auth";
+import Swal from "sweetalert2";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);   // Stores the current logged-in user
+  const [loading, setLoading] = useState(true); // Tracks if user is being loaded
   const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
 
-  // Load user from localStorage on mount
+  // Load user from backend on mount (cookie-based authentication)
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-          const userData = JSON.parse(storedUser);
-          setUser(userData);
+        console.log("AuthContext - Fetching current user from backend");
+        const response = await getCurrentUser(); // cookie is sent automatically via axios withCredentials
+        if (response.success) {
+          setUser(response.data);
+          console.log("AuthContext - User loaded:", response.data);
+        } else {
+          setUser(null);
         }
-      } catch (error) {
-        console.error("Error loading user:", error);
+      } catch (err) {
+        // Don't log 401 errors as they're expected when user is not authenticated
+        if (err.response?.status !== 401) {
+          console.log("AuthContext - Error loading user:", err.message);
+        } else {
+          console.log("AuthContext - User not authenticated (expected)");
+        }
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -28,50 +39,94 @@ export const AuthProvider = ({ children }) => {
 
     loadUser();
   }, []);
-  
-  // Check if user is authenticated
-  const isAuthenticated = () => {
-    return user !== null;
-  };
 
-  // Get current user info
-  const getCurrentUserInfo = async () => {
+  // Returns true if a user is logged in
+  const isAuthenticated = () => user !== null;
+
+  // Function to update user manually (after login, profile update, etc.)
+  const updateUser = (userData) => setUser(userData);
+
+  // Function to refresh user data from backend
+  const refreshUser = async () => {
     try {
+      console.log("AuthContext - Refreshing user data from backend");
       const response = await getCurrentUser();
       if (response.success) {
         setUser(response.data);
-        localStorage.setItem("user", JSON.stringify(response.data));
+        console.log("AuthContext - User refreshed:", response.data);
         return response.data;
+      } else {
+        setUser(null);
+        return null;
       }
-    } catch (error) {
-      console.error("Get current user error:", error);
-      
-      // If it's a network error, don't clear the stored user
-      if (error.code === 'ECONNREFUSED' || error.message.includes('Network Error')) {
-        console.warn('Backend server is not running. Using cached user data.');
-        return user; // Return cached user if available
+    } catch (err) {
+      if (err.response?.status !== 401) {
+        console.log("AuthContext - Error refreshing user:", err.message);
       }
-      
-      // For other errors (like 401), clear the stored user
       setUser(null);
-      localStorage.removeItem("user");
+      return null;
     }
-    return null;
+  };
+
+  // Function to redirect to home with SweetAlert when not authenticated
+  const redirectToHome = async () => {
+    await Swal.fire({
+      title: 'Authentication Required',
+      text: 'You need to be logged in to access this page.',
+      icon: 'warning',
+      confirmButtonText: 'Go to Login',
+      confirmButtonColor: '#10b981',
+      background: '#ffffff',
+      customClass: {
+        popup: 'rounded-2xl shadow-2xl',
+        title: 'text-gray-900 font-bold text-xl',
+        content: 'text-gray-700',
+        confirmButton: 'px-6 py-3 rounded-xl font-semibold'
+      }
+    });
+    router.push('/');
+  };
+
+  // Function to check authentication for protected routes
+  const requireAuth = (allowedRoles = []) => {
+    if (loading) return false; // Still loading, don't redirect yet
+    
+    if (!user) {
+      redirectToHome();
+      return false;
+    }
+
+    // If specific roles are required, check if user has the right role
+    if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+      Swal.fire({
+        title: 'Access Denied',
+        text: 'You do not have permission to access this page.',
+        icon: 'error',
+        confirmButtonText: 'Go Back',
+        confirmButtonColor: '#dc2626',
+        background: '#ffffff',
+        customClass: {
+          popup: 'rounded-2xl shadow-2xl',
+          title: 'text-gray-900 font-bold text-xl',
+          content: 'text-gray-700',
+          confirmButton: 'px-6 py-3 rounded-xl font-semibold'
+        }
+      });
+      router.push('/');
+      return false;
+    }
+
+    return true;
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      isAuthenticated,
-      getCurrentUserInfo
-    }}>
+    <AuthContext.Provider value={{ user, loading, isAuthenticated, updateUser, refreshUser, requireAuth, redirectToHome }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook to use the auth context
+// Custom hook to use AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

@@ -22,7 +22,6 @@ import {
   FaArrowDown
 } from 'react-icons/fa';
 import { getEmployeeApplications } from '../../../services/employeeDashboardService';
-import { isAuthenticated } from '../../../services/auth';
 
 export default function ReportsPage() {
   const router = useRouter();
@@ -51,11 +50,6 @@ export default function ReportsPage() {
       setLoading(true);
       setError(null);
 
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push('/login');
-        return;
-      }
 
       const response = await getEmployeeApplications({ limit: 200 });
       const tasks = response.data || [];

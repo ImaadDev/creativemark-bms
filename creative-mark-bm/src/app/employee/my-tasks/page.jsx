@@ -24,7 +24,6 @@ import {
   FaPlus,
 } from "react-icons/fa";
 import { getEmployeeApplications } from "../../../services/employeeDashboardService";
-import { isAuthenticated } from "../../../services/auth";
 
 export default function MyTasksPage() {
   const router = useRouter();
@@ -45,11 +44,6 @@ export default function MyTasksPage() {
       setLoading(true);
       setError(null);
 
-      const authenticated = await isAuthenticated();
-      if (!authenticated) {
-        router.push("/login");
-        return;
-      }
 
       const response = await getEmployeeApplications({ limit: 100 });
       let allTasks = response.data || [];
