@@ -86,7 +86,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
 
   return (
-    <header className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800 shadow-xl sticky top-0 z-20">
+    <header className="shadow-xl sticky top-0 z-20" style={{ backgroundColor: '#242021', borderBottom: '2px solid #ffd17a' }}>
       <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20 px-4 sm:px-6 lg:px-8">
         
         {/* Left Section */}
@@ -94,25 +94,26 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
           {/* Mobile Menu Toggle */}
           <button
             onClick={onToggleSidebar}
-            className="lg:hidden p-2 sm:p-3 rounded-lg hover:bg-white/10 transition-all duration-200"
+            className="lg:hidden p-2 sm:p-3 rounded-lg transition-all duration-200"
+            style={{ color: '#ffd17a' }}
             aria-label="Toggle sidebar"
           >
             {isSidebarOpen ? (
-              <FaTimes className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+              <FaTimes className="h-4 w-4 sm:h-5 sm:w-5" />
             ) : (
-              <FaBars className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+              <FaBars className="h-4 w-4 sm:h-5 sm:w-5" />
             )}
           </button>
 
           {/* Breadcrumb/Title */}
           <div className="flex items-center space-x-1 sm:space-x-2">
-            <div className="hidden sm:flex items-center space-x-1 sm:space-x-2 text-amber-100">
+            <div className="hidden sm:flex items-center space-x-1 sm:space-x-2" style={{ color: '#ffd17a' }}>
               <span className="text-xs sm:text-sm font-medium">Dashboard</span>
-              <span className="text-amber-200 text-xs sm:text-sm">/</span>
-              <span className="text-xs sm:text-sm text-amber-200">Overview</span>
+              <span className="text-xs sm:text-sm" style={{ color: 'gray' }}>/</span>
+              <span className="text-xs sm:text-sm" style={{ color: 'gray' }}>Overview</span>
             </div>
             {/* Mobile title when sidebar is closed */}
-            <div className="sm:hidden text-white">
+            <div className="sm:hidden" style={{ color: '#ffd17a' }}>
               <span className="text-xs sm:text-sm font-medium">Creative Mark</span>
             </div>
           </div>
@@ -131,9 +132,10 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
           {currentUser && currentUser.role === 'client' && (
             <button 
               onClick={() => setShowHelpModal(true)}
-              className="hidden sm:block p-2 lg:p-3 rounded-lg hover:bg-white/10 transition-all duration-200 relative group"
+              className="hidden sm:block p-2 lg:p-3 rounded-lg transition-all duration-200 relative group"
+              style={{ color: '#ffd17a' }}
             >
-              <FaQuestionCircle className="h-3 w-3 sm:h-4 sm:w-4 text-amber-100 group-hover:text-white" />
+              <FaQuestionCircle className="h-3 w-3 sm:h-4 sm:w-4" />
               <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap shadow-lg">
                 Help & Support
                 <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
@@ -143,7 +145,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
           {/* Notifications */}
           <div className="relative">
-            <div className="p-2 sm:p-3 rounded-lg hover:bg-white/10 transition-all duration-200 relative group">
+            <div className="p-2 sm:p-3 rounded-lg transition-all duration-200 relative group">
               <NotificationBell />
             </div>
           </div>
@@ -151,24 +153,25 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
         
 
           {/* Divider - Hidden on small screens */}
-          <div className="hidden sm:block h-4 sm:h-6 w-px bg-white/20 mx-1 sm:mx-2"></div>
+          <div className="hidden sm:block h-4 sm:h-6 w-px mx-1 sm:mx-2" style={{ backgroundColor: 'rgba(255, 209, 122, 0.3)' }}></div>
 
           {/* User Menu */}
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:p-3 hover:bg-white/10 transition-all duration-200 rounded-lg"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:p-3 transition-all duration-200 rounded-lg"
+              style={{ color: '#ffd17a' }}
             >
               <div className="flex items-center space-x-2">
                 <div className="relative">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center shadow-lg ring-1 ring-white/20 overflow-hidden">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center shadow-lg overflow-hidden" style={{ backgroundColor: '#ffd17a' }}>
                     {loading || refreshing ? (
-                      <FaSpinner className="h-3 w-3 sm:h-4 sm:w-4 text-white animate-spin" />
+                      <FaSpinner className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" style={{ color: '#242021' }} />
                     ) : currentUser?.profilePicture ? (
                       <img
                         src={currentUser.profilePicture}
                         alt="Profile"
-                        className="w-full h-full object-cover rounded-xl sm:rounded-2xl"
+                        className="w-full h-full object-cover rounded-lg"
                         onError={(e) => {
                           e.target.style.display = 'none';
                           e.target.nextSibling.style.display = 'flex';
@@ -176,12 +179,12 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                       />
                     ) : null}
                     {(!currentUser?.profilePicture || loading || refreshing) && (
-                      <FaUser className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                      <FaUser className="h-3 w-3 sm:h-4 sm:w-4" style={{ color: '#242021' }} />
                     )}
                   </div>
                 </div>
                 <div className="hidden sm:block text-left">
-                  <div className="text-xs sm:text-sm font-medium text-white leading-none">
+                  <div className="text-xs sm:text-sm font-medium leading-none" style={{ color: '#ffd17a' }}>
                     {loading || refreshing ? (
                       <div className="flex items-center space-x-2">
                         <FaSpinner className="animate-spin h-3 w-3" />
@@ -191,11 +194,11 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                       currentUser?.fullName || currentUser?.name || user?.fullName || user?.name || 'User'
                     )}
                   </div>
-                  <p className="text-xs text-white/70 leading-none mt-0.5">
+                  <p className="text-xs leading-none mt-0.5" style={{ color: 'gray' }}>
                     {currentUser?.role || user?.role || 'User'}
                   </p>
                 </div>
-                <FaChevronDown className={`hidden sm:block h-3 w-3 text-white/70 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
+                <FaChevronDown className={`hidden sm:block h-3 w-3 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} style={{ color: 'gray' }} />
               </div>
             </button>
 
@@ -207,16 +210,16 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                   onClick={() => setShowUserMenu(false)}
                 ></div>
                 <div className="absolute right-0 mt-3 w-64 sm:w-72 bg-white border-2 border-gray-200 shadow-2xl rounded-lg z-20 overflow-hidden">
-                  <div className="p-4 bg-gradient-to-r from-amber-50 to-amber-100 border-b border-gray-200">
+                  <div className="p-4 border-b border-gray-200" style={{ backgroundColor: '#ffd17a' }}>
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center shadow-lg overflow-hidden">
+                      <div className="w-12 h-12 rounded-lg flex items-center justify-center shadow-lg overflow-hidden" style={{ backgroundColor: '#242021' }}>
                         {loading || refreshing ? (
-                          <FaSpinner className="h-5 w-5 text-white animate-spin" />
+                          <FaSpinner className="h-5 w-5 animate-spin" style={{ color: '#ffd17a' }} />
                         ) : currentUser?.profilePicture ? (
                           <img
                             src={currentUser.profilePicture}
                             alt="Profile"
-                            className="w-full h-full object-cover rounded-2xl"
+                            className="w-full h-full object-cover rounded-lg"
                             onError={(e) => {
                               e.target.style.display = 'none';
                               e.target.nextSibling.style.display = 'flex';
@@ -224,17 +227,17 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                           />
                         ) : null}
                         {(!currentUser?.profilePicture || loading || refreshing) && (
-                          <FaUser className="h-5 w-5 text-white" />
+                          <FaUser className="h-5 w-5" style={{ color: '#ffd17a' }} />
                         )}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">
+                        <p className="text-sm font-semibold" style={{ color: '#242021' }}>
                           {currentUser?.fullName || currentUser?.name || user?.fullName || user?.name || 'User'}
                         </p>
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs" style={{ color: '#242021' }}>
                           {currentUser?.email || user?.email || 'user@example.com'}
                         </p>
-                        <p className="text-xs text-amber-600 font-medium">
+                        <p className="text-xs font-medium" style={{ color: '#242021' }}>
                           {currentUser?.role || user?.role || 'User'}
                         </p>
                       </div>
@@ -249,7 +252,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                         const rolePath = userRole === 'admin' ? 'admin' : userRole === 'partner' ? 'partner' : userRole;
                         router.push(`/${rolePath}/profile`);
                       }}
-                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-all duration-200 rounded-lg mx-2"
+                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200 rounded-lg mx-2"
                     >
                       <div className="p-2 rounded-xl bg-gray-100 mr-3 shadow-sm">
                         <FaUser className="h-4 w-4" />
@@ -263,7 +266,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                         const rolePath = userRole === 'internal' ? 'admin' : userRole === 'external' ? 'partner' : userRole;
                         router.push(`/${rolePath}/settings`);
                       }}
-                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-all duration-200 rounded-lg mx-2"
+                      className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200 rounded-lg mx-2"
                     >
                       <div className="p-2 rounded-xl bg-gray-100 mr-3 shadow-sm">
                         <FaCog className="h-4 w-4" />
@@ -311,20 +314,21 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
           <div className="bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-2xl max-w-sm sm:max-w-2xl lg:max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 p-3 sm:p-4 lg:p-6 text-white">
+            <div className="p-3 sm:p-4 lg:p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 sm:space-x-3">
-                  <div className="p-2 sm:p-3 bg-white/20 rounded-xl sm:rounded-2xl">
-                    <FaHeadset className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
+                  <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl" style={{ backgroundColor: '#ffd17a' }}>
+                    <FaHeadset className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" style={{ color: '#242021' }} />
                   </div>
                   <div>
                     <h2 className="text-lg sm:text-xl lg:text-2xl font-bold">Client Support Center</h2>
-                    <p className="text-amber-100 text-xs sm:text-sm">Get assistance with your business applications and account</p>
+                    <p className="text-xs sm:text-sm" style={{ color: 'gray' }}>Get assistance with your business applications and account</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setShowHelpModal(false)}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
+                  className="p-2 rounded-lg transition-all duration-200"
+                  style={{ color: '#ffd17a' }}
                 >
                   <FaTimes className="h-4 w-4 sm:h-5 sm:w-5" />
                 </button>
@@ -509,7 +513,8 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                 </div>
                 <button
                   onClick={() => setShowHelpModal(false)}
-                  className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-all duration-200 font-medium"
+                  className="px-6 py-2 text-white rounded-lg transition-all duration-200 font-medium"
+                  style={{ backgroundColor: '#ffd17a', color: '#242021' }}
                 >
                   Close
                 </button>

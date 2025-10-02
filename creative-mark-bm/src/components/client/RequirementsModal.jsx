@@ -228,15 +228,15 @@ export default function CompanyRequirementsModal({
   const renderSection = (section, index) => {
     const Icon = section.icon;
     return (
-      <div key={index} className="bg-white border-2 border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4 sm:p-6">
+      <div key={index} className="bg-white border-2 border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg">
+        <div className="p-4 sm:p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-              <Icon className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+              <Icon className="w-6 h-6" style={{ color: '#242021' }} />
             </div>
             <div>
               <h3 className="text-xl font-bold">{section.title}</h3>
-              <p className="text-amber-100 text-sm">Detailed information and requirements</p>
+              <p className="text-sm" style={{ color: 'gray' }}>Detailed information and requirements</p>
             </div>
           </div>
         </div>
@@ -245,30 +245,30 @@ export default function CompanyRequirementsModal({
             <div key={i} className="mb-4 last:mb-0">
               {typeof item === "string" ? (
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 mt-2 flex-shrink-0" style={{ backgroundColor: '#ffd17a' }}></div>
                   <p className="text-sm text-gray-700 leading-relaxed">{item}</p>
                 </div>
               ) : item.type ? (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
                   <h4 className="text-sm font-bold text-gray-900 mb-3">{item.type}</h4>
                   <ul className="space-y-2">
                     {item.details.map((detail, j) => (
                       <li key={j} className="text-sm text-gray-700 flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <div className="w-1.5 h-1.5 mt-2 flex-shrink-0" style={{ backgroundColor: '#ffd17a' }}></div>
                         <span className="leading-relaxed">{detail}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               ) : (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
                   <div className="flex justify-between items-start gap-4">
                     <div className="flex-1">
                       <span className="text-sm font-bold text-gray-900 block mb-1">{item.label}</span>
                       {item.note && <p className="text-xs text-gray-600">{item.note}</p>}
                     </div>
                     <div className="text-right">
-                      <span className="text-sm font-bold text-amber-600 bg-amber-100 px-3 py-1 rounded-full">{item.value}</span>
+                      <span className="text-sm font-bold px-3 py-1" style={{ backgroundColor: '#ffd17a', color: '#242021' }}>{item.value}</span>
                     </div>
                   </div>
                 </div>
@@ -286,7 +286,8 @@ export default function CompanyRequirementsModal({
         <div className="min-h-screen bg-gray-100 p-8 flex items-center justify-center">
           <button
             onClick={() => setIsOpen(true)}
-            className="px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white font-semibold rounded-lg hover:from-amber-700 hover:to-amber-800 transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="px-6 py-3 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            style={{ backgroundColor: '#ffd17a', color: '#242021' }}
           >
             View Company Requirements
           </button>
@@ -295,28 +296,39 @@ export default function CompanyRequirementsModal({
 
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 z-50"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 z-50 transition-all duration-300 ease-in-out"
           onClick={(e) => e.target === e.currentTarget && onClose()}
+          style={{ animation: 'fadeIn 0.3s ease-in-out' }}
         >
-          <div className="bg-white border-2 border-gray-200 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div 
+            className="bg-white border-2 border-gray-200 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl transition-all duration-300 ease-in-out transform"
+            style={{ 
+              animation: 'slideIn 0.3s ease-in-out',
+              borderColor: '#ffd17a'
+            }}
+          >
             {/* Header */}
-            <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 text-white p-4 sm:p-6 flex justify-between items-center">
+            <div className="p-4 sm:p-6 flex justify-between items-center" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-                  <FileText className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                  <FileText className="w-6 h-6" style={{ color: '#242021' }} />
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold">Saudi Arabia Company Establishment</h2>
-                  <p className="text-amber-100 text-sm">Complete requirements and procedures guide</p>
+                  <p className="text-sm" style={{ color: 'gray' }}>Complete requirements and procedures guide</p>
                 </div>
               </div>
-              <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200">
+              <button 
+                onClick={onClose} 
+                className="p-2 transition-all duration-200 hover:scale-110"
+                style={{ color: '#ffd17a' }}
+              >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b-2 border-gray-200 overflow-x-auto bg-gray-50">
+            <div className="flex border-b-2 overflow-x-auto" style={{ borderBottomColor: '#ffd17a', backgroundColor: '#f8f9fa' }}>
               {[
                 { id: "overview", label: "Overview", icon: Globe },
                 { id: "costs", label: "Costs", icon: DollarSign },
@@ -329,11 +341,15 @@ export default function CompanyRequirementsModal({
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-300 ${
                       activeTab === tab.id
-                        ? "border-b-2 border-amber-600 text-amber-600 bg-white shadow-sm"
-                        : "text-gray-600 hover:text-amber-600 hover:bg-white/50"
+                        ? "bg-white shadow-sm"
+                        : "hover:bg-white/70"
                     }`}
+                    style={{
+                      color: activeTab === tab.id ? '#ffd17a' : '#6b7280',
+                      borderBottom: activeTab === tab.id ? '2px solid #ffd17a' : '2px solid transparent'
+                    }}
                   >
                     <Icon className="w-4 h-4" />
                     {tab.label}
@@ -351,15 +367,15 @@ export default function CompanyRequirementsModal({
               {activeTab === "timeline" && (
                 <>
                   {requirements.timeline.map(renderSection)}
-                  <div className="bg-white border-2 border-amber-200 overflow-hidden">
-                    <div className="bg-gradient-to-r from-amber-100 to-amber-200 text-amber-900 p-4 sm:p-6">
+                  <div className="bg-white border-2 overflow-hidden transition-all duration-300 hover:shadow-lg" style={{ borderColor: '#ffd17a' }}>
+                    <div className="p-4 sm:p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-                          <AlertCircle className="w-6 h-6 text-white" />
+                        <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                          <AlertCircle className="w-6 h-6" style={{ color: '#242021' }} />
                         </div>
                         <div>
                           <h3 className="text-xl font-bold">Important Notes</h3>
-                          <p className="text-amber-800 text-sm">Critical information for successful application</p>
+                          <p className="text-sm" style={{ color: 'gray' }}>Critical information for successful application</p>
                         </div>
                       </div>
                     </div>
@@ -367,7 +383,7 @@ export default function CompanyRequirementsModal({
                       {requirements.important[0].items.map((item, i) => (
                         <div key={i} className="mb-3 last:mb-0">
                           <div className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <div className="w-2 h-2 mt-2 flex-shrink-0" style={{ backgroundColor: '#ffd17a' }}></div>
                             <p className="text-sm text-gray-700 leading-relaxed">{item}</p>
                           </div>
                         </div>
@@ -379,22 +395,26 @@ export default function CompanyRequirementsModal({
             </div>
 
             {/* Footer */}
-            <div className="p-4 sm:p-6 border-t-2 border-gray-200 bg-gray-50">
+            <div className="p-4 sm:p-6 border-t-2 bg-gray-50" style={{ borderTopColor: '#ffd17a' }}>
               <div className="flex items-center gap-3 mb-6">
                 <input
                   type="checkbox"
                   id="readConfirm"
                   checked={hasRead}
                   onChange={(e) => setHasRead(e.target.checked)}
-                  className="w-5 h-5 text-amber-600 border-gray-300 rounded focus:ring-amber-500 focus:ring-2"
+                  className="w-5 h-5 border-gray-300 focus:ring-2 transition-all duration-200"
+                  style={{ 
+                    accentColor: '#ffd17a',
+                    focusRingColor: '#ffd17a'
+                  }}
                 />
                 <label htmlFor="readConfirm" className="text-sm font-medium text-gray-700">
                   I have read and understood all requirements and procedures
                 </label>
               </div>
               {hasRead && (
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 p-4 rounded-lg flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 bg-green-500 flex items-center justify-center rounded-full">
+                <div className="bg-green-50 border border-green-200 p-4 flex items-center gap-3 mb-6 transition-all duration-300">
+                  <div className="w-8 h-8 bg-green-500 flex items-center justify-center">
                     <CheckCircle2 className="w-5 h-5 text-white" />
                   </div>
                   <p className="text-sm font-medium text-green-700">Requirements accepted! Proceed to application.</p>
@@ -403,18 +423,19 @@ export default function CompanyRequirementsModal({
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={onClose}
-                  className="flex-1 py-3 px-6 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 font-medium"
+                  className="flex-1 py-3 px-6 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-all duration-300 font-medium transform hover:scale-105"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={hasRead ? onAccept : undefined}
                   disabled={!hasRead}
-                  className={`flex-1 py-3 px-6 rounded-lg text-white font-medium transition-all duration-200 ${
+                  className={`flex-1 py-3 px-6 text-white font-medium transition-all duration-300 transform hover:scale-105 ${
                     hasRead 
-                      ? "bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 shadow-lg hover:shadow-xl" 
+                      ? "shadow-lg hover:shadow-xl" 
                       : "bg-gray-300 cursor-not-allowed"
                   }`}
+                  style={hasRead ? { backgroundColor: '#ffd17a', color: '#242021' } : {}}
                 >
                   {hasRead ? "Continue to Application" : "Accept Requirements"}
                 </button>
@@ -425,4 +446,45 @@ export default function CompanyRequirementsModal({
       )}
     </>
   );
+}
+
+// Add CSS animations for smooth modal transitions
+const styles = `
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+    }
+  }
+`;
+
+// Inject styles into the document
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = styles;
+  document.head.appendChild(styleSheet);
 }

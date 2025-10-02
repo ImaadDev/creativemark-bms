@@ -311,12 +311,12 @@ const AdditionalServicesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30 p-6">
+    <div className="min-h-screen bg-white p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Additional Services</h1>
-          <p className="text-gray-600">Expand your business with our comprehensive range of professional services</p>
+        <div className="mb-8 p-6 rounded-lg" style={{ backgroundColor: '#242021' }}>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: '#ffd17a' }}>Additional Services</h1>
+          <p style={{ color: 'gray' }}>Expand your business with our comprehensive range of professional services</p>
         </div>
 
         {/* Tab Navigation */}

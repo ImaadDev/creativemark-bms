@@ -40,11 +40,11 @@ export default function MyApplicationsPage() {
       case "under_review":
         return "bg-amber-50 text-amber-900 border-l-4 border-amber-600";
       case "approved":
-        return "bg-emerald-50 text-emerald-900 border-l-4 border-emerald-600";
+        return "bg-amber-50 text-amber-900 border-l-4 border-amber-600";
       case "in_process":
         return "bg-purple-50 text-purple-900 border-l-4 border-purple-600";
       case "completed":
-        return "bg-green-50 text-green-900 border-l-4 border-green-600";
+        return "bg-amber-50 text-amber-900 border-l-4 border-amber-600";
       case "rejected":
         return "bg-red-50 text-red-900 border-l-4 border-red-600";
       default:
@@ -59,11 +59,11 @@ export default function MyApplicationsPage() {
       case "under_review":
         return "bg-amber-100 text-amber-800";
       case "approved":
-        return "bg-emerald-100 text-emerald-800";
+        return "bg-amber-100 text-amber-800";
       case "in_process":
         return "bg-purple-100 text-purple-800";
       case "completed":
-        return "bg-green-100 text-green-800";
+        return "bg-amber-100 text-amber-800";
       case "rejected":
         return "bg-red-100 text-red-800";
       default:
@@ -73,16 +73,16 @@ export default function MyApplicationsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800">
+        {/* Header Section */}
+        <div className="border-b-2" style={{ backgroundColor: '#242021', borderBottomColor: '#ffd17a' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2" style={{ color: '#ffd17a' }}>
                   My Applications
                 </h1>
-                <p className="text-amber-100 text-sm sm:text-base">
+                <p className="text-sm sm:text-base" style={{ color: 'gray' }}>
                   Track and manage your business applications
                 </p>
               </div>

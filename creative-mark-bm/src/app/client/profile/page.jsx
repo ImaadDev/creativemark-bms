@@ -185,15 +185,15 @@ export default function ClientProfile() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800">
+      <div className="border-b-2" style={{ backgroundColor: '#242021', borderBottomColor: '#ffd17a' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2" style={{ color: '#ffd17a' }}>
                   My Profile
                 </h1>
-                <p className="text-amber-100 text-sm sm:text-base">
+                <p className="text-sm sm:text-base" style={{ color: 'gray' }}>
                   Manage your personal information
                 </p>
               </div>
@@ -280,7 +280,7 @@ export default function ClientProfile() {
             {/* Profile Picture Section */}
             <div className="lg:col-span-1">
               <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                   <h3 className="text-lg font-bold">Profile Picture</h3>
                 </div>
                 <div className="p-6">
@@ -330,9 +330,9 @@ export default function ClientProfile() {
               
               {/* Personal Information */}
               <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                   <h3 className="text-lg font-bold flex items-center">
-                    <FaUser className="mr-3 text-amber-100" />
+                    <FaUser className="mr-3" style={{ color: 'gray' }} />
                     Personal Information
                   </h3>
                 </div>

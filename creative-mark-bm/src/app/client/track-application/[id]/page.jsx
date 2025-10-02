@@ -167,37 +167,38 @@ export default function ApplicationDetailPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800">
+      <div className="border-b-2" style={{ backgroundColor: '#242021', borderBottomColor: '#ffd17a' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex-1">
                 <button
                   onClick={() => router.back()}
-                  className="inline-flex items-center text-amber-100 hover:text-white mb-6 group transition-all duration-200"
+                  className="inline-flex items-center mb-6 group transition-all duration-200"
+                  style={{ color: 'gray' }}
                 >
-                  <div className="mr-2 p-1 rounded-full group-hover:bg-white/10 transition-colors duration-200">
+                  <div className="mr-2 p-1 group-hover:bg-white/10 transition-colors duration-200">
                     <FaArrowLeft className="w-5 h-5" />
                   </div>
                   <span className="font-medium">Back to Applications</span>
                 </button>
                 
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2" style={{ color: '#ffd17a' }}>
                   Application Details
                 </h1>
-                <p className="text-amber-100 text-sm sm:text-base">
+                <p className="text-sm sm:text-base" style={{ color: 'gray' }}>
                   Track and monitor your application progress
                 </p>
                 <div className="mt-4 flex items-center space-x-2">
-                  <div className="px-3 py-1 bg-white/10 rounded-full">
-                    <p className="text-sm font-mono text-amber-100">ID: {application._id}</p>
+                  <div className="px-3 py-1" style={{ backgroundColor: 'rgba(255, 209, 122, 0.1)' }}>
+                    <p className="text-sm font-mono" style={{ color: 'gray' }}>ID: {application._id}</p>
                   </div>
                 </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <div className="text-center">
-                  <p className="text-xs font-bold uppercase tracking-wide text-amber-200 mb-2">Status</p>
+                  <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: 'gray' }}>Status</p>
                   <span className={`inline-flex items-center px-4 py-2 text-xs font-bold uppercase rounded-lg shadow-lg ${getStatusStyle(progressData?.currentStatus || application.status?.current || application.status)}`}>
                     <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
                     {formatStatus(progressData?.currentStatus || application.status?.current || application.status)}
@@ -205,17 +206,17 @@ export default function ApplicationDetailPage() {
                 </div>
                 
                 <div className="text-center">
-                  <p className="text-xs font-bold uppercase tracking-wide text-amber-200 mb-2">Progress</p>
+                  <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: 'gray' }}>Progress</p>
                   <div className="flex items-center space-x-2">
                     <div className="relative w-24 h-2 bg-white/20 rounded-full overflow-hidden">
                       <div 
-                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all duration-1000 ease-out shadow-sm"
-                        style={{ width: `${getProgressPercentage()}%` }}
+                        className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out shadow-sm"
+                        style={{ backgroundColor: '#ffd17a', width: `${getProgressPercentage()}%` }}
                       >
                         <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-amber-100">
+                    <span className="text-xs font-bold" style={{ color: 'gray' }}>
                       {getProgressPercentage()}%
                     </span>
                   </div>
@@ -233,14 +234,14 @@ export default function ApplicationDetailPage() {
           <div className="xl:col-span-2 space-y-6">
             {/* Client Information */}
             <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+              <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-                    <FaUser className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                    <FaUser className="w-6 h-6" style={{ color: '#242021' }} />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">Client Information</h2>
-                    <p className="text-amber-100 text-sm">Personal details and contact information</p>
+                    <p className="text-sm" style={{ color: 'gray' }}>Personal details and contact information</p>
                   </div>
                 </div>
               </div>
@@ -248,25 +249,25 @@ export default function ApplicationDetailPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Full Name</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="p-4 bg-gray-50 border border-gray-200">
                       <p className="text-sm font-medium text-gray-900">{application.client?.name || application.serviceDetails?.client?.name || "N/A"}</p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Email</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="p-4 bg-gray-50 border border-gray-200">
                       <p className="text-sm font-medium text-gray-900">{application.client?.email || "N/A"}</p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Phone</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="p-4 bg-gray-50 border border-gray-200">
                       <p className="text-sm font-medium text-gray-900">{application.client?.phone || "N/A"}</p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Nationality</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="p-4 bg-gray-50 border border-gray-200">
                       <p className="text-sm font-medium text-gray-900">{application.client?.nationality || "N/A"}</p>
                     </div>
                   </div>
@@ -277,14 +278,14 @@ export default function ApplicationDetailPage() {
             {/* Partner Information */}
             {(application.partner || application.serviceDetails?.partner) && (
               <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+                <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-                      <FaUser className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                      <FaUser className="w-6 h-6" style={{ color: '#242021' }} />
                     </div>
                     <div>
                       <h2 className="text-xl font-bold">Partner Information</h2>
-                      <p className="text-amber-100 text-sm">Business partner details</p>
+                      <p className="text-sm" style={{ color: 'gray' }}>Business partner details</p>
                     </div>
                   </div>
                 </div>
@@ -292,19 +293,19 @@ export default function ApplicationDetailPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Partner Name</label>
-                      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div className="p-4 bg-gray-50 border border-gray-200">
                         <p className="text-sm font-medium text-gray-900">{(application.partner || application.serviceDetails?.partner)?.name || "N/A"}</p>
                       </div>
                     </div>
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Email</label>
-                      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div className="p-4 bg-gray-50 border border-gray-200">
                         <p className="text-sm font-medium text-gray-900">{(application.partner || application.serviceDetails?.partner)?.email || "N/A"}</p>
                       </div>
                     </div>
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Phone</label>
-                      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div className="p-4 bg-gray-50 border border-gray-200">
                         <p className="text-sm font-medium text-gray-900">{(application.partner || application.serviceDetails?.partner)?.phone || "N/A"}</p>
                       </div>
                     </div>
@@ -315,14 +316,14 @@ export default function ApplicationDetailPage() {
 
             {/* Application Overview */}
             <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+              <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-                    <FaFileAlt className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                    <FaFileAlt className="w-6 h-6" style={{ color: '#242021' }} />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">Application Overview</h2>
-                    <p className="text-amber-100 text-sm">Service details and business information</p>
+                    <p className="text-sm" style={{ color: 'gray' }}>Service details and business information</p>
                   </div>
                 </div>
               </div>
@@ -330,25 +331,25 @@ export default function ApplicationDetailPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Service Type</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="p-4 bg-gray-50 border border-gray-200">
                       <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.serviceType || application.serviceType || "N/A"}</p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Partner Type</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="p-4 bg-gray-50 border border-gray-200">
                       <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.partnerType || application.partnerType || "N/A"}</p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">External Companies</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="p-4 bg-gray-50 border border-gray-200">
                       <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.externalCompaniesCount || application.externalCompaniesCount || 0}</p>
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Virtual Office</label>
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="p-4 bg-gray-50 border border-gray-200">
                       <div className="flex items-center space-x-2">
                         <div className={`w-3 h-3 rounded-full ${(application.serviceDetails?.needVirtualOffice || application.needVirtualOffice) ? 'bg-green-500' : 'bg-red-500'}`}></div>
                         <p className="text-sm font-medium text-gray-900">
@@ -360,7 +361,7 @@ export default function ApplicationDetailPage() {
                   {(application.serviceDetails?.projectEstimatedValue || application.projectEstimatedValue) && (
                     <div className="md:col-span-2">
                       <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Project Estimated Value</label>
-                      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div className="p-4 bg-gray-50 border border-gray-200">
                         <p className="text-lg font-bold text-gray-900">
                           {(() => {
                             const value = application.serviceDetails?.projectEstimatedValue || application.projectEstimatedValue;
@@ -391,7 +392,7 @@ export default function ApplicationDetailPage() {
                 <div className="p-6">
                   <div className="space-y-4">
                     {(application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).map((company, index) => (
-                      <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div key={index} className="p-4 bg-gray-50 border border-gray-200">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="text-sm font-bold text-gray-900">Company #{index + 1}</h3>
                           <span className="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
@@ -422,21 +423,21 @@ export default function ApplicationDetailPage() {
             {/* Family Members */}
             {((application.serviceDetails?.familyMembers || application.familyMembers) && (application.serviceDetails?.familyMembers || application.familyMembers).length > 0) && (
               <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+                <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-                      <FaUsers className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                      <FaUsers className="w-6 h-6" style={{ color: '#242021' }} />
                     </div>
                     <div>
                       <h2 className="text-xl font-bold">Family Members</h2>
-                      <p className="text-amber-100 text-sm">Family members requiring residency</p>
+                      <p className="text-sm" style={{ color: 'gray' }}>Family members requiring residency</p>
                     </div>
                   </div>
                 </div>
                 <div className="p-6">
                   <div className="space-y-4">
                     {(application.serviceDetails?.familyMembers || application.familyMembers).map((member, index) => (
-                      <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div key={index} className="p-4 bg-gray-50 border border-gray-200">
                         <h3 className="text-sm font-bold text-gray-900 mb-3">Family Member #{index + 1}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
@@ -476,7 +477,7 @@ export default function ApplicationDetailPage() {
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {application.documents.map((doc, index) => (
-                      <div key={index} className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div key={index} className="p-4 bg-gray-50 border border-gray-200">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <h3 className="text-sm font-bold text-gray-900 mb-1">{doc.type}</h3>
@@ -504,14 +505,14 @@ export default function ApplicationDetailPage() {
           <div className="space-y-6">
             {/* Application Timeline */}
             <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+              <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-amber-600 flex items-center justify-center rounded-lg">
-                    <FaClock className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                    <FaClock className="w-5 h-5" style={{ color: '#242021' }} />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold">Timeline</h3>
-                    <p className="text-amber-100 text-xs">Application progress tracking</p>
+                    <p className="text-xs" style={{ color: 'gray' }}>Application progress tracking</p>
                   </div>
                 </div>
               </div>
@@ -526,38 +527,38 @@ export default function ApplicationDetailPage() {
 
             {/* Application Info */}
             <div className="bg-white border-2 border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+              <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-amber-600 flex items-center justify-center rounded-lg">
-                    <FaCog className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                    <FaCog className="w-5 h-5" style={{ color: '#242021' }} />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold">Application Info</h3>
-                    <p className="text-amber-100 text-xs">Key application details</p>
+                    <p className="text-xs" style={{ color: 'gray' }}>Key application details</p>
                   </div>
                 </div>
               </div>
               <div className="p-4 space-y-3">
-                <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="p-3 bg-gray-50 border border-gray-200">
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Application ID</label>
                   <p className="text-gray-900 font-mono text-xs break-all">{application.applicationId || application._id}</p>
                 </div>
-                <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="p-3 bg-gray-50 border border-gray-200">
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Submitted</label>
                   <p className="text-gray-900 font-medium text-sm">{formatDate(application.timestamps?.createdAt || application.createdAt)}</p>
                 </div>
-                <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="p-3 bg-gray-50 border border-gray-200">
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Last Updated</label>
                   <p className="text-gray-900 font-medium text-sm">{formatDate(application.timestamps?.updatedAt || application.updatedAt)}</p>
                 </div>
                 {(application.status?.approvedBy || application.approvedBy) && (
-                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="p-3 bg-gray-50 border border-gray-200">
                     <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Approved By</label>
                     <p className="text-gray-900 font-medium text-sm">{(application.status?.approvedBy || application.approvedBy)?.fullName || (application.status?.approvedBy || application.approvedBy)?.name || "N/A"}</p>
                   </div>
                 )}
                 {(application.status?.approvedAt || application.approvedAt) && (
-                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="p-3 bg-gray-50 border border-gray-200">
                     <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Approved At</label>
                     <p className="text-gray-900 font-medium text-sm">{formatDate(application.status?.approvedAt || application.approvedAt)}</p>
                   </div>
@@ -568,25 +569,25 @@ export default function ApplicationDetailPage() {
             {/* Assigned Employees */}
             {application.assignedEmployees && application.assignedEmployees.length > 0 && (
               <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-amber-600 flex items-center justify-center rounded-lg">
-                      <FaUsers className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                      <FaUsers className="w-5 h-5" style={{ color: '#242021' }} />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold">Assigned Team</h3>
-                      <p className="text-amber-100 text-xs">Team members handling your application</p>
+                      <p className="text-xs" style={{ color: 'gray' }}>Team members handling your application</p>
                     </div>
                   </div>
                 </div>
                 <div className="p-4">
                   <div className="space-y-3">
                     {application.assignedEmployees.map((employee, index) => (
-                      <div key={index} className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div key={index} className="p-3 bg-gray-50 border border-gray-200">
                         <div className="flex items-start space-x-3">
                           <div className="flex-shrink-0">
-                            <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
-                              <span className="text-white font-bold text-xs">
+                            <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                              <span className="font-bold text-xs" style={{ color: '#242021' }}>
                                 {employee.fullName?.charAt(0).toUpperCase() || "?"}
                               </span>
                             </div>
@@ -607,27 +608,27 @@ export default function ApplicationDetailPage() {
             {/* Payment Information */}
             {application.payment && (
               <div className="bg-white border-2 border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-4">
+                <div className="p-4" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-amber-600 flex items-center justify-center rounded-lg">
-                      <FaDollarSign className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                      <FaDollarSign className="w-5 h-5" style={{ color: '#242021' }} />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold">Payment Info</h3>
-                      <p className="text-amber-100 text-xs">Payment details and status</p>
+                      <p className="text-xs" style={{ color: 'gray' }}>Payment details and status</p>
                     </div>
                   </div>
                 </div>
                 <div className="p-4 space-y-3">
-                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="p-3 bg-gray-50 border border-gray-200">
                     <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Amount</label>
                     <p className="text-lg font-bold text-gray-900">{application.payment?.amount || 0} SAR</p>
                   </div>
-                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="p-3 bg-gray-50 border border-gray-200">
                     <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Method</label>
                     <p className="text-gray-900 font-medium text-sm">{application.payment?.method || "N/A"}</p>
                   </div>
-                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="p-3 bg-gray-50 border border-gray-200">
                     <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Status</label>
                     <div className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${
@@ -639,7 +640,7 @@ export default function ApplicationDetailPage() {
                     </div>
                   </div>
                   {application.payment?.paidAt && (
-                    <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="p-3 bg-gray-50 border border-gray-200">
                       <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Paid At</label>
                       <p className="text-gray-900 font-medium text-sm">{formatDate(application.payment.paidAt)}</p>
                     </div>

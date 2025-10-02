@@ -316,12 +316,12 @@ export default function ModernMultiStepForm() {
 
   const getInputClassName = (fieldName) => {
     const hasError = touched[fieldName] && errors[fieldName];
-    const baseClasses = "w-full px-6 py-4 rounded-2xl border-2 transition-all duration-300 placeholder-gray-400 text-gray-900 font-medium shadow-sm hover:shadow-md focus:shadow-lg";
+    const baseClasses = "w-full px-6 py-4 border-2 transition-all duration-300 placeholder-gray-400 text-gray-900 font-medium shadow-sm hover:shadow-md focus:shadow-lg";
     
     if (hasError) {
       return `${baseClasses} border-red-300 bg-red-50/50 focus:border-red-500 focus:ring-4 focus:ring-red-100/50`;
     }
-    return `${baseClasses} border-gray-200/50 bg-white/80 hover:border-amber-300 focus:border-amber-500 focus:ring-4 focus:ring-amber-100/50 backdrop-blur-sm`;
+    return `${baseClasses} border-gray-200/50 bg-white/80 hover:border-gray-300 focus:border-gray-400 focus:ring-4 focus:ring-gray-100/50 backdrop-blur-sm`;
   };
 
   const renderErrorMessage = (fieldName) => {
@@ -631,23 +631,28 @@ export default function ModernMultiStepForm() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800">
+        {/* Header Section */}
+        <div className="border-b-2" style={{ backgroundColor: '#242021', borderBottomColor: '#ffd17a' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2" style={{ color: '#ffd17a' }}>
                   Business Registration Application
                 </h1>
-                <p className="text-amber-100 text-sm sm:text-base">
+                <p className="text-sm sm:text-base" style={{ color: 'gray' }}>
                   Complete your business registration in just a few simple steps
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <button 
                   onClick={() => window.location.href = '/client'}
-                  className="w-full sm:w-auto px-6 py-3 bg-white/10 hover:bg-white/20 text-white text-sm font-semibold uppercase tracking-wider border border-white/30 transition-all duration-200"
+                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border transition-all duration-200"
+                  style={{ 
+                    backgroundColor: 'transparent', 
+                    color: '#ffd17a', 
+                    borderColor: '#ffd17a' 
+                  }}
                 >
                   Back to Dashboard
                 </button>
@@ -694,19 +699,24 @@ export default function ModernMultiStepForm() {
                 return (
                   <div key={stepItem.id} className="flex flex-col items-center group">
                     <div className={`
-                      w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center transition-all duration-300
+                      w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center transition-all duration-300
                       ${isActive 
-                        ? 'bg-amber-600 text-white shadow-lg' 
+                        ? 'shadow-lg' 
                         : isCompleted 
-                        ? 'bg-amber-500 text-white' 
-                        : 'bg-gray-100 border-2 border-gray-200 text-gray-400 hover:border-amber-300 hover:text-amber-500'
+                        ? '' 
+                        : 'bg-gray-100 border-2 border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600'
                       }
-                    `}>
+                    `} style={{
+                      backgroundColor: isActive ? '#ffd17a' : isCompleted ? '#ffd17a' : undefined,
+                      color: isActive ? '#242021' : isCompleted ? '#242021' : undefined
+                    }}>
                       {isCompleted ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : <Icon className="w-4 h-4 sm:w-5 sm:h-5" />}
                     </div>
                     <span className={`mt-2 text-xs font-medium text-center transition-colors duration-300 ${
-                      isActive ? 'text-amber-600 font-bold' : isCompleted ? 'text-amber-500' : 'text-gray-500'
-                    }`}>
+                      isActive ? 'font-bold' : isCompleted ? '' : 'text-gray-500'
+                    }`} style={{
+                      color: isActive ? '#ffd17a' : isCompleted ? '#ffd17a' : undefined
+                    }}>
                       {stepItem.title}
                     </span>
                   </div>
@@ -718,25 +728,25 @@ export default function ModernMultiStepForm() {
 
         {/* Form Container */}
         <div className="bg-white border-2 border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-amber-600 flex items-center justify-center rounded-lg">
-                {React.createElement(steps[step - 1]?.icon, { className: "w-6 h-6 text-white" })}
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">{steps[step - 1]?.title}</h2>
-                <p className="text-amber-100 text-sm">{steps[step - 1]?.description}</p>
-              </div>
+        <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+              {React.createElement(steps[step - 1]?.icon, { className: "w-6 h-6", style: { color: '#242021' } })}
+            </div>
+            <div>
+              <h2 className="text-xl font-bold">{steps[step - 1]?.title}</h2>
+              <p className="text-sm" style={{ color: 'gray' }}>{steps[step - 1]?.description}</p>
             </div>
           </div>
+        </div>
           <div className="p-6 sm:p-8">
             
             {/* Step 1: Personal Information */}
             {step === 1 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 mb-6 shadow-xl">
-                    <User className="w-8 h-8 text-white" />
+                  <div className="inline-flex items-center justify-center w-16 h-16 mb-6 shadow-xl" style={{ backgroundColor: '#ffd17a' }}>
+                    <User className="w-8 h-8" style={{ color: '#242021' }} />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                     Personal Information
@@ -748,12 +758,12 @@ export default function ModernMultiStepForm() {
                   {/* Show pre-filled data notification */}
                   {(form.fullName || form.email) && (
                     <div className="mt-6 max-w-md mx-auto">
-                      <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                        <div className="flex items-center gap-2 text-green-800">
-                          <Check className="w-5 h-5 text-green-600" />
+                      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                        <div className="flex items-center gap-2 text-amber-800">
+                          <Check className="w-5 h-5 text-amber-600" />
                           <span className="font-medium text-sm">Profile Data Loaded</span>
                         </div>
-                        <p className="text-green-700 text-sm mt-1">
+                        <p className="text-amber-700 text-sm mt-1">
                           Your name and email have been automatically filled from your profile. Name and email are locked, but you can update your phone number, nationality, and residency status.
                         </p>
                       </div>
@@ -767,7 +777,7 @@ export default function ModernMultiStepForm() {
                       <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
                       Full Name *
                       {form.fullName && (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                        <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">
                           From Profile
                         </span>
                       )}
@@ -789,7 +799,7 @@ export default function ModernMultiStepForm() {
                       <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
                       Email Address *
                       {form.email && (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                        <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">
                           From Profile
                         </span>
                       )}
@@ -908,7 +918,7 @@ export default function ModernMultiStepForm() {
                         name="needVirtualOffice" 
                         checked={form.needVirtualOffice} 
                         onChange={handleChange}
-                        className="mt-1 w-5 h-5 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500" 
+                        className="mt-1 w-5 h-5 text-amber-600 border-gray-300 rounded focus:ring-amber-500" 
                       />
                       <div>
                         <span className="text-sm font-medium text-gray-900">Virtual Office Service</span>
@@ -961,28 +971,28 @@ export default function ModernMultiStepForm() {
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">Partnership Type</label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-emerald-300 transition-colors">
+                        <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-amber-300 transition-colors">
                           <input 
                             type="radio"
                             name="partnerType" 
                             value="sole"
                             checked={form.partnerType === "sole"}
                             onChange={handleChange} 
-                            className="text-emerald-600"
+                            className="text-amber-600"
                           />
                           <div>
                             <div className="font-medium text-gray-900">Sole Partner</div>
                             <div className="text-sm text-gray-600">No Saudi partner</div>
                           </div>
                         </label>
-                        <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-emerald-300 transition-colors">
+                        <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-amber-300 transition-colors">
                           <input 
                             type="radio"
                             name="partnerType" 
                             value="withSaudiPartner"
                             checked={form.partnerType === "withSaudiPartner"}
                             onChange={handleChange} 
-                            className="text-emerald-600"
+                            className="text-amber-600"
                           />
                           <div>
                             <div className="font-medium text-gray-900">With Saudi Partner</div>
@@ -1011,9 +1021,9 @@ export default function ModernMultiStepForm() {
                   )}
 
                   {form.serviceType && (
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-                    <h3 className="font-semibold text-emerald-900 mb-2">Requirements Summary</h3>
-                    <p className="text-sm text-emerald-800">{requirements.note}</p>
+                  <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
+                    <h3 className="font-semibold text-gray-900 mb-2">Requirements Summary</h3>
+                    <p className="text-sm text-gray-700">{requirements.note}</p>
                   </div>
                   )}
                 </div>
@@ -1054,7 +1064,7 @@ export default function ModernMultiStepForm() {
 
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Saudi Partner Iqama/ID Card *</label>
-                        <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 transition-colors">
+                        <div className="border-2 border-dashed border-gray-300 p-6 text-center hover:border-gray-400 transition-colors">
                           <Upload className="w-8 h-8 mx-auto mb-3 text-gray-400" />
                           <p className="text-sm text-gray-600 mb-3">Upload your Saudi partner's Iqama or National ID card</p>
                           <input
@@ -1064,7 +1074,7 @@ export default function ModernMultiStepForm() {
                             className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700"
                           />
                           {form.saudiPartnerIqama && (
-                            <p className="text-sm text-green-600 mt-2 font-medium">
+                            <p className="text-sm text-amber-600 mt-2 font-medium">
                               ✓ File selected: {form.saudiPartnerIqama.name}
                             </p>
                           )}
@@ -1121,17 +1131,17 @@ export default function ModernMultiStepForm() {
                   </div>
 
                   {requirements.requiredExternalCompanies > 0 && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                      <h3 className="font-semibold text-blue-900 mb-2">Requirements</h3>
-                      <p className="text-sm text-blue-800 mb-2">
+                    <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
+                      <h3 className="font-semibold text-gray-900 mb-2">Requirements</h3>
+                      <p className="text-sm text-gray-700 mb-2">
                         Your service requires {requirements.requiredExternalCompanies} external companies.
                       </p>
-                      <p className="text-sm text-blue-700 mb-3">{requirements.note}</p>
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                        <p className="text-sm text-green-800 font-medium">
+                      <p className="text-sm text-gray-600 mb-3">{requirements.note}</p>
+                      <div className="bg-gray-100 border border-gray-200 p-3 transition-all duration-300 hover:shadow-md">
+                        <p className="text-sm text-gray-700 font-medium">
                           💡 Don't have external companies? No problem! We can arrange them for you.
                         </p>
-                        <p className="text-sm text-green-700 mt-1">
+                        <p className="text-sm text-gray-600 mt-1">
                           Simply enter 0 companies and we'll handle the rest.
                         </p>
                         <div className="mt-3">
@@ -1141,9 +1151,9 @@ export default function ModernMultiStepForm() {
                               name="companyArrangesExternalCompanies"
                               checked={form.companyArrangesExternalCompanies}
                               onChange={handleChange}
-                              className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
+                              className="w-4 h-4 text-amber-600 border-gray-300 focus:ring-amber-500"
                             />
-                            <span className="text-sm text-green-800 font-medium">
+                            <span className="text-sm text-amber-800 font-medium">
                               I want Creative Mark to arrange the required external companies for me
                             </span>
                           </label>
@@ -1245,11 +1255,11 @@ export default function ModernMultiStepForm() {
                       <Building2 className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                       <p className="text-gray-600 mb-2">No external companies to configure</p>
                       {requirements.requiredExternalCompanies > 0 ? (
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
-                          <p className="text-sm text-green-800 font-medium mb-2">
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 max-w-md mx-auto">
+                          <p className="text-sm text-amber-800 font-medium mb-2">
                             ✅ We'll arrange the required {requirements.requiredExternalCompanies} companies for you
                           </p>
-                          <p className="text-sm text-green-700">
+                          <p className="text-sm text-amber-700">
                             You can proceed to the next step. Our team will handle the external company requirements.
                           </p>
                         </div>
@@ -1373,39 +1383,39 @@ export default function ModernMultiStepForm() {
                     <div className="space-y-6">
                       {Number(form.externalCompaniesCount) >= requirements.requiredExternalCompanies ? (
                         <div className="space-y-4">
-                          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                            <h3 className="font-semibold text-green-900 mb-2">Document Options</h3>
-                            <p className="text-sm text-green-800 mb-3">
+                          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                            <h3 className="font-semibold text-amber-900 mb-2">Document Options</h3>
+                            <p className="text-sm text-amber-800 mb-3">
                               You have sufficient external companies. Choose your preferred option:
                             </p>
 
                             <div className="space-y-3">
-                              <label className="flex items-start gap-3 cursor-pointer p-3 border border-green-200 rounded-lg hover:bg-green-50">
+                              <label className="flex items-start gap-3 cursor-pointer p-3 border border-amber-200 rounded-lg hover:bg-amber-50">
                                 <input
                                   type="radio"
                                   name="docOption"
                                   value="uploadDocs"
                                   checked={form.docOption === "uploadDocs"}
                                   onChange={handleChange}
-                                  className="mt-1 text-green-600"
+                                  className="mt-1 text-amber-600"
                                 />
                                 <div>
-                                  <span className="font-medium text-green-900">Upload Company Documents</span>
-                                  <p className="text-sm text-green-700 mt-1">I have all company documents ready to upload</p>
+                                  <span className="font-medium text-amber-900">Upload Company Documents</span>
+                                  <p className="text-sm text-amber-700 mt-1">I have all company documents ready to upload</p>
                                 </div>
                               </label>
-                              <label className="flex items-start gap-3 cursor-pointer p-3 border border-green-200 rounded-lg hover:bg-green-50">
+                              <label className="flex items-start gap-3 cursor-pointer p-3 border border-amber-200 rounded-lg hover:bg-amber-50">
                                 <input
                                   type="radio"
                                   name="docOption"
                                   value="passportOnly"
                                   checked={form.docOption === "passportOnly"}
                                   onChange={handleChange}
-                                  className="mt-1 text-green-600"
+                                  className="mt-1 text-amber-600"
                                 />
                                 <div>
-                                  <span className="font-medium text-green-900">Provide Documents for Me</span>
-                                  <p className="text-sm text-green-700 mt-1">I'll provide passport + ID, you arrange the company documents</p>
+                                  <span className="font-medium text-amber-900">Provide Documents for Me</span>
+                                  <p className="text-sm text-amber-700 mt-1">I'll provide passport + ID, you arrange the company documents</p>
                                 </div>
                               </label>
                             </div>
@@ -1504,15 +1514,15 @@ export default function ModernMultiStepForm() {
                           )}
                         </div>
                       ) : (
-                        <div className="bg-green-50 border border-green-200 rounded-xl p-6 space-y-4">
-                          <h3 className="font-semibold text-green-900 mb-2">We'll Arrange External Companies for You</h3>
-                          <p className="text-sm text-green-800 mb-4">
+                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 space-y-4">
+                          <h3 className="font-semibold text-amber-900 mb-2">We'll Arrange External Companies for You</h3>
+                          <p className="text-sm text-amber-800 mb-4">
                             You have {form.externalCompaniesCount} external companies, but {requirements.requiredExternalCompanies} are required. 
                             Don't worry - we'll arrange the missing {requirements.requiredExternalCompanies - form.externalCompaniesCount} companies for you.
                           </p>
-                          <div className="bg-white border border-green-200 rounded-lg p-4 mb-4">
-                            <h4 className="font-medium text-green-900 mb-2">What we need from you:</h4>
-                            <ul className="text-sm text-green-800 space-y-1">
+                          <div className="bg-white border border-amber-200 rounded-lg p-4 mb-4">
+                            <h4 className="font-medium text-amber-900 mb-2">What we need from you:</h4>
+                            <ul className="text-sm text-amber-800 space-y-1">
                               <li>• Your passport copy</li>
                               <li>• Your Iqama/ID card copy</li>
                               <li>• We'll handle the rest!</li>
@@ -1521,25 +1531,25 @@ export default function ModernMultiStepForm() {
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-2">Passport</label>
-                              <div className="border-2 border-dashed border-green-300 rounded-lg p-4 text-center hover:border-green-400 transition-colors">
-                                <Upload className="w-6 h-6 mx-auto mb-2 text-green-600" />
+                              <div className="border-2 border-dashed border-amber-300 rounded-lg p-4 text-center hover:border-amber-400 transition-colors">
+                                <Upload className="w-6 h-6 mx-auto mb-2 text-amber-600" />
                                 <input
                                   type="file"
                                   accept="image/*,.pdf"
                                   onChange={handlePassportChange}
-                                  className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-100 file:text-green-800"
+                                  className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-amber-100 file:text-amber-800"
                                 />
                               </div>
                             </div>
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-2">Iqama / ID Card</label>
-                              <div className="border-2 border-dashed border-green-300 rounded-lg p-4 text-center hover:border-green-400 transition-colors">
-                                <Upload className="w-6 h-6 mx-auto mb-2 text-green-600" />
+                              <div className="border-2 border-dashed border-amber-300 rounded-lg p-4 text-center hover:border-amber-400 transition-colors">
+                                <Upload className="w-6 h-6 mx-auto mb-2 text-amber-600" />
                                 <input
                                   type="file"
                                   name="idCard"
                                   onChange={handleFileChange}
-                                  className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-100 file:text-green-800"
+                                  className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-amber-100 file:text-amber-800"
                                 />
                               </div>
                             </div>
@@ -1688,30 +1698,30 @@ export default function ModernMultiStepForm() {
                     </div>
                   )}
 
-                  <div className="bg-gradient-to-br from-green-50 to-blue-50 border border-green-200 rounded-2xl p-6">
-                    <h3 className="text-lg font-semibold text-green-900 mb-4 flex items-center gap-2">
+                  <div className="bg-gradient-to-br from-amber-50 to-blue-50 border border-amber-200 rounded-2xl p-6">
+                    <h3 className="text-lg font-semibold text-amber-900 mb-4 flex items-center gap-2">
                       <Check className="w-5 h-5" />
                       Ready for Submission
                     </h3>
-                    <p className="text-sm text-green-800 mb-4">
+                    <p className="text-sm text-amber-800 mb-4">
                       Your application is complete and ready for submission. Upon submission, it will go through the following stages:
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                        <span className="text-green-700">Submitted</span>
+                        <span className="text-amber-700">Submitted</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <span className="text-green-700">Under Review</span>
+                        <span className="text-amber-700">Under Review</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                        <span className="text-green-700">In Process</span>
+                        <span className="text-amber-700">In Process</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-green-600 rounded-full"></div>
-                        <span className="text-green-700">Completed</span>
+                        <div className="w-3 h-3 bg-amber-600 rounded-full"></div>
+                        <span className="text-amber-700">Completed</span>
                       </div>
                     </div>
                   </div>
@@ -1772,7 +1782,7 @@ export default function ModernMultiStepForm() {
                 <button 
                   type="button" 
                   onClick={prevStep}
-                  className="group flex items-center justify-center gap-3 px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/50 text-gray-700 font-semibold rounded-2xl hover:bg-white hover:border-amber-300 hover:text-amber-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" 
+                  className="group flex items-center justify-center gap-3 px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/50 text-gray-700 font-semibold hover:bg-white hover:border-gray-300 hover:text-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl" 
                 >
                   <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
                   Previous Step
@@ -1785,7 +1795,8 @@ export default function ModernMultiStepForm() {
                 <button 
                   type="button" 
                   onClick={nextStep}
-                  className="group flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white font-bold rounded-2xl hover:from-amber-700 hover:via-amber-800 hover:to-amber-900 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-3xl"
+                  className="group flex items-center justify-center gap-3 px-8 py-4 text-white font-bold transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-3xl"
+                  style={{ backgroundColor: '#ffd17a', color: '#242021' }}
                 >
                   Continue
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -1795,11 +1806,12 @@ export default function ModernMultiStepForm() {
                   type="button" 
                   onClick={submitForm}
                   disabled={isSubmitting}
-                  className={`group flex items-center justify-center gap-3 px-10 py-4 font-bold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-3xl ${
+                  className={`group flex items-center justify-center gap-3 px-10 py-4 font-bold transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-3xl ${
                     isSubmitting 
                       ? "bg-gray-400 text-gray-200 cursor-not-allowed scale-100" 
-                      : "bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white hover:from-amber-700 hover:via-amber-800 hover:to-amber-900"
+                      : ""
                   }`}
+                  style={!isSubmitting ? { backgroundColor: '#ffd17a', color: '#242021' } : {}}
                 >
                   {isSubmitting ? (
                     <>

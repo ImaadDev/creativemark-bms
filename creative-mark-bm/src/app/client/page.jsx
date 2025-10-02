@@ -277,8 +277,8 @@ const ClientDashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
-      case 'completed': return 'text-green-600 bg-green-100';
-      case 'approved': return 'text-green-600 bg-green-100';
+      case 'completed': return 'text-amber-600 bg-amber-100';
+      case 'approved': return 'text-amber-600 bg-amber-100';
       case 'in progress': return 'text-blue-600 bg-blue-100';
       case 'pending': return 'text-yellow-600 bg-yellow-100';
       case 'rejected': return 'text-red-600 bg-red-100';
@@ -367,30 +367,39 @@ const ClientDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 border-b-2 border-amber-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="min-h-screen bg-white">
+        {/* Header Section */}
+        <div className="border-b-2" style={{ backgroundColor: '#242021', borderBottomColor: '#ffd17a' }}>
+        <div className="max-w-6xl  mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mb-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2" style={{ color: '#ffd17a' }}>
                   Welcome back, {dashboardData.user.name}!
                 </h1>
-                <p className="text-amber-100 text-sm sm:text-base">
+                <p className="text-sm sm:text-base" style={{ color: 'gray' }}>
                   Member since {dashboardData.user.memberSince} • Last login: {dashboardData.user.lastLogin}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <Link 
                   href="/client/track-application"
-                  className="w-full sm:w-auto px-6 py-3 bg-white/10 hover:bg-white/20 text-white text-sm font-semibold uppercase tracking-wider border border-white/30 transition-all duration-200"
+                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border transition-all duration-200"
+                  style={{ 
+                    backgroundColor: 'transparent', 
+                    color: '#ffd17a', 
+                    borderColor: '#ffd17a' 
+                  }}
                 >
                   Track Applications
                 </Link>
                 <Link 
                   href="/client/application" 
-                  className="w-full sm:w-auto px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold uppercase tracking-wider transition-all duration-200 shadow-lg"
+                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-200 shadow-lg"
+                  style={{ 
+                    backgroundColor: '#ffd17a', 
+                    color: '#242021' 
+                  }}
                 >
                   + New Application
                 </Link>
@@ -400,10 +409,10 @@ const ClientDashboard = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-8 py-6 sm:py-8">
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 px-8 md:px-0 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white border-2 border-gray-200 overflow-hidden">
             <div className="p-6">
               <div className="flex items-center justify-between">
@@ -417,8 +426,8 @@ const ClientDashboard = () => {
                     <span>All time</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
-                  <FaFileContract className="text-white text-lg" />
+                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                  <FaFileContract className="text-lg" style={{ color: '#242021' }} />
                 </div>
               </div>
             </div>
@@ -437,8 +446,8 @@ const ClientDashboard = () => {
                     <span>Active processes</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
-                  <FaClock className="text-white text-lg" />
+                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                  <FaClock className="text-lg" style={{ color: '#242021' }} />
                 </div>
               </div>
             </div>
@@ -457,8 +466,8 @@ const ClientDashboard = () => {
                     <span>Successfully finished</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
-                  <FaCheckCircle className="text-white text-lg" />
+                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                  <FaCheckCircle className="text-lg" style={{ color: '#242021' }} />
                 </div>
               </div>
             </div>
@@ -477,8 +486,8 @@ const ClientDashboard = () => {
                     <span>Service investments</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                  <FaDollarSign className="text-white text-lg" />
+                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
+                  <FaDollarSign className="text-lg" style={{ color: '#242021' }} />
                 </div>
               </div>
             </div>
@@ -489,12 +498,13 @@ const ClientDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Applications */}
           <div className="lg:col-span-2 bg-white border-2 border-gray-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-stone-900 to-amber-950 text-white p-6">
+            <div className="p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Recent Applications</h2>
+                <h2 className="text-base md:text-xl font-bold">Recent Applications</h2>
                 <Link 
                   href="/client/track-application" 
-                  className="text-amber-100 hover:text-white text-sm font-semibold uppercase tracking-wider transition-colors"
+                  className="text-xs md:text-sm font-semibold uppercase tracking-wider transition-colors"
+                  style={{ color: 'gray' }}
                 >
                   View All
                 </Link>
@@ -644,7 +654,7 @@ const ClientDashboard = () => {
                           <span className={`px-2 py-1 text-xs font-bold ${
                             deadline.priority === 'high' ? 'bg-red-100 text-red-800' : 
                             deadline.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
-                            'bg-green-100 text-green-800'
+                            'bg-amber-100 text-amber-800'
                           }`}>
                             {deadline.daysLeft} days left
                           </span>

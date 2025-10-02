@@ -36,7 +36,7 @@ export default function ClientLayout({ children }) {
           isSidebarOpen={isSidebarOpen} 
         />
         <main className="flex-1 overflow-auto">
-          <div className="min-h-full bg-gray-50">
+          <div className="min-h-full  bg-gray-50">
             {children}
           </div>
         </main>

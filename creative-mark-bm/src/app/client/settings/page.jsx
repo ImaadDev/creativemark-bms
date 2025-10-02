@@ -261,26 +261,26 @@ export default function ClientSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30">
+    <div className="min-h-screen bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 p-6 rounded-lg" style={{ backgroundColor: '#242021' }}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <FaCog className="text-white text-xl" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: '#ffd17a' }}>
+                  <FaCog className="text-xl" style={{ color: '#242021' }} />
                 </div>
                 <div>
-                  <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+                  <h1 className="text-3xl sm:text-4xl font-bold tracking-tight" style={{ color: '#ffd17a' }}>
                     Client Settings
                   </h1>
-                  <p className="text-sm text-emerald-600 font-medium uppercase tracking-wider">
+                  <p className="text-sm font-medium uppercase tracking-wider" style={{ color: 'gray' }}>
                     Manage Your Client Account
                   </p>
                 </div>
               </div>
-              <p className="text-base sm:text-lg text-gray-600 font-medium max-w-2xl">
+              <p className="text-base sm:text-lg font-medium max-w-2xl" style={{ color: 'gray' }}>
                 Configure your account preferences, security settings, and client-specific options
               </p>
             </div>
