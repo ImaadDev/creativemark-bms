@@ -64,7 +64,7 @@ export const registerUser = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-domain cookies
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days
     });
     
 
@@ -114,7 +114,7 @@ export const loginUser = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-domain cookies
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days
     });
     
     

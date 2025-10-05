@@ -39,8 +39,10 @@ import { getDashboardAnalytics, getApplicationReports, getEmployeeReports, getFi
 import { getAllApplications } from "../../../services/applicationService";
 import { getAllEmployees } from "../../../services/employeeApi";
 import { getAllClients } from "../../../services/clientApi";
+import { useTranslation } from '../../../i18n/TranslationContext';
 
 export default function ReportsPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
@@ -373,8 +375,8 @@ export default function ReportsPage() {
             </div>
             <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-[#ffd17a] border-2 border-white rounded-full"></div>
           </div>
-          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Loading Reports</h3>
-          <p className="text-sm sm:text-base text-gray-600">Fetching analytics and performance data...</p>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{t('admin.loadingReports')}</h3>
+          <p className="text-sm sm:text-base text-gray-600">{t('admin.fetchingAnalyticsData')}</p>
         </div>
       </div>
     );
@@ -387,13 +389,13 @@ export default function ReportsPage() {
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-4">
             <FaExclamationTriangle className="text-lg sm:text-2xl text-red-600" />
           </div>
-          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Error Loading Reports</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{t('admin.errorLoadingReports')}</h3>
           <p className="text-sm sm:text-base text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="px-4 sm:px-6 py-2.5 sm:py-3 bg-[#242021] text-white hover:bg-[#242021]/90 transition-colors font-medium rounded-lg"
           >
-            Retry
+            {t('admin.retry')}
           </button>
         </div>
       </div>
@@ -418,10 +420,10 @@ export default function ReportsPage() {
                   </div>
                   <div className="flex-1">
                     <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">
-                      Reports & Analytics
+                      {t('admin.reportsAndAnalytics')}
                     </h1>
                     <p className="text-[#ffd17a] text-sm sm:text-base lg:text-lg">
-                      Creative Mark BMS • Admin Portal • Business Intelligence Dashboard
+                      {t('admin.businessIntelligenceDashboard')}
                     </p>
                   </div>
                 </div>
@@ -429,15 +431,15 @@ export default function ReportsPage() {
                 <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 mt-4 sm:mt-6">
                   <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
                     <FaFileAlt className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
-                    <span className="text-xs sm:text-sm">Total Applications: {formatNumber(comprehensiveStats.totalApplications)}</span>
+                    <span className='text-xs sm:text-sm'>{t('admin.totalApplications')}: {formatNumber(comprehensiveStats.totalApplications)}</span>
                   </div>
                   <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
                     <FaUsers className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
-                    <span className="text-xs sm:text-sm">Total Clients: {formatNumber(comprehensiveStats.totalClients)}</span>
+                    <span className='text-xs sm:text-sm'>{t('admin.totalClients')}: {formatNumber(comprehensiveStats.totalClients)}</span>
                   </div>
                   <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
                     <FaDollarSign className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
-                    <span className="text-xs sm:text-sm">Revenue: {formatCurrency(comprehensiveStats.totalRevenue)}</span>
+                    <span className='text-xs sm:text-sm'>{t('admin.revenue')}: {formatCurrency(comprehensiveStats.totalRevenue)}</span>
                   </div>
                 </div>
               </div>
@@ -445,11 +447,11 @@ export default function ReportsPage() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                 <button className="group bg-white/10 rounded-lg sm:rounded-xl backdrop-blur-sm text-white border border-white/20 px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base">
                   <FaDownload className="text-sm sm:text-base" />
-                  Export Data
+                  {t('admin.exportData')}
                 </button>
                 <button className="group bg-[#ffd17a] rounded-lg sm:rounded-xl text-[#242021] px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-[#ffd17a]/90 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base">
                   <FaPrint className="text-sm sm:text-base" />
-                  Generate Report
+                  {t('admin.generateReport')}
                 </button>
               </div>
             </div>
@@ -461,7 +463,7 @@ export default function ReportsPage() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
             <div className="flex items-center">
               <FaCalendarAlt className="mr-2 text-[#ffd17a] w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="text-sm sm:text-base font-medium text-gray-700">Date Range:</span>
+              <span className='text-sm sm:text-base font-medium text-gray-700'>{t('admin.dateRange')}:</span>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <input
@@ -485,7 +487,7 @@ export default function ReportsPage() {
                 }}
                 className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors rounded-lg sm:rounded-xl text-sm sm:text-base"
               >
-                Clear
+                {t('admin.clear')}
               </button>
             </div>
           </div>
@@ -495,12 +497,12 @@ export default function ReportsPage() {
         <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl mb-6 sm:mb-8">
           <nav className="flex overflow-x-auto">
             {[
-              { id: 'overview', label: 'Overview', icon: FaChartBar },
-              { id: 'applications', label: 'Applications', icon: FaFileAlt },
-              { id: 'employees', label: 'Employees', icon: FaUsers },
-              { id: 'clients', label: 'Clients', icon: FaUserTie },
-              { id: 'performance', label: 'Performance', icon: FaTrophy },
-              { id: 'financial', label: 'Financial', icon: FaDollarSign }
+              { id: 'overview', label: t('admin.overview'), icon: FaChartBar },
+              { id: 'applications', label: t('admin.applications'), icon: FaFileAlt },
+              { id: 'employees', label: t('admin.employees'), icon: FaUsers },
+              { id: 'clients', label: t('admin.clients'), icon: FaUserTie },
+              { id: 'performance', label: t('admin.performance'), icon: FaTrophy },
+              { id: 'financial', label: t('admin.financial'), icon: FaDollarSign }
             ].map((tab) => {
               const Icon = tab.icon;
               return (

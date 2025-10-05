@@ -50,8 +50,10 @@ import { getAllApplications } from '../../services/applicationService';
 import { getAllEmployees } from '../../services/employeeApi';
 import { getAllClients } from '../../services/clientApi';
 import { FullPageLoading } from '../../components/LoadingSpinner';
+import { useTranslation } from '../../i18n/TranslationContext';
 
 export default function InternalDashboard() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [stats, setStats] = useState({
     total: 0,
@@ -225,7 +227,7 @@ export default function InternalDashboard() {
                 {trend > 0 ? <FaArrowUp className="text-xs" /> : <FaArrowDown className="text-xs" />}
                 {Math.abs(trend)}%
               </span>
-              <span className="text-xs text-gray-500 ml-1 hidden sm:inline">vs last month</span>
+              <span className='text-xs text-gray-500 ml-1 hidden sm:inline'>{t('admin.vsLastMonth')}</span>
             </div>
           )}
         </div>
@@ -266,17 +268,17 @@ export default function InternalDashboard() {
     const currentStatus = status?.current || status;
     switch (currentStatus) {
       case 'submitted':
-        return 'Submitted';
+        return t('admin.submitted');
       case 'under_review':
-        return 'Under Review';
+        return t('admin.underReview');
       case 'in_process':
-        return 'In Process';
+        return t('admin.inProcess');
       case 'approved':
-        return 'Approved';
+        return t('admin.approved');
       case 'completed':
-        return 'Completed';
+        return t('admin.completed');
       default:
-        return currentStatus || 'Unknown';
+        return currentStatus || t('admin.unknown');
     }
   };
 
@@ -290,7 +292,7 @@ export default function InternalDashboard() {
   };
 
   if (loading) {
-    return <FullPageLoading text="Loading Admin Dashboard..." />;
+    return <FullPageLoading text={t('admin.loadingDashboard')} />;
   }
 
   return (
@@ -311,10 +313,10 @@ export default function InternalDashboard() {
                   </div>
                   <div className="flex-1">
                     <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">
-                      Admin Dashboard
+                      {t('admin.dashboard')}
                     </h1>
                     <p className="text-[#ffd17a] text-sm sm:text-base lg:text-lg">
-                      Creative Mark Management Portal • Monitor and manage all operations
+                      {t('admin.managementPortal')} • {t('admin.monitorAndManage')}
                     </p>
                   </div>
                 </div>
@@ -322,15 +324,15 @@ export default function InternalDashboard() {
                 <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 mt-4 sm:mt-6">
                   <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
                     <FaFileAlt className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
-                    <span className="text-xs sm:text-sm">Total Applications: {stats.total}</span>
+                    <span className='text-xs sm:text-sm'>{t('admin.totalApplications')}: {stats.total}</span>
                   </div>
                   <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
                     <FaClock className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
-                    <span className="text-xs sm:text-sm">Pending: {stats.pending}</span>
+                    <span className='text-xs sm:text-sm'>{t('admin.pending')}: {stats.pending}</span>
                   </div>
                   <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
                     <FaCheckCircle className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
-                    <span className="text-xs sm:text-sm">Completed: {stats.completed}</span>
+                    <span className='text-xs sm:text-sm'>{t('admin.completed')}: {stats.completed}</span>
                   </div>
                 </div>
               </div>
@@ -342,14 +344,14 @@ export default function InternalDashboard() {
                   className="group bg-[#ffd17a] rounded-lg sm:rounded-xl text-[#242021] px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-[#ffd17a]/90 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
                 >
                   <FaSpinner className={`text-sm sm:text-base ${loading ? 'animate-spin' : 'group-hover:rotate-180'} transition-transform duration-300`} />
-                  Refresh Data
+                  {t('admin.refreshData')}
                 </button>
                 <button 
                   onClick={() => router.push('/admin/requests')}
                   className="group bg-white/10 rounded-lg sm:rounded-xl backdrop-blur-sm text-white border border-white/20 px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
                 >
                   <FaFileAlt className="text-sm sm:text-base" />
-                  View All Requests
+                  {t('admin.viewAllRequests')}
                 </button>
               </div>
             </div>
@@ -366,14 +368,14 @@ export default function InternalDashboard() {
                 </div>
               </div>
               <div className="ml-3 sm:ml-4 flex-1">
-                <h3 className="text-xs sm:text-sm font-semibold text-red-800 mb-1">Error loading dashboard data</h3>
+                <h3 className='text-xs sm:text-sm font-semibold text-red-800 mb-1'>{t('admin.errorLoadingDashboard')}</h3>
                 <p className="text-xs sm:text-sm text-red-700 mb-2 sm:mb-3">{error}</p>
                 <button 
                   onClick={loadDashboardData}
                   className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-red-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
                 >
                   <FaSpinner className={`mr-1 sm:mr-2 ${loading ? 'animate-spin' : ''}`} />
-                  Retry
+                  {t('admin.retry')}
                 </button>
               </div>
             </div>
@@ -383,39 +385,39 @@ export default function InternalDashboard() {
         {/* Primary Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <StatCard
-            title="Total Applications"
+            title={t('admin.totalApplications')}
             value={stats.total}
             icon={FaFileAlt}
             color="blue"
-            subtitle="All time"
+            subtitle={t('admin.allTime')}
             trend={12}
             isPrimary={true}
             onClick={() => router.push('/admin/requests?tab=all')}
           />
           <StatCard
-            title="Pending Review"
+            title={t('admin.pendingReview')}
             value={stats.pending}
             icon={FaClock}
             color="yellow"
-            subtitle="Awaiting action"
+            subtitle={t('admin.awaitingAction')}
             trend={-5}
             onClick={() => router.push('/admin/requests?tab=pending')}
           />
           <StatCard
-            title="In Progress"
+            title={t('admin.inProgress')}
             value={stats.inProgress}
             icon={FaExclamationTriangle}
             color="orange"
-            subtitle="Being processed"
+            subtitle={t('admin.beingProcessed')}
             trend={8}
             onClick={() => router.push('/admin/requests?tab=in-progress')}
           />
           <StatCard
-            title="Completed"
+            title={t('admin.completed')}
             value={stats.completed}
             icon={FaCheckCircle}
             color="emerald"
-            subtitle="Successfully finished"
+            subtitle={t('admin.successfullyFinished')}
             trend={15}
             onClick={() => router.push('/admin/requests?status=Completed')}
           />
@@ -424,38 +426,38 @@ export default function InternalDashboard() {
         {/* Secondary Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <StatCard
-            title="Active Clients"
+            title={t('admin.activeClients')}
             value={stats.clients}
             icon={FaUsers}
             color="purple"
-            subtitle={`${stats.activeClients} active • ${stats.clients} total`}
+            subtitle={`${stats.activeClients} ${t('admin.active')} • ${stats.clients} ${t('admin.total')}`}
             trend={22}
             onClick={() => router.push('/admin/clients')}
           />
           <StatCard
-            title="Team Members"
+            title={t('admin.teamMembers')}
             value={stats.employees}
             icon={FaUserTie}
             color="indigo"
-            subtitle={`${stats.activeEmployees} active • ${stats.employees} total`}
+            subtitle={`${stats.activeEmployees} ${t('admin.active')} • ${stats.employees} ${t('admin.total')}`}
             trend={0}
             onClick={() => router.push('/admin/all-employees')}
           />
           <StatCard
-            title="Monthly Revenue"
+            title={t('admin.monthlyRevenue')}
             value={`$${stats.revenue.toLocaleString()}`}
             icon={FaDollarSign}
             color="emerald"
-            subtitle="This month"
+            subtitle={t('admin.thisMonth')}
             trend={18}
             onClick={() => router.push('/admin/reports')}
           />
           <StatCard
-            title="This Month"
+            title={t('admin.thisMonth')}
             value={stats.thisMonth}
             icon={FaCalendarAlt}
             color="pink"
-            subtitle="New applications"
+            subtitle={t('admin.newApplications')}
             trend={25}
             onClick={() => router.push('/admin/requests')}
           />
@@ -502,38 +504,38 @@ export default function InternalDashboard() {
         {/* Analytics & Performance Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <StatCard
-            title="Conversion Rate"
+            title={t('admin.conversionRate')}
             value={`${stats.conversionRate}%`}
             icon={FaPercent}
             color="green"
-            subtitle="Success rate"
+            subtitle={t('admin.successRate')}
             trend={5}
             onClick={() => router.push('/admin/reports')}
           />
           <StatCard
-            title="Avg Processing"
-            value={`${stats.avgProcessingTime} days`}
+            title={t('admin.avgProcessing')}
+            value={`${stats.avgProcessingTime} ${t('admin.days')}`}
             icon={FaClock}
             color="blue"
-            subtitle="Average time"
+            subtitle={t('admin.averageTime')}
             trend={-12}
             onClick={() => router.push('/admin/reports')}
           />
           <StatCard
-            title="Client Satisfaction"
+            title={t('admin.clientSatisfaction')}
             value={`${stats.clientSatisfaction}/5`}
             icon={FaThumbsUp}
             color="emerald"
-            subtitle="Rating"
+            subtitle={t('admin.rating')}
             trend={3}
             onClick={() => router.push('/admin/reports')}
           />
           <StatCard
-            title="Monthly Growth"
+            title={t('admin.monthlyGrowth')}
             value={`${stats.monthlyGrowth}%`}
             icon={FaArrowUp}
             color="purple"
-            subtitle="Growth rate"
+            subtitle={t('admin.growthRate')}
             trend={stats.monthlyGrowth}
             onClick={() => router.push('/admin/reports')}
           />
@@ -550,8 +552,8 @@ export default function InternalDashboard() {
                     <FaChartPie className="text-white text-sm sm:text-lg" />
                   </div>
                   <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Service Distribution</h3>
-                    <p className="text-xs sm:text-sm text-gray-600">Top services by volume</p>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t('admin.serviceDistribution')}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">{t('admin.topServicesByVolume')}</p>
                   </div>
                 </div>
               </div>
@@ -580,7 +582,7 @@ export default function InternalDashboard() {
                   );
                 }) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>No service data available</p>
+                    <p>{t('admin.noServiceData')}</p>
                   </div>
                 )}
               </div>
@@ -596,8 +598,8 @@ export default function InternalDashboard() {
                     <FaGlobe className="text-white text-sm sm:text-lg" />
                   </div>
                   <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Regional Performance</h3>
-                    <p className="text-xs sm:text-sm text-gray-600">Applications by region</p>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t('admin.regionalPerformance')}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">{t('admin.applicationsByRegion')}</p>
                   </div>
                 </div>
               </div>
@@ -639,10 +641,10 @@ export default function InternalDashboard() {
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg sm:rounded-xl flex items-center justify-center">
                 <FaClock className="text-white text-sm sm:text-lg" />
               </div>
-              <span className="text-xs sm:text-sm text-gray-500">Response Time</span>
+              <span className='text-xs sm:text-sm text-gray-500'>{t('admin.responseTime')}</span>
             </div>
             <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">{stats.performanceMetrics.responseTime}</h4>
-            <p className="text-xs sm:text-sm text-gray-600">Average response time</p>
+            <p className='text-xs sm:text-sm text-gray-600'>{t('admin.averageResponseTime')}</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-gray-200/50 p-4 sm:p-6">
@@ -650,10 +652,10 @@ export default function InternalDashboard() {
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center">
                 <FaClipboardCheck className="text-white text-sm sm:text-lg" />
               </div>
-              <span className="text-xs sm:text-sm text-gray-500">Completion Rate</span>
+              <span className='text-xs sm:text-sm text-gray-500'>{t('admin.completionRate')}</span>
             </div>
             <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">{stats.performanceMetrics.completionRate}%</h4>
-            <p className="text-xs sm:text-sm text-gray-600">Successfully completed</p>
+            <p className='text-xs sm:text-sm text-gray-600'>{t('admin.successfullyCompleted')}</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-gray-200/50 p-4 sm:p-6">
@@ -661,10 +663,10 @@ export default function InternalDashboard() {
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center">
                 <FaUsers className="text-white text-sm sm:text-lg" />
               </div>
-              <span className="text-xs sm:text-sm text-gray-500">Client Retention</span>
+              <span className='text-xs sm:text-sm text-gray-500'>{t('admin.clientRetention')}</span>
             </div>
             <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">{stats.performanceMetrics.clientRetention}%</h4>
-            <p className="text-xs sm:text-sm text-gray-600">Client retention rate</p>
+            <p className='text-xs sm:text-sm text-gray-600'>{t('admin.clientRetentionRate')}</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-gray-200/50 p-4 sm:p-6">
@@ -672,10 +674,10 @@ export default function InternalDashboard() {
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#ffd17a] rounded-lg sm:rounded-xl flex items-center justify-center">
                 <FaChartLine className="text-[#242021] text-sm sm:text-lg" />
               </div>
-              <span className="text-xs sm:text-sm text-gray-500">Team Efficiency</span>
+              <span className='text-xs sm:text-sm text-gray-500'>{t('admin.teamEfficiency')}</span>
             </div>
             <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">{stats.performanceMetrics.teamEfficiency}%</h4>
-            <p className="text-xs sm:text-sm text-gray-600">Overall team performance</p>
+            <p className='text-xs sm:text-sm text-gray-600'>{t('admin.overallTeamPerformance')}</p>
           </div>
         </div>
 
@@ -690,15 +692,15 @@ export default function InternalDashboard() {
                     <FaFileAlt className="text-white text-sm sm:text-lg" />
                   </div>
                   <div>
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">Recent Applications</h2>
-                    <p className="text-xs sm:text-sm text-gray-600">Latest application submissions</p>
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">{t('admin.recentApplications')}</h2>
+                    <p className="text-xs sm:text-sm text-gray-600">{t('admin.latestApplicationSubmissions')}</p>
                   </div>
                 </div>
                 <button 
                   onClick={() => router.push('/admin/requests')}
                   className="text-[#242021] hover:text-[#242021]/80 text-xs sm:text-sm font-medium flex items-center px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg hover:bg-white/50 transition-all duration-200"
                 >
-                  View All <FaArrowRight className="ml-1 text-xs sm:text-sm" />
+                  {t('admin.viewAll')} <FaArrowRight className='ml-1 text-xs sm:text-sm' />
                 </button>
               </div>
             </div>
@@ -723,10 +725,10 @@ export default function InternalDashboard() {
                             </span>
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-600">
-                            <p><span className="font-medium">ID:</span> {application.applicationId}</p>
-                            <p><span className="font-medium">Client:</span> {application.client?.name || 'N/A'}</p>
-                            <p><span className="font-medium">Partner:</span> {application.serviceDetails?.partnerType || 'N/A'}</p>
-                            <p><span className="font-medium">Date:</span> {formatDate(application.timestamps?.createdAt || application.createdAt)}</p>
+                            <p><span className='font-medium'>{t('admin.id')}:</span> {application.applicationId}</p>
+                            <p><span className='font-medium'>{t('admin.client')}:</span> {application.client?.name || 'N/A'}</p>
+                            <p><span className='font-medium'>{t('admin.partner')}:</span> {application.serviceDetails?.partnerType || 'N/A'}</p>
+                            <p><span className='font-medium'>{t('admin.date')}:</span> {formatDate(application.timestamps?.createdAt || application.createdAt)}</p>
                           </div>
                         </div>
                         <button className="text-[#ffd17a] hover:text-[#242021] p-2 rounded-lg hover:bg-[#ffd17a]/20 transition-all duration-200 flex-shrink-0">
@@ -741,13 +743,13 @@ export default function InternalDashboard() {
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
                     <FaFileAlt className="text-2xl sm:text-3xl text-gray-400" />
                   </div>
-                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">No recent applications</h3>
-                  <p className="text-sm sm:text-base text-gray-500 mb-4 sm:mb-6">New applications will appear here</p>
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">{t('admin.noRecentApplications')}</h3>
+                  <p className="text-sm sm:text-base text-gray-500 mb-4 sm:mb-6">{t('admin.newApplicationsWillAppear')}</p>
                   <button 
                     onClick={() => router.push('/admin/requests')}
                     className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-[#ffd17a] text-[#242021] hover:bg-[#ffd17a]/90 transition-all duration-200 font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg hover:scale-105 text-sm sm:text-base"
                   >
-                    View All Applications
+                    {t('admin.viewAllApplications')}
                   </button>
                 </div>
               )}
@@ -762,8 +764,8 @@ export default function InternalDashboard() {
                   <FaTasks className="text-white text-sm sm:text-lg" />
                 </div>
                 <div>
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">Quick Actions</h2>
-                  <p className="text-xs sm:text-sm text-gray-600">Common admin tasks</p>
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">{t('admin.quickActions')}</h2>
+                  <p className="text-xs sm:text-sm text-gray-600">{t('admin.commonAdminTasks')}</p>
                 </div>
               </div>
             </div>
@@ -779,8 +781,8 @@ export default function InternalDashboard() {
                       <FaClock className="text-yellow-600 text-sm sm:text-base" />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-gray-900 block text-sm sm:text-base">Review Pending</span>
-                      <span className="text-xs sm:text-sm text-gray-500">Applications awaiting review</span>
+                      <span className='font-semibold text-gray-900 block text-sm sm:text-base'>{t('admin.reviewPending')}</span>
+                      <span className='text-xs sm:text-sm text-gray-500'>{t('admin.applicationsAwaitingReview')}</span>
                     </div>
                   </div>
                   <span className="bg-yellow-100 text-yellow-800 px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-full">
@@ -797,8 +799,8 @@ export default function InternalDashboard() {
                       <FaFileAlt className="text-blue-600 text-sm sm:text-base" />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-gray-900 block text-sm sm:text-base">All Applications</span>
-                      <span className="text-xs sm:text-sm text-gray-500">View complete list</span>
+                      <span className='font-semibold text-gray-900 block text-sm sm:text-base'>{t('admin.allApplications')}</span>
+                      <span className='text-xs sm:text-sm text-gray-500'>{t('admin.viewCompleteList')}</span>
                     </div>
                   </div>
                   <span className="bg-blue-100 text-blue-800 px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-full">
@@ -815,8 +817,8 @@ export default function InternalDashboard() {
                       <FaUsers className="text-purple-600 text-sm sm:text-base" />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-gray-900 block text-sm sm:text-base">Manage Clients</span>
-                      <span className="text-xs sm:text-sm text-gray-500">Client database</span>
+                      <span className='font-semibold text-gray-900 block text-sm sm:text-base'>{t('admin.manageClients')}</span>
+                      <span className='text-xs sm:text-sm text-gray-500'>{t('admin.clientDatabase')}</span>
                     </div>
                   </div>
                   <FaArrowRight className="text-gray-400 group-hover:text-[#ffd17a] transition-colors text-sm sm:text-base" />
@@ -831,8 +833,8 @@ export default function InternalDashboard() {
                       <FaChartBar className="text-green-600 text-sm sm:text-base" />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-gray-900 block text-sm sm:text-base">View Reports</span>
-                      <span className="text-xs sm:text-sm text-gray-500">Analytics & insights</span>
+                      <span className='font-semibold text-gray-900 block text-sm sm:text-base'>{t('admin.viewReports')}</span>
+                      <span className='text-xs sm:text-sm text-gray-500'>{t('admin.analyticsAndInsights')}</span>
                     </div>
                   </div>
                   <FaArrowRight className="text-gray-400 group-hover:text-[#ffd17a] transition-colors text-sm sm:text-base" />
@@ -847,8 +849,8 @@ export default function InternalDashboard() {
                       <FaHeadset className="text-blue-600 text-sm sm:text-base" />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-gray-900 block text-sm sm:text-base">Support Tickets</span>
-                      <span className="text-xs sm:text-sm text-gray-500">Manage support requests</span>
+                      <span className='font-semibold text-gray-900 block text-sm sm:text-base'>{t('admin.supportTickets')}</span>
+                      <span className='text-xs sm:text-sm text-gray-500'>{t('admin.manageSupportRequests')}</span>
                     </div>
                   </div>
                   <span className="bg-blue-100 text-blue-800 px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-full">
@@ -865,8 +867,8 @@ export default function InternalDashboard() {
                       <FaUserTie className="text-indigo-600 text-sm sm:text-base" />
                     </div>
                     <div className="text-left">
-                      <span className="font-semibold text-gray-900 block text-sm sm:text-base">Team Management</span>
-                      <span className="text-xs sm:text-sm text-gray-500">Employee directory</span>
+                      <span className='font-semibold text-gray-900 block text-sm sm:text-base'>{t('admin.teamManagement')}</span>
+                      <span className='text-xs sm:text-sm text-gray-500'>{t('admin.employeeDirectory')}</span>
                     </div>
                   </div>
                   <FaArrowRight className="text-gray-400 group-hover:text-[#ffd17a] transition-colors text-sm sm:text-base" />

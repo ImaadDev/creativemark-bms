@@ -37,8 +37,10 @@ import {
   FaUserTimes
 } from "react-icons/fa";
 import Swal from 'sweetalert2';
+import { useTranslation } from '../../../i18n/TranslationContext';
 
 export default function ClientsPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [clients, setClients] = useState([]);
   const [applications, setApplications] = useState([]);
@@ -293,10 +295,10 @@ export default function ClientsPage() {
                 </div>
                 <div className="flex-1">
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
-                    Client Management
+                    {t('admin.clientManagement')}
                   </h1>
                   <p className="text-sm sm:text-base lg:text-lg text-gray-600 mt-1 sm:mt-2">
-                    Manage client accounts, applications, and relationships
+                    {t('admin.manageClientAccounts')}
                   </p>
                 </div>
               </div>
@@ -307,7 +309,7 @@ export default function ClientsPage() {
                 className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 text-gray-600 hover:text-gray-900 hover:bg-white/80 border border-gray-200 hover:border-gray-300 rounded-lg sm:rounded-xl transition-all duration-200 font-medium text-sm sm:text-base"
               >
                 <FaArrowLeft className="mr-2 text-sm sm:text-base" />
-                Back to Dashboard
+                {t('admin.backToDashboard')}
               </button>
             </div>
           </div>
@@ -318,7 +320,7 @@ export default function ClientsPage() {
           <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Clients</p>
+                <p className='text-xs sm:text-sm font-medium text-gray-600 mb-1'>{t('admin.totalClients')}</p>
                 <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{clients.length}</p>
               </div>
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#242021] rounded-lg sm:rounded-xl flex items-center justify-center">
@@ -329,7 +331,7 @@ export default function ClientsPage() {
           <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Active</p>
+                <p className='text-xs sm:text-sm font-medium text-gray-600 mb-1'>{t('admin.active')}</p>
                 <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#242021]">{clients.filter(client => client.status === 'active' || !client.status).length}</p>
               </div>
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#ffd17a] rounded-lg sm:rounded-xl flex items-center justify-center">
@@ -340,7 +342,7 @@ export default function ClientsPage() {
           <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Applications</p>
+                <p className='text-xs sm:text-sm font-medium text-gray-600 mb-1'>{t('admin.totalApplications')}</p>
                 <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600">{applications.length}</p>
               </div>
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center">
@@ -351,7 +353,7 @@ export default function ClientsPage() {
           <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Filtered</p>
+                <p className='text-xs sm:text-sm font-medium text-gray-600 mb-1'>{t('admin.filtered')}</p>
                 <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600">{filteredClients.length}</p>
               </div>
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center">
@@ -369,7 +371,7 @@ export default function ClientsPage() {
                 <FaSearch className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base" />
                 <input
                   type="text"
-                  placeholder="Search clients by name or email..."
+                  placeholder={t('admin.searchClientsPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/20 focus:outline-none transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
@@ -382,11 +384,11 @@ export default function ClientsPage() {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/20 focus:outline-none transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
               >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="pending">Pending</option>
-                <option value="suspended">Suspended</option>
+                <option value='all'>{t('admin.allStatus')}</option>
+                <option value='active'>{t('admin.active')}</option>
+                <option value='inactive'>{t('admin.inactive')}</option>
+                <option value='pending'>{t('admin.pending')}</option>
+                <option value='suspended'>{t('admin.suspended')}</option>
               </select>
             </div>
           </div>
@@ -400,8 +402,8 @@ export default function ClientsPage() {
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#242021] rounded-full flex items-center justify-center mx-auto mb-4">
                   <FaSpinner className="animate-spin text-lg sm:text-2xl text-white" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Loading Clients</h3>
-                <p className="text-sm sm:text-base text-gray-600">Fetching the latest client data...</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{t('admin.loadingClients')}</h3>
+                <p className="text-sm sm:text-base text-gray-600">{t('admin.fetchingClientData')}</p>
               </div>
             </div>
           ) : filteredClients.length === 0 ? (
@@ -409,8 +411,8 @@ export default function ClientsPage() {
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <FaUsers className="text-2xl sm:text-3xl text-gray-400" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-3">No Clients Found</h3>
-              <p className="text-sm sm:text-base text-gray-500 mb-6 sm:mb-8">No clients match your current filters.</p>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-3">{t('admin.noClientsFound')}</h3>
+              <p className="text-sm sm:text-base text-gray-500 mb-6 sm:mb-8">{t('admin.noClientsMatchFilters')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8">
@@ -438,7 +440,7 @@ export default function ClientsPage() {
                         <div className="flex items-center space-x-2">
                           {getStatusIcon(client.status)}
                           <span className={`text-xs font-medium px-2 sm:px-3 py-1 border rounded-full ${getStatusColor(client.status)}`}>
-                            {client.status === 'active' ? 'Active' : client.status === 'inactive' ? 'Inactive' : client.status || 'Active'}
+                            {client.status === 'active' ? t('admin.active') : client.status === 'inactive' ? t('admin.inactive') : client.status || t('admin.active')}
                           </span>
                         </div>
                       </div>
@@ -464,11 +466,11 @@ export default function ClientsPage() {
                       )}
                       <div className="flex items-center text-xs sm:text-sm text-gray-600">
                         <FaFileAlt className="mr-2 sm:mr-3 text-[#ffd17a] flex-shrink-0" />
-                        <span className="truncate">{clientApplications.length} applications</span>
+                        <span className='truncate'>{clientApplications.length} {t('admin.applications')}</span>
                       </div>
                       <div className="flex items-center text-xs sm:text-sm text-gray-600">
                         <FaCalendar className="mr-2 sm:mr-3 text-[#ffd17a] flex-shrink-0" />
-                        <span className="truncate">Joined: {formatDate(client.createdAt)}</span>
+                        <span className='truncate'>{t('admin.joined')}: {formatDate(client.createdAt)}</span>
                       </div>
                     </div>
 
@@ -479,7 +481,7 @@ export default function ClientsPage() {
                         className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-lg sm:rounded-xl transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105"
                       >
                         <FaEye className="text-xs sm:text-sm" />
-                        View
+                        {t('admin.view')}
                       </button>
                       {currentUser && currentUser.role === "admin" && (
                         <button
@@ -490,12 +492,12 @@ export default function ClientsPage() {
                           {deletingId === (client._id || client.id) ? (
                             <>
                               <FaSpinner className="animate-spin text-xs sm:text-sm" />
-                              Deleting...
+                              {t('admin.deleting')}
                             </>
                           ) : (
                             <>
                               <FaTrash className="text-xs sm:text-sm" />
-                              Delete Client
+                              {t('admin.deleteClient')}
                             </>
                           )}
                         </button>
@@ -514,7 +516,7 @@ export default function ClientsPage() {
             <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 w-full max-w-2xl max-h-screen overflow-y-auto border border-gray-200/50">
               <div className="flex items-center justify-between mb-6 sm:mb-8">
                 <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-                  Client Details
+                  {t('admin.clientDetails')}
                 </h3>
                 <button
                   onClick={() => setShowDetailsModal(false)}
@@ -531,20 +533,20 @@ export default function ClientsPage() {
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center">
                       <FaUser className="text-white text-sm sm:text-lg" />
                     </div>
-                    <h4 className="text-lg sm:text-xl font-bold text-gray-800">Personal Information</h4>
+                    <h4 className="text-lg sm:text-xl font-bold text-gray-800">{t('admin.personalInformation')}</h4>
                   </div>
                   <div className="space-y-3 sm:space-y-4">
                     <div className="flex items-center">
                       <FaUser className="mr-3 sm:mr-4 text-blue-500 flex-shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <span className="text-xs sm:text-sm text-gray-500">Name</span>
+                        <span className='text-xs sm:text-sm text-gray-500'>{t('admin.name')}</span>
                         <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedClient.fullName || selectedClient.name}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
                       <FaEnvelope className="mr-3 sm:mr-4 text-blue-500 flex-shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <span className="text-xs sm:text-sm text-gray-500">Email</span>
+                        <span className='text-xs sm:text-sm text-gray-500'>{t('admin.email')}</span>
                         <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedClient.email}</p>
                       </div>
                     </div>
@@ -552,7 +554,7 @@ export default function ClientsPage() {
                       <div className="flex items-center">
                         <FaPhone className="mr-3 sm:mr-4 text-blue-500 flex-shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <span className="text-xs sm:text-sm text-gray-500">Phone</span>
+                          <span className='text-xs sm:text-sm text-gray-500'>{t('admin.phone')}</span>
                           <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedClient.phone}</p>
                         </div>
                       </div>
@@ -561,7 +563,7 @@ export default function ClientsPage() {
                       <div className="flex items-center">
                         <FaMapMarkerAlt className="mr-3 sm:mr-4 text-blue-500 flex-shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <span className="text-xs sm:text-sm text-gray-500">Address</span>
+                          <span className='text-xs sm:text-sm text-gray-500'>{t('admin.address')}</span>
                           <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">
                             {selectedClient.address.street && `${selectedClient.address.street}, `}
                             {selectedClient.address.city && `${selectedClient.address.city}, `}
@@ -579,7 +581,7 @@ export default function ClientsPage() {
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#242021] rounded-lg sm:rounded-xl flex items-center justify-center">
                       <FaIdCard className="text-white text-sm sm:text-lg" />
                     </div>
-                    <h4 className="text-lg sm:text-xl font-bold text-gray-800">Account Information</h4>
+                    <h4 className="text-lg sm:text-xl font-bold text-gray-800">{t('admin.accountInformation')}</h4>
                   </div>
                   <div className="space-y-3 sm:space-y-4">
                     <div className="flex items-center">
@@ -587,28 +589,28 @@ export default function ClientsPage() {
                         {getStatusIcon(selectedClient.status)}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <span className="text-xs sm:text-sm text-gray-500">Status</span>
+                        <span className='text-xs sm:text-sm text-gray-500'>{t('admin.status')}</span>
                         <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedClient.status || "Active"}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
                       <FaCalendarAlt className="mr-3 sm:mr-4 text-[#ffd17a] flex-shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <span className="text-xs sm:text-sm text-gray-500">Joined Date</span>
+                        <span className='text-xs sm:text-sm text-gray-500'>{t('admin.joinedDate')}</span>
                         <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{formatDate(selectedClient.createdAt)}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
                       <FaFileAlt className="mr-3 sm:mr-4 text-[#ffd17a] flex-shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <span className="text-xs sm:text-sm text-gray-500">Total Applications</span>
+                        <span className='text-xs sm:text-sm text-gray-500'>{t('admin.totalApplications')}</span>
                         <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{getClientApplications(selectedClient.email).length}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
                       <FaUserCheck className="mr-3 sm:mr-4 text-[#ffd17a] flex-shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <span className="text-xs sm:text-sm text-gray-500">Account Type</span>
+                        <span className='text-xs sm:text-sm text-gray-500'>{t('admin.accountType')}</span>
                         <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">Client</p>
                       </div>
                     </div>
@@ -624,7 +626,7 @@ export default function ClientsPage() {
                       <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center">
                         <FaFileAlt className="text-white text-sm sm:text-lg" />
                       </div>
-                      <h4 className="text-lg sm:text-xl font-bold text-gray-800">Applications</h4>
+                      <h4 className="text-lg sm:text-xl font-bold text-gray-800">{t('admin.applications')}</h4>
                     </div>
                     <div className="space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
                       {getClientApplications(selectedClient.email).slice(0, 5).map((app, index) => (
@@ -634,9 +636,9 @@ export default function ClientsPage() {
                               <h5 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
                                 {app.serviceDetails?.serviceType || app.serviceType || 'Application'}
                               </h5>
-                              <p className="text-xs sm:text-sm text-gray-600">ID: {app.applicationId}</p>
+                              <p className='text-xs sm:text-sm text-gray-600'>{t('admin.id')}: {app.applicationId}</p>
                               <p className="text-xs text-gray-500">
-                                Created: {formatDate(app.timestamps?.createdAt || app.createdAt)}
+                                {t('admin.created')}: {formatDate(app.timestamps?.createdAt || app.createdAt)}
                               </p>
                             </div>
                             <span className={`text-xs font-medium px-2 py-1 rounded-full border flex-shrink-0 ${
@@ -651,7 +653,7 @@ export default function ClientsPage() {
                       ))}
                       {getClientApplications(selectedClient.email).length > 5 && (
                         <p className="text-xs sm:text-sm text-gray-500 text-center">
-                          And {getClientApplications(selectedClient.email).length - 5} more applications...
+                          {t('admin.andMoreApplications', { count: getClientApplications(selectedClient.email).length - 5 })}
                         </p>
                       )}
                     </div>
@@ -667,14 +669,14 @@ export default function ClientsPage() {
                     className="flex-1 px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base"
                   >
                     <FaTrash className="inline mr-2 text-xs sm:text-sm" />
-                    Delete Client
+                    {t('admin.deleteClient')}
                   </button>
                 )}
                 <button
                   onClick={() => setShowDetailsModal(false)}
                   className="flex-1 px-4 sm:px-8 py-3 sm:py-4 border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-sm hover:shadow-md text-sm sm:text-base"
                 >
-                  Close
+                  {t('admin.close')}
                 </button>
               </div>
             </div>

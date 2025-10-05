@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import { FaTimes, FaCheckCircle } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '../../i18n/TranslationContext';
 
 const InstructionModal = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
   // Prevent body scroll when modal is open
@@ -80,7 +82,7 @@ const InstructionModal = ({ isOpen, onClose }) => {
               {/* Header */}
               <div className="flex items-center justify-between px-4 sm:px-6 py-4 bg-green-50 border-b border-gray-300">
                 <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
-                  Instructions
+                  {t('instructionModal.instructions')}
                 </h2>
                 <button
                   onClick={onClose}
@@ -93,17 +95,17 @@ const InstructionModal = ({ isOpen, onClose }) => {
               {/* Content */}
               <div className="px-4 sm:px-6 py-6 max-h-[70vh] overflow-y-auto">
                 <p className="text-base text-gray-600 mb-4">
-                  Please read the following instructions carefully before proceeding with your request. These guidelines will help ensure a smooth submission process.
+                  {t('instructionModal.description')}
                 </p>
                 <ul className="list-disc list-inside space-y-2 text-base text-gray-600">
-                  <li>Complete all required fields in each step of the form.</li>
-                  <li>Ensure all uploaded documents are clear and legible.</li>
-                  <li>Verify your contact information is accurate for communication purposes.</li>
-                  <li>Use the "Save Draft" feature to preserve your progress.</li>
-                  <li>Contact support if you encounter any issues during submission.</li>
+                  <li>{t('instructionModal.steps.completeFields')}</li>
+                  <li>{t('instructionModal.steps.clearDocuments')}</li>
+                  <li>{t('instructionModal.steps.verifyContact')}</li>
+                  <li>{t('instructionModal.steps.saveDraft')}</li>
+                  <li>{t('instructionModal.steps.contactSupport')}</li>
                 </ul>
                 <p className="mt-4 text-base text-gray-600">
-                  By accepting the terms below, you agree to follow the guidelines and provide accurate information.
+                  {t('instructionModal.termsDescription')}
                 </p>
 
                 {/* Terms Checkbox */}
@@ -115,7 +117,7 @@ const InstructionModal = ({ isOpen, onClose }) => {
                     className="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-600"
                   />
                   <label className="ml-2 text-sm font-medium text-gray-600">
-                    I have read and accept the terms and conditions
+                    {t('instructionModal.acceptTerms')}
                   </label>
                 </div>
               </div>
@@ -132,7 +134,7 @@ const InstructionModal = ({ isOpen, onClose }) => {
                   }`}
                 >
                   <FaCheckCircle className="inline mr-2 h-4 w-4" />
-                  Accept and Proceed
+                  {t('instructionModal.acceptAndProceed')}
                 </button>
               </div>
             </div>

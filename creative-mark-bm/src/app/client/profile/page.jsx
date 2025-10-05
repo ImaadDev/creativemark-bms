@@ -18,8 +18,10 @@ import {
 } from 'react-icons/fa';
 import { getCurrentUser, updateUserProfile } from '../../../services/auth';
 import AuthContext from '../../../contexts/AuthContext';
+import { useTranslation } from '../../../i18n/TranslationContext';
 
 export default function ClientProfile() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { user, setUser } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -75,7 +77,7 @@ export default function ClientProfile() {
       }
     } catch (error) {
       console.error('Error loading profile:', error);
-      setError('Failed to load profile data');
+      setError(t('profile.failedToLoadProfile'));
     } finally {
       setLoading(false);
     }
@@ -139,7 +141,7 @@ export default function ClientProfile() {
       const response = await updateUserProfile(updateData);
       
       if (response.success) {
-        setSuccess('Profile updated successfully!');
+        setSuccess(t('profile.profileUpdatedSuccessfully'));
         setEditing(false);
         setProfilePicture(null);
         // Update context
@@ -150,11 +152,11 @@ export default function ClientProfile() {
         window.dispatchEvent(new CustomEvent('profileUpdated'));
         setTimeout(() => setSuccess(''), 3000);
       } else {
-        setError(response.message || 'Failed to update profile');
+        setError(response.message || t('profile.failedToUpdateProfile'));
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      setError('Failed to update profile. Please try again.');
+      setError(t('profile.failedToUpdateProfileTryAgain'));
     } finally {
       setSaving(false);
     }
@@ -190,7 +192,7 @@ export default function ClientProfile() {
                     <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
                   </div>
                 </div>
-                <span className="text-lg font-semibold text-gray-700">Loading profile...</span>
+                <span className='text-lg font-semibold text-gray-700'>{t('profile.loadingProfile')}</span>
               </div>
             </div>
           </div>
@@ -212,13 +214,13 @@ export default function ClientProfile() {
               <div className="flex-1">
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="w-3 h-3 rounded-full shadow-lg animate-pulse" style={{ backgroundColor: '#ffd17a' }}></div>
-                  <span className="text-xs sm:text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Profile</span>
+                  <span className="text-xs sm:text-sm font-medium uppercase tracking-wider" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>{t('profile.profile')}</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-4" style={{ color: '#ffd17a' }}>
-                  My Profile
+                  {t('profile.myProfile')}
                 </h1>
                 <p className="text-sm sm:text-base lg:text-lg" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                  Manage your personal information
+                  {t('profile.managePersonalInformation')}
                 </p>
               </div>
             </div>
@@ -243,7 +245,7 @@ export default function ClientProfile() {
               >
                 <span className="group-hover:scale-105 transition-transform duration-300">
                   <FaEdit className="inline mr-3" />
-                Edit Profile
+                {t('profile.editProfile')}
                 </span>
               </button>
             ) : (
@@ -260,7 +262,7 @@ export default function ClientProfile() {
                 >
                   <span className="group-hover:scale-105 transition-transform duration-300">
                     <FaTimes className="inline mr-3" />
-                  Cancel
+                  {t('profile.cancel')}
                   </span>
                 </button>
                 <button
@@ -278,12 +280,12 @@ export default function ClientProfile() {
                   {saving ? (
                     <>
                         <FaSpinner className="animate-spin inline mr-3" />
-                      Saving...
+                      {t('profile.saving')}
                     </>
                   ) : (
                     <>
                         <FaSave className="inline mr-3" />
-                      Save Changes
+                      {t('profile.saveChanges')}
                     </>
                   )}
                   </span>
@@ -315,7 +317,7 @@ export default function ClientProfile() {
                   </div>
               </div>
               <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Success!</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('profile.success')}</h3>
                   <p className="text-base text-gray-700 mb-6">{success}</p>
                 </div>
               </div>
@@ -344,7 +346,7 @@ export default function ClientProfile() {
                   </div>
               </div>
               <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Error</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('profile.error')}</h3>
                   <p className="text-base text-gray-700 mb-6">{error}</p>
                 </div>
               </div>
@@ -378,7 +380,7 @@ export default function ClientProfile() {
                          }}>
                       <FaCamera className="w-5 h-5" style={{ color: '#242021' }} />
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold" style={{ color: '#ffd17a' }}>Profile Picture</h3>
+                    <h3 className="text-lg sm:text-xl font-bold" style={{ color: '#ffd17a' }}>{t('profile.profilePicture')}</h3>
                   </div>
                 </div>
                 <div className="p-8">
@@ -424,7 +426,7 @@ export default function ClientProfile() {
                     
                     <div className="mt-6 text-center">
                       <h4 className="text-base sm:text-lg font-bold text-gray-900 mb-1">{formData.fullName}</h4>
-                      <p className="text-sm text-gray-600 mb-2">Client</p>
+                      <p className='text-sm text-gray-600 mb-2'>{t('profile.client')}</p>
                       {formData.clientId && (
                         <p className="text-xs sm:text-sm font-semibold px-3 py-1 inline-block"
                            style={{
@@ -466,7 +468,7 @@ export default function ClientProfile() {
                          }}>
                       <FaUser className="w-6 h-6" style={{ color: '#242021' }} />
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Personal Information</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>{t('profile.personalInformation')}</h3>
                   </div>
                 </div>
                 <div className="p-8">
@@ -474,7 +476,7 @@ export default function ClientProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="group">
                     <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      Full Name *
+                      {t('profile.fullName')} *
                     </label>
                     <input
                       type="text"
@@ -490,13 +492,13 @@ export default function ClientProfile() {
                         borderRadius: '10px',
                         border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                       }}
-                      placeholder="Enter your full name"
+                      placeholder={t('profile.enterFullName')}
                     />
                   </div>
 
                   <div className="group">
                     <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      Email Address *
+                      {t('profile.emailAddress')} *
                     </label>
                     <input
                       type="email"
@@ -512,13 +514,13 @@ export default function ClientProfile() {
                         borderRadius: '10px',
                         border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                       }}
-                      placeholder="Enter your email"
+                      placeholder={t('profile.enterEmail')}
                     />
                   </div>
 
                   <div className="group">
                     <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      Phone Number
+                      {t('profile.phoneNumber')}
                     </label>
                     <input
                       type="tel"
@@ -534,13 +536,13 @@ export default function ClientProfile() {
                         borderRadius: '10px',
                         border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                       }}
-                      placeholder="Enter your phone number"
+                      placeholder={t('profile.enterPhoneNumber')}
                     />
                   </div>
 
                   <div className="group">
                     <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      Nationality
+                      {t('profile.nationality')}
                     </label>
                     <input
                       type="text"
@@ -556,13 +558,13 @@ export default function ClientProfile() {
                         borderRadius: '10px',
                         border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                       }}
-                      placeholder="Enter your nationality"
+                      placeholder={t('profile.enterNationality')}
                     />
                   </div>
 
                   <div className="md:col-span-2 group">
                     <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      Bio
+                      {t('profile.bio')}
                     </label>
                     <textarea
                       name="bio"
@@ -578,7 +580,7 @@ export default function ClientProfile() {
                         borderRadius: '10px',
                         border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                       }}
-                      placeholder="Tell us about yourself..."
+                      placeholder={t('profile.tellAboutYourself')}
                     />
                   </div>
                 </div>
@@ -605,14 +607,14 @@ export default function ClientProfile() {
                          }}>
                       <FaMapMarkerAlt className="w-6 h-6" style={{ color: '#242021' }} />
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Address Information</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>{t('profile.addressInformation')}</h3>
                   </div>
                 </div>
                 <div className="p-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="md:col-span-2 group">
                       <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      Street Address
+                      {t('profile.streetAddress')}
                     </label>
                     <input
                       type="text"
@@ -628,14 +630,14 @@ export default function ClientProfile() {
                           borderRadius: '10px',
                           border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                         }}
-                      placeholder="Enter street address"
+                      placeholder={t('profile.enterStreetAddress')}
                     />
                   </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                       <div className="group">
                         <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      City
+                      {t('profile.city')}
                     </label>
                     <input
                       type="text"
@@ -651,13 +653,13 @@ export default function ClientProfile() {
                             borderRadius: '10px',
                             border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                           }}
-                      placeholder="Enter city"
+                      placeholder={t('profile.enterCity')}
                     />
                   </div>
 
                       <div className="group">
                         <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      State/Province
+                      {t('profile.stateProvince')}
                     </label>
                     <input
                       type="text"
@@ -673,13 +675,13 @@ export default function ClientProfile() {
                             borderRadius: '10px',
                             border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                           }}
-                      placeholder="Enter state/province"
+                      placeholder={t('profile.enterStateProvince')}
                     />
                   </div>
 
                       <div className="group">
                         <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      ZIP/Postal Code
+                      {t('profile.zipPostalCode')}
                     </label>
                     <input
                       type="text"
@@ -695,13 +697,13 @@ export default function ClientProfile() {
                             borderRadius: '10px',
                             border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                           }}
-                      placeholder="Enter ZIP/postal code"
+                      placeholder={t('profile.enterZipPostalCode')}
                     />
                   </div>
 
                       <div className="group">
                         <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      Country
+                      {t('profile.country')}
                     </label>
                     <input
                       type="text"
@@ -717,7 +719,7 @@ export default function ClientProfile() {
                             borderRadius: '10px',
                             border: editing ? '2px solid rgba(255, 209, 122, 0.2)' : '2px solid rgba(156, 163, 175, 0.2)'
                           }}
-                      placeholder="Enter country"
+                      placeholder={t('profile.enterCountry')}
                     />
                       </div>
                   </div>
@@ -745,7 +747,7 @@ export default function ClientProfile() {
                          }}>
                       <FaIdCard className="w-6 h-6" style={{ color: '#242021' }} />
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>Client Information</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold" style={{ color: '#ffd17a' }}>{t('profile.clientInformation')}</h3>
                   </div>
                 </div>
                 
@@ -753,7 +755,7 @@ export default function ClientProfile() {
                   <div className="grid grid-cols-1 gap-8">
                     <div className="group">
                       <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                      Client ID
+                      {t('profile.clientId')}
                     </label>
                       <div className="p-5 bg-gray-50 border-0"
                            style={{

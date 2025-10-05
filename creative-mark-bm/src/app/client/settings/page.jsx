@@ -4,6 +4,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthContext from '../../../contexts/AuthContext';
 import { getCurrentUser, updatePassword, updateUserSettings } from '../../../services/auth';
+import { useTranslation } from '../../../i18n/TranslationContext';
 import {
   FaLock,
   FaBell,
@@ -34,6 +35,7 @@ import {
 } from 'react-icons/fa';
 
 export default function ClientSettingsPage() {
+  const { t } = useTranslation();
   const { user } = useContext(AuthContext);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -76,11 +78,11 @@ export default function ClientSettingsPage() {
   const [success, setSuccess] = useState('');
 
   const tabs = [
-    { id: 'security', label: 'Security', icon: FaShieldAlt },
-    { id: 'notifications', label: 'Notifications', icon: FaBell },
-    { id: 'preferences', label: 'Preferences', icon: FaCog },
-    { id: 'privacy', label: 'Privacy', icon: FaUser },
-    { id: 'billing', label: 'Billing', icon: FaCreditCard }
+    { id: 'security', label: t('settings.security'), icon: FaShieldAlt },
+    { id: 'notifications', label: t('settings.notifications'), icon: FaBell },
+    { id: 'preferences', label: t('settings.preferences'), icon: FaCog },
+    { id: 'privacy', label: t('settings.privacy'), icon: FaUser },
+    { id: 'billing', label: t('settings.billing'), icon: FaCreditCard }
   ];
 
   useEffect(() => {
@@ -147,23 +149,23 @@ export default function ClientSettingsPage() {
     const newErrors = {};
     
     if (!passwordForm.currentPassword) {
-      newErrors.currentPassword = 'Current password is required';
+      newErrors.currentPassword = t('settings.currentPasswordRequired');
     }
     
     if (!passwordForm.newPassword) {
-      newErrors.newPassword = 'New password is required';
+      newErrors.newPassword = t('settings.newPasswordRequired');
     } else if (passwordForm.newPassword.length < 8) {
-      newErrors.newPassword = 'Password must be at least 8 characters long';
+      newErrors.newPassword = t('settings.passwordMinLength');
     }
     
     if (!passwordForm.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your new password';
+      newErrors.confirmPassword = t('settings.confirmPasswordRequired');
     } else if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('settings.passwordsDoNotMatch');
     }
     
     if (passwordForm.currentPassword === passwordForm.newPassword) {
-      newErrors.newPassword = 'New password must be different from current password';
+      newErrors.newPassword = t('settings.passwordMustBeDifferent');
     }
 
     setErrors(newErrors);
@@ -185,7 +187,7 @@ export default function ClientSettingsPage() {
       });
       
       if (response.success) {
-        setSuccess('Password updated successfully!');
+        setSuccess(t('settings.passwordUpdatedSuccessfully'));
         setPasswordForm({
           currentPassword: '',
           newPassword: '',
@@ -193,11 +195,11 @@ export default function ClientSettingsPage() {
         });
         setTimeout(() => setSuccess(''), 3000);
       } else {
-        setErrors({ general: response.message || 'Failed to update password' });
+        setErrors({ general: response.message || t('settings.failedToUpdatePassword') });
       }
     } catch (error) {
       console.error('Error updating password:', error);
-      setErrors({ general: 'Failed to update password. Please try again.' });
+      setErrors({ general: t('settings.failedToUpdatePasswordTryAgain') });
     } finally {
       setSaving(false);
     }
@@ -215,14 +217,14 @@ export default function ClientSettingsPage() {
           ...prev,
           settings: settingsForm
         }));
-        setSuccess('Settings updated successfully!');
+        setSuccess(t('settings.settingsUpdatedSuccessfully'));
         setTimeout(() => setSuccess(''), 3000);
       } else {
-        setErrors({ general: response.message || 'Failed to update settings' });
+        setErrors({ general: response.message || t('settings.failedToUpdateSettings') });
       }
     } catch (error) {
       console.error('Error updating settings:', error);
-      setErrors({ general: 'Failed to update settings. Please try again.' });
+      setErrors({ general: t('settings.failedToUpdateSettingsTryAgain') });
     } finally {
       setSaving(false);
     }
@@ -254,7 +256,7 @@ export default function ClientSettingsPage() {
           <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
             <FaSpinner className="animate-spin text-white text-2xl" />
           </div>
-          <p className="text-xl text-gray-800 font-bold">Loading settings...</p>
+          <p className="text-xl text-gray-800 font-bold">{t('settings.loadingSettings')}</p>
         </div>
       </div>
     );
@@ -273,15 +275,15 @@ export default function ClientSettingsPage() {
                 </div>
                 <div>
                   <h1 className="text-3xl sm:text-4xl font-bold tracking-tight" style={{ color: '#ffd17a' }}>
-                    Client Settings
+                    {t('settings.clientSettings')}
                   </h1>
                   <p className="text-sm font-medium uppercase tracking-wider" style={{ color: 'gray' }}>
-                    Manage Your Client Account
+                    {t('settings.manageYourClientAccount')}
                   </p>
                 </div>
               </div>
               <p className="text-base sm:text-lg font-medium max-w-2xl" style={{ color: 'gray' }}>
-                Configure your account preferences, security settings, and client-specific options
+                {t('settings.configureAccountPreferences')}
               </p>
             </div>
           </div>

@@ -1,18 +1,23 @@
-import express from 'express';
-import { getNotifications, markAsRead, clearAll } from '../controllers/notificationController.js';
-import authMiddleware from '../middlewares/authMiddleware.js';
+import express from "express";
+import {
+  createNotification,
+  getUserNotifications,
+  markAsRead,
+  deleteNotification,
+} from "../controllers/notificationController.js";
+
 const router = express.Router();
 
-// Apply authentication middleware to all routes
-router.use(authMiddleware);
+// Create new notification (admin, system, etc.)
+router.post("/", createNotification);
 
-// GET /api/notifications - Get all notifications for the authenticated user
-router.get('/', getNotifications);
+// Get all notifications for a specific user
+router.get("/:userId", getUserNotifications);
 
-// PATCH /api/notifications/:id/read - Mark a notification as read
-router.patch('/:id/read', markAsRead);
+// Mark one as read
+router.put("/:notificationId/read", markAsRead);
 
-// DELETE /api/notifications/clear - Clear all notifications for the authenticated user
-router.delete('/clear', clearAll);
+// Delete one
+router.delete("/:notificationId", deleteNotification);
 
 export default router;

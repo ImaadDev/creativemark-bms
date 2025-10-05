@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 import { login } from "../services/auth";
 import Image from "next/image";
+import { useTranslation } from "../i18n/TranslationContext";
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { updateUser } = useAuth();
   const [formData, setFormData] = useState({
@@ -119,21 +121,21 @@ export default function LoginPage() {
             </div>
             
             <h1 className="text-4xl xl:text-5xl font-bold mb-6 animate-fade-in text-white">
-              Welcome Back
+              {t('auth.welcomeBack')}
             </h1>
             <p className="text-xl text-[#ffd17a] mb-8 animate-fade-in delay-300">
-              Sign in to your account and continue your journey with us
+              {t('auth.signInToAccount')}
             </p>
             
             {/* Animated Stats */}
             <div className="grid grid-cols-2 gap-6 mt-12">
               <div className="text-center animate-fade-in delay-500 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <div className="text-3xl font-bold mb-2 text-[#ffd17a]">10K+</div>
-                <div className="text-sm text-white/80">Active Users</div>
+                <div className='text-sm text-white/80'>{t('auth.activeUsers')}</div>
               </div>
               <div className="text-center animate-fade-in delay-700 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <div className="text-3xl font-bold mb-2 text-[#ffd17a]">99.9%</div>
-                <div className="text-sm text-white/80">Uptime</div>
+                <div className='text-sm text-white/80'>{t('auth.uptime')}</div>
               </div>
             </div>
           </div>
@@ -163,8 +165,8 @@ export default function LoginPage() {
                   className="w-6 h-6 sm:w-8 sm:h-8 object-contain"
                 />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 tracking-tight">Sign In</h2>
-              <p className="text-gray-600 text-sm sm:text-base">Welcome back! Please sign in to your account</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 tracking-tight">{t('auth.signIn')}</h2>
+              <p className="text-gray-600 text-sm sm:text-base">{t('auth.welcomeBackSignIn')}</p>
             </div>
 
             {/* Error Message */}
@@ -185,21 +187,21 @@ export default function LoginPage() {
               <div className="space-y-4 sm:space-y-6">
                 {/* Email Field */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('auth.emailAddress')} *</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="Enter your email address"
+                    placeholder={t('auth.enterEmailAddress')}
                     className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
                   />
                 </div>
 
                 {/* Password Field */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Password *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('auth.password')} *</label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -207,7 +209,7 @@ export default function LoginPage() {
                       value={formData.password}
                       onChange={handleChange}
                       required
-                      placeholder="Enter your password"
+                      placeholder={t('auth.enterPassword')}
                       className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base pr-12"
                     />
                     <button
@@ -237,14 +239,14 @@ export default function LoginPage() {
                       className="w-4 h-4 border-gray-300 rounded focus:ring-[#ffd17a]/20 focus:ring-2"
                       style={{accentColor: '#ffd17a'}}
                     />
-                    <span className="text-sm text-gray-700">Remember me</span>
+                    <span className='text-sm text-gray-700'>{t('auth.rememberMe')}</span>
                   </label>
                   <button
                     type="button"
                     onClick={() => router.push('/forgot-password')}
                     className="text-sm font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors"
                   >
-                    Forgot Password?
+                    {t('auth.forgotPassword')}
                   </button>
                 </div>
 
@@ -261,10 +263,10 @@ export default function LoginPage() {
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
                       <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin"></div>
-                      SIGNING IN...
+                      {t('auth.signingIn')}
                     </div>
                   ) : (
-                    "SIGN IN"
+                    t('auth.signInButton')
                   )}
                 </button>
               </div>
@@ -274,13 +276,13 @@ export default function LoginPage() {
             <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200/50">
               <div className="text-center text-sm">
                 <span className="text-gray-600">
-                  Don&apos;t have an account?{" "}
+                  {t('auth.dontHaveAccount')} {" "}
                   <button
                     type="button"
                     onClick={() => router.push('/register')}
                     className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors"
                   >
-                    Register Here
+                    {t('auth.registerHere')}
                   </button>
                 </span>
               </div>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createUser } from '../../../services/userService';
 import { FullPageLoading } from '../../../components/LoadingSpinner';
+import { useTranslation } from '../../../i18n/TranslationContext';
 import {
   FaUser,
   FaEnvelope,
@@ -31,6 +32,7 @@ import {
 
 export default function AddUserPage() {
   const router = useRouter();
+  const { t, isRTL } = useTranslation();
   const [saving, setSaving] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -63,10 +65,9 @@ export default function AddUserPage() {
     serviceAreas: [],
     languages: [],
     availability: 'available',
-    // Partnership Information
-    partnershipType: '',
-    clientEngagementManager: '',
-    ifzaContactPerson: '',
+      // Partnership Information
+      partnershipType: '',
+      clientEngagementManager: '',
     // Partner Information
     legalEntityName: '',
     legalFormOfEntity: '',
@@ -124,9 +125,9 @@ export default function AddUserPage() {
   ];
 
   const userRoles = [
-    { value: 'employee', label: 'Employee', icon: '👤' },
-    { value: 'partner', label: 'External Partner', icon: '🤝' },
-    { value: 'admin', label: 'Administrator', icon: '👑' }
+    { value: 'employee', label: t('forms.employee'), icon: '👤' },
+    { value: 'partner', label: t('forms.externalPartner'), icon: '🤝' },
+    { value: 'admin', label: t('forms.administrator'), icon: '👑' }
   ];
 
   // Access levels removed - no longer needed
@@ -149,11 +150,11 @@ export default function AddUserPage() {
   ];
 
   const partnershipTypes = [
-    'IFZA Free Zone Company',
-    'IFZA Branch Office',
-    'IFZA Representative Office',
-    'IFZA Subsidiary',
-    'IFZA Joint Venture',
+    'Free Zone Company',
+    'Branch Office',
+    'Representative Office',
+    'Subsidiary',
+    'Joint Venture',
     'Other'
   ];
 
@@ -455,7 +456,6 @@ export default function AddUserPage() {
       // Partnership Information
       partnershipType: '',
       clientEngagementManager: '',
-      ifzaContactPerson: '',
       // Partner Information
       legalEntityName: '',
       legalFormOfEntity: '',
@@ -514,10 +514,10 @@ export default function AddUserPage() {
                 </div>
                 <div className="flex-1">
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
-                    Add New User
+                    {t('forms.addNewUser')}
                   </h1>
                   <p className="text-sm sm:text-base lg:text-lg text-gray-600 mt-1 sm:mt-2">
-                    Create a new employee, partner, or administrator account
+                    {t('forms.createNewAccount')}
                   </p>
                 </div>
               </div>
@@ -528,7 +528,7 @@ export default function AddUserPage() {
                 className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 text-gray-600 hover:text-gray-900 hover:bg-white/80 border border-gray-200 hover:border-gray-300 rounded-lg sm:rounded-xl transition-all duration-200 font-medium text-sm sm:text-base"
               >
                 <FaTimes className="mr-2 text-sm sm:text-base" />
-                Cancel
+                {t('buttons.cancel')}
               </button>
             </div>
           </div>
@@ -538,12 +538,12 @@ export default function AddUserPage() {
         <div className="mb-6 sm:mb-8">
           <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Form Progress</h3>
+              <h3 className="text-lg font-bold text-gray-900">{t('descriptions.formProgress')}</h3>
               <span className="text-sm font-medium text-gray-600">
                 {(() => {
                   const fields = ['fullName', 'email', 'password', 'userRole'];
                   const completed = fields.filter(field => formData[field] && formData[field].toString().trim() !== '').length;
-                  return `${completed}/${fields.length} completed`;
+                  return `${completed}/${fields.length} ${t('descriptions.completed')}`;
                 })()}
               </span>
             </div>
@@ -640,41 +640,6 @@ export default function AddUserPage() {
                 </div>
               </div>
 
-              {/* Action Buttons - Mobile */}
-              <div className="mt-6 sm:mt-8 lg:hidden space-y-3 sm:space-y-4">
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-[#242021] text-white hover:bg-[#242021]/90 disabled:opacity-50 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100 text-sm sm:text-base"
-                >
-                  {saving ? (
-                    <>
-                      <FaSpinner className="animate-spin mr-2 text-sm sm:text-base" />
-                      Creating {formData.userRole === 'employee' ? 'Employee' : formData.userRole === 'partner' ? 'Partner' : 'User'}...
-                    </>
-                  ) : (
-                    <>
-                      <FaSave className="mr-2 text-sm sm:text-base" />
-                      Create {formData.userRole === 'employee' ? 'Employee' : formData.userRole === 'partner' ? 'Partner' : 'User'}
-                    </>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base"
-                >
-                  <FaTimes className="mr-2 text-sm sm:text-base" />
-                  Reset Form
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-white/90 backdrop-blur-sm border-2 border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl text-sm sm:text-base"
-                >
-                  Cancel
-                </button>
-              </div>
             </div>
           </div>
 
@@ -690,7 +655,7 @@ export default function AddUserPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                      User Role *
+{t('forms.userRole')} *
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                       {userRoles.map(role => (
@@ -746,7 +711,7 @@ export default function AddUserPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Password *
+{t('forms.password')} *
                     </label>
                     <div className="relative">
                       <input
@@ -774,7 +739,7 @@ export default function AddUserPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Confirm Password *
+{t('forms.confirmPassword')} *
                     </label>
                     <div className="relative">
                       <input
@@ -812,7 +777,7 @@ export default function AddUserPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name *
+                      {t('forms.fullName')} *
                     </label>
                     <input
                       type="text"
@@ -999,7 +964,7 @@ export default function AddUserPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Partnership Type with IFZA *
+                          Partnership Type *
                         </label>
                         <select
                           name="partnershipType"
@@ -1034,19 +999,6 @@ export default function AddUserPage() {
                         )}
                       </div>
 
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          IFZA Contact Person *
-                        </label>
-                        <input
-                          type="text"
-                          name="ifzaContactPerson"
-                          value={formData.ifzaContactPerson}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter IFZA contact person name"
-                        />
-                      </div>
                     </div>
                   </div>
 
@@ -1593,6 +1545,42 @@ export default function AddUserPage() {
 
             </div>
 
+            {/* Action Buttons - Mobile */}
+            <div className="lg:hidden mt-6 sm:mt-8 space-y-3 sm:space-y-4">
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-[#242021] text-white hover:bg-[#242021]/90 disabled:opacity-50 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100 text-sm sm:text-base"
+              >
+                {saving ? (
+                  <>
+                    <FaSpinner className="animate-spin mr-2 text-sm sm:text-base" />
+                    {t('buttons.creating')} {formData.userRole === 'employee' ? t('forms.employee') : formData.userRole === 'partner' ? t('forms.externalPartner') : t('forms.administrator')}...
+                  </>
+                ) : (
+                  <>
+                    <FaSave className="mr-2 text-sm sm:text-base" />
+                    {t('buttons.create')} {formData.userRole === 'employee' ? t('forms.employee') : formData.userRole === 'partner' ? t('forms.externalPartner') : t('forms.administrator')}
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={handleReset}
+                className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base"
+              >
+                <FaTimes className="mr-2 text-sm sm:text-base" />
+                {t('buttons.resetForm')}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-white/90 backdrop-blur-sm border-2 border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl text-sm sm:text-base"
+              >
+{t('buttons.cancel')}
+              </button>
+            </div>
+
             {/* Action Buttons - Desktop */}
             <div className="hidden lg:block mt-8 sm:mt-12">
               <div className="flex items-center justify-end space-x-4 sm:space-x-6">
@@ -1601,7 +1589,7 @@ export default function AddUserPage() {
                   onClick={handleCancel}
                   className="flex items-center px-4 sm:px-8 py-3 sm:py-4 bg-white/90 backdrop-blur-sm border-2 border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl text-sm sm:text-base"
                 >
-                  Cancel
+  {t('buttons.cancel')}
                 </button>
                 <button
                   type="button"
@@ -1619,12 +1607,12 @@ export default function AddUserPage() {
                   {saving ? (
                     <>
                       <FaSpinner className="animate-spin mr-2 text-sm sm:text-base" />
-                      Creating {formData.userRole === 'employee' ? 'Employee' : formData.userRole === 'partner' ? 'Partner' : 'User'}...
+{t('buttons.creating')} {formData.userRole === 'employee' ? t('forms.employee') : formData.userRole === 'partner' ? t('forms.externalPartner') : t('forms.administrator')}...
                     </>
                   ) : (
                     <>
                       <FaSave className="mr-2 text-sm sm:text-base" />
-                      Create {formData.userRole === 'employee' ? 'Employee' : formData.userRole === 'partner' ? 'Partner' : 'User'}
+                      {t('buttons.create')} {formData.userRole === 'employee' ? t('forms.employee') : formData.userRole === 'partner' ? t('forms.externalPartner') : t('forms.administrator')}
                     </>
                   )}
                 </button>

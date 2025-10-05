@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { CreditCard, DollarSign, TrendingUp, Calendar, Download, Search, CheckCircle, XCircle, Clock, ChevronRight, Plus, FileText, X } from "lucide-react";
+import { useTranslation } from "../../../i18n/TranslationContext";
 
 const mockPayments = [
   { id: "PAY-001", amount: 150.00, description: "Premium Subscription - Monthly", status: "completed", method: "Credit Card", date: "2024-10-01", time: "14:30", transactionId: "TXN-9876543210", cardLast4: "4242" },
@@ -16,6 +17,7 @@ const mockCards = [
 ];
 
 export default function ClientPaymentDashboard() {
+  const { t } = useTranslation();
   const [payments, setPayments] = useState(mockPayments);
   const [cards, setCards] = useState(mockCards);
   const [selectedPayment, setSelectedPayment] = useState(null);
@@ -98,28 +100,28 @@ export default function ClientPaymentDashboard() {
         <div className="mb-8 md:mb-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-[#242021] mb-2 tracking-tight">Payments</h1>
-              <p className="text-gray-600 text-base md:text-lg">Manage your payments and billing history</p>
+              <h1 className="text-4xl md:text-5xl font-bold text-[#242021] mb-2 tracking-tight">{t('payments.title')}</h1>
+              <p className="text-gray-600 text-base md:text-lg">{t('payments.subtitle')}</p>
             </div>
             <button onClick={() => setIsNewPaymentOpen(true)} className="group flex items-center gap-2 bg-gradient-to-r from-[#242021] to-[#3a3537] text-[#ffd17a] px-6 py-3 rounded-2xl font-semibold hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
               <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-              <span>New Payment</span>
+              <span>{t('payments.newPayment')}</span>
             </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-br from-[#242021] to-[#3a3537] text-[#ffd17a] shadow-2xl">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold uppercase tracking-wide opacity-80">Total Paid</span>
+                <span className='text-sm font-semibold uppercase tracking-wide opacity-80'>{t('payments.totalPaid')}</span>
                 <div className="p-2 rounded-xl bg-[#ffd17a]/20"><DollarSign size={18} /></div>
               </div>
               <div className="text-4xl md:text-5xl font-bold mb-1">${stats.total.toFixed(2)}</div>
-              <div className="text-xs opacity-70">All time</div>
+              <div className='text-xs opacity-70'>{t('payments.allTime')}</div>
             </div>
 
             <div className="p-6 md:p-8 rounded-3xl bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold uppercase tracking-wide text-gray-600">This Month</span>
+                <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>{t('payments.thisMonth')}</span>
                 <div className="p-2 rounded-xl bg-blue-100"><TrendingUp size={18} className="text-blue-600" /></div>
               </div>
               <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">${stats.thisMonth.toFixed(2)}</div>
@@ -128,20 +130,20 @@ export default function ClientPaymentDashboard() {
 
             <div className="p-6 md:p-8 rounded-3xl bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold uppercase tracking-wide text-gray-600">Pending</span>
+                <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>{t('payments.pending')}</span>
                 <div className="p-2 rounded-xl bg-amber-100"><Clock size={18} className="text-amber-600" /></div>
               </div>
               <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">${stats.pending.toFixed(2)}</div>
-              <div className="text-xs text-gray-500">Awaiting</div>
+              <div className='text-xs text-gray-500'>{t('payments.awaiting')}</div>
             </div>
 
             <div className="p-6 md:p-8 rounded-3xl bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold uppercase tracking-wide text-gray-600">Completed</span>
+                <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>{t('payments.completed')}</span>
                 <div className="p-2 rounded-xl bg-emerald-100"><CheckCircle size={18} className="text-emerald-600" /></div>
               </div>
               <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">{stats.completed}</div>
-              <div className="text-xs text-gray-500">Successful</div>
+              <div className='text-xs text-gray-500'>{t('payments.successful')}</div>
             </div>
           </div>
         </div>
@@ -150,18 +152,18 @@ export default function ClientPaymentDashboard() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <h2 className="text-2xl font-bold text-[#242021]">Payment History</h2>
+                <h2 className='text-2xl font-bold text-[#242021]'>{t('payments.paymentHistory')}</h2>
                 <div className="flex gap-2">
-                  <button onClick={() => setFilter("all")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "all" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>All</button>
-                  <button onClick={() => setFilter("completed")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "completed" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>Done</button>
-                  <button onClick={() => setFilter("pending")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "pending" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>Pending</button>
+                  <button onClick={() => setFilter("all")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "all" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>{t('payments.all')}</button>
+                  <button onClick={() => setFilter("completed")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "completed" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>{t('payments.done')}</button>
+                  <button onClick={() => setFilter("pending")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "pending" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>{t('payments.pending')}</button>
                 </div>
               </div>
 
               <div className="mb-4">
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                  <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-gray-50 text-gray-800 pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#242021] border border-gray-200" />
+                  <input type="text" placeholder={t('payments.search')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-gray-50 text-gray-800 pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#242021] border border-gray-200" />
                 </div>
               </div>
 
@@ -198,7 +200,7 @@ export default function ClientPaymentDashboard() {
           <div className="space-y-6">
             <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-[#242021]">Cards</h2>
+                <h2 className='text-xl font-bold text-[#242021]'>{t('payments.cards')}</h2>
                 <button onClick={() => setIsAddCardOpen(true)} className="p-2 hover:bg-gray-100 rounded-xl"><Plus size={20} className="text-gray-600" /></button>
               </div>
               <div className="space-y-3">
@@ -206,7 +208,7 @@ export default function ClientPaymentDashboard() {
                   <div key={card.id} className={`p-4 rounded-2xl border-2 ${card.isDefault ? "bg-gradient-to-br from-[#242021] to-[#3a3537] text-[#ffd17a]" : "bg-gray-50 text-gray-900 border-gray-200"}`}>
                     <div className="flex justify-between mb-3">
                       <div className="text-2xl">💳</div>
-                      {card.isDefault && <span className="px-2 py-1 bg-[#ffd17a]/20 text-[#ffd17a] rounded-lg text-xs font-bold">Default</span>}
+                      {card.isDefault && <span className='px-2 py-1 bg-[#ffd17a]/20 text-[#ffd17a] rounded-lg text-xs font-bold'>{t('payments.default')}</span>}
                     </div>
                     <div className="text-lg font-bold mb-1">•••• {card.last4}</div>
                     <div className="flex justify-between text-sm opacity-80">
@@ -219,15 +221,15 @@ export default function ClientPaymentDashboard() {
             </div>
 
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl border border-blue-200 p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Quick Actions</h3>
+              <h3 className='text-lg font-bold text-gray-900 mb-3'>{t('payments.quickActions')}</h3>
               <div className="space-y-2">
                 <button className="w-full p-3 bg-white rounded-xl text-left flex items-center gap-3 border border-gray-200">
                   <Download size={18} className="text-gray-600" />
-                  <span className="font-medium text-gray-900 text-sm">Download Statement</span>
+                  <span className='font-medium text-gray-900 text-sm'>{t('payments.downloadStatement')}</span>
                 </button>
                 <button className="w-full p-3 bg-white rounded-xl text-left flex items-center gap-3 border border-gray-200">
                   <Calendar size={18} className="text-gray-600" />
-                  <span className="font-medium text-gray-900 text-sm">Schedule Payment</span>
+                  <span className='font-medium text-gray-900 text-sm'>{t('payments.schedulePayment')}</span>
                 </button>
               </div>
             </div>
@@ -240,20 +242,20 @@ export default function ClientPaymentDashboard() {
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-xl">
             <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-6 rounded-t-3xl flex justify-between items-start">
               <div>
-                <h2 className="text-2xl font-bold text-[#ffd17a]">Payment Details</h2>
+                <h2 className='text-2xl font-bold text-[#ffd17a]'>{t('payments.paymentDetails')}</h2>
                 <p className="text-[#ffd17a]/70 text-sm mt-1">{selectedPayment.transactionId}</p>
               </div>
               <button onClick={() => setIsDetailsOpen(false)} className="text-[#ffd17a] p-2 hover:bg-white/10 rounded-xl"><X size={24} /></button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div><div className="text-sm text-gray-600 mb-1">Amount</div><div className="text-2xl font-bold text-gray-900">${selectedPayment.amount.toFixed(2)}</div></div>
-                <div><div className="text-sm text-gray-600 mb-1">Status</div><span className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-semibold border ${getStatusStyle(selectedPayment.status)}`}>{getStatusIcon(selectedPayment.status)}{selectedPayment.status}</span></div>
+                <div><div className="text-sm text-gray-600 mb-1">{t('payments.amount')}</div><div className="text-2xl font-bold text-gray-900">${selectedPayment.amount.toFixed(2)}</div></div>
+                <div><div className="text-sm text-gray-600 mb-1">{t('payments.status')}</div><span className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-semibold border ${getStatusStyle(selectedPayment.status)}`}>{getStatusIcon(selectedPayment.status)}{selectedPayment.status}</span></div>
               </div>
-              <div><div className="text-sm text-gray-600 mb-1">Description</div><div className="text-gray-900 font-medium">{selectedPayment.description}</div></div>
+              <div><div className="text-sm text-gray-600 mb-1">{t('payments.description')}</div><div className="text-gray-900 font-medium">{selectedPayment.description}</div></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><div className="text-sm text-gray-600 mb-1">Method</div><div className="text-gray-900">{selectedPayment.method}</div></div>
-                <div><div className="text-sm text-gray-600 mb-1">Date</div><div className="text-gray-900">{selectedPayment.date}</div></div>
+                <div><div className="text-sm text-gray-600 mb-1">{t('payments.method')}</div><div className="text-gray-900">{selectedPayment.method}</div></div>
+                <div><div className="text-sm text-gray-600 mb-1">{t('payments.date')}</div><div className="text-gray-900">{selectedPayment.date}</div></div>
               </div>
             </div>
           </div>
@@ -264,36 +266,36 @@ export default function ClientPaymentDashboard() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg">
             <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-6 rounded-t-3xl flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-[#ffd17a]">Make Payment</h2>
+              <h2 className='text-2xl font-bold text-[#ffd17a]'>{t('payments.makePayment')}</h2>
               <button onClick={() => setIsNewPaymentOpen(false)} className="text-[#ffd17a] p-2 hover:bg-white/10 rounded-xl"><X size={24} /></button>
             </div>
             <form onSubmit={handlePaymentSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-gray-700 font-semibold mb-2 text-sm">Amount</label>
+                <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('payments.amount')}</label>
                 <input type="number" step="0.01" required value={paymentForm.amount} onChange={(e) => setPaymentForm({...paymentForm, amount: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]" placeholder="0.00" />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold mb-2 text-sm">Description</label>
+                <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('payments.description')}</label>
                 <input type="text" required value={paymentForm.description} onChange={(e) => setPaymentForm({...paymentForm, description: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]" />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold mb-2 text-sm">Method</label>
+                <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('payments.method')}</label>
                 <select value={paymentForm.method} onChange={(e) => setPaymentForm({...paymentForm, method: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]">
-                  <option value="credit_card">Credit Card</option>
-                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value='credit_card'>{t('payments.creditCard')}</option>
+                  <option value='bank_transfer'>{t('payments.bankTransfer')}</option>
                 </select>
               </div>
               {paymentForm.method === "credit_card" && (
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-2 text-sm">Card</label>
+                  <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('payments.card')}</label>
                   <select value={paymentForm.cardId} onChange={(e) => setPaymentForm({...paymentForm, cardId: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]">
                     {cards.map(card => <option key={card.id} value={card.id}>•••• {card.last4}</option>)}
                   </select>
                 </div>
               )}
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setIsNewPaymentOpen(false)} className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl">Cancel</button>
-                <button type="submit" className="flex-1 py-3 bg-gradient-to-r from-[#242021] to-[#3a3537] text-[#ffd17a] font-bold rounded-xl">Pay</button>
+                <button type="button" onClick={() => setIsNewPaymentOpen(false)} className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl">{t('buttons.cancel')}</button>
+                <button type="submit" className="flex-1 py-3 bg-gradient-to-r from-[#242021] to-[#3a3537] text-[#ffd17a] font-bold rounded-xl">{t('payments.pay')}</button>
               </div>
             </form>
           </div>
@@ -304,35 +306,35 @@ export default function ClientPaymentDashboard() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg">
             <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-6 rounded-t-3xl flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-[#ffd17a]">Add Card</h2>
+              <h2 className='text-2xl font-bold text-[#ffd17a]'>{t('payments.addCard')}</h2>
               <button onClick={() => setIsAddCardOpen(false)} className="text-[#ffd17a] p-2 hover:bg-white/10 rounded-xl"><X size={24} /></button>
             </div>
             <form onSubmit={handleAddCard} className="p-6 space-y-4">
               <div>
-                <label className="block text-gray-700 font-semibold mb-2 text-sm">Card Number</label>
+                <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('payments.cardNumber')}</label>
                 <input type="text" required maxLength="16" value={cardForm.cardNumber} onChange={(e) => setCardForm({...cardForm, cardNumber: e.target.value.replace(/\D/g, '')})} className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]" placeholder="1234567890123456" />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold mb-2 text-sm">Name</label>
+                <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('payments.name')}</label>
                 <input type="text" required value={cardForm.holderName} onChange={(e) => setCardForm({...cardForm, holderName: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-2 text-sm">Expiry</label>
+                  <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('payments.expiry')}</label>
                   <input type="text" required maxLength="5" value={cardForm.expiry} onChange={(e) => { let v = e.target.value.replace(/\D/g, ''); if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2,4); setCardForm({...cardForm, expiry: v}); }} className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]" placeholder="MM/YY" />
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-2 text-sm">CVV</label>
+                  <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('payments.cvv')}</label>
                   <input type="text" required maxLength="3" value={cardForm.cvv} onChange={(e) => setCardForm({...cardForm, cvv: e.target.value.replace(/\D/g, '')})} className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]" placeholder="123" />
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="default" checked={cardForm.isDefault} onChange={(e) => setCardForm({...cardForm, isDefault: e.target.checked})} className="w-4 h-4" />
-                <label htmlFor="default" className="text-sm text-gray-700">Set as default</label>
+                <label htmlFor='default' className='text-sm text-gray-700'>{t('payments.setAsDefault')}</label>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setIsAddCardOpen(false)} className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl">Cancel</button>
-                <button type="submit" className="flex-1 py-3 bg-gradient-to-r from-[#242021] to-[#3a3537] text-[#ffd17a] font-bold rounded-xl">Add Card</button>
+                <button type="button" onClick={() => setIsAddCardOpen(false)} className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl">{t('buttons.cancel')}</button>
+                <button type="submit" className="flex-1 py-3 bg-gradient-to-r from-[#242021] to-[#3a3537] text-[#ffd17a] font-bold rounded-xl">{t('payments.addCard')}</button>
               </div>
             </form>
           </div>

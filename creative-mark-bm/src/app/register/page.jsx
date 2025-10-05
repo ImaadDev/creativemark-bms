@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import { register } from "../../services/auth";
+import { useTranslation } from "../../i18n/TranslationContext";
 
 export default function RegisterPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { updateUser } = useAuth();
   const [formData, setFormData] = useState({
@@ -210,21 +212,21 @@ export default function RegisterPage() {
             </div>
             
             <h1 className="text-4xl xl:text-5xl font-bold mb-6 animate-fade-in text-white">
-              Welcome to the Future
+              {t('auth.welcomeToTheFuture')}
             </h1>
             <p className="text-xl text-[#ffd17a] mb-8 animate-fade-in delay-300">
-              Create your account and join thousands of satisfied clients worldwide
+              {t('auth.createAccountJoinClients')}
             </p>
             
             {/* Animated Stats */}
             <div className="grid grid-cols-2 gap-6 mt-12">
               <div className="text-center animate-fade-in delay-500 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <div className="text-3xl font-bold mb-2 text-[#ffd17a]">10K+</div>
-                <div className="text-sm text-white/80">Happy Clients</div>
+                <div className='text-sm text-white/80'>{t('auth.happyClients')}</div>
               </div>
               <div className="text-center animate-fade-in delay-700 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <div className="text-3xl font-bold mb-2 text-[#ffd17a]">99.9%</div>
-                <div className="text-sm text-white/80">Uptime</div>
+                <div className='text-sm text-white/80'>{t('auth.uptime')}</div>
               </div>
             </div>
           </div>
@@ -255,8 +257,8 @@ export default function RegisterPage() {
                   onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/48x48/242021/ffd17a?text=CM"; }}
                 />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 tracking-tight">Create Account</h2>
-              <p className="text-gray-600 text-sm sm:text-base">Join us and start your journey today</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 tracking-tight">{t('auth.createAccount')}</h2>
+              <p className="text-gray-600 text-sm sm:text-base">{t('auth.joinUsStartJourney')}</p>
             </div>
 
             {/* Success Message */}
@@ -293,26 +295,26 @@ export default function RegisterPage() {
               {/* Full Name & Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Full Name *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.fullName')} *</label>
                   <input
                     type="text"
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleChange}
                     required
-                    placeholder="John Doe"
+                    placeholder={t('auth.fullNamePlaceholder')}
                     className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400"
                   />
                 </div>
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Email *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.email')} *</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="john@example.com"
+                    placeholder={t('auth.emailPlaceholder')}
                     className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400"
                   />
                 </div>
@@ -320,7 +322,7 @@ export default function RegisterPage() {
 
               {/* Phone with Country Code */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Phone Number</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.phoneNumber')}</label>
                 <div className="flex gap-2">
                   {/* Country Code Selector with Flag */}
                   <div className="relative flex-shrink-0">
@@ -330,7 +332,7 @@ export default function RegisterPage() {
                       onChange={handleChange}
                       className="w-40 px-3 py-3 sm:py-4 pl-10 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer"
                     >
-                      <option value="">Code</option>
+                      <option value=''>{t('auth.code')}</option>
                       {countries.map((country) => (
                         <option key={country.code} value={country.phoneCode}>
                           {country.phoneCode} - {country.name}
@@ -354,7 +356,7 @@ export default function RegisterPage() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      placeholder="Enter phone number"
+                      placeholder={t('auth.enterPhoneNumber')}
                       className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400"
                     />
                   </div>
@@ -363,7 +365,7 @@ export default function RegisterPage() {
 
               {/* Nationality Dropdown with Flag */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Nationality</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.nationality')}</label>
                 <div className="relative">
                   <select
                     name="nationality"
@@ -371,7 +373,7 @@ export default function RegisterPage() {
                     onChange={handleChange} // This is the handler that triggers the phone code update
                     className="w-full px-3 sm:px-4 py-3 sm:py-4 pl-12 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer"
                   >
-                    <option value="">Select your nationality</option>
+                    <option value=''>{t('auth.selectNationality')}</option>
                     {countries.map((country) => (
                       <option key={country.code} value={country.name}>
                         {country.name}
@@ -392,7 +394,7 @@ export default function RegisterPage() {
 
               {/* Residency Status */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Residency Status</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.residencyStatus')}</label>
                 <div className="relative">
                   <select
                   name="residencyStatus"
@@ -400,11 +402,11 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer"
                 >
-                  <option value="">Select residency status</option>
-                  <option value="saudi">Saudi</option>
-                  <option value="gulf">Gulf National</option>
-                  <option value="premium">Premium Residency</option>
-                  <option value="foreign">Foreign</option>
+                  <option value=''>{t('auth.selectResidencyStatus')}</option>
+                  <option value='saudi'>{t('auth.saudi')}</option>
+                  <option value='gulf'>{t('auth.gulfNational')}</option>
+                  <option value='premium'>{t('auth.premiumResidency')}</option>
+                  <option value='foreign'>{t('auth.foreign')}</option>
                 </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -417,7 +419,7 @@ export default function RegisterPage() {
               {/* Passwords */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Password *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.password')} *</label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -447,7 +449,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Confirm Password *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.confirmPassword')} *</label>
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
@@ -487,13 +489,13 @@ export default function RegisterPage() {
                   style={{accentColor: '#ffd17a'}}
                 />
                 <label className="text-sm text-gray-700 leading-relaxed">
-                  I agree to the{" "}
+                  {t('auth.iAgreeToThe')} {" "}
                   <button type="button" className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors">
-                    Terms & Conditions
+                    {t('auth.termsAndConditions')}
                   </button>{" "}
-                  and{" "}
+                  {t('auth.and')} {" "}
                   <button type="button" className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors">
-                    Privacy Policy
+                    {t('auth.privacyPolicy')}
                   </button>
                 </label>
               </div>
@@ -511,10 +513,10 @@ export default function RegisterPage() {
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Creating Account...
+                    {t('auth.creatingAccount')}
                   </div>
                 ) : (
-                  "Create Account"
+                  t('auth.createAccountButton')
                 )}
               </button>
               </div>
@@ -522,13 +524,13 @@ export default function RegisterPage() {
 
             {/* Sign In Link */}
             <div className="mt-6 sm:mt-8 text-center">
-              <span className="text-gray-600">Already have an account? </span>
+              <span className="text-gray-600">{t('auth.alreadyHaveAccount')} </span>
               <button
                 type="button"
                 onClick={() => router.push('/')}
                 className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors"
               >
-                Sign In
+                {t('auth.signIn')}
               </button>
             </div>
           </div>

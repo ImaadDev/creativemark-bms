@@ -65,7 +65,6 @@ export const createPartner = async (req, res) => {
 
       partnershipType,
       clientEngagementManager,
-      ifzaContactPerson,
 
       legalEntityName,
       legalFormOfEntity,
@@ -174,7 +173,6 @@ export const createPartner = async (req, res) => {
       partnershipInfo: {
         partnershipType,
         clientEngagementManager,
-        ifzaContactPerson,
       },
       partnerInfo: {
         legalEntityName,

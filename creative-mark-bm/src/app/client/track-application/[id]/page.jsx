@@ -27,8 +27,10 @@ import {
 import { getApplication, getApplicationProgress } from "../../../../services/applicationService";
 import Timeline from "../../../../components/Timeline";
 import { FullPageLoading } from "../../../../components/LoadingSpinner";
+import { useTranslation } from "../../../../i18n/TranslationContext";
 
 export default function ApplicationDetailPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useParams();
   const applicationId = params.id;
@@ -112,7 +114,7 @@ export default function ApplicationDetailPage() {
   };
 
   if (loading) {
-    return <FullPageLoading text="Loading Application Details..." />;
+    return <FullPageLoading text={t('trackApplicationDetails.loadingDetails')} />;
   }
 
   if (error) {
@@ -127,7 +129,7 @@ export default function ApplicationDetailPage() {
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-red-900">Error loading application</h3>
+                <h3 className='text-lg font-semibold text-red-900'>{t('trackApplicationDetails.errorLoading')}</h3>
                 <p className="mt-2 text-red-700">{error}</p>
                 <button
                   onClick={fetchApplicationDetails}
@@ -136,7 +138,7 @@ export default function ApplicationDetailPage() {
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  Try again
+                  {t('trackApplicationDetails.tryAgain')}
                 </button>
               </div>
             </div>
@@ -156,8 +158,8 @@ export default function ApplicationDetailPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Application not found</h3>
-            <p className="text-gray-600">The requested application could not be found.</p>
+            <h3 className='text-xl font-semibold text-gray-900 mb-2'>{t('trackApplicationDetails.applicationNotFound')}</h3>
+            <p className='text-gray-600'>{t('trackApplicationDetails.applicationNotFoundDescription')}</p>
           </div>
         </div>
       </div>
@@ -179,18 +181,18 @@ export default function ApplicationDetailPage() {
                   <div className="mr-3 p-2 group-hover:bg-white/10 transition-colors duration-300 rounded-lg">
                     <FaArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
-                  <span className="font-medium text-sm sm:text-base">Back to Applications</span>
+                  <span className='font-medium text-sm sm:text-base'>{t('trackApplicationDetails.backToApplications')}</span>
                 </button>
 
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
-                  <span className="text-xs sm:text-sm font-medium uppercase tracking-wider text-amber-300">Application Details</span>
+                  <span className='text-xs sm:text-sm font-medium uppercase tracking-wider text-amber-300'>{t('trackApplicationDetails.applicationDetails')}</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-3 sm:mb-4 text-amber-400">
-                  Application Details
+                  {t('trackApplicationDetails.applicationDetails')}
                 </h1>
                 <p className="text-sm sm:text-base text-gray-300">
-                  Track and monitor your application progress
+                  {t('trackApplicationDetails.subtitle')}
                 </p>
                 <div className="mt-4 sm:mt-6 flex items-center space-x-3">
                   <div className="px-3 py-2 sm:px-4 sm:py-2 bg-amber-400/10 border border-amber-400/20 rounded-lg">
@@ -201,7 +203,7 @@ export default function ApplicationDetailPage() {
 
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                 <div className="text-center">
-                  <p className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-2 sm:mb-3 text-gray-300">Status</p>
+                  <p className='text-xs sm:text-sm font-bold uppercase tracking-wider mb-2 sm:mb-3 text-gray-300'>{t('trackApplicationDetails.status')}</p>
                   <span className={`inline-flex items-center px-4 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm font-bold uppercase transition-all duration-300 hover:scale-105 rounded-lg shadow-lg ${getStatusStyle(progressData?.currentStatus || application.status?.current || application.status)}`}>
                     <div className="w-2 h-2 bg-white rounded-full mr-2 sm:mr-3 animate-pulse"></div>
                     {formatStatus(progressData?.currentStatus || application.status?.current || application.status)}
@@ -209,7 +211,7 @@ export default function ApplicationDetailPage() {
                 </div>
 
                 <div className="text-center">
-                  <p className="text-xs sm:text-sm font-bold uppercase tracking-wider mb-2 sm:mb-3 text-gray-300">Progress</p>
+                  <p className='text-xs sm:text-sm font-bold uppercase tracking-wider mb-2 sm:mb-3 text-gray-300'>{t('trackApplicationDetails.progress')}</p>
                   <div className="flex items-center space-x-2">
                     <div className="relative w-20 sm:w-24 h-2 bg-white/20 rounded-full overflow-hidden">
                       <div 
@@ -242,33 +244,33 @@ export default function ApplicationDetailPage() {
                     <FaUser className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                   </div>
                   <div>
-                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Client Information</h2>
-                    <p className="text-sm sm:text-base text-gray-300">Personal details and contact information</p>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">{t('trackApplicationDetails.clientInformation')}</h2>
+                    <p className="text-sm sm:text-base text-gray-300">{t('trackApplicationDetails.personalDetails')}</p>
                   </div>
                 </div>
               </div>
               <div className="p-4 sm:p-6 lg:p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                   <div className="group">
-                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Full Name</label>
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">{t('trackApplicationDetails.fullName')}</label>
                     <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                       <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.name || application.serviceDetails?.client?.name || "N/A"}</p>
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Email</label>
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">{t('trackApplicationDetails.email')}</label>
                     <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                       <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.email || "N/A"}</p>
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Phone</label>
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">{t('trackApplicationDetails.phone')}</label>
                     <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                       <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.phone || "N/A"}</p>
                     </div>
                   </div>
                   <div className="group">
-                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Nationality</label>
+                    <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">{t('trackApplicationDetails.nationality')}</label>
                     <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                       <p className="text-sm sm:text-base font-semibold text-gray-900">{application.client?.nationality || "N/A"}</p>
                     </div>
@@ -286,27 +288,27 @@ export default function ApplicationDetailPage() {
                       <FaUser className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                     </div>
                     <div>
-                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Partner Information</h2>
-                      <p className="text-sm sm:text-base text-gray-300">Business partner details</p>
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">{t('trackApplicationDetails.partnerInformation')}</h2>
+                      <p className="text-sm sm:text-base text-gray-300">{t('trackApplicationDetails.businessPartnerDetails')}</p>
                     </div>
                   </div>
                 </div>
                 <div className="p-4 sm:p-6 lg:p-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                     <div className="group">
-                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Partner Name</label>
+                      <label className='block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3'>{t('trackApplicationDetails.partnerName')}</label>
                       <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                         <p className="text-sm sm:text-base font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.name || "N/A"}</p>
                       </div>
                     </div>
                     <div className="group">
-                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Email</label>
+                      <label className='block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3'>{t('trackApplicationDetails.email')}</label>
                       <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                         <p className="text-sm sm:text-base font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.email || "N/A"}</p>
                       </div>
                     </div>
                     <div className="group">
-                      <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Phone</label>
+                      <label className='block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3'>{t('trackApplicationDetails.phone')}</label>
                       <div className="p-4 sm:p-5 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                         <p className="text-sm sm:text-base font-semibold text-gray-900">{(application.partner || application.serviceDetails?.partner)?.phone || "N/A"}</p>
                       </div>
@@ -324,45 +326,45 @@ export default function ApplicationDetailPage() {
                     <FaFileAlt className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                   </div>
                   <div>
-                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Application Overview</h2>
-                    <p className="text-sm sm:text-base text-gray-300">Service details and business information</p>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">{t('trackApplicationDetails.applicationOverview')}</h2>
+                    <p className="text-sm sm:text-base text-gray-300">{t('trackApplicationDetails.serviceDetailsAndBusinessInfo')}</p>
                   </div>
                 </div>
               </div>
               <div className="p-4 sm:p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Service Type</label>
+                    <label className='block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2'>{t('trackApplicationDetails.serviceType')}</label>
                     <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                       <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.serviceType || application.serviceType || "N/A"}</p>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Partner Type</label>
+                    <label className='block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2'>{t('trackApplicationDetails.partnerType')}</label>
                     <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                       <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.partnerType || application.partnerType || "N/A"}</p>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">External Companies</label>
+                    <label className='block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2'>{t('trackApplicationDetails.externalCompanies')}</label>
                     <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                       <p className="text-sm font-medium text-gray-900">{application.serviceDetails?.externalCompaniesCount || application.externalCompaniesCount || 0}</p>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Virtual Office</label>
+                    <label className='block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2'>{t('trackApplicationDetails.virtualOffice')}</label>
                     <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                       <div className="flex items-center space-x-2">
                         <div className={`w-3 h-3 rounded-full ${(application.serviceDetails?.needVirtualOffice || application.needVirtualOffice) ? 'bg-green-500' : 'bg-red-500'}`}></div>
                         <p className="text-sm font-medium text-gray-900">
-                          {(application.serviceDetails?.needVirtualOffice || application.needVirtualOffice) ? "Yes" : "No"}
+                          {(application.serviceDetails?.needVirtualOffice || application.needVirtualOffice) ? t('common.yes') : t('common.no')}
                         </p>
                       </div>
                     </div>
                   </div>
                   {(application.serviceDetails?.projectEstimatedValue || application.projectEstimatedValue) && (
                     <div className="md:col-span-2">
-                      <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Project Estimated Value</label>
+                      <label className='block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2'>{t('trackApplicationDetails.projectEstimatedValue')}</label>
                       <div className="p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
                         <p className="text-lg font-bold text-gray-900">
                           {(() => {
@@ -386,8 +388,8 @@ export default function ApplicationDetailPage() {
                       <FaBuilding className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                     </div>
                     <div>
-                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">External Companies</h2>
-                      <p className="text-gray-300 text-sm sm:text-base">External company details and ownership</p>
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">{t('trackApplicationDetails.externalCompanies')}</h2>
+                      <p className="text-gray-300 text-sm sm:text-base">{t('trackApplicationDetails.externalCompanyDetailsAndOwnership')}</p>
                     </div>
                   </div>
                 </div>
@@ -396,22 +398,22 @@ export default function ApplicationDetailPage() {
                     {(application.serviceDetails?.externalCompaniesDetails || application.externalCompaniesDetails).map((company, index) => (
                       <div key={index} className="p-4 sm:p-6 bg-gray-50 border border-amber-100/50 rounded-lg">
                         <div className="flex items-center justify-between mb-4 sm:mb-6">
-                          <h3 className="text-sm sm:text-base font-bold text-gray-900">Company #{index + 1}</h3>
+                          <h3 className='text-sm sm:text-base font-bold text-gray-900'>{t('trackApplicationDetails.company')} #{index + 1}</h3>
                           <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
-                            {company.sharePercentage || 0}% Share
+                            {company.sharePercentage || 0}% {t('trackApplicationDetails.share')}
                           </span>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                           <div>
-                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Company Name</label>
+                            <label className='block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2'>{t('trackApplicationDetails.companyName')}</label>
                             <p className="text-sm sm:text-base font-medium text-gray-900">{company.companyName || "N/A"}</p>
                           </div>
                           <div>
-                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">Country</label>
+                            <label className='block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2'>{t('trackApplicationDetails.country')}</label>
                             <p className="text-sm sm:text-base font-medium text-gray-900">{company.country || "N/A"}</p>
                           </div>
                           <div className="md:col-span-2">
-                            <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">CR Number</label>
+                            <label className='block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2'>{t('trackApplicationDetails.crNumber')}</label>
                             <p className="text-sm sm:text-base font-mono font-medium text-gray-900">{company.crNumber || "N/A"}</p>
                           </div>
                         </div>
@@ -431,8 +433,8 @@ export default function ApplicationDetailPage() {
                       <FaUsers className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                     </div>
                     <div>
-                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Family Members</h2>
-                      <p className="text-sm sm:text-base text-gray-300">Family members requiring residency</p>
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">{t('trackApplicationDetails.familyMembers')}</h2>
+                      <p className="text-sm sm:text-base text-gray-300">{t('trackApplicationDetails.familyMembersRequiringResidency')}</p>
                     </div>
                   </div>
                 </div>
@@ -440,22 +442,22 @@ export default function ApplicationDetailPage() {
                   <div className="space-y-4 sm:space-y-6">
                     {(application.serviceDetails?.familyMembers || application.familyMembers).map((member, index) => (
                       <div key={index} className="p-4 sm:p-6 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-sm transition-all duration-300 group rounded-lg">
-                        <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-6">Family Member #{index + 1}</h3>
+                        <h3 className='text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-6'>{t('trackApplicationDetails.familyMember')} #{index + 1}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                           <div className="group">
-                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Full Name</label>
+                            <label className='block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3'>{t('trackApplicationDetails.fullName')}</label>
                             <div className="p-4 bg-white border border-amber-100/50 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                               <p className="text-sm sm:text-base font-semibold text-gray-900">{member.name || "N/A"}</p>
                             </div>
                           </div>
                           <div className="group">
-                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Relationship</label>
+                            <label className='block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3'>{t('trackApplicationDetails.relationship')}</label>
                             <div className="p-4 bg-white border border-amber-100/50 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                               <p className="text-sm sm:text-base font-semibold text-gray-900">{member.relation || "N/A"}</p>
                             </div>
                           </div>
                           <div className="group">
-                            <label className="block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3">Passport Number</label>
+                            <label className='block text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 sm:mb-3'>{t('trackApplicationDetails.passportNumber')}</label>
                             <div className="p-4 bg-white border border-amber-100/50 hover:shadow-sm transition-all duration-300 group-hover:scale-[1.02] rounded-lg">
                               <p className="text-sm sm:text-base font-mono font-semibold text-gray-900">{member.passportNo || "N/A"}</p>
                             </div>
@@ -477,8 +479,8 @@ export default function ApplicationDetailPage() {
                       <FaFileAlt className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
                     </div>
                     <div>
-                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">Uploaded Documents</h2>
-                      <p className="text-gray-300 text-sm sm:text-base">Application documents and files</p>
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">{t('trackApplicationDetails.uploadedDocuments')}</h2>
+                      <p className="text-gray-300 text-sm sm:text-base">{t('trackApplicationDetails.applicationDocumentsAndFiles')}</p>
                     </div>
                   </div>
                 </div>
@@ -489,7 +491,7 @@ export default function ApplicationDetailPage() {
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-2">{doc.type}</h3>
-                            <p className="text-xs sm:text-sm text-gray-500">Uploaded on {formatDate(doc.createdAt)}</p>
+                            <p className='text-xs sm:text-sm text-gray-500'>{t('trackApplicationDetails.uploadedOn')} {formatDate(doc.createdAt)}</p>
                           </div>
                           <a
                             href={doc.fileUrl}
@@ -498,7 +500,7 @@ export default function ApplicationDetailPage() {
                             className="ml-3 inline-flex items-center px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200 rounded-lg"
                           >
                             <FaEye className="w-3 h-3 mr-1" />
-                            View
+                            {t('trackApplicationDetails.view')}
                           </a>
                         </div>
                       </div>
@@ -519,8 +521,8 @@ export default function ApplicationDetailPage() {
                     <FaClock className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
                   </div>
                   <div>
-                    <h3 className="text-base sm:text-lg font-bold text-amber-400">Timeline</h3>
-                    <p className="text-xs sm:text-sm text-gray-300">Application progress tracking</p>
+                    <h3 className="text-base sm:text-lg font-bold text-amber-400">{t('trackApplicationDetails.timeline')}</h3>
+                    <p className="text-xs sm:text-sm text-gray-300">{t('trackApplicationDetails.applicationProgressTracking')}</p>
                   </div>
                 </div>
               </div>
@@ -541,33 +543,33 @@ export default function ApplicationDetailPage() {
                     <FaCog className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
                   </div>
                   <div>
-                    <h3 className="text-base sm:text-lg font-bold text-amber-400">Application Info</h3>
-                    <p className="text-xs sm:text-sm text-gray-300">Key application details</p>
+                    <h3 className="text-base sm:text-lg font-bold text-amber-400">{t('trackApplicationDetails.applicationInfo')}</h3>
+                    <p className="text-xs sm:text-sm text-gray-300">{t('trackApplicationDetails.keyApplicationDetails')}</p>
                   </div>
                 </div>
               </div>
               <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                 <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Application ID</label>
+                  <label className='block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2'>{t('trackApplicationDetails.applicationId')}</label>
                   <p className="text-gray-900 font-mono text-xs sm:text-sm break-all">{application.applicationId || application._id}</p>
                 </div>
                 <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Submitted</label>
+                  <label className='block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2'>{t('trackApplicationDetails.submitted')}</label>
                   <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(application.timestamps?.createdAt || application.createdAt)}</p>
                 </div>
                 <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Last Updated</label>
+                  <label className='block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2'>{t('trackApplicationDetails.lastUpdated')}</label>
                   <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(application.timestamps?.updatedAt || application.updatedAt)}</p>
                 </div>
                 {(application.status?.approvedBy || application.approvedBy) && (
                   <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Approved By</label>
+                    <label className='block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2'>{t('trackApplicationDetails.approvedBy')}</label>
                     <p className="text-gray-900 font-medium text-sm sm:text-base">{(application.status?.approvedBy || application.approvedBy)?.fullName || (application.status?.approvedBy || application.approvedBy)?.name || "N/A"}</p>
                   </div>
                 )}
                 {(application.status?.approvedAt || application.approvedAt) && (
                   <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Approved At</label>
+                      <label className='block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2'>{t('trackApplicationDetails.approvedAt')}</label>
                     <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(application.status?.approvedAt || application.approvedAt)}</p>
                   </div>
                 )}
@@ -583,8 +585,8 @@ export default function ApplicationDetailPage() {
                       <FaUsers className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
                     </div>
                     <div>
-                      <h3 className="text-base sm:text-lg font-bold text-amber-400">Assigned Team</h3>
-                      <p className="text-xs sm:text-sm text-gray-300">Team members handling your application</p>
+                      <h3 className="text-base sm:text-lg font-bold text-amber-400">{t('trackApplicationDetails.assignedTeam')}</h3>
+                      <p className="text-xs sm:text-sm text-gray-300">{t('trackApplicationDetails.teamMembersHandlingApplication')}</p>
                     </div>
                   </div>
                 </div>
@@ -622,22 +624,22 @@ export default function ApplicationDetailPage() {
                       <FaDollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
                     </div>
                     <div>
-                      <h3 className="text-base sm:text-lg font-bold text-amber-400">Payment Info</h3>
-                      <p className="text-xs sm:text-sm text-gray-300">Payment details and status</p>
+                      <h3 className="text-base sm:text-lg font-bold text-amber-400">{t('trackApplicationDetails.paymentInfo')}</h3>
+                      <p className="text-xs sm:text-sm text-gray-300">{t('trackApplicationDetails.paymentDetailsAndStatus')}</p>
                     </div>
                   </div>
                 </div>
                 <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                   <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Amount</label>
+                    <label className='block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2'>{t('trackApplicationDetails.amount')}</label>
                     <p className="text-lg sm:text-xl font-bold text-gray-900">{application.payment?.amount || 0} SAR</p>
                   </div>
                   <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Method</label>
+                    <label className='block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2'>{t('trackApplicationDetails.method')}</label>
                     <p className="text-gray-900 font-medium text-sm sm:text-base">{application.payment?.method || "N/A"}</p>
                   </div>
                   <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Status</label>
+                    <label className='block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2'>{t('trackApplicationDetails.status')}</label>
                     <div className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${
                         application.payment?.status === 'paid' ? 'bg-green-500' : 
@@ -649,7 +651,7 @@ export default function ApplicationDetailPage() {
                   </div>
                   {application.payment?.paidAt && (
                     <div className="p-3 sm:p-4 bg-gray-50 border border-amber-100/50 rounded-lg">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Paid At</label>
+                      <label className='block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2'>{t('trackApplicationDetails.paidAt')}</label>
                       <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(application.payment.paidAt)}</p>
                     </div>
                   )}

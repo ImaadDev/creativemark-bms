@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getUserApplications, getApplicationProgress } from "../../../services/applicationService";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useTranslation } from "../../../i18n/TranslationContext";
 
 export default function MyApplicationsPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { user } = useAuth();
   const [applications, setApplications] = useState([]);
@@ -152,13 +154,13 @@ export default function MyApplicationsPage() {
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
-                  <span className="text-sm font-medium uppercase tracking-wider text-amber-400/80">Applications</span>
+                  <span className='text-sm font-medium uppercase tracking-wider text-amber-400/80'>{t('trackApplication.applications')}</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-3 text-amber-400">
-                  My Applications
+                  {t('trackApplication.myApplications')}
                 </h1>
                 <p className="text-sm sm:text-base lg:text-lg text-white/70">
-                  Track and manage your business applications
+                  {t('trackApplication.subtitle')}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
@@ -167,13 +169,13 @@ export default function MyApplicationsPage() {
                   disabled={loading}
                   className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border border-amber-400/30 bg-amber-400/10 text-amber-400 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-amber-400/20 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="group-hover:scale-105 transition-transform duration-300">{loading ? "Loading..." : "Refresh"}</span>
+                  <span className='group-hover:scale-105 transition-transform duration-300'>{loading ? t('trackApplication.loading') : t('trackApplication.refresh')}</span>
                 </button>
                 <button
                   onClick={() => router.push("/client/application")}
                   className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group"
                 >
-                  <span className="group-hover:scale-105 transition-transform duration-300">+ New Application</span>
+                  <span className='group-hover:scale-105 transition-transform duration-300'>{t('trackApplication.newApplication')}</span>
                 </button>
               </div>
             </div>
@@ -195,13 +197,13 @@ export default function MyApplicationsPage() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">Error Loading Applications</h3>
+                  <h3 className='text-lg sm:text-xl font-bold text-gray-900 mb-2'>{t('trackApplication.errorLoading')}</h3>
                   <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">{error}</p>
                   <button
                     onClick={fetchApplications}
                     className="px-6 sm:px-8 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg"
                   >
-                    <span className="group-hover:scale-105 transition-transform duration-300">Try Again</span>
+                    <span className='group-hover:scale-105 transition-transform duration-300'>{t('trackApplication.tryAgain')}</span>
                   </button>
                 </div>
               </div>
@@ -219,7 +221,7 @@ export default function MyApplicationsPage() {
                     <div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-4 border-white border-t-transparent rounded-full"></div>
                   </div>
                 </div>
-                <span className="text-base sm:text-lg font-semibold text-gray-700">Loading applications...</span>
+                <span className='text-base sm:text-lg font-semibold text-gray-700'>{t('trackApplication.loadingApplications')}</span>
               </div>
             </div>
           </div>
@@ -233,22 +235,22 @@ export default function MyApplicationsPage() {
                 <thead>
                   <tr className="text-white bg-[#242021]">
                     <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
-                      Application ID
+                      {t('trackApplication.applicationId')}
                     </th>
                     <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
-                      Service Type
+                      {t('trackApplication.serviceType')}
                     </th>
                     <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
-                      Status
+                      {t('trackApplication.status')}
                     </th>
                     <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
-                      Progress
+                      {t('trackApplication.progress')}
                     </th>
                     <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
-                      Submitted Date
+                      {t('trackApplication.submittedDate')}
                     </th>
                     <th className="px-6 lg:px-8 py-4 lg:py-6 text-center text-xs font-bold uppercase tracking-wider">
-                      Actions
+                      {t('trackApplication.actions')}
                     </th>
                   </tr>
                 </thead>
@@ -306,7 +308,7 @@ export default function MyApplicationsPage() {
                           onClick={() => router.push(`/client/track-application/${app._id}`)}
                           className="px-4 lg:px-6 py-2 lg:py-3 text-xs lg:text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg"
                         >
-                          <span className="group-hover:scale-105 transition-transform duration-300">View Details</span>
+                          <span className="group-hover:scale-105 transition-transform duration-300">{t('trackApplication.viewDetails')}</span>
                         </button>
                       </td>
                     </tr>
@@ -327,8 +329,8 @@ export default function MyApplicationsPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2 mb-2 sm:mb-3">
                           <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-amber-400"></div>
-                          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                            Application Details
+                          <h3 className='text-xs font-bold uppercase tracking-wider text-gray-500'>
+                            {t('trackApplication.applicationDetails')}
                           </h3>
                         </div>
                         <p className="font-mono text-xs sm:text-sm font-semibold text-gray-900 break-all mb-2">
@@ -348,8 +350,8 @@ export default function MyApplicationsPage() {
                       <div>
                         <div className="flex items-center space-x-2 mb-2">
                           <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-amber-400"></div>
-                          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                            Service Type
+                          <h3 className='text-xs font-bold uppercase tracking-wider text-gray-500'>
+                            {t('trackApplication.serviceType')}
                           </h3>
                         </div>
                         <p className="text-sm font-semibold text-gray-900">
@@ -359,8 +361,8 @@ export default function MyApplicationsPage() {
                       <div>
                         <div className="flex items-center space-x-2 mb-2">
                           <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-amber-400"></div>
-                          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                            Submitted
+                          <h3 className='text-xs font-bold uppercase tracking-wider text-gray-500'>
+                            {t('trackApplication.submitted')}
                           </h3>
                         </div>
                         <p className="text-sm font-semibold text-gray-900">
@@ -377,8 +379,8 @@ export default function MyApplicationsPage() {
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2">
                         <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-amber-400"></div>
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                          Progress
+                        <h3 className='text-xs font-bold uppercase tracking-wider text-gray-500'>
+                          {t('trackApplication.progress')}
                         </h3>
                       </div>
                       <div className="flex items-center space-x-3">
@@ -401,7 +403,7 @@ export default function MyApplicationsPage() {
                         onClick={() => router.push(`/client/track-application/${app._id}`)}
                         className="px-6 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg"
                       >
-                        <span className="group-hover:scale-105 transition-transform duration-300">View Details</span>
+                        <span className="group-hover:scale-105 transition-transform duration-300">{t('trackApplication.viewDetails')}</span>
                       </button>
                     </div>
                   </div>
@@ -424,16 +426,16 @@ export default function MyApplicationsPage() {
                   </div>
                 </div>
                 <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
-                  No Applications Yet
+                  {t('trackApplication.noApplicationsYet')}
                 </h3>
                 <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-8 sm:mb-10 leading-relaxed">
-                  You haven't submitted any applications yet. Start your first business registration application today.
+                  {t('trackApplication.noApplicationsDescription')}
                 </p>
                 <button
                   onClick={() => router.push("/client/application")}
                   className="px-8 sm:px-10 py-4 sm:py-5 text-sm sm:text-base font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg"
                 >
-                  <span className="group-hover:scale-105 transition-transform duration-300">Start New Application</span>
+                  <span className='group-hover:scale-105 transition-transform duration-300'>{t('trackApplication.startNewApplication')}</span>
                 </button>
               </div>
             </div>

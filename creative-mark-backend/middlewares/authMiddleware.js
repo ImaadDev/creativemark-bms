@@ -12,7 +12,6 @@ const authMiddleware = (req, res, next) => {
       }
     }
 
-    console.log("Auth Middleware - Route:", req.path, "Token exists:", !!token);
 
     if (!token) {
       console.log("Auth Middleware - No token found");
@@ -21,7 +20,6 @@ const authMiddleware = (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "supersecretkey");
     req.user = decoded;
-    console.log("Auth Middleware - User authenticated:", decoded.id, decoded.role);
     next();
   } catch (error) {
     console.error("Auth Middleware Error:", error.message);

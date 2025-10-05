@@ -4,6 +4,8 @@ import { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { logout, getCurrentUser } from "../services/auth";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "../i18n/TranslationContext";
+import LanguageSwitcher from "./LanguageSwitcher";
 import { 
   FaBell, 
   FaSearch, 
@@ -27,20 +29,24 @@ import {
   FaInfoCircle
 } from "react-icons/fa";
 
-const notifications = [
-  { id: 1, title: "New Ticket Assigned", description: "You have a new ticket from Kimad.", time: "2 min ago" },
-  { id: 2, title: "Ticket Resolved", description: "Ticket #123 has been resolved.", time: "10 min ago" },
-  { id: 3, title: "New Comment", description: "Emma commented on ticket #45.", time: "1 hour ago" },
-];
+// Notifications will be created dynamically using translations
 
 export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
   const { user: currentUser, updateUser, handleLogout: authHandleLogout } = useAuth();
+  const { t, isRTL } = useTranslation();
   const router = useRouter();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+
+  // Create notifications dynamically with translations
+  const notifications = [
+    { id: 1, title: t('messages.newTicketAssigned'), description: t('messages.ticketFromKimad'), time: t('messages.twoMinAgo') },
+    { id: 2, title: t('messages.ticketResolved'), description: t('messages.ticket123Resolved'), time: t('messages.tenMinAgo') },
+    { id: 3, title: t('messages.newComment'), description: t('messages.emmaCommented'), time: t('messages.oneHourAgo') },
+  ];
 
   // Set loading to false when user data is available from AuthContext
   useEffect(() => {
@@ -120,7 +126,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             <div className="flex items-center space-x-3">
               {/* Mobile title when sidebar is closed */}
               {!isSidebarOpen && (
-                <div className="lg:hidden">
+                <div className="hidden md:block lg:hidden">
                   <h1 className="text-lg sm:text-xl font-bold" style={{ color: '#ffd17a' }}>
                     Creative Mark
                   </h1>
@@ -129,24 +135,24 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
               
               {/* Desktop breadcrumb - you can customize this based on current page */}
               <div className="hidden lg:flex items-center space-x-2 text-sm">
-                <span className="text-gray-300">Dashboard</span>
+                <span className="text-gray-300">{t('navigation.dashboard')}</span>
                 <FaChevronDown className="h-3 w-3 text-gray-400 transform -rotate-90" />
-                <span className="text-[#ffd17a] font-medium">Overview</span>
+                <span className="text-[#ffd17a] font-medium">{t('navigation.overview')}</span>
               </div>
             </div>
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
+          <div className="flex items-center space-x-0 md:space-x-2  lg:space-x-4">
             {/* Notifications - Only visible for clients */}
             {currentUser && currentUser.role === 'client' && (
               <button
                 onClick={() => setShowNotificationsModal(true)}
                 className="p-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:scale-105 relative"
                 style={{ color: '#ffd17a' }}
-                aria-label="Notifications"
+                aria-label={t('navigation.notifications')}
               >
-                <FaBell className="h-5 w-5 sm:h-6 sm:w-6" />
+                <FaBell className="h-4 w-4 sm:h-6 sm:w-6" />
                 {/* Optional: red dot for unread notifications */}
                 <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-[#242021]"></span>
               </button>
@@ -158,9 +164,9 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                 onClick={() => setShowHelpModal(true)}
                 className="p-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:scale-105"
                 style={{ color: '#ffd17a' }}
-                aria-label="Help & Support"
+                aria-label={t('navigation.helpSupport')}
               >
-                <FaQuestionCircle className="h-5 w-5 sm:h-6 sm:w-6" />
+                <FaQuestionCircle className="h-4 w-4 sm:h-6 sm:w-6" />
               </button>
             )}
 
@@ -168,6 +174,11 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             {currentUser && currentUser.role === 'client' && (
               <div className="hidden sm:block w-px h-6 bg-gray-400/30"></div>
             )}
+
+            {/* Language Switcher */}
+            <div className="block">
+              <LanguageSwitcher />
+            </div>
 
             {/* User Menu */}
             <div className="relative">
@@ -256,7 +267,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                       style={{ backgroundColor: 'rgba(248, 249, 250, 0.8)' }}
                     >
                       <FaUser className="h-4 w-4 text-gray-600" />
-                      <span className="text-sm font-medium text-gray-900">Profile Settings</span>
+                      <span className="text-sm font-medium text-gray-900">{t('navigation.profileSettings')}</span>
                     </button>
 
                     <button
@@ -268,7 +279,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                       style={{ backgroundColor: 'rgba(248, 249, 250, 0.8)' }}
                     >
                       <FaCog className="h-4 w-4 text-gray-600" />
-                      <span className="text-sm font-medium text-gray-900">Account Settings</span>
+                      <span className="text-sm font-medium text-gray-900">{t('navigation.accountSettings')}</span>
                     </button>
 
                     <button
@@ -283,7 +294,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                         <FaCalendar className="h-4 w-4 text-blue-600" />
                       )}
                       <span className="text-sm font-medium text-blue-900">
-                        {refreshing ? 'Refreshing...' : 'Refresh Profile'}
+                        {refreshing ? t('messages.refreshing') : t('navigation.refreshProfile')}
                       </span>
                     </button>
 
@@ -295,7 +306,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                       style={{ backgroundColor: 'rgba(239, 68, 68, 0.05)' }}
                     >
                       <FaSignOutAlt className="h-4 w-4" />
-                      <span className="text-sm font-medium">Sign Out</span>
+                      <span className="text-sm font-medium">{t('buttons.logout')}</span>
                     </button>
                   </div>
                 </div>
@@ -313,8 +324,8 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-2xl font-bold text-[#ffd17a] mb-1">Notifications</h2>
-                  <p className="text-[#ffd17a]/70 text-sm">Stay updated with your latest updates</p>
+                  <h2 className="text-2xl font-bold text-[#ffd17a] mb-1">{t('navigation.notifications')}</h2>
+                  <p className="text-[#ffd17a]/70 text-sm">{t('messages.stayUpdated')}</p>
                 </div>
                 <button 
                   onClick={() => setShowNotificationsModal(false)} 
@@ -354,8 +365,8 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-2xl font-bold text-[#ffd17a] mb-1">Help & Support</h2>
-                  <p className="text-[#ffd17a]/70 text-sm">Get help with your account and services</p>
+                  <h2 className="text-2xl font-bold text-[#ffd17a] mb-1">{t('navigation.helpSupport')}</h2>
+                  <p className="text-[#ffd17a]/70 text-sm">{t('messages.getHelpWithAccount')}</p>
                 </div>
                 <button 
                   onClick={() => setShowHelpModal(false)} 
@@ -378,9 +389,9 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                       <FaPhone className="text-white" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">Phone Support</h4>
+                      <h4 className="font-semibold text-gray-900">{t('messages.phoneSupport')}</h4>
                       <p className="text-gray-600 text-sm">+966 50 123 4567</p>
-                      <p className="text-gray-500 text-xs">Available 24/7</p>
+                      <p className="text-gray-500 text-xs">{t('messages.available247')}</p>
                     </div>
                   </div>
                   
@@ -389,9 +400,9 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                       <FaEnvelope className="text-white" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">Email Support</h4>
+                      <h4 className="font-semibold text-gray-900">{t('messages.emailSupport')}</h4>
                       <p className="text-gray-600 text-sm">support@creativemark.sa</p>
-                      <p className="text-gray-500 text-xs">Response within 2 hours</p>
+                      <p className="text-gray-500 text-xs">{t('messages.responseWithin2Hours')}</p>
                     </div>
                   </div>
                   
@@ -420,8 +431,8 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                   >
                     <FaFileAlt className="text-[#ffd17a]" />
                     <div className="text-left">
-                      <h4 className="font-semibold">Create Support Ticket</h4>
-                      <p className="text-sm opacity-80">Get help with your issues</p>
+                      <h4 className="font-semibold">{t('messages.createSupportTicket')}</h4>
+                      <p className="text-sm opacity-80">{t('messages.getHelpWithIssues')}</p>
                     </div>
                   </button>
                   

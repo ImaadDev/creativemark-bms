@@ -28,9 +28,11 @@ import { createApplication } from "../../../services/applicationService";
 import AuthContext from "../../../contexts/AuthContext";
 import RequirementsModal from "../../../components/client/RequirementsModal";
 import { getCurrentUser } from "../../../services/auth";
+import { useTranslation } from "../../../i18n/TranslationContext";
 
 export default function ModernMultiStepForm() {
   const { user } = useContext(AuthContext);
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -102,40 +104,40 @@ export default function ModernMultiStepForm() {
     if (svc === "engineering") {
       return {
         requiredExternalCompanies: 4,
-        note: "Engineering consulting requires 4 external companies: 3 with CR + FS + 1 year operation, and 1 with CR + 10 years experience."
+        note: t('application.requirements.engineering')
       };
     }
     if (svc === "commercial" || svc === "trade") {
       if (partnerType === "sole") {
         return {
           requiredExternalCompanies: 3,
-          note: "Commercial (sole partner) requires 3 external companies from 3 different countries."
+          note: t('application.requirements.commercialSole')
         };
       }
       return {
         requiredExternalCompanies: 1,
-        note: "Commercial with a Saudi partner requires 1 external company (Saudi partner counts as two)."
+        note: t('application.requirements.commercialWithPartner')
       };
     }
     if (svc === "real_estate") {
       return {
         requiredExternalCompanies: 1,
-        note: "Real estate development requires an external company and the first project value must be at least 300,000,000 SAR."
+        note: t('application.requirements.realEstate')
       };
     }
     if (svc === "industrial" || svc === "agricultural" || svc === "service") {
       return {
         requiredExternalCompanies: 1,
-        note: "Industrial/agricultural/service activities require 1 external company with 1 year of operation and financial statements."
+        note: t('application.requirements.industrial')
       };
     }
     if (svc === "advertising") {
       return {
         requiredExternalCompanies: 0,
-        note: "Advertising & promotions requires owning 50% share in an advertising company in your home country (renewed every 3 years)."
+        note: t('application.requirements.advertising')
       };
     }
-    return { requiredExternalCompanies: 0, note: "No special external-company rules for the selected service." };
+    return { requiredExternalCompanies: 0, note: t('application.requirements.noSpecialRules') };
   }
 
   const requirements = getRequirements();
@@ -146,51 +148,51 @@ export default function ModernMultiStepForm() {
     
     switch (name) {
       case "fullName":
-        if (!value?.trim()) error = "Full name is required";
-        else if (value.trim().length < 2) error = "Full name must be at least 2 characters";
+        if (!value?.trim()) error = t('validation.fullNameRequired');
+        else if (value.trim().length < 2) error = t('validation.fullNameMinLength');
         break;
       case "email":
-        if (!value?.trim()) error = "Email is required";
+        if (!value?.trim()) error = t('validation.emailRequired');
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          error = "Please enter a valid email address";
+          error = t('validation.emailInvalid');
         }
         break;
       case "phone":
-        if (!value?.trim()) error = "Phone number is required";
+        if (!value?.trim()) error = t('validation.phoneRequired');
         else if (!/^[\+]?[1-9][\d]{0,15}$/.test(value.replace(/[\s\-\(\)]/g, ""))) {
-          error = "Please enter a valid phone number";
+          error = t('validation.phoneInvalid');
         }
         break;
       case "nationality":
-        if (!value?.trim()) error = "Nationality is required";
+        if (!value?.trim()) error = t('validation.nationalityRequired');
         break;
       case "residencyStatus":
-        if (!value?.trim()) error = "Residency status is required";
+        if (!value?.trim()) error = t('validation.residencyStatusRequired');
         break;
       case "serviceType":
-        if (!value) error = "Service type is required";
+        if (!value) error = t('validation.serviceTypeRequired');
         break;
       case "saudiPartnerName":
-        if (formData.partnerType === "withSaudiPartner" && !value?.trim()) {
-          error = "Saudi partner name is required when partner type is 'with Saudi partner'";
+        if (formData.partnerType === 'withSaudiPartner' && !value?.trim()) {
+          error = t('validation.saudiPartnerNameRequired');
         }
         break;
       case "saudiPartnerIqama":
-        if (formData.partnerType === "withSaudiPartner" && !value) {
-          error = "Saudi partner Iqama/ID card is required when partner type is 'with Saudi partner'";
+        if (formData.partnerType === 'withSaudiPartner' && !value) {
+          error = t('validation.saudiPartnerIqamaRequired');
         }
         break;
       case "projectEstimatedValue":
-        if (formData.serviceType === "real_estate") {
+        if (formData.serviceType === 'real_estate') {
           if (!value || isNaN(parseFloat(value))) {
-            error = "Project estimated value is required for real estate";
+            error = t('validation.projectValueRequired');
           } else if (parseFloat(value) < 300000000) {
-            error = "Minimum project value for real estate is 300,000,000 SAR";
+            error = t('validation.projectValueMinimum');
           }
         } else if (value && isNaN(parseFloat(value))) {
-          error = "Project estimated value must be a valid number";
+          error = t('validation.projectValueValidNumber');
         } else if (value && parseFloat(value) < 0) {
-          error = "Project estimated value cannot be negative";
+          error = t('validation.projectValueNegative');
         }
         break;
       case "companyArrangesExternalCompanies":
@@ -258,7 +260,7 @@ export default function ModernMultiStepForm() {
         if (requirements.requiredExternalCompanies > 0 && form.externalCompaniesCount === 0) {
           // Check if user has selected "CreativeMark will provide"
           if (!form.companyArrangesExternalCompanies) {
-            newErrors.companyArrangesExternalCompanies = "Please select this option or add your own external companies";
+            newErrors.companyArrangesExternalCompanies = t('validation.selectOptionOrAddCompanies');
           }
         }
         
@@ -267,17 +269,17 @@ export default function ModernMultiStepForm() {
           for (let i = 0; i < form.externalCompaniesDetails.length; i++) {
             const company = form.externalCompaniesDetails[i];
             if (!company) {
-              newErrors[`company_${i}_missing`] = "Company details are required";
+              newErrors[`company_${i}_missing`] = t('validation.companyDetailsRequired');
               continue;
             }
             if (!company.companyName?.trim()) {
-              newErrors[`company_${i}_name`] = "Company name is required";
+              newErrors[`company_${i}_name`] = t('validation.companyNameRequired');
             }
             if (!company.country?.trim()) {
-              newErrors[`company_${i}_country`] = "Country is required";
+              newErrors[`company_${i}_country`] = t('validation.countryRequired');
             }
             if (!company.crNumber?.trim()) {
-              newErrors[`company_${i}_crNumber`] = "CR Number is required";
+              newErrors[`company_${i}_crNumber`] = t('validation.crNumberRequired');
             }
           }
         }
@@ -569,15 +571,15 @@ export default function ModernMultiStepForm() {
   }
 
   const steps = [
-    { id: 1, title: "Personal Info", icon: User, description: "Basic information" },
-    { id: 2, title: "Background", icon: Globe, description: "Nationality & status" },
-    { id: 3, title: "Service Type", icon: Briefcase, description: "Business activity" },
-    { id: 4, title: "Partnerships", icon: Handshake, description: "Partner details" },
-    { id: 5, title: "Companies", icon: Building, description: "External companies" },
-    { id: 6, title: "Family", icon: Heart, description: "Family members" },
-    { id: 7, title: "Documents", icon: FileImage, description: "File uploads" },
-    { id: 8, title: "Fee", icon: DollarSign, description: "Fee details" },
-    { id: 9, title: "Review", icon: CheckCircle, description: "Final review" }
+    { id: 1, title: t('application.steps.personalInfo') || 'Personal Info', icon: User, description: t('application.steps.basicInformation') || 'Basic information' },
+    { id: 2, title: t('application.steps.background') || 'Background', icon: Globe, description: t('application.steps.nationalityStatus') || 'Nationality & status' },
+    { id: 3, title: t('application.steps.serviceType') || 'Service Type', icon: Briefcase, description: t('application.steps.businessActivity') || 'Business activity' },
+    { id: 4, title: t('application.steps.partnerships') || 'Partnerships', icon: Handshake, description: t('application.steps.partnerDetails') || 'Partner details' },
+    { id: 5, title: t('application.steps.companies') || 'Companies', icon: Building, description: t('application.steps.externalCompanies') || 'External companies' },
+    { id: 6, title: t('application.steps.family') || 'Family', icon: Heart, description: t('application.steps.familyMembers') || 'Family members' },
+    { id: 7, title: t('application.steps.documents') || 'Documents', icon: FileImage, description: t('application.steps.fileUploads') || 'File uploads' },
+    { id: 8, title: t('application.steps.fee') || 'Fee', icon: DollarSign, description: t('application.steps.feeDetails') || 'Fee details' },
+    { id: 9, title: t('application.steps.review') || 'Review', icon: CheckCircle, description: t('application.steps.finalReview') || 'Final review' }
   ];
 
   // Handle requirements modal acceptance
@@ -648,13 +650,13 @@ export default function ModernMultiStepForm() {
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-[#ffd17a]"></div>
-                  <span className="text-sm font-medium uppercase tracking-wider text-[#ffd17a]/80">Application</span>
+                  <span className="text-sm font-medium uppercase tracking-wider text-[#ffd17a]/80">{t('application.title')}</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-3 text-[#ffd17a]">
-                  Business Registration Application
+                  {t('application.subtitle')}
                 </h1>
                 <p className="text-sm sm:text-base lg:text-lg text-white/70">
-                  Complete your business registration in just a few simple steps
+                  {t('application.description')}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
@@ -662,7 +664,7 @@ export default function ModernMultiStepForm() {
                   onClick={() => window.location.href = '/client'}
                   className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border border-[#ffd17a]/30 bg-[#ffd17a]/10 text-[#ffd17a] rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-[#ffd17a]/20 group"
                 >
-                  <span className="group-hover:scale-105 transition-transform duration-300">Back to Dashboard</span>
+                  <span className='group-hover:scale-105 transition-transform duration-300'>{t('application.navigation.backToDashboard')}</span>
                 </button>
               </div>
             </div>
@@ -678,16 +680,16 @@ export default function ModernMultiStepForm() {
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-2 sm:mb-3">
                   <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-[#ffd17a]"></div>
-                  <span className="text-sm font-medium uppercase tracking-wider text-[#ffd17a]/80">Progress</span>
+                  <span className="text-sm font-medium uppercase tracking-wider text-[#ffd17a]/80">{t('application.progress') || 'Progress'}</span>
                 </div>
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 text-[#ffd17a]">Step {step} of {steps.length}</h2>
-                <p className="text-sm sm:text-base text-white/70">{steps[step - 1]?.title} - {steps[step - 1]?.description}</p>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 text-[#ffd17a]">{t('application.stepOf', { current: step, total: steps.length }) || `Step ${step} of ${steps.length}`}</h2>
+                <p className="text-sm sm:text-base text-white/70">{steps[step - 1]?.title || 'Step'} - {steps[step - 1]?.description || 'Description'}</p>
               </div>
               <div className="text-center sm:text-right">
                 <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 text-[#ffd17a]">
                   {Math.round((step / steps.length) * 100)}%
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-[#ffd17a]/80">Complete</p>
+                <p className='text-xs sm:text-sm font-semibold text-[#ffd17a]/80'>{t('application.completed') || 'Complete'}</p>
               </div>
             </div>
           </div>
@@ -756,10 +758,10 @@ export default function ModernMultiStepForm() {
                     <User className="w-8 h-8" style={{ color: '#242021' }} />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                    Personal Information
+                    {t('application.steps.personalInfo')}
                   </h3>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Let's start with your basic details to create your business profile
+                    {t('application.steps.basicInformation')}
                   </p>
                   
                   {/* Show pre-filled data notification */}
@@ -768,10 +770,10 @@ export default function ModernMultiStepForm() {
                       <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-4">
                         <div className="flex items-center gap-2 text-[#242021]">
                           <Check className="w-5 h-5 text-[#ffd17a]" />
-                          <span className="font-medium text-sm">Profile Data Loaded</span>
+                          <span className='font-medium text-sm'>{t('application.personalInfo.profileDataLoaded')}</span>
                         </div>
                         <p className="text-[#242021]/80 text-sm mt-1">
-                          Your name and email have been automatically filled from your profile. Name and email are locked, but you can update your phone number, nationality, and residency status.
+                          {t('application.personalInfo.profileDataDescription')}
                         </p>
                       </div>
                     </div>
@@ -782,10 +784,10 @@ export default function ModernMultiStepForm() {
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
                       <span className="w-2 h-2 bg-[#ffd17a] rounded-full"></span>
-                      Full Name *
+                      {t('application.personalInfo.fullName')} *
                       {form.fullName && (
                         <span className="text-xs bg-[#ffd17a]/20 text-[#242021] px-2 py-1 rounded-full font-medium">
-                          From Profile
+                          {t('application.personalInfo.fromProfile')}
                         </span>
                       )}
                     </label>
@@ -793,21 +795,21 @@ export default function ModernMultiStepForm() {
                       name="fullName" 
                       value={form.fullName} 
                       readOnly
-                      placeholder="Enter your full legal name" 
+                      placeholder={t('application.personalInfo.enterFullName')} 
                       className="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50 text-gray-700 font-medium shadow-sm cursor-not-allowed" 
                     />
                     {form.fullName && (
-                      <p className="text-xs text-gray-500 mt-1">This field is locked and cannot be changed</p>
+                      <p className='text-xs text-gray-500 mt-1'>{t('application.personalInfo.fieldLocked')}</p>
                     )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
                       <span className="w-2 h-2 bg-[#ffd17a] rounded-full"></span>
-                      Email Address *
+                      {t('application.personalInfo.emailAddress')} *
                       {form.email && (
                         <span className="text-xs bg-[#ffd17a]/20 text-[#242021] px-2 py-1 rounded-full font-medium">
-                          From Profile
+                          {t('application.personalInfo.fromProfile')}
                         </span>
                       )}
                     </label>
@@ -816,21 +818,21 @@ export default function ModernMultiStepForm() {
                       type="email"
                       value={form.email} 
                       readOnly
-                      placeholder="your.email@example.com" 
+                      placeholder={t('application.personalInfo.enterEmail')} 
                       className="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 bg-gray-50 text-gray-700 font-medium shadow-sm cursor-not-allowed" 
                     />
                     {form.email && (
-                      <p className="text-xs text-gray-500 mt-1">This field is locked and cannot be changed</p>
+                      <p className='text-xs text-gray-500 mt-1'>{t('application.personalInfo.fieldLocked')}</p>
                     )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
                       <span className="w-2 h-2 bg-[#ffd17a] rounded-full"></span>
-                      Phone Number *
+                      {t('application.personalInfo.phoneNumber')} *
                       {form.phone && (
                         <span className="text-xs bg-[#ffd17a]/20 text-[#242021] px-2 py-1 rounded-full font-medium">
-                          From Profile (Editable)
+                          {t('application.personalInfo.fromProfileEditable')}
                         </span>
                       )}
                     </label>
@@ -839,12 +841,12 @@ export default function ModernMultiStepForm() {
                       value={form.phone} 
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      placeholder="+966 50 123 4567" 
+                      placeholder={t('application.personalInfo.enterPhone')} 
                       className={getInputClassName("phone")} 
                     />
                     {renderErrorMessage("phone")}
                     {form.phone && (
-                      <p className="text-xs text-[#242021]/60 mt-1">You can update your phone number if needed</p>
+                      <p className='text-xs text-[#242021]/60 mt-1'>{t('application.personalInfo.phoneUpdateNote')}</p>
                     )}
                   </div>
                 </div>
@@ -859,20 +861,20 @@ export default function ModernMultiStepForm() {
                     <Globe className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                    Background Information
+                    {t('application.steps.background')}
                   </h3>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Tell us about your background and requirements
+                    {t('application.steps.nationalityStatus')}
                   </p>
                 </div>
 
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                      Nationality *
+                      {t('application.background.nationality')} *
                       {form.nationality && (
                         <span className="text-xs bg-[#ffd17a]/20 text-[#242021] px-2 py-1 rounded-full font-medium">
-                          From Profile (Editable)
+                          {t('application.personalInfo.fromProfileEditable')}
                         </span>
                       )}
                     </label>
@@ -881,21 +883,21 @@ export default function ModernMultiStepForm() {
                       value={form.nationality} 
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      placeholder="e.g., American, British, Indian" 
+                      placeholder={t('application.background.nationalityPlaceholder')} 
                       className={getInputClassName("nationality")} 
                     />
                     {renderErrorMessage("nationality")}
                     {form.nationality && (
-                      <p className="text-xs text-[#242021]/60 mt-1">You can update your nationality if needed</p>
+                      <p className='text-xs text-[#242021]/60 mt-1'>{t('application.background.nationalityUpdateNote')}</p>
                     )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                      Residency Status *
+                      {t('application.background.residencyStatus')} *
                       {form.residencyStatus && (
                         <span className="text-xs bg-[#ffd17a]/20 text-[#242021] px-2 py-1 rounded-full font-medium">
-                          From Profile (Editable)
+                          {t('application.personalInfo.fromProfileEditable')}
                         </span>
                       )}
                     </label>
@@ -906,15 +908,15 @@ export default function ModernMultiStepForm() {
                       onBlur={handleBlur}
                       className={getInputClassName("residencyStatus")}
                     >
-                      <option value="">Select your residency status</option>
-                      <option value="saudi">Saudi National</option>
-                      <option value="gulf">Gulf National</option>
-                      <option value="premium">Premium Residency</option>
-                      <option value="foreign">Foreign National</option>
+                      <option value=''>{t('application.background.selectResidencyStatus')}</option>
+                      <option value='saudi'>{t('application.background.saudiNational')}</option>
+                      <option value='gulf'>{t('application.background.gulfNational')}</option>
+                      <option value='premium'>{t('application.background.premiumResidency')}</option>
+                      <option value='foreign'>{t('application.background.foreignNational')}</option>
                     </select>
                     {renderErrorMessage("residencyStatus")}
                     {form.residencyStatus && (
-                      <p className="text-xs text-[#242021]/60 mt-1">You can update your residency status if needed</p>
+                      <p className='text-xs text-[#242021]/60 mt-1'>{t('application.background.residencyUpdateNote')}</p>
                     )}
                   </div>
 
@@ -928,8 +930,8 @@ export default function ModernMultiStepForm() {
                         className="mt-1 w-5 h-5 text-[#ffd17a] border-gray-300 rounded focus:ring-[#ffd17a]/20" 
                       />
                       <div>
-                        <span className="text-sm font-medium text-gray-900">Virtual Office Service</span>
-                        <p className="text-sm text-gray-600 mt-1">I prefer a virtual office instead of physical space</p>
+                        <span className="text-sm font-medium text-gray-900">{t('application.background.virtualOfficeService')}</span>
+                        <p className="text-sm text-gray-600 mt-1">{t('application.background.virtualOfficeDescription')}</p>
                       </div>
                     </label>
                   </div>
@@ -945,16 +947,16 @@ export default function ModernMultiStepForm() {
                     <Briefcase className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                    Service Selection
+                    {t('application.steps.serviceType')}
                   </h3>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Choose the type of business service you need
+                    {t('application.steps.businessActivity')}
                   </p>
                 </div>
 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Service Type *</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('application.serviceType.serviceType')} *</label>
                     <select 
                       name="serviceType" 
                       value={form.serviceType} 
@@ -962,21 +964,21 @@ export default function ModernMultiStepForm() {
                       onBlur={handleBlur}
                       className={getInputClassName("serviceType")}
                     >
-                      <option value="">Select your business service</option>
-                      <option value="commercial">Commercial Activity</option>
-                      <option value="engineering">Engineering Consulting Office</option>
-                      <option value="real_estate">Real Estate Development</option>
-                      <option value="industrial">Industrial Activity</option>
-                      <option value="agricultural">Agricultural Activity</option>
-                      <option value="service">Service Activity</option>
-                      <option value="advertising">Advertising & Promotions</option>
+                      <option value=''>{t('application.serviceType.selectBusinessService')}</option>
+                      <option value='commercial'>{t('application.serviceType.commercialActivity')}</option>
+                      <option value='engineering'>{t('application.serviceType.engineeringConsulting')}</option>
+                      <option value='real_estate'>{t('application.serviceType.realEstateDevelopment')}</option>
+                      <option value='industrial'>{t('application.serviceType.industrialActivity')}</option>
+                      <option value='agricultural'>{t('application.serviceType.agriculturalActivity')}</option>
+                      <option value='service'>{t('application.serviceType.serviceActivity')}</option>
+                      <option value='advertising'>{t('application.serviceType.advertisingPromotions')}</option>
                     </select>
                     {renderErrorMessage("serviceType")}
                   </div>
 
                   {form.serviceType === "commercial" && (
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Partnership Type</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{t('application.serviceType.partnershipType')}</label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-[#ffd17a]/50 transition-colors">
                           <input 
@@ -988,8 +990,8 @@ export default function ModernMultiStepForm() {
                             className="text-[#ffd17a]"
                           />
                           <div>
-                            <div className="font-medium text-gray-900">Sole Partner</div>
-                            <div className="text-sm text-gray-600">No Saudi partner</div>
+                            <div className="font-medium text-gray-900">{t('application.serviceType.solePartner')}</div>
+                            <div className="text-sm text-gray-600">{t('application.serviceType.noSaudiPartner')}</div>
                           </div>
                         </label>
                         <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-[#ffd17a]/50 transition-colors">
@@ -1002,8 +1004,8 @@ export default function ModernMultiStepForm() {
                             className="text-[#ffd17a]"
                           />
                           <div>
-                            <div className="font-medium text-gray-900">With Saudi Partner</div>
-                            <div className="text-sm text-gray-600">Partnership required</div>
+                            <div className="font-medium text-gray-900">{t('application.serviceType.withSaudiPartner')}</div>
+                            <div className="text-sm text-gray-600">{t('application.serviceType.partnershipRequired')}</div>
                           </div>
                         </label>
                       </div>
@@ -1012,24 +1014,24 @@ export default function ModernMultiStepForm() {
 
                   {form.serviceType === "real_estate" && (
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">First Project Value (SAR) *</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{t('application.serviceType.firstProjectValue')} *</label>
                       <input 
                         name="projectEstimatedValue" 
                         type="number"
                         value={form.projectEstimatedValue} 
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        placeholder="Minimum: 300,000,000 SAR" 
+                        placeholder={t('application.serviceType.minimumProjectValue')} 
                         className={getInputClassName("projectEstimatedValue")} 
                       />
                       {renderErrorMessage("projectEstimatedValue")}
-                      <p className="text-sm text-gray-600 mt-2">Real estate projects require a minimum value of 300 million SAR</p>
+                      <p className='text-sm text-gray-600 mt-2'>{t('application.serviceType.realEstateRequirement')}</p>
                     </div>
                   )}
 
                   {form.serviceType && (
                   <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
-                    <h3 className="font-semibold text-gray-900 mb-2">Requirements Summary</h3>
+                    <h3 className="font-semibold text-gray-900 mb-2">{t('application.serviceType.requirementsSummary')}</h3>
                     <p className="text-sm text-gray-700">{requirements.note}</p>
                   </div>
                   )}
@@ -1045,10 +1047,10 @@ export default function ModernMultiStepForm() {
                     <Handshake className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                    Partnership Details
+                    {t('application.steps.partnerships')}
                   </h3>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Configure your business partnerships
+                    {t('application.steps.partnerDetails')}
                   </p>
                 </div>
 
@@ -1056,24 +1058,24 @@ export default function ModernMultiStepForm() {
                   {form.serviceType === "commercial" && form.partnerType === "withSaudiPartner" && (
                     <div className="space-y-6">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Saudi Partner Name *</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">{t('application.partnerships.saudiPartnerName')} *</label>
                         <input 
                           name="saudiPartnerName" 
                           value={form.saudiPartnerName} 
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          placeholder="Enter your Saudi partner's full name" 
+                          placeholder={t('application.partnerships.enterSaudiPartnerName')} 
                           className={getInputClassName("saudiPartnerName")} 
                         />
                         {renderErrorMessage("saudiPartnerName")}
-                        <p className="text-sm text-gray-600 mt-2">Enter the full legal name of your Saudi business partner</p>
+                        <p className='text-sm text-gray-600 mt-2'>{t('application.partnerships.saudiPartnerNameNote')}</p>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Saudi Partner Iqama/ID Card *</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">{t('application.partnerships.saudiPartnerIqama')} *</label>
                         <div className="border-2 border-dashed border-gray-300 p-6 text-center hover:border-gray-400 transition-colors">
                           <Upload className="w-8 h-8 mx-auto mb-3 text-gray-400" />
-                          <p className="text-sm text-gray-600 mb-3">Upload your Saudi partner's Iqama or National ID card</p>
+                          <p className='text-sm text-gray-600 mb-3'>{t('application.partnerships.uploadSaudiPartnerIqama')}</p>
                           <input
                             type="file"
                             accept="image/*,.pdf"
@@ -1082,21 +1084,21 @@ export default function ModernMultiStepForm() {
                           />
                           {form.saudiPartnerIqama && (
                             <p className="text-sm text-[#ffd17a] mt-2 font-medium">
-                              ✓ File selected: {form.saudiPartnerIqama.name}
+                              ✓ {t('application.partnerships.fileSelected')}: {form.saudiPartnerIqama.name}
                             </p>
                           )}
                         </div>
                         {renderErrorMessage("saudiPartnerIqama")}
-                        <p className="text-sm text-gray-600 mt-2">Upload a clear copy of your Saudi partner's Iqama or National ID card</p>
+                        <p className='text-sm text-gray-600 mt-2'>{t('application.partnerships.saudiPartnerIqamaNote')}</p>
                       </div>
                     </div>
                   )}
 
                   {form.serviceType && form.serviceType !== "commercial" && (
                     <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-4">
-                      <h3 className="font-semibold text-[#242021] mb-2">No Partnership Required</h3>
+                      <h3 className="font-semibold text-[#242021] mb-2">{t('application.partnerships.noPartnershipRequired')}</h3>
                       <p className="text-sm text-[#242021]/80">
-                        Your selected service type does not require a Saudi partner. You can proceed to the next step.
+                        {t('application.partnerships.noPartnershipDescription')}
                       </p>
                     </div>
                   )}
@@ -1112,16 +1114,16 @@ export default function ModernMultiStepForm() {
                     <Building className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                    External Companies
+                    {t('application.steps.companies')}
                   </h3>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Manage your external company details
+                    {t('application.steps.externalCompanies')}
                   </p>
                 </div>
 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Number of External Companies</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('application.companies.numberOfExternalCompanies')}</label>
                     <input 
                       name="externalCompaniesCount" 
                       type="number" 
@@ -1131,25 +1133,25 @@ export default function ModernMultiStepForm() {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       className={getInputClassName("externalCompaniesCount")} 
-                      placeholder="Enter number of companies"
+                      placeholder={t('application.companies.enterNumberOfCompanies')}
                     />
                     {renderErrorMessage("externalCompaniesCount")}
-                    <p className="text-sm text-gray-600 mt-2">Companies you own outside Saudi Arabia</p>
+                    <p className='text-sm text-gray-600 mt-2'>{t('application.companies.externalCompaniesNote')}</p>
                   </div>
 
                   {requirements.requiredExternalCompanies > 0 && (
                     <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
-                      <h3 className="font-semibold text-gray-900 mb-2">Requirements</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2">{t('application.companies.requirements')}</h3>
                       <p className="text-sm text-gray-700 mb-2">
-                        Your service requires {requirements.requiredExternalCompanies} external companies.
+                        {t('application.companies.serviceRequires', { count: requirements.requiredExternalCompanies })}
                       </p>
                       <p className="text-sm text-gray-600 mb-3">{requirements.note}</p>
                       <div className="bg-gray-100 border border-gray-200 p-3 transition-all duration-300 hover:shadow-md">
                         <p className="text-sm text-gray-700 font-medium">
-                          💡 Don't have external companies? No problem! We can arrange them for you.
+                          💡 {t('application.companies.dontHaveCompanies')}
                         </p>
                         <p className="text-sm text-gray-600 mt-1">
-                          Simply enter 0 companies and we'll handle the rest.
+                          {t('application.companies.enterZeroCompanies')}
                         </p>
                         <div className="mt-3">
                           <label className="flex items-center gap-2 cursor-pointer">
@@ -1163,7 +1165,7 @@ export default function ModernMultiStepForm() {
                               }`}
                             />
                             <span className="text-sm text-[#242021] font-medium">
-                              I want Creative Mark to arrange the required external companies for me
+                              {t('application.companies.arrangeCompanies')}
                             </span>
                           </label>
                           {errors.companyArrangesExternalCompanies && (
@@ -1180,22 +1182,22 @@ export default function ModernMultiStepForm() {
                   {/* External Companies Details */}
                   {form.externalCompaniesDetails.length > 0 && (
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-900">Company Details</h3>
+                      <h3 className="text-lg font-semibold text-gray-900">{t('application.companies.companyDetails')}</h3>
                       
                       {form.externalCompaniesDetails.map((company, index) => (
                         <div key={index} className="border border-gray-200 rounded-xl p-4 sm:p-6 space-y-4">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-semibold text-gray-900">Company #{index + 1}</h4>
-                            <span className="text-sm text-gray-600">Required</span>
+                            <h4 className="font-semibold text-gray-900">{t('application.companies.companyNumber', { number: index + 1 })}</h4>
+                            <span className="text-sm text-gray-600">{t('application.companies.required')}</span>
                           </div>
                           
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Company Name *</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.companies.companyName')} *</label>
                               <input 
                                 value={company.companyName} 
                                 onChange={(e) => updateExternalCompany(index, 'companyName', e.target.value)}
-                                placeholder="Enter company name"
+                                placeholder={t('application.companies.enterCompanyName')}
                                 className={errors[`company_${index}_name`] ? 
                                   "w-full px-3 py-2 rounded-lg border-2 border-red-300 bg-red-50 focus:border-red-500 text-sm" : 
                                   "w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-[#ffd17a] text-sm"
@@ -1210,11 +1212,11 @@ export default function ModernMultiStepForm() {
                             </div>
                             
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Country *</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.companies.country')} *</label>
                               <input 
                                 value={company.country} 
                                 onChange={(e) => updateExternalCompany(index, 'country', e.target.value)}
-                                placeholder="Enter country"
+                                placeholder={t('application.companies.enterCountry')}
                                 className={errors[`company_${index}_country`] ? 
                                   "w-full px-3 py-2 rounded-lg border-2 border-red-300 bg-red-50 focus:border-red-500 text-sm" : 
                                   "w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-[#ffd17a] text-sm"
@@ -1229,11 +1231,11 @@ export default function ModernMultiStepForm() {
                             </div>
                             
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">CR Number *</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.companies.crNumber')} *</label>
                               <input 
                                 value={company.crNumber} 
                                 onChange={(e) => updateExternalCompany(index, 'crNumber', e.target.value)}
-                                placeholder="Commercial registration number"
+                                placeholder={t('application.companies.enterCrNumber')}
                                 className={errors[`company_${index}_crNumber`] ? 
                                   "w-full px-3 py-2 rounded-lg border-2 border-red-300 bg-red-50 focus:border-red-500 text-sm" : 
                                   "w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-[#ffd17a] text-sm"
@@ -1248,7 +1250,7 @@ export default function ModernMultiStepForm() {
                             </div>
                             
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Your Share (%)</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.companies.yourShare')}</label>
                               <input 
                                 type="number"
                                 min="0"

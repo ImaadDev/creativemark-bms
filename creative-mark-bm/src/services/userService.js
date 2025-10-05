@@ -6,15 +6,16 @@ import api from './api';
  */
 export const createUser = async (userData) => {
   try {
-    // If it's a partner, use the partner creation endpoint
-    if (userData.userRole === 'partner') {
-      return await createPartner(userData);
-    }
-
     // Remove profilePicture from data if it's a File (we'll handle file upload separately later)
     const cleanUserData = { ...userData };
     if (cleanUserData.profilePicture instanceof File) {
       delete cleanUserData.profilePicture; // Skip file upload for now
+    }
+
+    // Map userRole to role for the API
+    if (cleanUserData.userRole) {
+      cleanUserData.role = cleanUserData.userRole;
+      delete cleanUserData.userRole;
     }
 
     const res = await api.post("/auth/create-user", cleanUserData, {

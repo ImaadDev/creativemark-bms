@@ -14,11 +14,11 @@ const PartnerSchema = new mongoose.Schema({
     partnershipType: {
       type: String,
       enum: [
-        'IFZA Free Zone Company',
-        'IFZA Branch Office',
-        'IFZA Representative Office',
-        'IFZA Subsidiary',
-        'IFZA Joint Venture',
+        'Free Zone Company',
+        'Branch Office',
+        'Representative Office',
+        'Subsidiary',
+        'Joint Venture',
         'Other'
       ],
       required: true
@@ -28,11 +28,6 @@ const PartnerSchema = new mongoose.Schema({
       required: true,
       trim: true
     },
-    ifzaContactPerson: {
-      type: String,
-      required: true,
-      trim: true
-    }
   },
 
   // Partner Information

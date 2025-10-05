@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import AuthContext from '../../../contexts/AuthContext';
 import { getCurrentUser, updateUserProfile } from '../../../services/auth';
 import { FullPageLoading } from '../../../components/LoadingSpinner';
+import { useTranslation } from '../../../i18n/TranslationContext';
 import {
   FaUser,
   FaEnvelope,
@@ -30,6 +31,7 @@ import {
 } from 'react-icons/fa';
 
 export default function AdminProfilePage() {
+  const { t } = useTranslation();
   const { user } = useContext(AuthContext);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -247,16 +249,16 @@ export default function AdminProfilePage() {
       if (response.success) {
         setCurrentUser(response.data);
         setEditing(false);
-        setSuccess('Profile updated successfully!');
+        setSuccess(t('admin.profileUpdatedSuccessfully'));
         // Dispatch event to update navbar profile picture
         window.dispatchEvent(new CustomEvent('profileUpdated'));
         setTimeout(() => setSuccess(''), 3000);
       } else {
-        setErrors({ general: response.message || 'Failed to update profile' });
+        setErrors({ general: response.message || t('admin.failedToUpdateProfile') });
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      setErrors({ general: 'Failed to update profile. Please try again.' });
+      setErrors({ general: t('admin.failedToUpdateProfileTryAgain') });
     } finally {
       setSaving(false);
     }
@@ -294,7 +296,7 @@ export default function AdminProfilePage() {
   };
 
   if (loading) {
-    return <FullPageLoading text="Loading Profile..." />;
+    return <FullPageLoading text={t('admin.loadingProfile')} />;
   }
 
   return (
@@ -310,15 +312,15 @@ export default function AdminProfilePage() {
                 </div>
                 <div>
                   <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
-                    Admin Profile
+                    {t('admin.adminProfile')}
                   </h1>
                   <p className="text-sm text-[#242021] font-medium uppercase tracking-wider">
-                    System Administrator
+                    {t('admin.systemAdministrator')}
                   </p>
                 </div>
               </div>
               <p className="text-base sm:text-lg text-gray-600 font-medium max-w-2xl">
-                Manage your administrative profile and system access information
+                {t('admin.manageAdministrativeProfile')}
               </p>
             </div>
             
@@ -329,7 +331,7 @@ export default function AdminProfilePage() {
                   className="flex items-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md"
                 >
                   <FaEdit className="mr-2" />
-                  Edit Profile
+                  {t('admin.editProfile')}
                 </button>
               ) : (
                 <div className="flex items-center space-x-3">
@@ -343,14 +345,14 @@ export default function AdminProfilePage() {
                     ) : (
                       <FaSave className="mr-2" />
                     )}
-                    {saving ? 'Saving...' : 'Save Changes'}
+                    {saving ? t('admin.saving') : t('admin.saveChanges')}
                   </button>
                   <button
                     onClick={handleCancel}
                     className="flex items-center px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md"
                   >
                     <FaTimes className="mr-2" />
-                    Cancel
+                    {t('admin.cancel')}
                   </button>
                 </div>
               )}
@@ -378,7 +380,7 @@ export default function AdminProfilePage() {
           {/* Profile Picture Section */}
           <div className="lg:col-span-1">
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Profile Picture</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-4">{t('admin.profilePicture')}</h3>
               
               <div className="text-center">
                 <div className="relative inline-block">
@@ -410,7 +412,7 @@ export default function AdminProfilePage() {
                 {editing && (
                   <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Upload New Photo
+                      {t('admin.uploadNewPhoto')}
                     </label>
                     <input
                       type="file"
@@ -433,13 +435,13 @@ export default function AdminProfilePage() {
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
                 <FaUser className="mr-3 text-emerald-600" />
-                Personal Information
+                {t('admin.personalInformation')}
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name *
+                    {t('admin.fullName')} *
                   </label>
                   <input
                     type="text"
@@ -450,7 +452,7 @@ export default function AdminProfilePage() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 ${
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     } ${errors.fullName ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
-                    placeholder="Enter your full name"
+                    placeholder={t('admin.enterFullName')}
                   />
                   {errors.fullName && (
                     <p className="text-red-600 text-sm mt-1">{errors.fullName}</p>
@@ -460,7 +462,7 @@ export default function AdminProfilePage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <FaEnvelope className="inline mr-2" />
-                    Email Address *
+                    {t('admin.emailAddress')} *
                   </label>
                   <input
                     type="email"
@@ -471,7 +473,7 @@ export default function AdminProfilePage() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 ${
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     } ${errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
-                    placeholder="Enter your email"
+                    placeholder={t('admin.enterEmail')}
                   />
                   {errors.email && (
                     <p className="text-red-600 text-sm mt-1">{errors.email}</p>
@@ -481,7 +483,7 @@ export default function AdminProfilePage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <FaPhone className="inline mr-2" />
-                    Phone Number
+                    {t('admin.phoneNumber')}
                   </label>
                   <input
                     type="tel"
@@ -492,7 +494,7 @@ export default function AdminProfilePage() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 ${
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     } ${errors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
-                    placeholder="Enter your phone number"
+                    placeholder={t('admin.enterPhoneNumber')}
                   />
                   {errors.phone && (
                     <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
@@ -502,7 +504,7 @@ export default function AdminProfilePage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <FaCalendar className="inline mr-2" />
-                    Date of Birth
+                    {t('admin.dateOfBirth')}
                   </label>
                   <input
                     type="date"
@@ -519,7 +521,7 @@ export default function AdminProfilePage() {
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <FaMapMarkerAlt className="inline mr-2" />
-                    Address
+                    {t('admin.address')}
                   </label>
                   <textarea
                     name="address"
@@ -530,7 +532,7 @@ export default function AdminProfilePage() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 ${
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     }`}
-                    placeholder="Enter your address"
+                    placeholder={t('admin.enterAddress')}
                   />
                 </div>
               </div>
@@ -540,14 +542,14 @@ export default function AdminProfilePage() {
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
                 <FaUserTie className="mr-3 text-emerald-600" />
-                Employment Information
+                {t('admin.employmentInformation')}
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <FaIdCard className="inline mr-2" />
-                    Employee ID
+                    {t('admin.employeeId')}
                   </label>
                   <input
                     type="text"
@@ -558,14 +560,14 @@ export default function AdminProfilePage() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 ${
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     }`}
-                    placeholder="Enter employee ID"
+                    placeholder={t('admin.enterEmployeeId')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <FaBuilding className="inline mr-2" />
-                    Department
+                    {t('admin.department')}
                   </label>
                   <select
                     name="department"
@@ -576,7 +578,7 @@ export default function AdminProfilePage() {
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     }`}
                   >
-                    <option value="">Select department</option>
+                    <option value=''>{t('admin.selectDepartment')}</option>
                     {departments.map(dept => (
                       <option key={dept} value={dept}>{dept}</option>
                     ))}
@@ -585,7 +587,7 @@ export default function AdminProfilePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Position
+                    {t('admin.position')}
                   </label>
                   <input
                     type="text"
@@ -596,14 +598,14 @@ export default function AdminProfilePage() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 ${
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     }`}
-                    placeholder="Enter your position"
+                    placeholder={t('admin.enterPosition')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <FaCalendar className="inline mr-2" />
-                    Hire Date
+                    {t('admin.hireDate')}
                   </label>
                   <input
                     type="date"
@@ -620,7 +622,7 @@ export default function AdminProfilePage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <FaShieldAlt className="inline mr-2" />
-                    Access Level
+                    {t('admin.accessLevel')}
                   </label>
                   <select
                     name="accessLevel"
@@ -639,7 +641,7 @@ export default function AdminProfilePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Work Location
+                    {t('admin.workLocation')}
                   </label>
                   <select
                     name="workLocation"
@@ -650,7 +652,7 @@ export default function AdminProfilePage() {
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     }`}
                   >
-                    <option value="">Select work location</option>
+                    <option value=''>{t('admin.selectWorkLocation')}</option>
                     {workLocations.map(location => (
                       <option key={location} value={location}>{location}</option>
                     ))}
@@ -659,7 +661,7 @@ export default function AdminProfilePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Manager
+                    {t('admin.manager')}
                   </label>
                   <input
                     type="text"
@@ -670,13 +672,13 @@ export default function AdminProfilePage() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 ${
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     }`}
-                    placeholder="Enter manager name"
+                    placeholder={t('admin.enterManagerName')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Emergency Contact
+                    {t('admin.emergencyContact')}
                   </label>
                   <input
                     type="text"
@@ -687,7 +689,7 @@ export default function AdminProfilePage() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 ${
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     }`}
-                    placeholder="Enter emergency contact"
+                    placeholder={t('admin.enterEmergencyContact')}
                   />
                 </div>
               </div>
@@ -697,13 +699,13 @@ export default function AdminProfilePage() {
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
                 <FaChartLine className="mr-3 text-emerald-600" />
-                Skills & Certifications
+                {t('admin.skillsAndCertifications')}
               </h3>
               
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Skills
+                    {t('admin.skills')}
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {commonSkills.map(skill => (
@@ -723,7 +725,7 @@ export default function AdminProfilePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bio
+                    {t('admin.bio')}
                   </label>
                   <textarea
                     name="bio"
@@ -734,7 +736,7 @@ export default function AdminProfilePage() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 ${
                       editing ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
                     }`}
-                    placeholder="Tell us about your professional background and expertise..."
+                    placeholder={t('admin.tellAboutProfessionalBackground')}
                   />
                 </div>
               </div>
