@@ -78,7 +78,7 @@ const ClientDashboard = () => {
                   year: 'numeric' 
                 }),
                 status: formatStatus(app.status),
-                progress: progressResponse.data.progressPercentage || getProgressPercentage(app.status),
+                progress: progressResponse.data.progressPercentage !== undefined ? progressResponse.data.progressPercentage : getProgressPercentage(app.status),
                 nextAction: getNextAction(app.status),
                 progressData: progressResponse.data
               };
@@ -369,7 +369,7 @@ const ClientDashboard = () => {
   return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         {/* Header Section */}
-        <div className="backdrop-blur-sm border-b border-amber-200/20 bg-[#242021]">
+        <div className="backdrop-blur-sm p-4 lg:m-2 rounded-b-4xl lg:rounded-3xl border-b border-amber-200/20 bg-[#242021]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
@@ -492,7 +492,7 @@ const ClientDashboard = () => {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Recent Applications */}
-          <div className="lg:col-span-2 bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+          <div className="lg:col-span-2 bg-white rounded-t-4xl  border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
             <div className="p-4 sm:p-6 bg-[#242021]">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div className="flex items-center space-x-3">

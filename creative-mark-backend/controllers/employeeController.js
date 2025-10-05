@@ -3,6 +3,7 @@ import User from "../models/User.js";
 import Application from "../models/Application.js";
 import ApplicationTimeline from "../models/Timeline.js";
 import Payment from "../models/Payment.js";
+import Notification from "../models/Notification.js";
 
 // Helper function to calculate progress percentage based on status
 const getProgressPercentage = (status) => {
@@ -50,6 +51,7 @@ export const getAllEmployees = async (req, res) => {
       fullName: emp.fullName,
       email: emp.email,
       phone: emp.phone,
+      phoneCountryCode: emp.phoneCountryCode || "+966",
       position: emp.employeeDetails?.position || "Not assigned",
       department: emp.employeeDetails?.department || "Not assigned",
       nationality: emp.nationality || "N/A",

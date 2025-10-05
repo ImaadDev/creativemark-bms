@@ -3,6 +3,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../contexts/AuthContext";
+import Image from "next/image";
+import logo from "../../public/CreativeMarkFavicon.png";
 import { getCurrentUser } from "../services/auth";
 import { 
   FaTachometerAlt, 
@@ -50,13 +52,13 @@ export default function Sidebar({ role, isOpen, onClose }) {
       { name: "Dashboard", href: "/client", icon: "dashboard" },
       { name: "Application", href: "/client/application", icon: "requests" },
       { name: "Track Application", href: "/client/track-application", icon: "requests", badge: "3" },
-      { name: "Additional Services", href: "/client/additional-services", icon: "additional-services" },
       { name: "Payments", href: "/client/payments", icon: "payments" },
       { name: "Support", href: "/client/support", icon: "support", badge: "2" },
     ],
     admin: [
       { name: "Dashboard", href: "/admin", icon: "dashboard" },
       { name: "All Applications", href: "/admin/requests", icon: "requests", badge: "12" },
+      { name: "Support Tickets", href: "/admin/tickets", icon: "support", badge: "8" },
       { name: "Reports", href: "/admin/reports", icon: "reports" },
       { name: "Clients", href: "/admin/clients", icon: "clients" },
       { name: "Add User", href: "/admin/add-user", icon: "clients" },
@@ -67,7 +69,8 @@ export default function Sidebar({ role, isOpen, onClose }) {
       { name: "Dashboard", href: "/employee", icon: "dashboard" },
       { name: "My Tasks", href: "/employee/my-tasks", icon: "tasks", badge: "4" },
       { name: "Assigned Applications", href: "/employee/assign-tasks", icon: "requests", badge: "2" },
-      { name: "Client Support", href: "/employee/support", icon: "support", badge: "5" },
+      { name: "Assigned Tickets", href: "/employee/tickets", icon: "support", badge: "5" },
+      { name: "Client Support", href: "/employee/support", icon: "support" },
       { name: "Reports", href: "/employee/reports", icon: "reports" },
       { name: "Additional Services", href: "/employee/additional-services", icon: "additional-services" },
       { name: "Notifications", href: "/employee/notifications", icon: "notifications", badge: "3" },
@@ -118,7 +121,7 @@ export default function Sidebar({ role, isOpen, onClose }) {
       <aside 
         className={`
           fixed lg:static inset-y-0 left-0 z-30
-          w-72 flex flex-col h-full
+          w-72 flex flex-col h-full lg:rounded-3xl
           transform transition-transform duration-300
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
@@ -131,10 +134,8 @@ export default function Sidebar({ role, isOpen, onClose }) {
         <div className="p-4 border-b" style={{ borderBottomColor: 'rgba(255, 209, 122, 0.2)' }}>
           <div className="flex items-center space-x-3">
             <div 
-              className="w-10 h-14 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)' }}
-            >
-              <span className="font-bold text-[#242021]">CM</span>
+              className="w-20 h-20 rounded-lg flex items-center justify-center">
+              <Image src={logo} alt="Creative Mark" width={60} height={60} />
             </div>
             <div>
               <h1 className="text-lg font-semibold" style={{ color: '#ffd17a' }}>Creative Mark</h1>

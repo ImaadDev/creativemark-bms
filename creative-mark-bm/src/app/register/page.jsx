@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import { register } from "../../services/auth";
@@ -12,6 +12,7 @@ export default function RegisterPage() {
     fullName: "",
     email: "",
     phone: "",
+    phoneCountryCode: "+966",
     nationality: "",
     residencyStatus: "",
     password: "",
@@ -22,16 +23,72 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [countries, setCountries] = useState([]);
 
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        // Fetch countries with their name, code (cca2), and calling code (idd)
+        const res = await fetch("https://restcountries.com/v3.1/all?fields=name,cca2,idd");
+        const data = await res.json();
+  
+        const sorted = data
+          .map(c => {
+            // Combine root and suffix to form the complete phone code (e.g., +966)
+            const phoneCode = c.idd.root + (c.idd.suffixes ? c.idd.suffixes[0] : "");
+            return {
+              name: c.name.common,
+              code: c.cca2,
+              phoneCode: phoneCode,
+            }
+          })
+          .filter(c => c.phoneCode && c.name) // Filter out entries without a phone code or name
+          .sort((a, b) => a.name.localeCompare(b.name));
+          
+        // Set countries with initial default selection logic if needed, but for now just populate
+        setCountries(sorted);
+      } catch (err) {
+        console.error("Error fetching countries:", err);
+      }
+    };
+  
+    fetchCountries();
+  }, []);
+  
+  
+  // --- START MODIFIED handleChange FUNCTION ---
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Use functional state update for reliability
+    setFormData(prev => {
+      let updates = {
+        [name]: value
+      };
+
+      // Logic to automatically set phoneCountryCode when nationality is selected
+      if (name === "nationality") {
+        const selectedCountry = countries.find(c => c.name === value);
+        if (selectedCountry && selectedCountry.phoneCode) {
+          // Add the phoneCode to the updates object
+          updates.phoneCountryCode = selectedCountry.phoneCode;
+        } else if (value === "") {
+          // Reset to default or clear if nationality is reset
+          updates.phoneCountryCode = ""; 
+        }
+      }
+
+      return {
+        ...prev,
+        ...updates
+      };
+    });
+
     if (error) setError("");
     if (success) setSuccess("");
   }
+  // --- END MODIFIED handleChange FUNCTION ---
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -57,6 +114,7 @@ export default function RegisterPage() {
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.phone,
+        phoneCountryCode: formData.phoneCountryCode,
         nationality: formData.nationality,
         residencyStatus: formData.residencyStatus,
         password: formData.password,
@@ -96,22 +154,42 @@ export default function RegisterPage() {
     }
   }
 
+  // Helper function to get flag emoji from country code
+  const getFlagEmoji = (countryCode) => {
+    if (!countryCode) return "🏳️";
+    // Standard function to convert 2-letter country code (e.g., SA) to flag emoji (🇸🇦)
+    return countryCode
+        .toUpperCase()
+        .split('')
+        .map(char => String.fromCodePoint(127397 + char.charCodeAt()))
+        .join('');
+  }
+
+  // Find the selected country code to display the flag next to the phone code selector
+  const currentPhoneCountry = countries.find(c => c.phoneCode === formData.phoneCountryCode);
+  const currentNationalityCountry = countries.find(c => c.name === formData.nationality);
+  const phoneFlagCode = currentPhoneCountry ? currentPhoneCountry.code : null;
+  const nationalityFlagCode = currentNationalityCountry ? currentNationalityCountry.code : null;
+
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50/30 flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex relative overflow-hidden">
+      
+
       {/* Left Side - Animated Visual Section */}
-      <div className="hidden lg:flex lg:w-1/2 xl:w-2/5 relative overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800">
+      <div className="hidden lg:flex lg:w-1/2 xl:w-2/5 relative overflow-hidden bg-gradient-to-br from-[#242021] via-[#2a2422] to-[#242021]">
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           {/* Floating Circles */}
-          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-white/10 animate-pulse"></div>
-          <div className="absolute top-1/2 right-1/3 w-24 h-24 bg-white/20 animate-bounce delay-300"></div>
-          <div className="absolute bottom-1/4 left-1/3 w-40 h-40 bg-white/5 animate-pulse delay-700"></div>
+          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-[#ffd17a]/10 animate-pulse"></div>
+          <div className="absolute top-1/2 right-1/3 w-24 h-24 bg-[#ffd17a]/20 animate-bounce delay-300"></div>
+          <div className="absolute bottom-1/4 left-1/3 w-40 h-40 bg-[#ffd17a]/5 animate-pulse delay-700"></div>
           
           {/* Grid Pattern */}
           <div className="absolute inset-0 opacity-10">
             <div className="grid grid-cols-8 gap-4 h-full p-8 transform rotate-12">
               {[...Array(64)].map((_, i) => (
-                <div key={i} className="bg-white/20 animate-pulse" style={{animationDelay: `${i * 100}ms`}}></div>
+                <div key={i} className="bg-[#ffd17a]/20 animate-pulse" style={{animationDelay: `${i * 100}ms`}}></div>
               ))}
             </div>
           </div>
@@ -121,27 +199,32 @@ export default function RegisterPage() {
         <div className="relative z-10 flex items-center justify-center w-full p-12">
           <div className="text-center text-white max-w-md">
             <div className="mb-8 animate-bounce">
-              <div className="w-20 h-20 mx-auto mb-4 bg-white/20 flex items-center justify-center">
-                <div className="w-12 h-12 bg-white/30"></div>
+              <div className="w-20 h-20 mx-auto mb-4 bg-[#ffd17a]/20 rounded-2xl flex items-center justify-center shadow-lg">
+                <img 
+                  src="/CreativeMarkFavicon.png" 
+                  alt="CreativeMark Logo" 
+                  className="w-12 h-12 object-contain"
+                  onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/48x48/242021/ffd17a?text=CM"; }}
+                />
               </div>
             </div>
             
-            <h1 className="text-4xl xl:text-5xl font-bold mb-6 animate-fade-in">
+            <h1 className="text-4xl xl:text-5xl font-bold mb-6 animate-fade-in text-white">
               Welcome to the Future
             </h1>
-            <p className="text-xl opacity-90 mb-8 animate-fade-in delay-300">
+            <p className="text-xl text-[#ffd17a] mb-8 animate-fade-in delay-300">
               Create your account and join thousands of satisfied clients worldwide
             </p>
             
             {/* Animated Stats */}
             <div className="grid grid-cols-2 gap-6 mt-12">
-              <div className="text-center animate-fade-in delay-500">
-                <div className="text-3xl font-bold mb-2">10K+</div>
-                <div className="text-sm opacity-80">Happy Clients</div>
+              <div className="text-center animate-fade-in delay-500 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-3xl font-bold mb-2 text-[#ffd17a]">10K+</div>
+                <div className="text-sm text-white/80">Happy Clients</div>
               </div>
-              <div className="text-center animate-fade-in delay-700">
-                <div className="text-3xl font-bold mb-2">99.9%</div>
-                <div className="text-sm opacity-80">Uptime</div>
+              <div className="text-center animate-fade-in delay-700 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-3xl font-bold mb-2 text-[#ffd17a]">99.9%</div>
+                <div className="text-sm text-white/80">Uptime</div>
               </div>
             </div>
           </div>
@@ -150,7 +233,7 @@ export default function RegisterPage() {
         {/* Animated Wave */}
         <div className="absolute bottom-0 left-0 w-full">
           <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-20">
-            <path d="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z" fill="white" fillOpacity="0.1">
+            <path d="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z" fill="#ffd17a" fillOpacity="0.1">
               <animate attributeName="d" dur="10s" repeatCount="indefinite" 
                 values="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z;M0,60 C300,0 900,120 1200,60 L1200,120 L0,120 Z;M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z"/>
             </path>
@@ -160,38 +243,41 @@ export default function RegisterPage() {
 
       {/* Right Side - Registration Form */}
       <div className="w-full lg:w-1/2 xl:w-3/5 flex items-center justify-center p-4 lg:p-0">
-        <div className="w-full">
-          <div className="bg-white border border-gray-200 rounded-xl shadow-lg p-8 lg:p-10 animate-fade-in">
+        <div className="w-full mx-auto">
+          <div className="backdrop-blur-sm p-6 sm:p-8 lg:p-10 ring-1 ring-gray-100 animate-fade-in">
             {/* Header */}
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-lg animate-bounce">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                </svg>
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 mb-4 bg-gradient-to-br from-[#242021] to-[#2a2422] rounded-xl sm:rounded-2xl shadow-lg animate-bounce">
+                <img 
+                  src="/CreativeMarkFavicon.png" 
+                  alt="CreativeMark Logo" 
+                  className="w-12 h-12 sm:w-8 sm:h-8 object-contain"
+                  onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/48x48/242021/ffd17a?text=CM"; }}
+                />
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-              <p className="text-gray-600">Join us and start your journey today</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 tracking-tight">Create Account</h2>
+              <p className="text-gray-600 text-sm sm:text-base">Join us and start your journey today</p>
             </div>
 
             {/* Success Message */}
             {success && (
-              <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg animate-fade-in">
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg sm:rounded-xl animate-fade-in">
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <span className="text-sm font-semibold text-emerald-800">{success}</span>
+                  <span className="text-sm font-semibold text-green-800">{success}</span>
                 </div>
               </div>
             )}
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg animate-shake">
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg sm:rounded-xl animate-shake">
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
@@ -203,11 +289,11 @@ export default function RegisterPage() {
 
 
             <form onSubmit={handleSubmit}>
-              <div className="space-y-6">
+              <div className="space-y-5 sm:space-y-6">
               {/* Full Name & Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Full Name *</label>
                   <input
                     type="text"
                     name="fullName"
@@ -215,11 +301,11 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     required
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-gray-50/50 hover:bg-white group-hover:border-emerald-300"
+                    className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400"
                   />
                 </div>
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Email *</label>
                   <input
                     type="email"
                     name="email"
@@ -227,46 +313,92 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     required
                     placeholder="john@example.com"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-gray-50/50 hover:bg-white group-hover:border-emerald-300"
+                    className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400"
                   />
                 </div>
               </div>
 
-              {/* Phone & Nationality */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Phone</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="+1 (555) 000-0000"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-gray-50/50 hover:bg-white group-hover:border-emerald-300"
-                  />
+              {/* Phone with Country Code */}
+              <div className="group">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Phone Number</label>
+                <div className="flex gap-2">
+                  {/* Country Code Selector with Flag */}
+                  <div className="relative flex-shrink-0">
+                    <select
+                      name="phoneCountryCode"
+                      value={formData.phoneCountryCode}
+                      onChange={handleChange}
+                      className="w-40 px-3 py-3 sm:py-4 pl-10 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer"
+                    >
+                      <option value="">Code</option>
+                      {countries.map((country) => (
+                        <option key={country.code} value={country.phoneCode}>
+                          {country.phoneCode} - {country.name}
+                        </option>
+                      ))}
+                    </select>
+                 
+                    
+                    {/* Dropdown Arrow */}
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                  
+                  {/* Phone Number Input */}
+                  <div className="flex-1">
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="Enter phone number"
+                      className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400"
+                    />
+                  </div>
                 </div>
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Nationality</label>
-                  <input
-                    type="text"
+              </div>
+
+              {/* Nationality Dropdown with Flag */}
+              <div className="group">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Nationality</label>
+                <div className="relative">
+                  <select
                     name="nationality"
                     value={formData.nationality}
-                    onChange={handleChange}
-                    placeholder="Your nationality"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-gray-50/50 hover:bg-white group-hover:border-emerald-300"
-                  />
+                    onChange={handleChange} // This is the handler that triggers the phone code update
+                    className="w-full px-3 sm:px-4 py-3 sm:py-4 pl-12 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer"
+                  >
+                    <option value="">Select your nationality</option>
+                    {countries.map((country) => (
+                      <option key={country.code} value={country.name}>
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                  
+                
+                  
+                  {/* Dropdown Arrow */}
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
               {/* Residency Status */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Residency Status</label>
-                <select
+                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Residency Status</label>
+                <div className="relative">
+                  <select
                   name="residencyStatus"
                   value={formData.residencyStatus}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:border-transparent transition-all duration-200 bg-gray-50/50 hover:bg-white group-hover:border-gray-400"
-                  style={{focusRingColor: '#242020'}}
+                  className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer"
                 >
                   <option value="">Select residency status</option>
                   <option value="saudi">Saudi</option>
@@ -274,12 +406,18 @@ export default function RegisterPage() {
                   <option value="premium">Premium Residency</option>
                   <option value="foreign">Foreign</option>
                 </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
               {/* Passwords */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Password *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Password *</label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -288,19 +426,19 @@ export default function RegisterPage() {
                       onChange={handleChange}
                       required
                       placeholder="••••••••"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-gray-50/50 hover:bg-white group-hover:border-emerald-300 pr-12"
+                      className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base pr-12 placeholder-gray-400"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-emerald-600 transition-colors"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#242021] transition-colors"
                     >
                       {showPassword ? (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                         </svg>
                       ) : (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
@@ -309,7 +447,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm Password *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">Confirm Password *</label>
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
@@ -318,19 +456,19 @@ export default function RegisterPage() {
                       onChange={handleChange}
                       required
                       placeholder="••••••••"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all duration-200 bg-gray-50/50 hover:bg-white group-hover:border-emerald-300 pr-12"
+                      className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base pr-12 placeholder-gray-400"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-emerald-600 transition-colors"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#242021] transition-colors"
                     >
                       {showConfirmPassword ? (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                         </svg>
                       ) : (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
@@ -345,16 +483,16 @@ export default function RegisterPage() {
                 <input
                   type="checkbox"
                   required
-                  className="w-5 h-5 border-gray-300 rounded mt-0.5 focus:ring-emerald-200 focus:ring-2"
-                  style={{accentColor: '#10b981'}}
+                  className="w-5 h-5 border-gray-300 rounded mt-0.5 focus:ring-[#ffd17a]/20 focus:ring-2"
+                  style={{accentColor: '#ffd17a'}}
                 />
                 <label className="text-sm text-gray-700 leading-relaxed">
                   I agree to the{" "}
-                  <button type="button" className="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline transition-colors">
+                  <button type="button" className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors">
                     Terms & Conditions
                   </button>{" "}
                   and{" "}
-                  <button type="button" className="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline transition-colors">
+                  <button type="button" className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors">
                     Privacy Policy
                   </button>
                 </label>
@@ -364,15 +502,15 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-4 font-semibold text-white transition-all duration-200 transform rounded-lg shadow-sm hover:shadow-md ${
+                className={`w-full py-3 sm:py-4 font-bold text-white transition-all duration-200 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md text-sm sm:text-base ${
                   isLoading
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-emerald-200"
+                    : "bg-[#242021] hover:bg-[#242021]/90 focus:outline-none focus:ring-4 focus:ring-[#ffd17a]/20"
                 }`}
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin"></div>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     Creating Account...
                   </div>
                 ) : (
@@ -383,12 +521,12 @@ export default function RegisterPage() {
             </form>
 
             {/* Sign In Link */}
-            <div className="mt-8 text-center">
+            <div className="mt-6 sm:mt-8 text-center">
               <span className="text-gray-600">Already have an account? </span>
               <button
                 type="button"
                 onClick={() => router.push('/')}
-                className="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline transition-colors"
+                className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors"
               >
                 Sign In
               </button>

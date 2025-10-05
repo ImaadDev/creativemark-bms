@@ -9,6 +9,7 @@ import {
   FaClock,
   FaCheckCircle,
   FaUsers,
+  FaHeadset,
   FaExclamationTriangle,
   FaSpinner,
   FaArrowRight,
@@ -76,6 +77,7 @@ export default function InternalDashboard() {
     trends: {}
   });
   const [recentRequests, setRecentRequests] = useState([]);
+  const [ticketStats, setTicketStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -88,11 +90,11 @@ export default function InternalDashboard() {
       setError(null);
     
 
-      // Load all applications, employees, and clients from the API
+      // Load all applications, employees, clients, and ticket stats from the API
       const [applicationsResponse, employeesResponse, clientsResponse] = await Promise.all([
         getAllApplications(),
         getAllEmployees(),
-        getAllClients()
+        getAllClients(),
       ]);
       
       
@@ -459,6 +461,44 @@ export default function InternalDashboard() {
           />
         </div>
 
+        {/* Support Tickets Stats */}
+        {ticketStats && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+            <StatCard
+              title="Total Tickets"
+              value={ticketStats.total || 0}
+              icon={FaHeadset}
+              color="blue"
+              subtitle="All support tickets"
+              onClick={() => router.push('/admin/tickets')}
+            />
+            <StatCard
+              title="Open Tickets"
+              value={ticketStats.open || 0}
+              icon={FaExclamationCircle}
+              color="orange"
+              subtitle="Awaiting response"
+              onClick={() => router.push('/admin/tickets?status=open')}
+            />
+            <StatCard
+              title="In Progress"
+              value={ticketStats.in_progress || 0}
+              icon={FaClock}
+              color="yellow"
+              subtitle="Being handled"
+              onClick={() => router.push('/admin/tickets?status=in_progress')}
+            />
+            <StatCard
+              title="Resolved"
+              value={ticketStats.resolved || 0}
+              icon={FaCheckCircle}
+              color="green"
+              subtitle="Successfully resolved"
+              onClick={() => router.push('/admin/tickets?status=resolved')}
+            />
+          </div>
+        )}
+
         {/* Analytics & Performance Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <StatCard
@@ -518,7 +558,7 @@ export default function InternalDashboard() {
             </div>
             <div className="p-4 sm:p-6">
               <div className="space-y-4">
-                {stats.topServices.map((service, index) => {
+                {stats.topServices && stats.topServices.length > 0 ? stats.topServices.map((service, index) => {
                   const percentage = stats.total > 0 ? Math.round((service.count / stats.total) * 100) : 0;
                   const colors = ['bg-[#ffd17a]', 'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500'];
                   return (
@@ -538,7 +578,11 @@ export default function InternalDashboard() {
                       </div>
                     </div>
                   );
-                })}
+                }) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>No service data available</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -792,6 +836,24 @@ export default function InternalDashboard() {
                     </div>
                   </div>
                   <FaArrowRight className="text-gray-400 group-hover:text-[#ffd17a] transition-colors text-sm sm:text-base" />
+                </button>
+
+                <button 
+                  onClick={() => router.push('/admin/tickets')}
+                  className="w-full flex items-center justify-between p-3 sm:p-4 border border-gray-200/50 rounded-lg sm:rounded-xl hover:bg-gradient-to-r hover:from-[#ffd17a]/10 hover:to-[#ffd17a]/20 hover:border-[#ffd17a]/30 transition-all duration-200 group"
+                >
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-200">
+                      <FaHeadset className="text-blue-600 text-sm sm:text-base" />
+                    </div>
+                    <div className="text-left">
+                      <span className="font-semibold text-gray-900 block text-sm sm:text-base">Support Tickets</span>
+                      <span className="text-xs sm:text-sm text-gray-500">Manage support requests</span>
+                    </div>
+                  </div>
+                  <span className="bg-blue-100 text-blue-800 px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-full">
+                    {ticketStats?.total || 0}
+                  </span>
                 </button>
 
                 <button 

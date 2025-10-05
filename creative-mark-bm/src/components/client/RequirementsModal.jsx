@@ -1,6 +1,3 @@
-// app/components/CompanyRequirementsModal.jsx
-"use client";
-
 import React, { useState } from "react";
 import {
   X,
@@ -71,30 +68,6 @@ export default function CompanyRequirementsModal({
           { label: "Health Insurance", value: "Separate cost", note: "Not included in above fees" },
         ],
       },
-      {
-        title: "Employee Sponsorship Costs",
-        icon: Users,
-        items: [
-          { label: "New Employee Package", value: "Same as investor", note: "Visa + passport + work permit fees apply" },
-          { label: "Sponsored Transfer Fee", value: "From 2,000 SAR", note: "Increases with each subsequent transfer" },
-        ],
-      },
-      {
-        title: "Family & Dependent Services",
-        icon: Users,
-        items: [
-          { label: "Family Visit Visa", value: "500 SAR per person", note: "Excludes travel and accommodation costs" },
-          { label: "Recruitment Visa", value: "4,500 SAR per person", note: "All fees included, residency permit issued" },
-          { label: "Family Work Authorization", value: "Additional process", note: "Residency doesn't allow work initially, transfer required" },
-        ],
-      },
-      {
-        title: "Specialized Activity Fees",
-        icon: Briefcase,
-        items: [
-          { label: "Advertising License (Mawthouq)", value: "15,000 SAR", note: "Valid for 3 years, requires 50% ownership in home country" },
-        ],
-      },
     ],
     requirements: [
       {
@@ -119,22 +92,6 @@ export default function CompanyRequirementsModal({
               "No investment license needed for Gulf nationals",
             ],
           },
-          {
-            type: "Foreign National Partner (Non-Gulf)",
-            details: [
-              "Must first be added to parent company",
-              "Then Saudi company can be amended accordingly",
-              "Two-step process required",
-            ],
-          },
-          {
-            type: "Premium Residency Holder",
-            details: [
-              "Can be added directly as partner",
-              "Similar privileges to Saudi nationals",
-              "Simplified partnership process",
-            ],
-          },
         ],
       },
       {
@@ -151,15 +108,6 @@ export default function CompanyRequirementsModal({
             ],
           },
           {
-            type: "Real Estate Development",
-            details: [
-              "Must have established external company",
-              "First project minimum: 300 million SAR",
-              "Includes both land acquisition and construction costs",
-              "Comprehensive business plan required",
-            ],
-          },
-          {
             type: "Commercial Activities (Solo Investor)",
             details: [
               "Requires 3 external companies",
@@ -168,35 +116,6 @@ export default function CompanyRequirementsModal({
               "Financial statements required for each",
             ],
           },
-          {
-            type: "Commercial Activities (With Saudi Partner)",
-            details: [
-              "Only 1 external company required",
-              "Saudi partner counts as 2 companies",
-              "Significantly reduced documentation",
-              "Faster approval process",
-            ],
-          },
-          {
-            type: "Industrial, Agricultural, or Service",
-            details: [
-              "1 external company required",
-              "Minimum 1 year of operation",
-              "Previous year's financial statements",
-              "Relevant industry experience documentation",
-            ],
-          },
-        ],
-      },
-    ],
-    taxes: [
-      {
-        title: "Tax Structure",
-        icon: DollarSign,
-        items: [
-          { label: "Foreign Investor Income Tax", value: "20%", note: "Applied on net profits of foreign-owned businesses" },
-          { label: "Saudi National Zakat", value: "2.5%", note: "Religious obligation for Saudi partners only" },
-          { label: "Value Added Tax (VAT)", value: "15%", note: "Applied universally to all businesses and consumers" },
         ],
       },
     ],
@@ -212,63 +131,70 @@ export default function CompanyRequirementsModal({
       },
     ],
     important: [
-      {
-        title: "Critical Information",
-        items: [
-          "License renewal: Non-renewal stops bank account and residency services",
-          "Saudization: Required percentage of Saudi employees per Nitaqat system",
-          "Commercial register: Linked to national address and chamber of commerce",
-          "Nationwide operation: Possible after obtaining province-specific permits",
-          "Sponsor partnership: Not recommended - obtain official investment license instead",
-        ],
-      },
+      "License renewal: Non-renewal stops bank account and residency services",
+      "Saudization: Required percentage of Saudi employees per Nitaqat system",
+      "Commercial register: Linked to national address and chamber of commerce",
+      "Nationwide operation: Possible after obtaining province-specific permits",
+      "Sponsor partnership: Not recommended - obtain official investment license instead",
     ],
   };
+
+  const tabs = [
+    { id: "overview", label: "Overview", icon: Globe },
+    { id: "costs", label: "Costs", icon: DollarSign },
+    { id: "requirements", label: "Requirements", icon: FileText },
+    { id: "timeline", label: "Timeline", icon: Clock },
+  ];
 
   const renderSection = (section, index) => {
     const Icon = section.icon;
     return (
-      <div key={index} className="bg-white border-2 border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg">
-        <div className="p-4 sm:p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-              <Icon className="w-6 h-6" style={{ color: '#242021' }} />
+      <div key={index} className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+        <div className="p-3 sm:p-4 lg:p-6 bg-[#242021] border-b border-amber-200/20">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#ffd17a] rounded-lg sm:rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#242021]" />
             </div>
-            <div>
-              <h3 className="text-xl font-bold">{section.title}</h3>
-              <p className="text-sm" style={{ color: 'gray' }}>Detailed information and requirements</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white">{section.title}</h3>
+              <p className="text-xs sm:text-sm text-gray-300">Detailed information and requirements</p>
             </div>
           </div>
         </div>
-        <div className="p-4 sm:p-6">
+        <div className="p-3 sm:p-4 lg:p-6 space-y-3 sm:space-y-4">
           {section.items.map((item, i) => (
-            <div key={i} className="mb-4 last:mb-0">
+            <div key={i}>
               {typeof item === "string" ? (
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 mt-2 flex-shrink-0" style={{ backgroundColor: '#ffd17a' }}></div>
-                  <p className="text-sm text-gray-700 leading-relaxed">{item}</p>
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full mt-2 flex-shrink-0 bg-[#ffd17a]"></div>
+                  <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">{item}</p>
                 </div>
               ) : item.type ? (
-                <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
-                  <h4 className="text-sm font-bold text-gray-900 mb-3">{item.type}</h4>
-                  <ul className="space-y-2">
+                <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-200">
+                  <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-2 sm:mb-3 flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#ffd17a]"></div>
+                    {item.type}
+                  </h4>
+                  <ul className="space-y-2 ml-3 sm:ml-4">
                     {item.details.map((detail, j) => (
-                      <li key={j} className="text-sm text-gray-700 flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 mt-2 flex-shrink-0" style={{ backgroundColor: '#ffd17a' }}></div>
+                      <li key={j} className="text-xs sm:text-sm text-gray-700 flex items-start gap-2">
+                        <div className="w-1 h-1 rounded-full mt-2 flex-shrink-0 bg-[#ffd17a]"></div>
                         <span className="leading-relaxed">{detail}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               ) : (
-                <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="flex-1">
-                      <span className="text-sm font-bold text-gray-900 block mb-1">{item.label}</span>
-                      {item.note && <p className="text-xs text-gray-600">{item.note}</p>}
+                <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-200">
+                  <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs sm:text-sm font-bold text-gray-900 block mb-1">{item.label}</span>
+                      {item.note && <p className="text-xs text-gray-600 leading-relaxed">{item.note}</p>}
                     </div>
-                    <div className="text-right">
-                      <span className="text-sm font-bold px-3 py-1" style={{ backgroundColor: '#ffd17a', color: '#242021' }}>{item.value}</span>
+                    <div className="text-right sm:text-left">
+                      <span className="inline-block text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-[#ffd17a] text-[#242021]">
+                        {item.value}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -283,11 +209,10 @@ export default function CompanyRequirementsModal({
   return (
     <>
       {showTriggerButton && (
-        <div className="min-h-screen bg-gray-100 p-8 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-8 flex items-center justify-center">
           <button
             onClick={() => setIsOpen(true)}
-            className="px-6 py-3 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-            style={{ backgroundColor: '#ffd17a', color: '#242021' }}
+            className="px-6 sm:px-8 py-3 sm:py-4 bg-[#ffd17a] text-[#242021] font-semibold rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:bg-[#ffd17a]/90 text-sm sm:text-base"
           >
             View Company Requirements
           </button>
@@ -295,97 +220,76 @@ export default function CompanyRequirementsModal({
       )}
 
       {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 z-50 transition-all duration-300 ease-in-out"
-          onClick={(e) => e.target === e.currentTarget && onClose()}
-          style={{ animation: 'fadeIn 0.3s ease-in-out' }}
-        >
-          <div 
-            className="bg-white border-2 border-gray-200 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl transition-all duration-300 ease-in-out transform"
-            style={{ 
-              animation: 'slideIn 0.3s ease-in-out',
-              borderColor: '#ffd17a'
-            }}
-          >
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-lg sm:rounded-2xl max-w-xs sm:max-w-2xl lg:max-w-4xl w-full max-h-[95vh] overflow-hidden shadow-2xl">
             {/* Header */}
-            <div className="p-4 sm:p-6 flex justify-between items-center" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                  <FileText className="w-6 h-6" style={{ color: '#242021' }} />
+            <div className="backdrop-blur-sm border-b border-amber-200/20 bg-[#242021] p-3 sm:p-4 lg:p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-[#ffd17a] rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                    <FileText className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#242021]" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-sm sm:text-base lg:text-lg xl:text-xl font-bold text-white truncate">Saudi Arabia Company Establishment</h2>
+                    <p className="text-xs sm:text-sm text-gray-300 truncate">Complete requirements and procedures guide</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold">Saudi Arabia Company Establishment</h2>
-                  <p className="text-sm" style={{ color: 'gray' }}>Complete requirements and procedures guide</p>
-                </div>
+                <button 
+                  onClick={onClose} 
+                  className="p-2 hover:bg-white hover:bg-opacity-10 rounded-lg sm:rounded-xl transition-all flex-shrink-0"
+                >
+                  <X className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" />
+                </button>
               </div>
-              <button 
-                onClick={onClose} 
-                className="p-2 transition-all duration-200 hover:scale-110"
-                style={{ color: '#ffd17a' }}
-              >
-                <X className="w-6 h-6" />
-              </button>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b-2 overflow-x-auto" style={{ borderBottomColor: '#ffd17a', backgroundColor: '#f8f9fa' }}>
-              {[
-                { id: "overview", label: "Overview", icon: Globe },
-                { id: "costs", label: "Costs", icon: DollarSign },
-                { id: "requirements", label: "Requirements", icon: FileText },
-                { id: "taxes", label: "Taxes", icon: Briefcase },
-                { id: "timeline", label: "Timeline", icon: Clock },
-              ].map((tab) => {
+            <div className="flex bg-gray-50 overflow-x-auto px-2 sm:px-4">
+              {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-300 ${
+                    className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
                       activeTab === tab.id
-                        ? "bg-white shadow-sm"
-                        : "hover:bg-white/70"
+                        ? "bg-[#ffd17a] text-[#242021] rounded-lg"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
-                    style={{
-                      color: activeTab === tab.id ? '#ffd17a' : '#6b7280',
-                      borderBottom: activeTab === tab.id ? '2px solid #ffd17a' : '2px solid transparent'
-                    }}
                   >
-                    <Icon className="w-4 h-4" />
-                    {tab.label}
+                    <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span className="sm:hidden">{tab.label.charAt(0)}</span>
                   </button>
                 );
               })}
             </div>
 
             {/* Content */}
-            <div className="p-4 sm:p-6 space-y-6">
+            <div className="p-3 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 lg:space-y-6 overflow-y-auto max-h-[calc(95vh-200px)] bg-gradient-to-b from-white to-gray-50">
               {activeTab === "overview" && requirements.overview.map(renderSection)}
               {activeTab === "costs" && requirements.costs.map(renderSection)}
               {activeTab === "requirements" && requirements.requirements.map(renderSection)}
-              {activeTab === "taxes" && requirements.taxes.map(renderSection)}
               {activeTab === "timeline" && (
                 <>
                   {requirements.timeline.map(renderSection)}
-                  <div className="bg-white border-2 overflow-hidden transition-all duration-300 hover:shadow-lg" style={{ borderColor: '#ffd17a' }}>
-                    <div className="p-4 sm:p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 flex items-center justify-center" style={{ backgroundColor: '#ffd17a' }}>
-                          <AlertCircle className="w-6 h-6" style={{ color: '#242021' }} />
+                  <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+                    <div className="p-3 sm:p-4 lg:p-6 bg-[#242021] border-b border-amber-200/20">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#ffd17a] rounded-lg sm:rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                          <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-[#242021]" />
                         </div>
-                        <div>
-                          <h3 className="text-xl font-bold">Important Notes</h3>
-                          <p className="text-sm" style={{ color: 'gray' }}>Critical information for successful application</p>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white">Important Notes</h3>
+                          <p className="text-xs sm:text-sm text-gray-300">Critical information for successful application</p>
                         </div>
                       </div>
                     </div>
-                    <div className="p-4 sm:p-6">
-                      {requirements.important[0].items.map((item, i) => (
-                        <div key={i} className="mb-3 last:mb-0">
-                          <div className="flex items-start gap-3">
-                            <div className="w-2 h-2 mt-2 flex-shrink-0" style={{ backgroundColor: '#ffd17a' }}></div>
-                            <p className="text-sm text-gray-700 leading-relaxed">{item}</p>
-                          </div>
+                    <div className="p-3 sm:p-4 lg:p-6 space-y-2 sm:space-y-3">
+                      {requirements.important.map((item, i) => (
+                        <div key={i} className="flex items-start gap-2 sm:gap-3">
+                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full mt-2 flex-shrink-0 bg-[#ffd17a]"></div>
+                          <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">{item}</p>
                         </div>
                       ))}
                     </div>
@@ -395,47 +299,35 @@ export default function CompanyRequirementsModal({
             </div>
 
             {/* Footer */}
-            <div className="p-4 sm:p-6 border-t-2 bg-gray-50" style={{ borderTopColor: '#ffd17a' }}>
-              <div className="flex items-center gap-3 mb-6">
+            <div className="p-3 sm:p-4 lg:p-6 bg-gray-50 border-t border-gray-200">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-white shadow-sm">
                 <input
                   type="checkbox"
                   id="readConfirm"
                   checked={hasRead}
                   onChange={(e) => setHasRead(e.target.checked)}
-                  className="w-5 h-5 border-gray-300 focus:ring-2 transition-all duration-200"
-                  style={{ 
-                    accentColor: '#ffd17a',
-                    focusRingColor: '#ffd17a'
-                  }}
+                  className="w-4 h-4 sm:w-5 sm:h-5 rounded transition-all duration-200 cursor-pointer accent-[#ffd17a]"
                 />
-                <label htmlFor="readConfirm" className="text-sm font-medium text-gray-700">
+                <label htmlFor="readConfirm" className="text-xs sm:text-sm font-semibold text-gray-800 cursor-pointer">
                   I have read and understood all requirements and procedures
                 </label>
               </div>
-              {hasRead && (
-                <div className="bg-green-50 border border-green-200 p-4 flex items-center gap-3 mb-6 transition-all duration-300">
-                  <div className="w-8 h-8 bg-green-500 flex items-center justify-center">
-                    <CheckCircle2 className="w-5 h-5 text-white" />
-                  </div>
-                  <p className="text-sm font-medium text-green-700">Requirements accepted! Proceed to application.</p>
-                </div>
-              )}
-              <div className="flex flex-col sm:flex-row gap-3">
+            
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <button
                   onClick={onClose}
-                  className="flex-1 py-3 px-6 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-all duration-300 font-medium transform hover:scale-105"
+                  className="flex-1 py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-300 font-semibold text-sm sm:text-base"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={hasRead ? onAccept : undefined}
                   disabled={!hasRead}
-                  className={`flex-1 py-3 px-6 text-white font-medium transition-all duration-300 transform hover:scale-105 ${
+                  className={`flex-1 py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base ${
                     hasRead 
-                      ? "shadow-lg hover:shadow-xl" 
-                      : "bg-gray-300 cursor-not-allowed"
+                      ? "bg-[#ffd17a] text-[#242021] shadow-lg hover:shadow-xl hover:bg-[#ffd17a]/90" 
+                      : "bg-gray-300 cursor-not-allowed opacity-60 text-gray-500"
                   }`}
-                  style={hasRead ? { backgroundColor: '#ffd17a', color: '#242021' } : {}}
                 >
                   {hasRead ? "Continue to Application" : "Accept Requirements"}
                 </button>
@@ -446,45 +338,4 @@ export default function CompanyRequirementsModal({
       )}
     </>
   );
-}
-
-// Add CSS animations for smooth modal transitions
-const styles = `
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-20px) scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  @keyframes slideOut {
-    from {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-    to {
-      opacity: 0;
-      transform: translateY(-20px) scale(0.95);
-    }
-  }
-`;
-
-// Inject styles into the document
-if (typeof document !== 'undefined') {
-  const styleSheet = document.createElement('style');
-  styleSheet.textContent = styles;
-  document.head.appendChild(styleSheet);
 }

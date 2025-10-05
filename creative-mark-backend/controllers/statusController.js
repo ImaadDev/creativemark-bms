@@ -1,6 +1,7 @@
 import Application from "../models/Application.js";
 import ApplicationTimeline from "../models/Timeline.js";
 import User from "../models/User.js";
+import Notification from "../models/Notification.js";
 
 /**
  * @desc    Update application status (for employees and partners)

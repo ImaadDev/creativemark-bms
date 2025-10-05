@@ -6,6 +6,11 @@ import api from './api';
  */
 export const createUser = async (userData) => {
   try {
+    // If it's a partner, use the partner creation endpoint
+    if (userData.userRole === 'partner') {
+      return await createPartner(userData);
+    }
+
     // Remove profilePicture from data if it's a File (we'll handle file upload separately later)
     const cleanUserData = { ...userData };
     if (cleanUserData.profilePicture instanceof File) {
@@ -20,7 +25,63 @@ export const createUser = async (userData) => {
     return res.data;
   } catch (err) {
     console.error("Create user error:", err);
-    throw new Error(err.response?.data?.message || err.message || "Failed to create user");
+    // Preserve the original error response for better error handling
+    if (err.response) {
+      const error = new Error(err.response?.data?.message || err.message || "Failed to create user");
+      error.response = err.response;
+      throw error;
+    }
+    throw new Error(err.message || "Failed to create user");
+  }
+};
+
+/**
+ * Create a new partner
+ * @param {Object} partnerData - Partner data object
+ */
+export const createPartner = async (partnerData) => {
+  try {
+    console.log('Partner data being sent:', partnerData);
+    
+    const formData = new FormData();
+    
+    // Add all partner data to FormData
+    Object.keys(partnerData).forEach(key => {
+      if (partnerData[key] !== null && partnerData[key] !== undefined) {
+        if (partnerData[key] instanceof File) {
+          console.log(`Adding file: ${key}`, partnerData[key]);
+          formData.append(key, partnerData[key]);
+        } else if (Array.isArray(partnerData[key])) {
+          console.log(`Adding array: ${key}`, partnerData[key]);
+          formData.append(key, JSON.stringify(partnerData[key]));
+        } else {
+          console.log(`Adding field: ${key} = ${partnerData[key]}`);
+          formData.append(key, partnerData[key]);
+        }
+      }
+    });
+
+    console.log('FormData entries:');
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    const res = await api.post("/partners", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Create partner error:", err);
+    console.error("Error response:", err.response?.data);
+    // Preserve the original error response for better error handling
+    if (err.response) {
+      const error = new Error(err.response?.data?.message || err.message || "Failed to create partner");
+      error.response = err.response;
+      throw error;
+    }
+    throw new Error(err.message || "Failed to create partner");
   }
 };
 

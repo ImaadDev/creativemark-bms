@@ -3,6 +3,7 @@ import ApplicationDocument from "../models/Document.js";
 import ApplicationTimeline from "../models/Timeline.js";
 import Payment from "../models/Payment.js";
 import User from "../models/User.js";
+import Notification from "../models/Notification.js";
 
 /**
  * @desc    Create a new application

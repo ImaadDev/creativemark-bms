@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getUserApplications } from "../../../services/applicationService";
+import { getUserApplications, getApplicationProgress } from "../../../services/applicationService";
 import { useAuth } from "../../../contexts/AuthContext";
 
 export default function MyApplicationsPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [applications, setApplications] = useState([]);
+  const [progressData, setProgressData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,11 +21,34 @@ export default function MyApplicationsPage() {
     try {
       setLoading(true);
       setError(null);
-      console.log("Current user in track application:", user);
-      console.log("Fetching user applications...");
       const response = await getUserApplications();
-      console.log("Applications response:", response);
-      setApplications(response.data || []);
+      const apps = response.data || [];
+      setApplications(apps);
+
+      // Fetch progress data for each application
+      const progressPromises = apps.map(async (app) => {
+        try {
+          const progressResponse = await getApplicationProgress(app._id);
+          return {
+            applicationId: app._id,
+            progress: progressResponse.data
+          };
+        } catch (err) {
+          console.error(`Error fetching progress for application ${app._id}:`, err);
+          return {
+            applicationId: app._id,
+            progress: { progressPercentage: 0, currentStatus: app.status }
+          };
+        }
+      });
+
+      const progressResults = await Promise.all(progressPromises);
+      const progressMap = {};
+      progressResults.forEach(result => {
+        progressMap[result.applicationId] = result.progress;
+      });
+      
+      setProgressData(progressMap);
     } catch (err) {
       console.error("Error fetching applications:", err);
       setError(err.message || "Failed to fetch applications");
@@ -68,6 +92,53 @@ export default function MyApplicationsPage() {
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getProgressPercentage = (applicationId, fallbackStatus) => {
+    const progress = progressData[applicationId];
+    if (progress && progress.progressPercentage !== undefined) {
+      return progress.progressPercentage;
+    }
+    
+    // Fallback to status-based calculation if no progress data
+    switch (fallbackStatus) {
+      case "submitted":
+        return 20;
+      case "under_review":
+        return 40;
+      case "approved":
+        return 60;
+      case "in_process":
+        return 80;
+      case "completed":
+        return 100;
+      case "rejected":
+        return 0;
+      default:
+        return 0;
+    }
+  };
+
+  const getProgressColor = (applicationId, fallbackStatus) => {
+    const progress = progressData[applicationId];
+    const currentStatus = progress?.currentStatus || fallbackStatus;
+    
+    switch (currentStatus) {
+      case "submitted":
+        return "bg-blue-500";
+      case "under_review":
+        return "bg-amber-500";
+      case "approved":
+        return "bg-green-500";
+      case "in_process":
+        return "bg-purple-500";
+      case "completed":
+        return "bg-green-600";
+      case "rejected":
+        return "bg-red-500";
+      default:
+        return "bg-gray-400";
     }
   };
 
@@ -171,6 +242,9 @@ export default function MyApplicationsPage() {
                       Status
                     </th>
                     <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
+                      Progress
+                    </th>
+                    <th className="px-6 lg:px-8 py-4 lg:py-6 text-left text-xs font-bold uppercase tracking-wider">
                       Submitted Date
                     </th>
                     <th className="px-6 lg:px-8 py-4 lg:py-6 text-center text-xs font-bold uppercase tracking-wider">
@@ -202,6 +276,21 @@ export default function MyApplicationsPage() {
                         >
                           {app.status.replace("_", " ")}
                         </span>
+                      </td>
+                      <td className="px-6 lg:px-8 py-4 lg:py-5">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex-1">
+                            <div className="w-full bg-gray-200 rounded-full h-2.5">
+                              <div
+                                className={`h-2.5 rounded-full transition-all duration-500 ${getProgressColor(app._id, app.status)}`}
+                                style={{ width: `${getProgressPercentage(app._id, app.status)}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                          <span className="text-xs font-medium text-gray-600 min-w-[3rem] text-right">
+                            {getProgressPercentage(app._id, app.status)}%
+                          </span>
+                        </div>
                       </td>
                       <td className="px-6 lg:px-8 py-4 lg:py-5">
                         <span className="text-sm font-medium text-gray-700">
@@ -281,6 +370,29 @@ export default function MyApplicationsPage() {
                             day: "numeric",
                           })}
                         </p>
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-amber-400"></div>
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                          Progress
+                        </h3>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-1">
+                          <div className="w-full bg-gray-200 rounded-full h-3">
+                            <div
+                              className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(app._id, app.status)}`}
+                              style={{ width: `${getProgressPercentage(app._id, app.status)}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        <span className="text-sm font-medium text-gray-600 min-w-[3rem] text-right">
+                          {getProgressPercentage(app._id, app.status)}%
+                        </span>
                       </div>
                     </div>
 

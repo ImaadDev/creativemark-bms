@@ -13,10 +13,14 @@ import applicationRoutes from './routes/appliactionRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import employeeRoutes from './routes/employeeRoutes.js';
 import clientRoutes from './routes/clientRoutes.js';
+import partnerRoutes from './routes/partnerRoutes.js';
 import reportsRoutes from './routes/reportsRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import statusRoutes from './routes/statusRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
+import ticketRoutes from './routes/ticketRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -87,10 +91,23 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/clients', clientRoutes);
+app.use('/api/partners', partnerRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/status', statusRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/notifications', notificationRoutes);
+
+// Test endpoint for tickets
+app.get('/api/tickets/test', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Ticket routes are working',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Error handling middleware
 app.use(errorMiddleware);

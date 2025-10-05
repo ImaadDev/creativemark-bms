@@ -4,7 +4,6 @@ import { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { logout, getCurrentUser } from "../services/auth";
 import { useAuth } from "../contexts/AuthContext";
-import NotificationBell from "./notifications/NotificationBell";
 import { 
   FaBell, 
   FaSearch, 
@@ -86,7 +85,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
 
   return (
-    <header className="sticky top-0 z-20 backdrop-blur-sm"
+    <header className="sticky top-0 z-20 backdrop-blur-sm lg:rounded-3xl"
             style={{
               background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
               borderBottom: '1px solid rgba(255, 209, 122, 0.2)',
@@ -139,9 +138,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
         {/* Right Section */}
         <div className="flex items-center space-x-3 sm:space-x-4">
           
-      
-
-          
+          {/* Notifications */}
 
           {/* Help - Only visible for clients */}
           {currentUser && currentUser.role === 'client' && (
@@ -158,12 +155,6 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             </button>
           )}
 
-          {/* Notifications */}
-          <div className="relative">
-            <div className="p-3 rounded-xl transition-all duration-300 relative group hover:bg-white/10 hover:scale-105">
-              <NotificationBell />
-            </div>
-          </div>
 
         
 
@@ -362,66 +353,79 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
       {/* Help & Support Modal - Only for clients */}
       {showHelpModal && currentUser && currentUser.role === 'client' && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
-          <div className="bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-2xl max-w-sm sm:max-w-2xl lg:max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4 lg:p-6">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-2xl border border-gray-200/50 max-w-sm sm:max-w-2xl lg:max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
-            <div className="p-3 sm:p-4 lg:p-6" style={{ backgroundColor: '#242021', color: '#ffd17a' }}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl" style={{ backgroundColor: '#ffd17a' }}>
-                    <FaHeadset className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" style={{ color: '#242021' }} />
+            <div className="relative overflow-hidden bg-[#242021] text-white shadow-2xl">
+              <div className="absolute inset-0 bg-black/10"></div>
+              <div className="absolute top-0 right-0 w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 bg-[#ffd17a]/10 transform rotate-45 translate-x-16 sm:translate-x-24 lg:translate-x-32 -translate-y-16 sm:-translate-y-24 lg:-translate-y-32"></div>
+              <div className="absolute bottom-0 left-0 w-32 sm:w-48 lg:w-64 h-32 sm:h-48 lg:h-64 bg-[#ffd17a]/10 transform -rotate-45 -translate-x-8 sm:-translate-x-12 lg:-translate-x-16 translate-y-8 sm:translate-y-12 lg:translate-y-16"></div>
+              
+              <div className="relative p-4 sm:p-6 lg:p-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
+                  <div className="flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#ffd17a] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg sm:shadow-xl">
+                        <FaHeadset className="text-lg sm:text-2xl text-[#242021]" />
+                      </div>
+                      <div className="flex-1">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+                          Client Support Center
+                        </h2>
+                        <p className="text-[#ffd17a] text-sm sm:text-base lg:text-lg">
+                          Get assistance with your business applications and account
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold">Client Support Center</h2>
-                    <p className="text-xs sm:text-sm" style={{ color: 'gray' }}>Get assistance with your business applications and account</p>
+                  <div className="flex items-center space-x-3 sm:space-x-4">
+                    <button
+                      onClick={() => setShowHelpModal(false)}
+                      className="p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-white/10 transition-all duration-200"
+                    >
+                      <FaTimes className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => setShowHelpModal(false)}
-                  className="p-2 rounded-lg transition-all duration-200"
-                  style={{ color: '#ffd17a' }}
-                >
-                  <FaTimes className="h-4 w-4 sm:h-5 sm:w-5" />
-                </button>
               </div>
             </div>
 
             {/* Modal Content */}
-            <div className="p-3 sm:p-4 lg:p-6 overflow-y-auto max-h-[calc(95vh-100px)] sm:max-h-[calc(90vh-120px)]">
+            <div className="p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[calc(95vh-100px)] sm:max-h-[calc(90vh-120px)]">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 
                 {/* Contact Information */}
                 <div className="space-y-4 sm:space-y-6">
-                  <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-blue-200">
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
-                      <FaPhone className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 mr-2" />
+                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
+                      <FaPhone className="mr-3 text-[#242021]" />
                       Contact Information
                     </h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2 sm:space-x-3">
-                        <div className="p-2 bg-blue-100 rounded-lg">
-                          <FaPhone className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center">
+                          <FaPhone className="text-white text-sm sm:text-lg" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 text-sm sm:text-base">Phone Support</p>
+                          <p className="font-semibold text-gray-900 text-sm sm:text-base">Phone Support</p>
                           <p className="text-xs sm:text-sm text-gray-600">+966 50 123 4567</p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2 sm:space-x-3">
-                        <div className="p-2 bg-green-100 rounded-lg">
-                          <FaMailBulk className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg sm:rounded-xl flex items-center justify-center">
+                          <FaMailBulk className="text-white text-sm sm:text-lg" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 text-sm sm:text-base">Email Support</p>
+                          <p className="font-semibold text-gray-900 text-sm sm:text-base">Email Support</p>
                           <p className="text-xs sm:text-sm text-gray-600">support@creativemark.com</p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2 sm:space-x-3">
-                        <div className="p-2 bg-purple-100 rounded-lg">
-                          <FaClock className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600" />
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center">
+                          <FaClock className="text-white text-sm sm:text-lg" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 text-sm sm:text-base">Business Hours</p>
+                          <p className="font-semibold text-gray-900 text-sm sm:text-base">Business Hours</p>
                           <p className="text-xs sm:text-sm text-gray-600">Sun-Thu: 8:00 AM - 6:00 PM</p>
                         </div>
                       </div>
@@ -429,34 +433,34 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                   </div>
 
                   {/* Quick Actions */}
-                  <div className="bg-gradient-to-br from-emerald-50 to-green-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-emerald-200">
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
-                      <FaFileAlt className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 mr-2" />
+                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
+                      <FaFileAlt className="mr-3 text-[#242021]" />
                       Quick Actions
                     </h3>
-                    <div className="space-y-2 sm:space-y-3">
-                      <button className="w-full text-left p-2 sm:p-3 bg-white rounded-lg sm:rounded-xl hover:bg-emerald-50 transition-all duration-200 border border-emerald-200">
+                    <div className="space-y-3">
+                      <button className="w-full text-left p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/10 transition-all duration-200 border border-gray-200 hover:border-[#ffd17a]/50">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900 text-sm sm:text-base">Submit Support Ticket</span>
-                          <FaChevronDown className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+                          <span className="font-semibold text-gray-900 text-sm sm:text-base">Submit Support Ticket</span>
+                          <FaChevronDown className="h-4 w-4 text-gray-400" />
                         </div>
                       </button>
-                      <button className="w-full text-left p-2 sm:p-3 bg-white rounded-lg sm:rounded-xl hover:bg-emerald-50 transition-all duration-200 border border-emerald-200">
+                      <button className="w-full text-left p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/10 transition-all duration-200 border border-gray-200 hover:border-[#ffd17a]/50">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900 text-sm sm:text-base">Application Help</span>
-                          <FaChevronDown className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+                          <span className="font-semibold text-gray-900 text-sm sm:text-base">Application Help</span>
+                          <FaChevronDown className="h-4 w-4 text-gray-400" />
                         </div>
                       </button>
-                      <button className="w-full text-left p-2 sm:p-3 bg-white rounded-lg sm:rounded-xl hover:bg-emerald-50 transition-all duration-200 border border-emerald-200">
+                      <button className="w-full text-left p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/10 transition-all duration-200 border border-gray-200 hover:border-[#ffd17a]/50">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900 text-sm sm:text-base">Download Client Guide</span>
-                          <FaChevronDown className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+                          <span className="font-semibold text-gray-900 text-sm sm:text-base">Download Client Guide</span>
+                          <FaChevronDown className="h-4 w-4 text-gray-400" />
                         </div>
                       </button>
-                      <button className="w-full text-left p-2 sm:p-3 bg-white rounded-lg sm:rounded-xl hover:bg-emerald-50 transition-all duration-200 border border-emerald-200">
+                      <button className="w-full text-left p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/10 transition-all duration-200 border border-gray-200 hover:border-[#ffd17a]/50">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900 text-sm sm:text-base">Document Requirements</span>
-                          <FaChevronDown className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+                          <span className="font-semibold text-gray-900 text-sm sm:text-base">Document Requirements</span>
+                          <FaChevronDown className="h-4 w-4 text-gray-400" />
                         </div>
                       </button>
                     </div>
@@ -464,63 +468,63 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                 </div>
 
                 {/* FAQ Section */}
-                <div className="space-y-6">
-                  <div className="bg-gradient-to-br from-orange-50 to-red-100 rounded-2xl p-6 border border-orange-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                      <FaQuestionCircle className="h-5 w-5 text-orange-600 mr-2" />
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
+                      <FaQuestionCircle className="mr-3 text-[#242021]" />
                       Frequently Asked Questions
                     </h3>
                     <div className="space-y-4">
-                      <div className="bg-white rounded-xl p-4 border border-orange-200">
-                        <h4 className="font-medium text-gray-900 mb-2">How do I submit a business application?</h4>
+                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
+                        <h4 className="font-semibold text-gray-900 mb-2">How do I submit a business application?</h4>
                         <p className="text-sm text-gray-600">Navigate to the Application page, select your service type, fill out all required information, upload necessary documents, and submit your application.</p>
                       </div>
-                      <div className="bg-white rounded-xl p-4 border border-orange-200">
-                        <h4 className="font-medium text-gray-900 mb-2">How can I track my application progress?</h4>
+                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
+                        <h4 className="font-semibold text-gray-900 mb-2">How can I track my application progress?</h4>
                         <p className="text-sm text-gray-600">Use the Track Application page to monitor your application status in real-time and receive updates on processing stages.</p>
                       </div>
-                      <div className="bg-white rounded-xl p-4 border border-orange-200">
-                        <h4 className="font-medium text-gray-900 mb-2">What documents do I need to upload?</h4>
+                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
+                        <h4 className="font-semibold text-gray-900 mb-2">What documents do I need to upload?</h4>
                         <p className="text-sm text-gray-600">Document requirements vary by service type. Common documents include passport, ID card, commercial registration, and financial statements.</p>
                       </div>
-                      <div className="bg-white rounded-xl p-4 border border-orange-200">
-                        <h4 className="font-medium text-gray-900 mb-2">How long does application processing take?</h4>
+                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
+                        <h4 className="font-semibold text-gray-900 mb-2">How long does application processing take?</h4>
                         <p className="text-sm text-gray-600">Processing times depend on service complexity, typically 3-15 business days. You'll receive notifications for status updates.</p>
                       </div>
-                      <div className="bg-white rounded-xl p-4 border border-orange-200">
-                        <h4 className="font-medium text-gray-900 mb-2">Can I edit my submitted application?</h4>
+                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
+                        <h4 className="font-semibold text-gray-900 mb-2">Can I edit my submitted application?</h4>
                         <p className="text-sm text-gray-600">Once submitted, applications cannot be edited. Contact support if you need to make changes to your application.</p>
                       </div>
-                      <div className="bg-white rounded-xl p-4 border border-orange-200">
-                        <h4 className="font-medium text-gray-900 mb-2">How do I make payments for my application?</h4>
+                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
+                        <h4 className="font-semibold text-gray-900 mb-2">How do I make payments for my application?</h4>
                         <p className="text-sm text-gray-600">After your application is approved, you can make payments through the Payments section in your client dashboard.</p>
                       </div>
                     </div>
                   </div>
 
                   {/* System Status */}
-                  <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-6 border border-green-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                      <FaCheckCircle className="h-5 w-5 text-green-600 mr-2" />
+                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
+                      <FaCheckCircle className="mr-3 text-[#242021]" />
                       System Status
                     </h3>
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-green-200">
-                        <span className="font-medium text-gray-900">Application System</span>
+                      <div className="flex items-center justify-between p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
+                        <span className="font-semibold text-gray-900">Application System</span>
                         <span className="flex items-center text-green-600 text-sm">
                           <FaCheckCircle className="h-4 w-4 mr-1" />
                           Operational
                         </span>
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-green-200">
-                        <span className="font-medium text-gray-900">Document Upload</span>
+                      <div className="flex items-center justify-between p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
+                        <span className="font-semibold text-gray-900">Document Upload</span>
                         <span className="flex items-center text-green-600 text-sm">
                           <FaCheckCircle className="h-4 w-4 mr-1" />
                           Operational
                         </span>
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-green-200">
-                        <span className="font-medium text-gray-900">Payment System</span>
+                      <div className="flex items-center justify-between p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
+                        <span className="font-semibold text-gray-900">Payment System</span>
                         <span className="flex items-center text-green-600 text-sm">
                           <FaCheckCircle className="h-4 w-4 mr-1" />
                           Operational
@@ -532,20 +536,20 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
               </div>
 
               {/* Emergency Contact */}
-              <div className="mt-6 bg-gradient-to-r from-red-50 to-pink-100 rounded-2xl p-6 border border-red-200">
+              <div className="mt-4 sm:mt-6 bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
                 <div className="flex items-start space-x-4">
-                  <div className="p-3 bg-red-100 rounded-xl">
-                    <FaExclamationTriangle className="h-6 w-6 text-red-600" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
+                    <FaExclamationTriangle className="text-white text-lg sm:text-2xl" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Emergency Support</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Emergency Support</h3>
                     <p className="text-sm text-gray-600 mb-3">For urgent issues that require immediate attention, please contact our emergency support line.</p>
-                    <div className="flex items-center space-x-4">
-                      <a href="tel:+966501234567" className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-200 text-sm font-medium">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <a href="tel:+966501234567" className="inline-flex items-center px-4 py-2 bg-[#242021] text-white rounded-lg sm:rounded-xl hover:bg-[#242021]/90 transition-all duration-200 text-sm font-medium">
                         <FaPhone className="h-4 w-4 mr-2" />
                         Call Emergency Line
                       </a>
-                      <a href="mailto:emergency@creativemark.com" className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200 text-sm font-medium">
+                      <a href="mailto:emergency@creativemark.com" className="inline-flex items-center px-4 py-2 bg-[#ffd17a] text-[#242021] rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/90 transition-all duration-200 text-sm font-medium">
                         <FaMailBulk className="h-4 w-4 mr-2" />
                         Email Emergency
                       </a>
@@ -556,16 +560,15 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             </div>
 
             {/* Modal Footer */}
-            <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-              <div className="flex items-center justify-between">
+            <div className="bg-gray-50/90 backdrop-blur-sm px-4 sm:px-6 py-4 border-t border-gray-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
                   <FaInfoCircle className="h-4 w-4" />
                   <span>Need more help? Our support team is here 24/7</span>
                 </div>
                 <button
                   onClick={() => setShowHelpModal(false)}
-                  className="px-6 py-2 text-white rounded-lg transition-all duration-200 font-medium"
-                  style={{ backgroundColor: '#ffd17a', color: '#242021' }}
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-[#242021] text-white rounded-lg sm:rounded-xl hover:bg-[#242021]/90 transition-all duration-200 font-medium text-sm sm:text-base"
                 >
                   Close
                 </button>

@@ -2,7 +2,6 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../contexts/AuthContext";
 import { SocketProvider } from "../contexts/SocketContext";
-import { NotificationProvider } from "../contexts/NotificationContext";
 import { MessageNotificationProvider } from "../contexts/MessageNotificationContext";
 
 const montserrat = Montserrat({
@@ -21,11 +20,9 @@ export default function RootLayout({ children }) {
       <body className={`${montserrat.variable} bg-gray-200 antialiased`}>
         <AuthProvider>
           <SocketProvider>
-            <NotificationProvider>
               <MessageNotificationProvider>
                 {children}
               </MessageNotificationProvider>
-            </NotificationProvider>
           </SocketProvider>
         </AuthProvider>
       </body>
