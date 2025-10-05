@@ -27,6 +27,12 @@ import {
   FaInfoCircle
 } from "react-icons/fa";
 
+const notifications = [
+  { id: 1, title: "New Ticket Assigned", description: "You have a new ticket from Kimad.", time: "2 min ago" },
+  { id: 2, title: "Ticket Resolved", description: "Ticket #123 has been resolved.", time: "10 min ago" },
+  { id: 3, title: "New Comment", description: "Emma commented on ticket #45.", time: "1 hour ago" },
+];
+
 export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
   const { user: currentUser, updateUser, handleLogout: authHandleLogout } = useAuth();
   const router = useRouter();
@@ -34,6 +40,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
 
   // Set loading to false when user data is available from AuthContext
   useEffect(() => {
@@ -83,500 +90,374 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
     }
   };
 
-
   return (
-    <header className="sticky top-0 z-20 backdrop-blur-sm lg:rounded-3xl"
-            style={{
-              background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-              borderBottom: '1px solid rgba(255, 209, 122, 0.2)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
-            }}>
-      <div className="flex items-center justify-between h-18 sm:h-20 lg:h-22 px-6 sm:px-8 lg:px-12">
-        
-        {/* Left Section */}
-        <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={onToggleSidebar}
-            className="lg:hidden p-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:scale-105"
-            style={{ color: '#ffd17a' }}
-            aria-label="Toggle sidebar"
-          >
-            {isSidebarOpen ? (
-              <FaTimes className="h-5 w-5" />
-            ) : (
-              <FaBars className="h-5 w-5" />
-            )}
-          </button>
+    <>
+      <header className="sticky top-0 z-20 backdrop-blur-sm lg:rounded-3xl"
+              style={{
+                background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
+                borderBottom: '1px solid rgba(255, 209, 122, 0.2)',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
+              }}>
+        <div className="flex items-center justify-between h-18 sm:h-20 lg:h-22 px-6 sm:px-8 lg:px-12">
+          
+          {/* Left Section */}
+          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={onToggleSidebar}
+              className="lg:hidden p-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:scale-105"
+              style={{ color: '#ffd17a' }}
+              aria-label="Toggle sidebar"
+            >
+              {isSidebarOpen ? (
+                <FaTimes className="h-5 w-5 sm:h-6 sm:w-6" />
+              ) : (
+                <FaBars className="h-5 w-5 sm:h-6 sm:w-6" />
+              )}
+            </button>
 
-          {/* Breadcrumb/Title */}
-          <div className="flex items-center space-x-3">
-            <div className="hidden sm:flex items-center space-x-2">
-              <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full"
-                   style={{
-                     backgroundColor: 'rgba(255, 209, 122, 0.1)',
-                     border: '1px solid rgba(255, 209, 122, 0.2)'
-                   }}>
-                <span className="text-sm font-medium" style={{ color: '#ffd17a' }}>Dashboard</span>
-                <span className="text-sm" style={{ color: 'rgba(255, 209, 122, 0.6)' }}>/</span>
-                <span className="text-sm" style={{ color: 'rgba(255, 209, 122, 0.8)' }}>Overview</span>
+            {/* Breadcrumb/Title */}
+            <div className="flex items-center space-x-3">
+              {/* Mobile title when sidebar is closed */}
+              {!isSidebarOpen && (
+                <div className="lg:hidden">
+                  <h1 className="text-lg sm:text-xl font-bold" style={{ color: '#ffd17a' }}>
+                    Creative Mark
+                  </h1>
+                </div>
+              )}
+              
+              {/* Desktop breadcrumb - you can customize this based on current page */}
+              <div className="hidden lg:flex items-center space-x-2 text-sm">
+                <span className="text-gray-300">Dashboard</span>
+                <FaChevronDown className="h-3 w-3 text-gray-400 transform -rotate-90" />
+                <span className="text-[#ffd17a] font-medium">Overview</span>
               </div>
-            </div>
-            {/* Mobile title when sidebar is closed */}
-            <div className="sm:hidden flex items-center space-x-2 px-3 py-1.5 rounded-full"
-                 style={{
-                   backgroundColor: 'rgba(255, 209, 122, 0.1)',
-                   border: '1px solid rgba(255, 209, 122, 0.2)'
-                 }}>
-              <span className="text-sm font-medium" style={{ color: '#ffd17a' }}>Creative Mark</span>
             </div>
           </div>
-        </div>
 
-      
+          {/* Right Section */}
+          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
+            {/* Notifications - Only visible for clients */}
+            {currentUser && currentUser.role === 'client' && (
+              <button
+                onClick={() => setShowNotificationsModal(true)}
+                className="p-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:scale-105 relative"
+                style={{ color: '#ffd17a' }}
+                aria-label="Notifications"
+              >
+                <FaBell className="h-5 w-5 sm:h-6 sm:w-6" />
+                {/* Optional: red dot for unread notifications */}
+                <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-[#242021]"></span>
+              </button>
+            )}
 
-        {/* Right Section */}
-        <div className="flex items-center space-x-3 sm:space-x-4">
-          
-          {/* Notifications */}
+            {/* Help - Only visible for clients */}
+            {currentUser && currentUser.role === 'client' && (
+              <button
+                onClick={() => setShowHelpModal(true)}
+                className="p-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:scale-105"
+                style={{ color: '#ffd17a' }}
+                aria-label="Help & Support"
+              >
+                <FaQuestionCircle className="h-5 w-5 sm:h-6 sm:w-6" />
+              </button>
+            )}
 
-          {/* Help - Only visible for clients */}
-          {currentUser && currentUser.role === 'client' && (
-            <button
-              onClick={() => setShowHelpModal(true)}
-              className="hidden sm:flex items-center justify-center p-3 rounded-xl transition-all duration-300 relative group hover:bg-white/10 hover:scale-105"
-              style={{ color: '#ffd17a' }}
-            >
-              <FaQuestionCircle className="h-5 w-5" />
-              <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap shadow-xl z-50">
-                Help & Support
-                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
-              </div>
-            </button>
-          )}
+            {/* Divider - Only show if user is client (has notifications/help buttons) */}
+            {currentUser && currentUser.role === 'client' && (
+              <div className="hidden sm:block w-px h-6 bg-gray-400/30"></div>
+            )}
 
-
-        
-
-          {/* Divider - Hidden on small screens */}
-          <div className="hidden sm:block h-6 w-px mx-2" style={{ backgroundColor: 'rgba(255, 209, 122, 0.2)' }}></div>
-
-          {/* User Menu */}
-          <div className="relative">
-            <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center space-x-3 p-3 transition-all duration-300 rounded-xl hover:bg-white/10 hover:scale-105"
-              style={{ color: '#ffd17a' }}
-            >
-              <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-xl flex items-center justify-center shadow-lg overflow-hidden transition-all duration-300 hover:scale-105"
-                       style={{
-                         background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                         boxShadow: '0 4px 12px rgba(255, 209, 122, 0.3)'
-                       }}>
-                    {loading || refreshing ? (
-                      <FaSpinner className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" style={{ color: '#242021' }} />
-                    ) : currentUser?.profilePicture ? (
-                      <img
-                        src={currentUser.profilePicture}
-                        alt="Profile"
-                        className="w-full h-full object-cover rounded-lg"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    {(!currentUser?.profilePicture || loading || refreshing) && (
-                      <FaUser className="h-3 w-3 sm:h-4 sm:w-4" style={{ color: '#242021' }} />
-                    )}
-                  </div>
+            {/* User Menu */}
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-xl transition-all duration-300 hover:bg-white/10"
+                style={{ color: '#ffd17a' }}
+              >
+                {/* User Avatar */}
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-[#ffd17a]/30">
+                  {currentUser?.profilePicture ? (
+                    <img
+                      src={currentUser.profilePicture}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div 
+                      className="w-full h-full flex items-center justify-center text-white font-bold text-sm sm:text-base"
+                      style={{ backgroundColor: '#ffd17a', color: '#242021' }}
+                    >
+                      {(currentUser?.fullName || currentUser?.name || 'U').charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
+
+                {/* User Info - Hidden on mobile */}
                 <div className="hidden sm:block text-left">
-                  <div className="text-sm font-semibold leading-none" style={{ color: '#ffd17a' }}>
-                    {loading || refreshing ? (
-                      <div className="flex items-center space-x-2">
-                        <FaSpinner className="animate-spin h-3 w-3" />
-                        <span>Loading...</span>
-                      </div>
-                    ) : (
-                      currentUser?.fullName || currentUser?.name || user?.fullName || user?.name || 'User'
-                    )}
+                  <div className="text-sm font-medium">
+                    {currentUser?.fullName || currentUser?.name || 'User'}
                   </div>
-                  <p className="text-xs leading-none mt-1" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                  <div className="text-xs opacity-80">
                     {currentUser?.role || user?.role || 'User'}
-                  </p>
+                  </div>
                 </div>
-                <FaChevronDown className={`hidden sm:block h-4 w-4 transition-transform duration-300 ${showUserMenu ? 'rotate-180' : ''}`} style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
-              </div>
-            </button>
 
-            {/* User Dropdown Menu */}
-            {showUserMenu && (
-              <>
-                <div 
-                  className="fixed inset-0 z-10" 
-                  onClick={() => setShowUserMenu(false)}
-                ></div>
-                <div className="absolute right-0 mt-4 w-72 bg-white border-0 shadow-2xl rounded-2xl z-20 overflow-hidden"
-                     style={{
-                       background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                       boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
-                       border: '1px solid rgba(255, 209, 122, 0.1)'
-                     }}>
-                  <div className="p-6 border-b" style={{
-                    background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                    borderBottomColor: 'rgba(36, 32, 33, 0.1)'
-                  }}>
-                    <div className="flex items-center space-x-4">
-                      <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-xl overflow-hidden transition-all duration-300 hover:scale-105"
-                           style={{
-                             background: 'linear-gradient(135deg, #242021 0%, #2a2422 100%)',
-                             boxShadow: '0 8px 20px rgba(36, 32, 33, 0.3)'
-                           }}>
-                        {loading || refreshing ? (
-                          <FaSpinner className="h-5 w-5 animate-spin" style={{ color: '#ffd17a' }} />
-                        ) : currentUser?.profilePicture ? (
+                <FaChevronDown className={`h-3 w-3 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* User Dropdown Menu */}
+              {showUserMenu && (
+                <div className="absolute right-0 mt-2 w-64 sm:w-72 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 py-4 z-30">
+                  <div className="px-4 pb-3 border-b border-gray-200/50">
+                    <button
+                      onClick={() => setShowUserMenu(false)}
+                      className="flex items-center space-x-3 w-full p-2 rounded-xl hover:bg-gray-50 transition-colors"
+                    >
+                      {/* User Avatar */}
+                      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200">
+                        {currentUser?.profilePicture ? (
                           <img
                             src={currentUser.profilePicture}
                             alt="Profile"
-                            className="w-full h-full object-cover rounded-lg"
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                              e.target.nextSibling.style.display = 'flex';
-                            }}
+                            className="w-full h-full object-cover"
                           />
-                        ) : null}
-                        {(!currentUser?.profilePicture || loading || refreshing) && (
-                          <FaUser className="h-5 w-5" style={{ color: '#ffd17a' }} />
+                        ) : (
+                          <div 
+                            className="w-full h-full flex items-center justify-center text-white font-bold text-lg"
+                            style={{ backgroundColor: '#ffd17a', color: '#242021' }}
+                          >
+                            {(currentUser?.fullName || currentUser?.name || 'U').charAt(0).toUpperCase()}
+                          </div>
                         )}
                       </div>
-                      <div>
-                        <p className="text-base font-bold" style={{ color: '#242021' }}>
+                      <div className="flex-1 text-left">
+                        <div className="font-semibold text-gray-900 text-sm">
                           {currentUser?.fullName || currentUser?.name || user?.fullName || user?.name || 'User'}
-                        </p>
-                        <p className="text-sm" style={{ color: 'rgba(36, 32, 33, 0.7)' }}>
+                        </div>
+                        <div className="text-xs text-gray-600">
                           {currentUser?.email || user?.email || 'user@example.com'}
-                        </p>
-                        <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'rgba(36, 32, 33, 0.8)' }}>
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
                           {currentUser?.role || user?.role || 'User'}
-                        </p>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  
-                  <div className="py-4 space-y-2">
-                    <button
-                      onClick={() => {
-                        setShowUserMenu(false);
-                        const userRole = currentUser?.role || user?.role || 'client';
-                        const rolePath = userRole === 'admin' ? 'admin' : userRole === 'partner' ? 'partner' : userRole;
-                        router.push(`/${rolePath}/profile`);
-                      }}
-                      className="flex items-center w-full px-5 py-4 text-sm font-semibold text-gray-800 hover:bg-white hover:shadow-md transition-all duration-300 rounded-xl mx-3 group"
-                      style={{ backgroundColor: 'rgba(248, 249, 250, 0.8)' }}
-                    >
-                      <div className="p-3 rounded-xl mr-4 shadow-sm group-hover:scale-110 transition-transform duration-300"
-                           style={{
-                             background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                             boxShadow: '0 4px 12px rgba(255, 209, 122, 0.3)'
-                           }}>
-                        <FaUser className="h-5 w-5" style={{ color: '#242021' }} />
-                      </div>
-                      Profile Settings
                     </button>
+                  </div>
+
+                  <div className="py-2">
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
-                        const userRole = currentUser?.role || user?.role || 'client';
-                        const rolePath = userRole === 'internal' ? 'admin' : userRole === 'external' ? 'partner' : userRole;
-                        router.push(`/${rolePath}/settings`);
+                        router.push(`/${currentUser?.role || user?.role || 'client'}/profile`);
                       }}
-                      className="flex items-center w-full px-5 py-4 text-sm font-semibold text-gray-800 hover:bg-white hover:shadow-md transition-all duration-300 rounded-xl mx-3 group"
+                      className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors"
                       style={{ backgroundColor: 'rgba(248, 249, 250, 0.8)' }}
                     >
-                      <div className="p-3 rounded-xl mr-4 shadow-sm group-hover:scale-110 transition-transform duration-300"
-                           style={{
-                             background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
-                             boxShadow: '0 4px 12px rgba(255, 209, 122, 0.3)'
-                           }}>
-                        <FaCog className="h-5 w-5" style={{ color: '#242021' }} />
-                      </div>
-                      Account Settings
+                      <FaUser className="h-4 w-4 text-gray-600" />
+                      <span className="text-sm font-medium text-gray-900">Profile Settings</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        router.push(`/${currentUser?.role || user?.role || 'client'}/settings`);
+                      }}
+                      className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors"
+                      style={{ backgroundColor: 'rgba(248, 249, 250, 0.8)' }}
+                    >
+                      <FaCog className="h-4 w-4 text-gray-600" />
+                      <span className="text-sm font-medium text-gray-900">Account Settings</span>
                     </button>
 
                     <button
                       onClick={refreshUserData}
                       disabled={refreshing}
-                      className="flex items-center w-full px-5 py-4 text-sm font-semibold text-blue-700 hover:bg-blue-50 transition-all duration-300 disabled:opacity-50 rounded-xl mx-3 group"
+                      className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors disabled:opacity-50"
                       style={{ backgroundColor: 'rgba(59, 130, 246, 0.05)' }}
                     >
-                      <div className="p-3 rounded-xl mr-4 shadow-sm group-hover:scale-110 transition-transform duration-300"
-                           style={{
-                             background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                             boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-                           }}>
-                        {refreshing ? (
-                          <FaSpinner className="h-5 w-5 animate-spin" style={{ color: 'white' }} />
-                        ) : (
-                          <FaUser className="h-5 w-5" style={{ color: 'white' }} />
-                        )}
-                      </div>
-                      {refreshing ? 'Refreshing...' : 'Refresh Profile'}
+                      {refreshing ? (
+                        <FaSpinner className="h-4 w-4 text-blue-600 animate-spin" />
+                      ) : (
+                        <FaCalendar className="h-4 w-4 text-blue-600" />
+                      )}
+                      <span className="text-sm font-medium text-blue-900">
+                        {refreshing ? 'Refreshing...' : 'Refresh Profile'}
+                      </span>
                     </button>
 
+                    <div className="border-t border-gray-200/50 my-2"></div>
 
-                    <div className="border-t mt-4 pt-4" style={{ borderTopColor: 'rgba(255, 209, 122, 0.2)' }}>
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center w-full px-5 py-4 text-sm font-semibold text-red-700 hover:bg-red-50 transition-all duration-300 rounded-xl mx-3 group"
-                        style={{ backgroundColor: 'rgba(239, 68, 68, 0.05)' }}
-                      >
-                        <div className="p-3 rounded-xl mr-4 shadow-sm group-hover:scale-110 transition-transform duration-300"
-                             style={{
-                               background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                               boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
-                             }}>
-                          <FaSignOutAlt className="h-5 w-5" style={{ color: 'white' }} />
-                        </div>
-                        Sign Out
-                      </button>
-                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors text-red-600"
+                      style={{ backgroundColor: 'rgba(239, 68, 68, 0.05)' }}
+                    >
+                      <FaSignOutAlt className="h-4 w-4" />
+                      <span className="text-sm font-medium">Sign Out</span>
+                    </button>
                   </div>
                 </div>
-              </>
-            )}
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Help & Support Modal - Only for clients */}
-      {showHelpModal && currentUser && currentUser.role === 'client' && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4 lg:p-6">
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-2xl border border-gray-200/50 max-w-sm sm:max-w-2xl lg:max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
+      {/* Notifications Modal - Outside header for proper z-index */}
+      {showNotificationsModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden animate-in zoom-in duration-300">
             {/* Modal Header */}
-            <div className="relative overflow-hidden bg-[#242021] text-white shadow-2xl">
-              <div className="absolute inset-0 bg-black/10"></div>
-              <div className="absolute top-0 right-0 w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 bg-[#ffd17a]/10 transform rotate-45 translate-x-16 sm:translate-x-24 lg:translate-x-32 -translate-y-16 sm:-translate-y-24 lg:-translate-y-32"></div>
-              <div className="absolute bottom-0 left-0 w-32 sm:w-48 lg:w-64 h-32 sm:h-48 lg:h-64 bg-[#ffd17a]/10 transform -rotate-45 -translate-x-8 sm:-translate-x-12 lg:-translate-x-16 translate-y-8 sm:translate-y-12 lg:translate-y-16"></div>
-              
-              <div className="relative p-4 sm:p-6 lg:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
-                  <div className="flex-1">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#ffd17a] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg sm:shadow-xl">
-                        <FaHeadset className="text-lg sm:text-2xl text-[#242021]" />
-                      </div>
-                      <div className="flex-1">
-                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
-                          Client Support Center
-                        </h2>
-                        <p className="text-[#ffd17a] text-sm sm:text-base lg:text-lg">
-                          Get assistance with your business applications and account
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3 sm:space-x-4">
-                    <button
-                      onClick={() => setShowHelpModal(false)}
-                      className="p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-white/10 transition-all duration-200"
-                    >
-                      <FaTimes className="h-4 w-4 sm:h-5 sm:w-5" />
-                    </button>
-                  </div>
+            <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold text-[#ffd17a] mb-1">Notifications</h2>
+                  <p className="text-[#ffd17a]/70 text-sm">Stay updated with your latest updates</p>
                 </div>
-              </div>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[calc(95vh-100px)] sm:max-h-[calc(90vh-120px)]">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                
-                {/* Contact Information */}
-                <div className="space-y-4 sm:space-y-6">
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaPhone className="mr-3 text-[#242021]" />
-                      Contact Information
-                    </h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center">
-                          <FaPhone className="text-white text-sm sm:text-lg" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 text-sm sm:text-base">Phone Support</p>
-                          <p className="text-xs sm:text-sm text-gray-600">+966 50 123 4567</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg sm:rounded-xl flex items-center justify-center">
-                          <FaMailBulk className="text-white text-sm sm:text-lg" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 text-sm sm:text-base">Email Support</p>
-                          <p className="text-xs sm:text-sm text-gray-600">support@creativemark.com</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center">
-                          <FaClock className="text-white text-sm sm:text-lg" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 text-sm sm:text-base">Business Hours</p>
-                          <p className="text-xs sm:text-sm text-gray-600">Sun-Thu: 8:00 AM - 6:00 PM</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Quick Actions */}
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaFileAlt className="mr-3 text-[#242021]" />
-                      Quick Actions
-                    </h3>
-                    <div className="space-y-3">
-                      <button className="w-full text-left p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/10 transition-all duration-200 border border-gray-200 hover:border-[#ffd17a]/50">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-gray-900 text-sm sm:text-base">Submit Support Ticket</span>
-                          <FaChevronDown className="h-4 w-4 text-gray-400" />
-                        </div>
-                      </button>
-                      <button className="w-full text-left p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/10 transition-all duration-200 border border-gray-200 hover:border-[#ffd17a]/50">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-gray-900 text-sm sm:text-base">Application Help</span>
-                          <FaChevronDown className="h-4 w-4 text-gray-400" />
-                        </div>
-                      </button>
-                      <button className="w-full text-left p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/10 transition-all duration-200 border border-gray-200 hover:border-[#ffd17a]/50">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-gray-900 text-sm sm:text-base">Download Client Guide</span>
-                          <FaChevronDown className="h-4 w-4 text-gray-400" />
-                        </div>
-                      </button>
-                      <button className="w-full text-left p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/10 transition-all duration-200 border border-gray-200 hover:border-[#ffd17a]/50">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-gray-900 text-sm sm:text-base">Document Requirements</span>
-                          <FaChevronDown className="h-4 w-4 text-gray-400" />
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* FAQ Section */}
-                <div className="space-y-4 sm:space-y-6">
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaQuestionCircle className="mr-3 text-[#242021]" />
-                      Frequently Asked Questions
-                    </h3>
-                    <div className="space-y-4">
-                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">How do I submit a business application?</h4>
-                        <p className="text-sm text-gray-600">Navigate to the Application page, select your service type, fill out all required information, upload necessary documents, and submit your application.</p>
-                      </div>
-                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">How can I track my application progress?</h4>
-                        <p className="text-sm text-gray-600">Use the Track Application page to monitor your application status in real-time and receive updates on processing stages.</p>
-                      </div>
-                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">What documents do I need to upload?</h4>
-                        <p className="text-sm text-gray-600">Document requirements vary by service type. Common documents include passport, ID card, commercial registration, and financial statements.</p>
-                      </div>
-                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">How long does application processing take?</h4>
-                        <p className="text-sm text-gray-600">Processing times depend on service complexity, typically 3-15 business days. You'll receive notifications for status updates.</p>
-                      </div>
-                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Can I edit my submitted application?</h4>
-                        <p className="text-sm text-gray-600">Once submitted, applications cannot be edited. Contact support if you need to make changes to your application.</p>
-                      </div>
-                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">How do I make payments for my application?</h4>
-                        <p className="text-sm text-gray-600">After your application is approved, you can make payments through the Payments section in your client dashboard.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* System Status */}
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaCheckCircle className="mr-3 text-[#242021]" />
-                      System Status
-                    </h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
-                        <span className="font-semibold text-gray-900">Application System</span>
-                        <span className="flex items-center text-green-600 text-sm">
-                          <FaCheckCircle className="h-4 w-4 mr-1" />
-                          Operational
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
-                        <span className="font-semibold text-gray-900">Document Upload</span>
-                        <span className="flex items-center text-green-600 text-sm">
-                          <FaCheckCircle className="h-4 w-4 mr-1" />
-                          Operational
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl border border-gray-200 hover:border-[#ffd17a]/50 transition-all duration-200">
-                        <span className="font-semibold text-gray-900">Payment System</span>
-                        <span className="flex items-center text-green-600 text-sm">
-                          <FaCheckCircle className="h-4 w-4 mr-1" />
-                          Operational
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Emergency Contact */}
-              <div className="mt-4 sm:mt-6 bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
-                    <FaExclamationTriangle className="text-white text-lg sm:text-2xl" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Emergency Support</h3>
-                    <p className="text-sm text-gray-600 mb-3">For urgent issues that require immediate attention, please contact our emergency support line.</p>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <a href="tel:+966501234567" className="inline-flex items-center px-4 py-2 bg-[#242021] text-white rounded-lg sm:rounded-xl hover:bg-[#242021]/90 transition-all duration-200 text-sm font-medium">
-                        <FaPhone className="h-4 w-4 mr-2" />
-                        Call Emergency Line
-                      </a>
-                      <a href="mailto:emergency@creativemark.com" className="inline-flex items-center px-4 py-2 bg-[#ffd17a] text-[#242021] rounded-lg sm:rounded-xl hover:bg-[#ffd17a]/90 transition-all duration-200 text-sm font-medium">
-                        <FaMailBulk className="h-4 w-4 mr-2" />
-                        Email Emergency
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="bg-gray-50/90 backdrop-blur-sm px-4 sm:px-6 py-4 border-t border-gray-200">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <FaInfoCircle className="h-4 w-4" />
-                  <span>Need more help? Our support team is here 24/7</span>
-                </div>
-                <button
-                  onClick={() => setShowHelpModal(false)}
-                  className="px-4 sm:px-6 py-2 sm:py-3 bg-[#242021] text-white rounded-lg sm:rounded-xl hover:bg-[#242021]/90 transition-all duration-200 font-medium text-sm sm:text-base"
+                <button 
+                  onClick={() => setShowNotificationsModal(false)} 
+                  className="text-[#ffd17a]/70 hover:text-[#ffd17a] transition-colors p-2 hover:bg-white/10 rounded-xl"
                 >
-                  Close
+                  <FaTimes size={20} />
                 </button>
+              </div>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              <div className="space-y-4">
+                {notifications.map((notification) => (
+                  <div key={notification.id} className="p-4 bg-gray-50 rounded-2xl border border-gray-200 hover:bg-gray-100 transition-colors">
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-[#ffd17a] rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 mb-1">{notification.title}</h3>
+                        <p className="text-gray-600 text-sm mb-2">{notification.description}</p>
+                        <p className="text-xs text-gray-500">{notification.time}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       )}
-    </header>
+
+      {/* Help & Support Modal - Outside header for proper z-index */}
+      {showHelpModal && currentUser && currentUser.role === 'client' && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden animate-in zoom-in duration-300">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold text-[#ffd17a] mb-1">Help & Support</h2>
+                  <p className="text-[#ffd17a]/70 text-sm">Get help with your account and services</p>
+                </div>
+                <button 
+                  onClick={() => setShowHelpModal(false)} 
+                  className="text-[#ffd17a]/70 hover:text-[#ffd17a] transition-colors p-2 hover:bg-white/10 rounded-xl"
+                >
+                  <FaTimes size={20} />
+                </button>
+              </div>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Contact Information */}
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-[#242021] mb-4">Contact Information</h3>
+                  
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                      <FaPhone className="text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Phone Support</h4>
+                      <p className="text-gray-600 text-sm">+966 50 123 4567</p>
+                      <p className="text-gray-500 text-xs">Available 24/7</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                      <FaEnvelope className="text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Email Support</h4>
+                      <p className="text-gray-600 text-sm">support@creativemark.sa</p>
+                      <p className="text-gray-500 text-xs">Response within 2 hours</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <FaHeadset className="text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Live Chat</h4>
+                      <p className="text-gray-600 text-sm">Available on website</p>
+                      <p className="text-gray-500 text-xs">Mon-Fri 9AM-6PM</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Quick Actions */}
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-[#242021] mb-4">Quick Actions</h3>
+                  
+                  <button 
+                    onClick={() => {
+                      setShowHelpModal(false);
+                      router.push('/client/support');
+                    }}
+                    className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-[#242021] to-[#3a3537] text-[#ffd17a] rounded-2xl hover:shadow-lg transition-all transform hover:scale-105"
+                  >
+                    <FaFileAlt className="text-[#ffd17a]" />
+                    <div className="text-left">
+                      <h4 className="font-semibold">Create Support Ticket</h4>
+                      <p className="text-sm opacity-80">Get help with your issues</p>
+                    </div>
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      setShowHelpModal(false);
+                      router.push('/client/track-application');
+                    }}
+                    className="w-full flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-all"
+                  >
+                    <FaClock className="text-gray-600" />
+                    <div className="text-left">
+                      <h4 className="font-semibold text-gray-900">Track Application</h4>
+                      <p className="text-sm text-gray-600">Check your application status</p>
+                    </div>
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      setShowHelpModal(false);
+                      router.push('/client/payments');
+                    }}
+                    className="w-full flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 rounded-2xl transition-all"
+                  >
+                    <FaCheckCircle className="text-gray-600" />
+                    <div className="text-left">
+                      <h4 className="font-semibold text-gray-900">Payment History</h4>
+                      <p className="text-sm text-gray-600">View your payment records</p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
