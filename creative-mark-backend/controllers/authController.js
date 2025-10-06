@@ -63,8 +63,9 @@ export const registerUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-domain cookies
+      sameSite: "lax", // Allow cross-domain cookies in development
       maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days
+      path: "/", // Ensure cookie is available for all paths
     });
     
 
@@ -113,8 +114,9 @@ export const loginUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-domain cookies
+      sameSite: "lax", // Allow cross-domain cookies in development
       maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days
+      path: "/", // Ensure cookie is available for all paths
     });
     
     

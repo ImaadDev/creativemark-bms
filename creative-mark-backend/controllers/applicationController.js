@@ -173,12 +173,7 @@ export const addApplication = async (req, res) => {
       });
 
       await application.save();
-      console.log("Application saved successfully:");
-      console.log("  - Application ID:", application._id);
-      console.log("  - User ID:", application.userId, "(type:", typeof application.userId, ")");
-      console.log("  - Service Type:", application.serviceType);
-      console.log("  - Status:", application.status);
-      console.log("  - Created At:", application.createdAt);
+    
   
       // Handle document uploads (req.files from Cloudinary)
       if (req.files && Object.keys(req.files).length > 0) {
@@ -214,38 +209,48 @@ export const addApplication = async (req, res) => {
       });
 
       // Notify admins about new application submission
-      const io = req.app.get('io');
-      if (io) {
-        try {
-          const admins = await User.find({ role: 'admin' }).select('_id fullName');
-          const clientName = user.fullName || user.name || 'Client';
-          
-          console.log(`Notifying ${admins.length} admins about new application:`, application._id);
-          console.log('Admins to notify:', admins.map(admin => ({ id: admin._id, name: admin.fullName })));
-          
-          admins.forEach(admin => {
-            const notificationData = {
-              applicationId: application._id,
-              message: `New ${application.serviceType} application submitted by ${clientName}`,
-              serviceType: application.serviceType,
-              partnerType: application.partnerType,
-              submittedBy: clientName,
-              submittedAt: new Date(),
-              timestamp: new Date()
-            };
-            
-            console.log(`Sending notification to admin ${admin._id} (${admin.fullName})`);
-            io.to(`user_${admin._id}`).emit('new_application_notification', notificationData);
-          });
-          
-          console.log('Admin notifications sent successfully');
-        } catch (notificationError) {
-          console.error('Error sending admin notifications:', notificationError);
-          // Continue with response even if notifications fail
+     // Notify admins about new application submission
+const io = req.app.get('io');
+if (io) {
+  try {
+    const admins = await User.find({ role: 'admin' }).select('_id fullName');
+    const clientName = user.fullName || user.name || 'Client';
+
+    for (const admin of admins) {
+      const notificationData = {
+        userId: admin._id,
+        type: 'info',
+        title: 'New Application Received',
+        message: `A new ${application.serviceType} application was submitted by ${clientName}.`,
+        priority: 'high',
+        data: {
+          applicationId: application._id,
+          serviceType: application.serviceType,
+          submittedBy: clientName,
+          submittedAt: new Date()
         }
-      } else {
-        console.warn('Socket.IO not available - cannot send notifications');
-      }
+      };
+
+      // ✅ Save notification in DB
+      const savedNotification = new Notification(notificationData);
+      await savedNotification.save();
+      console.log('✅ Admin notification saved:', savedNotification._id, 'for admin:', admin._id);
+
+      // ✅ Emit real-time notification with full notification object
+      io.to(`user_${admin._id}`).emit('new_application_notification', savedNotification);
+      io.to(`user_${admin._id}`).emit('notification', savedNotification);
+      console.log('📤 Admin notification emitted to user:', admin._id);
+    }
+
+    console.log('✅ Notifications stored & emitted successfully to admins.');
+  } catch (notificationError) {
+    console.error('❌ Error sending admin notifications:', notificationError);
+    // Continue response even if notification fails
+  }
+} else {
+  console.warn('⚠️ Socket.IO not available - cannot send notifications');
+}
+
   
       res.status(201).json({
         success: true,
@@ -974,32 +979,55 @@ export const assignApplicationToEmployees = async (req, res) => {
       progress: updatedApplication.status === 'under_review' ? 25 : 0,
     });
 
-    // Emit assignment notifications
+    // Emit assignment notifications and save to database
     const io = req.app.get('io');
     if (io) {
-      // Notify assigned employees
-      employeeIds.forEach(employeeId => {
-        io.to(`user_${employeeId}`).emit('assignment_notification', {
-          applicationId: applicationId,
-          message: `You have been assigned to handle application ${applicationId}`,
-          assignedBy: req.user.fullName || 'System',
-          timestamp: new Date()
+      // Notify assigned employees and save to database
+      for (const employeeId of employeeIds) {
+        const assignmentMessage = `You have been assigned to handle application ${applicationId}`;
+        
+        // Save notification to database
+        const employeeNotification = new Notification({
+          userId: employeeId,
+          type: 'info',
+          title: 'New Application Assignment',
+          message: assignmentMessage,
+          priority: 'high',
+          data: {
+            applicationId: applicationId,
+            assignedBy: req.user.fullName || 'System',
+            assignedAt: new Date()
+          }
         });
-      });
+        await employeeNotification.save();
+        
+        io.to(`user_${employeeId}`).emit('assignment_notification', employeeNotification);
+        io.to(`user_${employeeId}`).emit('notification', employeeNotification);
+      }
 
-      // Notify client
+      // Notify client and save to database
       const clientMessage = note 
         ? `Your application has been assigned to our team and is now under review. Note: ${note}`
         : `Your application has been assigned to our team and is now under review`;
         
-      io.to(`user_${updatedApplication.userId._id}`).emit('status_update_notification', {
-        applicationId: applicationId,
-        status: updatedApplication.status,
+      // Save notification to database
+      const clientNotification = new Notification({
+        userId: updatedApplication.userId._id,
+        type: 'success',
+        title: 'Application Assigned',
         message: clientMessage,
-        updatedBy: req.user.fullName || 'System',
-        note: note,
-        timestamp: new Date()
+        priority: 'medium',
+        data: {
+          applicationId: applicationId,
+          status: updatedApplication.status,
+          assignedBy: req.user.fullName || 'System',
+          note: note
+        }
       });
+      await clientNotification.save();
+      
+      io.to(`user_${updatedApplication.userId._id}`).emit('status_update_notification', clientNotification);
+      io.to(`user_${updatedApplication.userId._id}`).emit('notification', clientNotification);
     }
 
     // Format the response

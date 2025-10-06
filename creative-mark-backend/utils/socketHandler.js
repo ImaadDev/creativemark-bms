@@ -32,6 +32,7 @@ export const setupSocketHandlers = (io) => {
     socket.on('join_user_room', (userId) => {
       console.log(`👤 User ${userId} joined personal room`);
       socket.join(`user_${userId}`);
+      console.log(`✅ User ${userId} is now in room: user_${userId}`);
     });
     
     // Join application-specific room
@@ -169,6 +170,7 @@ export const getSocketInstance = (app) => {
  * @param {Object} data - Data to emit
  */
 export const emitToUser = (io, userId, event, data) => {
+  console.log(`📤 Emitting ${event} to user_${userId}:`, data);
   io.to(`user_${userId}`).emit(event, data);
 };
 

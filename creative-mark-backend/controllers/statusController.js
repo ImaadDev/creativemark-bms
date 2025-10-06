@@ -85,7 +85,7 @@ export const updateApplicationStatus = async (req, res) => {
       progress: getProgressForStatus(status)
     });
 
-    // Emit notifications
+    // Emit notifications and save to database
     const io = req.app.get('io');
     if (io) {
       // Create notification messages with note
@@ -101,47 +101,75 @@ export const updateApplicationStatus = async (req, res) => {
         ? `Application ${application._id} status updated to ${status.replace('_', ' ')} by ${user.fullName}. Note: ${note}`
         : `Application ${application._id} status updated to ${status.replace('_', ' ')} by ${user.fullName}`;
 
-      // Notify client
+      // Notify client and save to database
       if (!isApplicationOwner) {
-        const clientNotification = {
-          applicationId: application._id,
-          status: status,
+        // Save notification to database
+        const clientNotification = new Notification({
+          userId: application.userId._id,
+          type: 'info',
+          title: 'Application Status Updated',
           message: statusMessage,
-          updatedBy: user.fullName,
-          note: note,
-          timestamp: new Date()
-        };
+          priority: 'medium',
+          data: {
+            applicationId: application._id,
+            status: status,
+            updatedBy: user.fullName,
+            note: note
+          }
+        });
+        await clientNotification.save();
         
         io.to(`user_${application.userId._id}`).emit('status_update_notification', clientNotification);
+        io.to(`user_${application.userId._id}`).emit('notification', clientNotification);
       }
 
-      // Notify other assigned employees
-      application.assignedEmployees.forEach(assignment => {
+      // Notify other assigned employees and save to database
+      for (const assignment of application.assignedEmployees) {
         if (assignment.employeeId._id.toString() !== updatedBy) {
-          io.to(`user_${assignment.employeeId._id}`).emit('status_update_notification', {
-            applicationId: application._id,
-            status: status,
+          // Save notification to database
+          const employeeNotification = new Notification({
+            userId: assignment.employeeId._id,
+            type: 'info',
+            title: 'Application Status Updated',
             message: employeeMessage,
-            updatedBy: user.fullName,
-            note: note,
-            timestamp: new Date()
+            priority: 'medium',
+            data: {
+              applicationId: application._id,
+              status: status,
+              updatedBy: user.fullName,
+              note: note
+            }
           });
+          await employeeNotification.save();
+          
+          io.to(`user_${assignment.employeeId._id}`).emit('status_update_notification', employeeNotification);
+          io.to(`user_${assignment.employeeId._id}`).emit('notification', employeeNotification);
         }
-      });
+      }
 
-      // Notify admins
+      // Notify admins and save to database
       if (user.role !== 'admin') {
         const admins = await User.find({ role: 'admin' });
-        admins.forEach(admin => {
-          io.to(`user_${admin._id}`).emit('status_update_notification', {
-            applicationId: application._id,
-            status: status,
+        for (const admin of admins) {
+          // Save notification to database
+          const adminNotification = new Notification({
+            userId: admin._id,
+            type: 'info',
+            title: 'Application Status Updated',
             message: adminMessage,
-            updatedBy: user.fullName,
-            note: note,
-            timestamp: new Date()
+            priority: 'medium',
+            data: {
+              applicationId: application._id,
+              status: status,
+              updatedBy: user.fullName,
+              note: note
+            }
           });
-        });
+          await adminNotification.save();
+          
+          io.to(`user_${admin._id}`).emit('status_update_notification', adminNotification);
+          io.to(`user_${admin._id}`).emit('notification', adminNotification);
+        }
       }
     }
 

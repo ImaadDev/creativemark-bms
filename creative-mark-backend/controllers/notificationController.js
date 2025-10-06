@@ -17,13 +17,16 @@ export const createNotification = async (req, res) => {
     }
 
     // Save in database
-    const notification = await Notification.createNotification(userId, {
+    const notification = new Notification({
+      userId,
       title,
       message,
       type,
       priority,
       data,
     });
+    
+    await notification.save();
 
     // Emit real-time notification via socket
     const io = req.app.get("io");
@@ -50,6 +53,7 @@ export const createNotification = async (req, res) => {
 export const getUserNotifications = async (req, res) => {
   try {
     const userId = req.params.userId;
+    console.log("📥 Getting notifications for user:", userId);
 
     if (!userId) {
       return res.status(400).json({ success: false, message: "User ID is required" });
@@ -57,6 +61,9 @@ export const getUserNotifications = async (req, res) => {
 
     const notifications = await Notification.find({ userId })
       .sort({ createdAt: -1 });
+
+    console.log("📨 Found notifications:", notifications.length);
+    console.log("📨 Notifications:", notifications.map(n => ({ id: n._id, title: n.title, read: n.read })));
 
     return res.status(200).json({
       success: true,
@@ -133,6 +140,76 @@ export const deleteNotification = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to delete notification",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * 📊 Get unread notification count for a user
+ */
+export const getUnreadCount = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log("🔢 Getting unread count for user:", userId);
+
+    if (!userId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "User ID is required" 
+      });
+    }
+
+    const unreadCount = await Notification.countDocuments({ 
+      userId, 
+      read: false 
+    });
+
+    console.log("📊 Unread count for user", userId, ":", unreadCount);
+
+    return res.status(200).json({
+      success: true,
+      unreadCount,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching unread count:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch unread count",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * ✅ Mark all notifications as read for a user
+ */
+export const markAllAsRead = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "User ID is required" 
+      });
+    }
+
+    const result = await Notification.updateMany(
+      { userId, read: false },
+      { read: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "All notifications marked as read",
+      modifiedCount: result.modifiedCount,
+    });
+  } catch (error) {
+    console.error("❌ Error marking all notifications as read:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to mark all notifications as read",
       error: error.message,
     });
   }

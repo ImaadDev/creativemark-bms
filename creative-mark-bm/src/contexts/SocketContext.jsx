@@ -1,163 +1,310 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 import { useAuth } from "./AuthContext";
+import { getNotifications, getUnreadCount, markAllAsRead, deleteNotification } from "../services/notificationService";
 
 const SocketContext = createContext();
 
 export const SocketProvider = ({ children }) => {
+  const { user } = useAuth();
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const { user } = useAuth();
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const notificationsRef = useRef([]);
+  const userRef = useRef(null);
+
+  // Keep ref updated
+  useEffect(() => {
+    notificationsRef.current = notifications;
+  }, [notifications]);
 
   useEffect(() => {
-    if (user) {
-      // Initialize socket connection
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
-      const newSocket = io(backendUrl, {
-        withCredentials: true,
-        transports: ['websocket', 'polling'],
-        timeout: 10000,
-        forceNew: true,
-        autoConnect: true
-      });
-
-      // Connection event handlers
-      newSocket.on('connect', () => {
-        setIsConnected(true);
-        
-        // Join user's personal room
-        newSocket.emit('join_user_room', user.id);
-      });
-
-      newSocket.on('disconnect', (reason) => {
-        setIsConnected(false);
-      });
-
-      newSocket.on('connect_error', (error) => {
-        console.error('❌ Socket connection error:', error.message);
-        console.error('❌ Socket error details:', error);
-        setIsConnected(false);
-      });
-
-      newSocket.on('error', (error) => {
-        console.error('❌ Socket error:', error);
-      });
-
-      setSocket(newSocket);
-
-      // Cleanup on unmount
-      return () => {
-        console.log('🧹 Cleaning up socket connection');
-        newSocket.close();
-      };
-    } else {
-      // If no user, close any existing socket
-      if (socket) {
-        socket.close();
-        setSocket(null);
-        setIsConnected(false);
-      }
-    }
+    userRef.current = user;
   }, [user]);
 
-  // Join application room
-  const joinApplicationRoom = (applicationId) => {
-    if (socket && isConnected) {
-      try {
-        socket.emit('join_application_room', applicationId);
-      } catch (error) {
-        console.error('❌ Error joining application room:', error);
+  // Merge helper
+  const mergeNotifications = (newNotifications) => {
+    setNotifications(prev => {
+      const existingIds = new Set(prev.map(n => n._id));
+      const merged = [...newNotifications.filter(n => !existingIds.has(n._id)), ...prev];
+      const userId = userRef.current?.id || userRef.current?._id;
+      if (typeof window !== 'undefined' && userId) {
+        localStorage.setItem(`notifications_${userId}`, JSON.stringify(merged));
       }
-    } else {
-      console.warn('⚠️ Socket not connected, cannot join application room');
+      return merged;
+    });
+  };
+
+  const incrementUnread = () => {
+    setUnreadCount(prev => {
+      const updated = prev + 1;
+      const userId = userRef.current?.id || userRef.current?._id;
+      if (typeof window !== 'undefined' && userId) {
+        localStorage.setItem(`unreadCount_${userId}`, updated.toString());
+      }
+      return updated;
+    });
+  };
+
+  const fetchUnreadCount = useCallback(async () => {
+    const userId = user?.id || user?._id;
+    if (!userId) {
+      console.log('❌ No user ID for fetchUnreadCount');
+      return;
+    }
+
+    try {
+      console.log('🔢 Fetching unread count for user:', userId);
+      const data = await getUnreadCount(userId);
+      console.log('📊 Unread count data:', data);
+      if (data.success) {
+        setUnreadCount(data.unreadCount);
+        localStorage.setItem(`unreadCount_${userId}`, data.unreadCount.toString());
+        console.log('✅ Unread count updated:', data.unreadCount);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching unread count:', error);
+      const stored = localStorage.getItem(`unreadCount_${userId}`);
+      if (stored) {
+        setUnreadCount(parseInt(stored));
+        console.log('📱 Using stored unread count:', stored);
+      }
+    }
+  }, [user?.id, user?._id]);
+
+  const fetchNotifications = useCallback(async () => {
+    const userId = user?.id || user?._id;
+    if (!userId) {
+      console.log('❌ No user ID for fetchNotifications');
+      return;
+    }
+
+    try {
+      console.log('🔔 Fetching notifications for user:', userId);
+      const data = await getNotifications(userId);
+      console.log('📨 Notifications data:', data);
+      if (data.success) {
+        mergeNotifications(data.notifications || []);
+        console.log('✅ Notifications merged:', data.notifications?.length || 0);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching notifications:', error);
+      const stored = localStorage.getItem(`notifications_${userId}`);
+      if (stored) {
+        try {
+          const parsedNotifications = JSON.parse(stored);
+          setNotifications(parsedNotifications);
+          console.log('📱 Using stored notifications:', parsedNotifications.length);
+        } catch (err) {
+          console.error('Failed to parse localStorage notifications:', err);
+        }
+      }
+    }
+  }, [user?.id, user?._id]);
+
+  // Load localStorage first
+  useEffect(() => {
+    const userId = user?.id || user?._id;
+    if (!userId || typeof window === 'undefined') return;
+
+    const storedNotifications = localStorage.getItem(`notifications_${userId}`);
+    const storedUnread = localStorage.getItem(`unreadCount_${userId}`);
+    
+    if (storedNotifications) {
+      try { setNotifications(JSON.parse(storedNotifications)); } 
+      catch (err) { console.error(err); }
+    }
+    if (storedUnread) setUnreadCount(parseInt(storedUnread));
+
+    // Fetch fresh from API
+    fetchNotifications();
+    fetchUnreadCount();
+  }, [user, fetchNotifications, fetchUnreadCount]);
+
+  // Socket setup
+  useEffect(() => {
+    if (!user) {
+      console.log('❌ No user for socket setup');
+      return;
+    }
+
+    console.log('🔌 Setting up socket for user:', user.id || user._id);
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+    console.log('🌐 Backend URL:', backendUrl);
+    
+    const newSocket = io(backendUrl, {
+      withCredentials: true,
+      transports: ["websocket", "polling"],
+      timeout: 10000,
+      forceNew: true,
+      autoConnect: true,
+    });
+
+    setSocket(newSocket);
+
+    newSocket.on("connect", () => {
+      console.log("✅ Socket connected with ID:", newSocket.id);
+      setIsConnected(true);
+      const userId = user.id || user._id;
+      if (userId) {
+        console.log("👤 Joining user room:", userId);
+        newSocket.emit("join_user_room", userId);
+        fetchUnreadCount();
+      }
+    });
+
+    newSocket.on("disconnect", (reason) => {
+      console.log("❌ Socket disconnected:", reason);
+      setIsConnected(false);
+    });
+    
+    newSocket.on("connect_error", (err) => {
+      console.error("❌ Socket connection error:", err.message);
+      console.error("❌ Socket error details:", err);
+    });
+
+    // Unified notification handler
+    const handleNotification = (notification) => {
+      console.log("📨 Received notification:", notification);
+      mergeNotifications([notification]);
+      incrementUnread();
+    };
+
+    newSocket.on("notification", handleNotification);
+    newSocket.on("new_application_notification", handleNotification);
+    newSocket.on("assignment_notification", handleNotification);
+    newSocket.on("status_update_notification", handleNotification);
+
+    return () => {
+      console.log("🧹 Cleaning up socket");
+      newSocket.close();
+    };
+  }, [user, fetchUnreadCount]);
+
+  // Mark all notifications as read
+  const markNotificationsAsRead = async () => {
+    const userId = user?.id || user?._id;
+    if (!userId) return;
+
+    try {
+      const response = await markAllAsRead(userId);
+      if (response.success) {
+        setUnreadCount(0);
+        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+        // Update localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(`unreadCount_${userId}`, '0');
+          localStorage.setItem(`notifications_${userId}`, JSON.stringify(
+            notifications.map(n => ({ ...n, read: true }))
+          ));
+        }
+      }
+    } catch (error) {
+      console.error('Error marking notifications read:', error);
     }
   };
 
-  // Leave application room
-  const leaveApplicationRoom = (applicationId) => {
-    if (socket && isConnected) {
-      try {
-        socket.emit('leave_application_room', applicationId);
-      } catch (error) {
-        console.error('❌ Error leaving application room:', error);
+  // Mark single notification as read
+  const markNotificationAsRead = async (notificationId) => {
+    const userId = user?.id || user?._id;
+    if (!userId || !notificationId) return;
+
+    try {
+      const { markNotificationAsRead: markSingle } = await import('../services/notificationService');
+      const response = await markSingle(notificationId);
+      
+      if (response.success) {
+        // Update local state
+        setNotifications(prev => prev.map(n => 
+          n._id === notificationId ? { ...n, read: true } : n
+        ));
+        
+        // Update unread count
+        setUnreadCount(prev => Math.max(0, prev - 1));
+        
+        // Update localStorage
+        if (typeof window !== 'undefined') {
+          const updatedNotifications = notifications.map(n => 
+            n._id === notificationId ? { ...n, read: true } : n
+          );
+          localStorage.setItem(`notifications_${userId}`, JSON.stringify(updatedNotifications));
+          localStorage.setItem(`unreadCount_${userId}`, Math.max(0, unreadCount - 1).toString());
+        }
+      }
+    } catch (error) {
+      console.error('Error marking single notification as read:', error);
+    }
+  };
+
+  // Clear all notifications
+  const clearAllNotifications = async () => {
+    const userId = user?.id || user?._id;
+    if (!userId) return;
+
+    try {
+      // Get current notifications from state
+      const currentNotifications = notificationsRef.current || [];
+      
+      if (currentNotifications.length > 0) {
+        // Delete each notification from backend
+        const deletePromises = currentNotifications.map(notification => 
+          deleteNotification(notification._id || notification.id)
+        );
+        
+        await Promise.all(deletePromises);
+        
+        // Clear local state
+        setNotifications([]);
+        setUnreadCount(0);
+        
+        // Clear localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem(`notifications_${userId}`);
+          localStorage.setItem(`unreadCount_${userId}`, '0');
+        }
+      }
+    } catch (error) {
+      console.error('Error clearing notifications:', error);
+      // Even if backend fails, clear local state
+      setNotifications([]);
+      setUnreadCount(0);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(`notifications_${userId}`);
+        localStorage.setItem(`unreadCount_${userId}`, '0');
       }
     }
   };
 
-  // Send message
-  const sendMessage = (messageData) => {
-    if (socket && isConnected) {
-      try {
-        socket.emit('send_message', messageData);
-      } catch (error) {
-        console.error('❌ Error sending message via socket:', error);
-      }
-    } else {
-      console.warn('⚠️ Socket not connected, message not sent via socket');
-    }
-  };
-
-  // Send typing indicator
-  const sendTypingStart = (applicationId, userId) => {
-    if (socket && isConnected) {
-      socket.emit('typing_start', { applicationId, userId });
-    }
-  };
-
-  const sendTypingStop = (applicationId, userId) => {
-    if (socket && isConnected) {
-      socket.emit('typing_stop', { applicationId, userId });
-    }
-  };
-
-  // Mark messages as read
+  // Socket helper functions
+  const joinApplicationRoom = (applicationId) => socket?.emit("join_application_room", applicationId);
+  const leaveApplicationRoom = (applicationId) => socket?.emit("leave_application_room", applicationId);
+  const sendMessage = (messageData) => socket?.emit("send_message", messageData);
+  const sendTypingStart = (applicationId, userId) => socket?.emit("typing_start", { applicationId, userId });
+  const sendTypingStop = (applicationId, userId) => socket?.emit("typing_stop", { applicationId, userId });
   const markMessagesAsRead = (messageIds, senderId) => {
-    if (socket && isConnected) {
-      socket.emit('mark_messages_read', {
-        messageIds,
-        userId: user.id,
-        senderId
-      });
-    }
+    const userId = user?.id || user?._id;
+    socket?.emit("mark_messages_read", { messageIds, userId, senderId });
   };
 
-  // Listen for new messages
-  const onNewMessage = (callback) => {
-    if (socket) {
-      socket.on('new_message', callback);
-      return () => socket.off('new_message', callback);
-    }
-  };
-
-  // Listen for typing indicators
-  const onUserTyping = (callback) => {
-    if (socket) {
-      socket.on('user_typing', callback);
-      return () => socket.off('user_typing', callback);
-    }
-  };
-
-  // Listen for message read status
-  const onMessagesRead = (callback) => {
-    if (socket) {
-      socket.on('messages_read', callback);
-      return () => socket.off('messages_read', callback);
-    }
-  };
-
-  // Listen for message errors
-  const onMessageError = (callback) => {
-    if (socket) {
-      socket.on('message_error', callback);
-      return () => socket.off('message_error', callback);
-    }
-  };
+  const onNewMessage = (cb) => { socket?.on("new_message", cb); return () => socket?.off("new_message", cb); };
+  const onUserTyping = (cb) => { socket?.on("user_typing", cb); return () => socket?.off("user_typing", cb); };
+  const onMessagesRead = (cb) => { socket?.on("messages_read", cb); return () => socket?.off("messages_read", cb); };
+  const onMessageError = (cb) => { socket?.on("message_error", cb); return () => socket?.off("message_error", cb); };
 
   const value = {
     socket,
     isConnected,
+    notifications,
+    unreadCount,
+    markNotificationsAsRead,
+    markNotificationAsRead,
+    clearAllNotifications,
+    fetchUnreadCount,
+    fetchNotifications,
     joinApplicationRoom,
     leaveApplicationRoom,
     sendMessage,
@@ -167,22 +314,15 @@ export const SocketProvider = ({ children }) => {
     onNewMessage,
     onUserTyping,
     onMessagesRead,
-    onMessageError
+    onMessageError,
   };
 
-  return (
-    <SocketContext.Provider value={value}>
-      {children}
-    </SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 };
 
-// Custom hook to use the socket context
 export const useSocket = () => {
   const context = useContext(SocketContext);
-  if (!context) {
-    throw new Error("useSocket must be used within a SocketProvider");
-  }
+  if (!context) throw new Error("useSocket must be used within SocketProvider");
   return context;
 };
 
