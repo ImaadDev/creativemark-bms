@@ -63,9 +63,10 @@ export const registerUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
-      sameSite: "lax", // Allow cross-domain cookies in development
-      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // none for cross-domain in prod
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: "/", // Ensure cookie is available for all paths
+      domain: process.env.NODE_ENV === "production" ? undefined : undefined, // Let browser handle domain
     });
     
 
@@ -114,9 +115,10 @@ export const loginUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
-      sameSite: "lax", // Allow cross-domain cookies in development
-      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // none for cross-domain in prod
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: "/", // Ensure cookie is available for all paths
+      domain: process.env.NODE_ENV === "production" ? undefined : undefined, // Let browser handle domain
     });
     
     
@@ -155,6 +157,8 @@ export const logoutUser = (req, res) => {
       secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-domain cookies
       maxAge: 0, // Expire immediately
+      path: "/", // Ensure cookie is available for all paths
+      domain: process.env.NODE_ENV === "production" ? undefined : undefined, // Let browser handle domain
     });
     
     res.json({ success: true, message: "Logged out successfully" });

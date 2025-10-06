@@ -36,8 +36,13 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error("API Response Error:", error.response?.status, error.config?.url);
-    console.error("API Response Error Data:", error.response?.data);
+    // Don't log 401 errors for /auth/me as they're expected when user is not authenticated
+    if (error.response?.status === 401 && error.config?.url?.includes('/auth/me')) {
+      console.log("API Response: 401 /auth/me (expected when not authenticated)");
+    } else {
+      console.error("API Response Error:", error.response?.status, error.config?.url);
+      console.error("API Response Error Data:", error.response?.data);
+    }
     return Promise.reject(error);
   }
 );

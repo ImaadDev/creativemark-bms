@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useState, useEffect, useContext } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { getCurrentUser } from "../services/auth";
+import { getCurrentUser, logout } from "../services/auth";
 import Swal from "sweetalert2";
 
 const AuthContext = createContext();
@@ -49,6 +49,15 @@ export const AuthProvider = ({ children }) => {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     setUser(null);
+    
+    try {
+      // Call backend logout to clear the cookie
+      await logout();
+      console.log("AuthContext - Logout successful, cookie cleared");
+    } catch (error) {
+      console.log("AuthContext - Logout API error (but continuing with local logout):", error.message);
+      // Even if backend logout fails, we continue with local logout
+    }
     
     // Reset logout state after a short delay to allow navigation
     setTimeout(() => {
