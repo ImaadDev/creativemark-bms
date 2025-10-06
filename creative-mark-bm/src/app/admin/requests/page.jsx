@@ -21,9 +21,11 @@ import {
 } from 'react-icons/fa';
 import RequestsList from '../../../components/admin/RequestsList';
 import AssignmentModal from '../../../components/admin/AssignmentModal';
+import { useTranslation } from '../../../i18n/TranslationContext';
 
 const InternalRequestsContent = () => {
   // Updated navigation to use new details page
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('all');
@@ -53,25 +55,25 @@ const InternalRequestsContent = () => {
   const tabs = [
     {
       id: 'all',
-      label: 'All Requests',
+      label: t('admin.requests.tabs.all'),
       icon: FaList,
-      description: 'View all service requests',
+      description: t('admin.requests.tabs.allDescription'),
       color: 'blue',
       count: 24
     },
     {
       id: 'pending',
-      label: 'Pending Review',
+      label: t('admin.requests.tabs.pending'),
       icon: FaClock,
-      description: 'Requests awaiting review',
+      description: t('admin.requests.tabs.pendingDescription'),
       color: 'amber',
       count: 8
     },
     {
       id: 'in-progress',
-      label: 'In Progress',
+      label: t('admin.requests.tabs.inProgress'),
       icon: FaTasks,
-      description: 'Active requests being processed',
+      description: t('admin.requests.tabs.inProgressDescription'),
       color: 'emerald',
       count: 12
     },
@@ -108,8 +110,8 @@ const InternalRequestsContent = () => {
             </div>
             <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-[#ffd17a] border-2 border-white rounded-full"></div>
           </div>
-          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Loading Applications</h3>
-          <p className="text-sm sm:text-base text-gray-600">Fetching the latest application data...</p>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{t('admin.requests.loadingApplications')}</h3>
+          <p className="text-sm sm:text-base text-gray-600">{t('admin.requests.fetchingData')}</p>
         </div>
       </div>
     );
@@ -135,10 +137,10 @@ const InternalRequestsContent = () => {
                     </div>
                     <div className="flex-1">
                       <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">
-                        Application Management
+                        {t('admin.requests.title')}
                       </h1>
                       <p className="text-[#ffd17a] text-sm sm:text-base lg:text-lg">
-                        Creative Mark BMS • Admin Portal • Manage all client applications
+                        {t('admin.requests.subtitle')}
                       </p>
                     </div>
                   </div>
@@ -146,15 +148,15 @@ const InternalRequestsContent = () => {
                   <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 mt-4 sm:mt-6">
                     <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
                       <FaList className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
-                      <span className="text-xs sm:text-sm">Total Applications: 24</span>
+                      <span className="text-xs sm:text-sm">{t('admin.requests.totalApplications')}: 24</span>
                     </div>
                     <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
                       <FaClock className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
-                      <span className="text-xs sm:text-sm">Pending: 8</span>
+                      <span className="text-xs sm:text-sm">{t('admin.requests.pending')}: 8</span>
                     </div>
                     <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
                       <FaTasks className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
-                      <span className="text-xs sm:text-sm">In Progress: 12</span>
+                      <span className="text-xs sm:text-sm">{t('admin.requests.inProgress')}: 12</span>
                     </div>
                   </div>
                 </div>
@@ -165,14 +167,14 @@ const InternalRequestsContent = () => {
                     className="group bg-[#ffd17a] rounded-lg sm:rounded-xl text-[#242021] px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-[#ffd17a]/90 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
                   >
                     <FaSpinner className="text-sm sm:text-base group-hover:rotate-180 transition-transform duration-300" />
-                    Refresh Data
+                    {t('admin.requests.refreshData')}
                   </button>
                   <button 
                     onClick={() => setShowAssignModal(true)}
                     className="group bg-white/10 rounded-lg sm:rounded-xl backdrop-blur-sm text-white border border-white/20 px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
                   >
                     <FaUserCheck className="text-sm sm:text-base" />
-                    Assign Request
+                    {t('admin.requests.assignRequest')}
                   </button>
                 </div>
               </div>
@@ -302,6 +304,8 @@ const InternalRequestsContent = () => {
 };
 
 const InternalRequestsPage = () => {
+  const { t } = useTranslation();
+  
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
@@ -309,7 +313,7 @@ const InternalRequestsPage = () => {
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#242021] rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-4">
             <FaSpinner className="animate-spin text-lg sm:text-2xl text-white" />
           </div>
-          <p className="text-sm sm:text-base text-gray-600">Loading requests...</p>
+          <p className="text-sm sm:text-base text-gray-600">{t('admin.requests.loadingRequests')}</p>
         </div>
       </div>
     }>

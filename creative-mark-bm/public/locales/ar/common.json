@@ -535,7 +535,67 @@
     "name": "الاسم",
     "expiry": "انتهاء الصلاحية",
     "cvv": "رمز الأمان",
-    "setAsDefault": "تعيين كافتراضي"
+    "setAsDefault": "تعيين كافتراضي",
+    "dashboard": {
+      "title": "لوحة تحكم المدفوعات",
+      "subtitle": "إدارة مدفوعات طلباتك",
+      "totalAmount": "إجمالي المبلغ",
+      "pendingAmount": "معلق",
+      "submittedAmount": "مُرسل",
+      "approvedAmount": "موافق عليه",
+      "awaitingPayment": "في انتظار الدفع",
+      "underReview": "قيد المراجعة",
+      "verified": "مُتحقق منه",
+      "paymentPlans": "خطط الدفع",
+      "searchByService": "البحث حسب نوع الخدمة...",
+      "choosePaymentPlan": "اختر خطة الدفع",
+      "uploadReceipt": "رفع الإيصال",
+      "downloadStatement": "تحميل البيان",
+      "paymentHistory": "تاريخ المدفوعات",
+      "paymentTips": "نصائح الدفع",
+      "chooseBetweenFull": "اختر بين الدفع الكامل أو 3 أقساط",
+      "uploadClearReceipts": "ارفع صور إيصالات واضحة ومقروءة",
+      "verifiedWithin24Hours": "يتم التحقق من المدفوعات خلال 24-48 ساعة"
+    },
+    "planSelection": {
+      "title": "اختر خطة الدفع",
+      "paymentDetails": "تفاصيل الدفع",
+      "totalAmount": "إجمالي المبلغ",
+      "dueDate": "تاريخ الاستحقاق",
+      "selectPaymentOption": "اختر خيار الدفع:",
+      "payInFull": "دفع كامل",
+      "payCompleteAmount": "دفع المبلغ الكامل",
+      "payInInstallments": "دفع بالأقساط",
+      "payIn3Parts": "دفع على 3 أجزاء",
+      "each": "كل جزء",
+      "continueToUpload": "متابعة لرفع الإيصال"
+    },
+    "receiptUpload": {
+      "title": "رفع إيصال الدفع",
+      "paymentDetails": "تفاصيل الدفع",
+      "amount": "المبلغ",
+      "paymentPlan": "خطة الدفع",
+      "receiptImage": "صورة الإيصال",
+      "clickToUpload": "انقر لرفع الإيصال",
+      "clickToChange": "انقر لتغيير الملف",
+      "supportedFormats": "PNG, JPG, PDF حتى 10 ميجابايت",
+      "important": "مهم:",
+      "ensureReceiptClear": "تأكد من أن الإيصال واضح ومقروء",
+      "includeTransactionRef": "قم بتضمين رقم مرجع المعاملة إن أمكن",
+      "verifiedWithin24Hours": "سيتم التحقق من الدفع خلال 24-48 ساعة",
+      "uploading": "جاري الرفع...",
+      "uploadReceipt": "رفع الإيصال"
+    },
+    "status": {
+      "pending": "معلق",
+      "submitted": "مُرسل",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض"
+    },
+    "installments": {
+      "installment": "قسط",
+      "uploadReceipt": "رفع الإيصال"
+    }
   },
   "trackApplication": {
     "applications": "الطلبات",
@@ -1134,6 +1194,72 @@
       "industrial": "الأنشطة الصناعية/الزراعية/الخدمية تتطلب شركة خارجية واحدة بسنة تشغيل وبيانات مالية.",
       "advertising": "الإعلان والترويج يتطلب امتلاك 50% من أسهم شركة إعلانية في بلدك (تجدد كل 3 سنوات).",
       "noSpecialRules": "لا توجد قواعد خاصة للشركات الخارجية للخدمة المحددة."
+    },
+    "requests": {
+      "title": "إدارة الطلبات",
+      "subtitle": "Creative Mark BMS • بوابة الإدارة • إدارة جميع طلبات العملاء",
+      "totalApplications": "إجمالي الطلبات",
+      "pending": "معلق",
+      "inProgress": "قيد التنفيذ",
+      "refreshData": "تحديث البيانات",
+      "assignRequest": "تعيين طلب",
+      "loadingApplications": "جاري تحميل الطلبات",
+      "fetchingData": "جاري جلب أحدث بيانات الطلبات...",
+      "loadingRequests": "جاري تحميل الطلبات...",
+      "tabs": {
+        "all": "جميع الطلبات",
+        "allDescription": "عرض جميع طلبات الخدمة",
+        "pending": "في انتظار المراجعة",
+        "pendingDescription": "طلبات في انتظار المراجعة",
+        "inProgress": "قيد التنفيذ",
+        "inProgressDescription": "طلبات نشطة قيد المعالجة"
+      }
+    },
+    "requestDetails": {
+      "title": "تفاصيل الطلب",
+      "subtitle": "مراجعة وإدارة تفاصيل الطلب",
+      "backToRequests": "العودة إلى الطلبات",
+      "applicationInfo": "معلومات الطلب",
+      "clientInfo": "معلومات العميل",
+      "serviceDetails": "تفاصيل الخدمة",
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "assignedTo": "مُعيّن إلى",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "تاريخ التحديث",
+      "actions": "الإجراءات",
+      "assignTo": "تعيين إلى",
+      "updateStatus": "تحديث الحالة",
+      "addNote": "إضافة ملاحظة",
+      "viewDocuments": "عرض المستندات",
+      "timeline": "الجدول الزمني",
+      "notes": "الملاحظات",
+      "documents": "المستندات",
+      "noNotes": "لا توجد ملاحظات متاحة",
+      "noDocuments": "لم يتم رفع أي مستندات",
+      "addNewNote": "إضافة ملاحظة جديدة",
+      "notePlaceholder": "أضف ملاحظة حول هذا الطلب...",
+      "saveNote": "حفظ الملاحظة",
+      "cancel": "إلغاء",
+      "statuses": {
+        "submitted": "مُرسل",
+        "underReview": "قيد المراجعة",
+        "inProgress": "قيد التنفيذ",
+        "completed": "مكتمل",
+        "rejected": "مرفوض"
+      },
+      "priorities": {
+        "low": "منخفضة",
+        "medium": "متوسطة",
+        "high": "عالية",
+        "urgent": "عاجلة"
+      },
+      "retry": "حاول مرة أخرى",
+      "notFound": "لم يتم العثور على الطلب المطلوب.",
+      "overview": "نظرة عامة",
+      "clientName": "اسم العميل",
+      "serviceType": "نوع الخدمة",
+      "externalCompanies": "الشركات الخارجية"
     }
   },
   "validation": {

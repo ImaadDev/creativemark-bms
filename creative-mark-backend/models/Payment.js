@@ -1,16 +1,50 @@
 import mongoose from "mongoose";
 
 const PaymentSchema = new mongoose.Schema({
-    applicationId: { type: mongoose.Schema.Types.ObjectId, ref: "Application", required: true },
+  applicationId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Application", 
+    required: true 
+  },
+  clientId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User", 
+    required: true 
+  },
+  totalAmount: { type: Number, required: true },
+  currency: { type: String, default: "SAR" },
+  paymentPlan: { 
+    type: String, 
+    enum: ["full", "installments"], 
+    default: "full" 
+  },
+  status: { 
+    type: String, 
+    enum: ["pending", "submitted", "approved", "rejected"], 
+    default: "pending" 
+  },
+  receiptImage: { type: String }, // Uploaded receipt image URL
+  installments: [{
     amount: { type: Number, required: true },
-    currency: { type: String, default: "SAR" },
-    method: { type: String, enum: ["card", "bank_transfer", "cash"], required: true },
-    plan: { type: String, enum: ["full", "installment"], default: "full" }, // ✅ new
-    status: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
-    transactionRef: String,
-    paidBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  }, { timestamps: true });
-  
-  
-  export default mongoose.models.Payment || mongoose.model("Payment", PaymentSchema);
-  
+    receiptImage: { type: String },
+    status: { 
+      type: String, 
+      enum: ["pending", "submitted", "approved", "rejected"], 
+      default: "pending" 
+    },
+    date: { type: Date, default: Date.now },
+    uploadedAt: { type: Date },
+    verifiedByAdmin: { type: Boolean, default: false },
+    verifiedAt: { type: Date },
+    verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    adminNotes: { type: String }
+  }],
+  dueDate: { type: Date },
+  paidBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  verifiedByAdmin: { type: Boolean, default: false },
+  verifiedAt: { type: Date },
+  verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  adminNotes: { type: String },
+}, { timestamps: true });
+
+export default mongoose.models.Payment || mongoose.model("Payment", PaymentSchema);

@@ -27,6 +27,7 @@ import {
   FaEnvelope
 } from 'react-icons/fa';
 import { getApplication } from '../../../../services/applicationService';
+import { paymentService } from '../../../../services/paymentService';
 import Timeline from '../../../../components/Timeline';
 import { SERVICE_TYPES, PARTNER_TYPES, STATUS_PROGRESS } from '../../../../utils/constants';
 
@@ -37,8 +38,10 @@ import Section from '../../../../components/admin/requests/Section';
 import KeyValueList from '../../../../components/admin/requests/KeyValueList';
 import DocumentCard from '../../../../components/admin/requests/DocumentCard';
 import Tabs from '../../../../components/admin/requests/Tabs';
+import { useTranslation } from '../../../../i18n/TranslationContext';
 
 const ApplicationDetailsPage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useParams();
   const applicationId = params.id;
@@ -46,6 +49,12 @@ const ApplicationDetailsPage = () => {
   const [application, setApplication] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showPaymentPlanModal, setShowPaymentPlanModal] = useState(false);
+  const [paymentPlanForm, setPaymentPlanForm] = useState({
+    totalAmount: '',
+    installmentCount: 3
+  });
+  const [creatingPaymentPlan, setCreatingPaymentPlan] = useState(false);
 
   useEffect(() => {
     if (applicationId) {
@@ -89,6 +98,36 @@ const ApplicationDetailsPage = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreatePaymentPlan = async (e) => {
+    e.preventDefault();
+    if (!paymentPlanForm.totalAmount || !paymentPlanForm.installmentCount) return;
+
+    setCreatingPaymentPlan(true);
+    try {
+      const response = await paymentService.createPaymentPlan({
+        applicationId: applicationId,
+        totalAmount: parseFloat(paymentPlanForm.totalAmount),
+        installmentCount: parseInt(paymentPlanForm.installmentCount)
+      });
+
+      if (response.success) {
+        // Show success message and close modal
+        alert('Payment plan created successfully!');
+        setShowPaymentPlanModal(false);
+        setPaymentPlanForm({ totalAmount: '', installmentCount: 3 });
+        // Optionally reload application details to show updated status
+        loadApplicationDetails();
+      } else {
+        alert(response.message || 'Failed to create payment plan');
+      }
+    } catch (error) {
+      console.error('Error creating payment plan:', error);
+      alert('Failed to create payment plan');
+    } finally {
+      setCreatingPaymentPlan(false);
     }
   };
 
@@ -171,7 +210,7 @@ const ApplicationDetailsPage = () => {
                 <FaExclamationTriangle className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
               </div>
               <div className="flex-1">
-                <h3 className="text-base sm:text-lg font-semibold text-red-900">Error loading application</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-red-900">{t('admin.requestDetails.title')} - Error</h3>
                 <p className="mt-2 text-sm sm:text-base text-red-700">{error}</p>
                 <div className="mt-4 space-x-3">
                   <button
@@ -179,7 +218,7 @@ const ApplicationDetailsPage = () => {
                     className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
                   >
                     <FaSpinner className="w-4 h-4 mr-2" />
-                    Try again
+{t('admin.requestDetails.retry')}
                   </button>
                 </div>
               </div>
@@ -199,8 +238,8 @@ const ApplicationDetailsPage = () => {
             <div className="bg-gray-100 rounded-full p-4 w-16 h-16 mx-auto mb-4">
               <FaFileAlt className="w-8 h-8 text-gray-400 mx-auto" />
             </div>
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Application not found</h3>
-            <p className="text-sm sm:text-base text-gray-600 mb-6">The requested application could not be found.</p>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{t('admin.requestDetails.title')} - Not Found</h3>
+            <p className="text-sm sm:text-base text-gray-600 mb-6">{t('admin.requestDetails.notFound')}</p>
           </div>
         </div>
       </div>
@@ -211,12 +250,12 @@ const ApplicationDetailsPage = () => {
   const tabs = [
     {
       id: 'overview',
-      label: 'Overview',
+      label: t('admin.requestDetails.overview'),
       icon: FaFileAlt,
       content: (
         <div className="space-y-8">
             {/* Client Information */}
-          <Section title="Client Information" icon={FaUser} color="blue">
+          <Section title={t('admin.requestDetails.clientInfo')} icon={FaUser} color="blue">
             <KeyValueList
               items={[
                 {
@@ -241,7 +280,7 @@ const ApplicationDetailsPage = () => {
           </Section>
 
             {/* Application Overview */}
-          <Section title="Application Overview" icon={FaBuilding} color="gray">
+          <Section title={t('admin.requestDetails.applicationInfo')} icon={FaBuilding} color="gray">
             <KeyValueList
               items={[
                 {
@@ -394,7 +433,7 @@ const ApplicationDetailsPage = () => {
     },
     {
       id: 'documents',
-      label: 'Documents',
+      label: t('admin.requestDetails.documents'),
       icon: FaFileAlt,
       badge: application.documents?.length || 0,
       content: (
@@ -417,7 +456,7 @@ const ApplicationDetailsPage = () => {
     },
     {
       id: 'timeline',
-      label: 'Timeline',
+      label: t('admin.requestDetails.timeline'),
       icon: FaClock,
       content: (
         <Section title="Application Timeline" icon={FaClock} color="indigo">
@@ -430,7 +469,7 @@ const ApplicationDetailsPage = () => {
     },
     {
       id: 'actions',
-      label: 'Actions',
+      label: t('admin.requestDetails.actions'),
       icon: FaUserCheck,
       content: (
         <Section title="Admin Actions" icon={FaUserCheck} color="emerald">
@@ -454,6 +493,16 @@ const ApplicationDetailsPage = () => {
                       Reject Application
                     </button>
                   </>
+                )}
+
+                {application.status?.current === 'approved' && (
+                  <button 
+                    onClick={() => setShowPaymentPlanModal(true)}
+                    className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-medium rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  >
+                    <FaDollarSign className="mr-2" />
+                    Create Payment Plan
+                  </button>
                 )}
                 
             <button className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white font-medium rounded-lg hover:from-yellow-700 hover:to-yellow-800 transition-all duration-200 shadow-lg hover:shadow-xl">
@@ -490,25 +539,25 @@ const ApplicationDetailsPage = () => {
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <SummaryStat
-            title="Client Name"
+            title={t('admin.requestDetails.clientName')}
             value={application.client?.name || 'N/A'}
             icon={FaUser}
             color="blue"
           />
           <SummaryStat
-            title="Service Type"
+            title={t('admin.requestDetails.serviceType')}
             value={SERVICE_TYPES[application.serviceDetails?.serviceType] || 'N/A'}
             icon={FaBuilding}
             color="purple"
           />
           <SummaryStat
-            title="External Companies"
+            title={t('admin.requestDetails.externalCompanies')}
             value={application.serviceDetails?.externalCompaniesCount || 0}
             icon={FaBuilding}
             color="green"
           />
           <SummaryStat
-            title="Documents"
+            title={t('admin.requestDetails.documents')}
             value={application.documents?.length || 0}
             icon={FaFileAlt}
             color="orange"
@@ -520,6 +569,94 @@ const ApplicationDetailsPage = () => {
           <Tabs tabs={tabs} defaultTab="overview" />
         </div>
       </div>
+
+      {/* Payment Plan Creation Modal */}
+      {showPaymentPlanModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg">
+            <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-6 rounded-t-3xl flex justify-between items-center">
+              <div>
+                <h2 className='text-2xl font-bold text-[#ffd17a]'>Create Payment Plan</h2>
+                <p className="text-[#ffd17a]/70 text-sm mt-1">
+                  {application?.client?.name || 'Client'} - {application?.serviceType || 'Application'}
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowPaymentPlanModal(false)} 
+                className="text-[#ffd17a] p-2 hover:bg-white/10 rounded-xl"
+              >
+                <FaTimes size={24} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleCreatePaymentPlan} className="p-6 space-y-6">
+              <div>
+                <label className='block text-gray-700 font-semibold mb-2 text-sm'>Total Amount (SAR)</label>
+                <input 
+                  type="number" 
+                  step="0.01" 
+                  required 
+                  value={paymentPlanForm.totalAmount} 
+                  onChange={(e) => setPaymentPlanForm({...paymentPlanForm, totalAmount: e.target.value})} 
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]" 
+                  placeholder="0.00" 
+                />
+              </div>
+
+              <div>
+                <label className='block text-gray-700 font-semibold mb-2 text-sm'>Number of Installments</label>
+                <select 
+                  value={paymentPlanForm.installmentCount} 
+                  onChange={(e) => setPaymentPlanForm({...paymentPlanForm, installmentCount: parseInt(e.target.value)})} 
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#242021]"
+                >
+                  <option value={1}>Full Payment (1 installment)</option>
+                  <option value={3}>3 Installments</option>
+                  <option value={4}>4 Installments</option>
+                  <option value={5}>5 Installments</option>
+                </select>
+              </div>
+
+              {paymentPlanForm.totalAmount && paymentPlanForm.installmentCount > 1 && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                  <h3 className="font-semibold text-blue-900 mb-2">Payment Schedule Preview</h3>
+                  <div className="text-sm text-blue-800">
+                    <div className="flex justify-between mb-1">
+                      <span>Total Amount:</span>
+                      <span className="font-semibold">SAR {paymentPlanForm.totalAmount}</span>
+                    </div>
+                    <div className="flex justify-between mb-1">
+                      <span>Installments:</span>
+                      <span className="font-semibold">{paymentPlanForm.installmentCount}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Per Installment:</span>
+                      <span className="font-semibold">SAR {(paymentPlanForm.totalAmount / paymentPlanForm.installmentCount).toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button 
+                  type="button" 
+                  onClick={() => setShowPaymentPlanModal(false)} 
+                  className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={!paymentPlanForm.totalAmount || creatingPaymentPlan}
+                  className="flex-1 py-3 bg-gradient-to-r from-[#242021] to-[#3a3537] text-[#ffd17a] font-bold rounded-xl hover:from-[#3a3537] hover:to-[#4a4547] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {creatingPaymentPlan ? 'Creating...' : 'Create Payment Plan'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

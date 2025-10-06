@@ -226,6 +226,11 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
 
     if (result.isConfirmed) {
       try {
+        // Check if user is available
+        if (!currentUser || (!currentUser.id && !currentUser._id)) {
+          throw new Error('User information not available. Please refresh the page and try again.');
+        }
+
         setDeletingId(request.applicationId);
         
         // Show loading alert
@@ -246,7 +251,7 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
           }
         });
 
-        await deleteApplication(request.applicationId, currentUser._id);
+        await deleteApplication(request.applicationId, currentUser.id || currentUser._id);
         
         // Remove the deleted request from the local state
         setRequests(prev => prev.filter(req => req.applicationId !== request.applicationId));

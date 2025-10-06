@@ -178,6 +178,11 @@ export const SocketProvider = ({ children }) => {
     newSocket.on("new_application_notification", handleNotification);
     newSocket.on("assignment_notification", handleNotification);
     newSocket.on("status_update_notification", handleNotification);
+    newSocket.on("new_ticket_notification", handleNotification);
+    newSocket.on("ticket_assignment_notification", handleNotification);
+    newSocket.on("ticket_status_notification", handleNotification);
+    newSocket.on("new_payment_notification", handleNotification);
+    newSocket.on("payment_verification", handleNotification);
 
     return () => {
       console.log("🧹 Cleaning up socket");

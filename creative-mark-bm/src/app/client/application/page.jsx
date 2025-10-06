@@ -608,31 +608,111 @@ export default function ModernMultiStepForm() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="text-center py-16 sm:py-24 bg-gray-50 border-2 border-gray-200">
-            <div className="max-w-md mx-auto px-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#ffd17a]/20 to-[#ffd17a]/30 flex items-center justify-center mx-auto mb-6">
-                <Check className="w-10 h-10 text-[#242021]" />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="bg-white rounded-2xl shadow-xl border border-[#ffd17a]/20 overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-[#ffd17a] to-[#ffd17a]/80 p-6 sm:p-8 text-center">
+              <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+                <Check className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                Application Submitted!
-              </h3>
-              <p className="text-gray-600 text-sm sm:text-base mb-8 leading-relaxed">
-                Your application has been submitted successfully. You will receive updates via email.
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                Application Submitted Successfully!
+              </h1>
+              <p className="text-white/90 text-sm sm:text-base">
+                Thank you for submitting your application for {form.serviceType ? form.serviceType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'your service'}!
               </p>
-              {applicationId && (
-                <div className="bg-white border-2 border-gray-200 p-4 mb-6">
-                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Application ID</p>
-                  <p className="font-mono text-sm font-medium text-gray-900">{applicationId}</p>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 sm:p-8">
+              <div className="max-w-3xl mx-auto">
+                <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-6 mb-6">
+                  <p className="text-[#242021] text-base sm:text-lg leading-relaxed mb-4">
+                    Your application has been successfully received and is now under review by our team.
+                  </p>
                 </div>
-              )}
-              <button 
-                onClick={() => window.location.href = '/client/track-application'}
-                className="w-full sm:w-auto px-8 py-4 bg-[#242021] hover:bg-[#242021]/90 text-white text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg"
-              >
-                Track Your Application
-              </button>
+
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-lg sm:text-xl font-bold text-[#242021] mb-4 flex items-center gap-2">
+                      <div className="w-2 h-2 bg-[#ffd17a] rounded-full"></div>
+                      Next Steps:
+                    </h2>
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="w-8 h-8 bg-[#ffd17a] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-[#242021] font-bold text-sm">1</span>
+                        </div>
+                        <div>
+                          <p className="text-[#242021] font-medium">Your application will be reviewed by our staff/admin.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="w-8 h-8 bg-[#ffd17a] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-[#242021] font-bold text-sm">2</span>
+                        </div>
+                        <div>
+                          <p className="text-[#242021] font-medium">Once approved, you will need to make the payment in 3 installments.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="w-8 h-8 bg-[#ffd17a] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-[#242021] font-bold text-sm">3</span>
+                        </div>
+                        <div>
+                          <p className="text-[#242021] font-medium">You can upload your payment receipt directly from your dashboard for each installment.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="w-8 h-8 bg-[#ffd17a] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-[#242021] font-bold text-sm">4</span>
+                        </div>
+                        <div>
+                          <p className="text-[#242021] font-medium">You will receive notifications when your payment is verified and when the next installment is due.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-[#ffd17a]/5 border border-[#ffd17a]/20 rounded-xl p-6">
+                    <p className="text-[#242021] text-sm sm:text-base leading-relaxed">
+                      You can track your application status and payment timeline in your dashboard.
+                    </p>
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-[#242021] font-medium text-base sm:text-lg mb-6">
+                      Thank you for choosing <span className="font-bold text-[#ffd17a]">CreativeMark</span> for your license application!
+                    </p>
+                  </div>
+
+                  {applicationId && (
+                    <div className="bg-white border-2 border-[#ffd17a]/20 rounded-xl p-4 text-center">
+                      <p className="text-xs font-bold uppercase tracking-wide text-[#242021]/60 mb-1">Application ID</p>
+                      <p className="font-mono text-lg font-bold text-[#242021]">{applicationId}</p>
+                    </div>
+                  )}
+
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button 
+                      onClick={() => window.location.href = '/client/track-application'}
+                      className="px-8 py-4 bg-[#ffd17a] hover:bg-[#ffd17a]/90 text-[#242021] text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg transform hover:scale-105"
+                    >
+                      Track Your Application
+                    </button>
+                    <button 
+                      onClick={() => window.location.href = '/client'}
+                      className="px-8 py-4 bg-white border-2 border-[#ffd17a] text-[#ffd17a] hover:bg-[#ffd17a] hover:text-[#242021] text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg transform hover:scale-105"
+                    >
+                      Back to Dashboard
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

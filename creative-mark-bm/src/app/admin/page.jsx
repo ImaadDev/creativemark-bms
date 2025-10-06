@@ -49,6 +49,7 @@ import {
 import { getAllApplications } from '../../services/applicationService';
 import { getAllEmployees } from '../../services/employeeApi';
 import { getAllClients } from '../../services/clientApi';
+import { paymentService } from '../../services/paymentService';
 import { FullPageLoading } from '../../components/LoadingSpinner';
 import { useTranslation } from '../../i18n/TranslationContext';
 
@@ -66,6 +67,19 @@ export default function InternalDashboard() {
     activeEmployees: 0,
     revenue: 0,
     thisMonth: 0,
+    // Payment revenue data
+    paymentStats: {
+      totalPayments: 0,
+      totalRevenue: 0,
+      approvedRevenue: 0,
+      pendingRevenue: 0,
+      submittedRevenue: 0,
+      monthlyRevenue: 0,
+      yearlyRevenue: 0,
+      paymentPlanStats: { full: 0, installments: 0 },
+      statusStats: { pending: 0, submitted: 0, approved: 0, rejected: 0 },
+      serviceTypeStats: {}
+    },
     // Additional analytics data
     conversionRate: 0,
     avgProcessingTime: 0,
@@ -92,11 +106,15 @@ export default function InternalDashboard() {
       setError(null);
     
 
-      // Load all applications, employees, clients, and ticket stats from the API
-      const [applicationsResponse, employeesResponse, clientsResponse] = await Promise.all([
+      // Load all applications, employees, clients, and payment data from the API
+      const [applicationsResponse, employeesResponse, clientsResponse, paymentsResponse] = await Promise.all([
         getAllApplications(),
         getAllEmployees(),
         getAllClients(),
+        paymentService.getAllPayments().catch(err => {
+          console.error('Error fetching payments:', err);
+          return { success: false, data: { payments: [], stats: {} } };
+        })
       ]);
       
       
@@ -104,6 +122,7 @@ export default function InternalDashboard() {
       const applications = applicationsResponse.data || [];
       const employees = employeesResponse.success ? (employeesResponse.data || []) : [];
       const clients = clientsResponse.success ? (clientsResponse.data || []) : [];
+      const paymentData = paymentsResponse.success ? paymentsResponse.data : { payments: [], stats: {} };
       
       
 
@@ -117,7 +136,7 @@ export default function InternalDashboard() {
       
       // Calculate comprehensive analytics
       const completedApps = applications.filter(app => app.status?.current === 'completed' || app.status?.current === 'approved');
-      const totalRevenue = completedApps.length * 1500;
+      const totalRevenue = paymentData.stats?.approvedRevenue || 0; // Use real payment revenue
       const monthlyApps = applications.filter(app => {
         const appDate = new Date(app.timestamps?.createdAt || app.createdAt);
         return appDate.getMonth() === currentMonth && appDate.getFullYear() === currentYear;
@@ -146,13 +165,26 @@ export default function InternalDashboard() {
         activeEmployees: activeEmployees,
         revenue: totalRevenue,
         thisMonth: monthlyApps.length,
+        // Payment revenue data
+        paymentStats: paymentData.stats || {
+          totalPayments: 0,
+          totalRevenue: 0,
+          approvedRevenue: 0,
+          pendingRevenue: 0,
+          submittedRevenue: 0,
+          monthlyRevenue: 0,
+          yearlyRevenue: 0,
+          paymentPlanStats: { full: 0, installments: 0 },
+          statusStats: { pending: 0, submitted: 0, approved: 0, rejected: 0 },
+          serviceTypeStats: {}
+        },
         // Enhanced analytics
         conversionRate: applications.length > 0 ? Math.round((completedApps.length / applications.length) * 100) : 0,
         avgProcessingTime: 7.5, // Mock data - average days
         clientSatisfaction: 4.7, // Mock data - out of 5
         monthlyGrowth: 12.5, // Mock data - percentage
-        quarterlyRevenue: totalRevenue * 3,
-        yearlyRevenue: totalRevenue * 12,
+        quarterlyRevenue: paymentData.stats?.yearlyRevenue ? paymentData.stats.yearlyRevenue / 4 : totalRevenue * 3,
+        yearlyRevenue: paymentData.stats?.yearlyRevenue || totalRevenue * 12,
         topServices: topServices,
         regionalData: [
           { region: 'North', applications: Math.floor(applications.length * 0.35) },
@@ -445,12 +477,12 @@ export default function InternalDashboard() {
           />
           <StatCard
             title={t('admin.monthlyRevenue')}
-            value={`$${stats.revenue.toLocaleString()}`}
+            value={`$${stats.paymentStats.monthlyRevenue.toLocaleString()}`}
             icon={FaDollarSign}
             color="emerald"
             subtitle={t('admin.thisMonth')}
             trend={18}
-            onClick={() => router.push('/admin/reports')}
+            onClick={() => router.push('/admin/payments')}
           />
           <StatCard
             title={t('admin.thisMonth')}
@@ -460,6 +492,42 @@ export default function InternalDashboard() {
             subtitle={t('admin.newApplications')}
             trend={25}
             onClick={() => router.push('/admin/requests')}
+          />
+        </div>
+
+        {/* Payment Revenue Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+          <StatCard
+            title="Total Revenue"
+            value={`$${stats.paymentStats.totalRevenue.toLocaleString()}`}
+            icon={FaDollarSign}
+            color="emerald"
+            subtitle="All time revenue"
+            onClick={() => router.push('/admin/payments')}
+          />
+          <StatCard
+            title="Approved Revenue"
+            value={`$${stats.paymentStats.approvedRevenue.toLocaleString()}`}
+            icon={FaCheckCircle}
+            color="green"
+            subtitle="Verified payments"
+            onClick={() => router.push('/admin/payments?status=approved')}
+          />
+          <StatCard
+            title="Pending Revenue"
+            value={`$${stats.paymentStats.pendingRevenue.toLocaleString()}`}
+            icon={FaClock}
+            color="yellow"
+            subtitle="Awaiting payment"
+            onClick={() => router.push('/admin/payments?status=pending')}
+          />
+          <StatCard
+            title="Under Review"
+            value={`$${stats.paymentStats.submittedRevenue.toLocaleString()}`}
+            icon={FaExclamationTriangle}
+            color="orange"
+            subtitle="Pending verification"
+            onClick={() => router.push('/admin/payments?status=submitted')}
           />
         </div>
 
@@ -543,7 +611,56 @@ export default function InternalDashboard() {
 
         {/* Charts & Analytics Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
-          {/* Service Distribution Chart */}
+          {/* Payment Revenue by Service Type */}
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden">
+            <div className="p-4 sm:p-6 border-b border-gray-200/50 bg-gradient-to-r from-[#ffd17a]/10 to-[#ffd17a]/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#242021] rounded-lg sm:rounded-xl flex items-center justify-center">
+                    <FaDollarSign className="text-white text-sm sm:text-lg" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Revenue by Service</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">Top revenue generating services</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="p-4 sm:p-6">
+              <div className="space-y-4">
+                {Object.keys(stats.paymentStats.serviceTypeStats).length > 0 ? Object.entries(stats.paymentStats.serviceTypeStats)
+                  .sort(([,a], [,b]) => b.revenue - a.revenue)
+                  .slice(0, 5)
+                  .map(([serviceType, data], index) => {
+                    const percentage = stats.paymentStats.totalRevenue > 0 ? Math.round((data.revenue / stats.paymentStats.totalRevenue) * 100) : 0;
+                    const colors = ['bg-[#ffd17a]', 'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500'];
+                    return (
+                      <div key={index} className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className={`w-3 h-3 rounded-full ${colors[index] || 'bg-gray-400'}`}></div>
+                          <span className="text-sm font-medium text-gray-700 truncate">{serviceType}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-20 sm:w-24 bg-gray-200 rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full ${colors[index] || 'bg-gray-400'}`}
+                              style={{ width: `${percentage}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-sm font-medium text-gray-900 w-16 text-right">${data.revenue.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    );
+                  }) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>No payment data available</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Plan Distribution */}
           <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden">
             <div className="p-4 sm:p-6 border-b border-gray-200/50 bg-gradient-to-r from-[#ffd17a]/10 to-[#ffd17a]/20">
               <div className="flex items-center justify-between">
@@ -552,83 +669,54 @@ export default function InternalDashboard() {
                     <FaChartPie className="text-white text-sm sm:text-lg" />
                   </div>
                   <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t('admin.serviceDistribution')}</h3>
-                    <p className="text-xs sm:text-sm text-gray-600">{t('admin.topServicesByVolume')}</p>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Payment Plans</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">Distribution of payment methods</p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="p-4 sm:p-6">
               <div className="space-y-4">
-                {stats.topServices && stats.topServices.length > 0 ? stats.topServices.map((service, index) => {
-                  const percentage = stats.total > 0 ? Math.round((service.count / stats.total) * 100) : 0;
-                  const colors = ['bg-[#ffd17a]', 'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500'];
-                  return (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className={`w-3 h-3 rounded-full ${colors[index] || 'bg-gray-400'}`}></div>
-                        <span className="text-sm font-medium text-gray-700 truncate">{service.service}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-20 sm:w-24 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${colors[index] || 'bg-gray-400'}`}
-                            style={{ width: `${percentage}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm font-medium text-gray-900 w-12 text-right">{percentage}%</span>
-                      </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#ffd17a]">
+                      <span className="text-[#242021] text-xs font-bold">F</span>
                     </div>
-                  );
-                }) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <p>{t('admin.noServiceData')}</p>
+                    <span className="text-sm font-medium text-gray-700">Full Payment</span>
                   </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Regional Performance Chart */}
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden">
-            <div className="p-4 sm:p-6 border-b border-gray-200/50 bg-gradient-to-r from-[#ffd17a]/10 to-[#ffd17a]/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#242021] rounded-lg sm:rounded-xl flex items-center justify-center">
-                    <FaGlobe className="text-white text-sm sm:text-lg" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t('admin.regionalPerformance')}</h3>
-                    <p className="text-xs sm:text-sm text-gray-600">{t('admin.applicationsByRegion')}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 sm:w-24 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="h-2 rounded-full bg-[#ffd17a]"
+                        style={{ width: `${stats.paymentStats.paymentPlanStats.full > 0 ? Math.round((stats.paymentStats.paymentPlanStats.full / (stats.paymentStats.paymentPlanStats.full + stats.paymentStats.paymentPlanStats.installments)) * 100) : 0}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900 w-12 text-right">{stats.paymentStats.paymentPlanStats.full}</span>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="p-4 sm:p-6">
-              <div className="space-y-4">
-                {stats.regionalData.map((region, index) => {
-                  const percentage = stats.total > 0 ? Math.round((region.applications / stats.total) * 100) : 0;
-                  const colors = ['bg-[#ffd17a]', 'bg-blue-500', 'bg-green-500', 'bg-purple-500'];
-                  return (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${colors[index] || 'bg-gray-400'}`}>
-                          <span className="text-white text-xs font-bold">{region.region[0]}</span>
-                        </div>
-                        <span className="text-sm font-medium text-gray-700">{region.region}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-20 sm:w-24 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${colors[index] || 'bg-gray-400'}`}
-                            style={{ width: `${percentage}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm font-medium text-gray-900 w-12 text-right">{region.applications}</span>
-                      </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-500">
+                      <span className="text-white text-xs font-bold">I</span>
                     </div>
-                  );
-                })}
+                    <span className="text-sm font-medium text-gray-700">Installments</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 sm:w-24 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="h-2 rounded-full bg-blue-500"
+                        style={{ width: `${stats.paymentStats.paymentPlanStats.installments > 0 ? Math.round((stats.paymentStats.paymentPlanStats.installments / (stats.paymentStats.paymentPlanStats.full + stats.paymentStats.paymentPlanStats.installments)) * 100) : 0}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900 w-12 text-right">{stats.paymentStats.paymentPlanStats.installments}</span>
+                  </div>
+                </div>
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Total Payments:</span>
+                    <span className="font-semibold text-gray-900">{stats.paymentStats.totalPayments}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

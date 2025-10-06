@@ -236,6 +236,12 @@ export const assignApplicationToEmployees = async (applicationId, employeeIds, a
  */
 export const deleteApplication = async (applicationId, deletedBy) => {
   try {
+    console.log("Deleting application:", { applicationId, deletedBy });
+    
+    if (!deletedBy) {
+      throw new Error("User ID is required for deletion");
+    }
+    
     const response = await api.delete(`/applications/${applicationId}`, {
       data: { deletedBy }
     });

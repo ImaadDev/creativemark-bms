@@ -5,6 +5,39 @@ import Payment from "../models/Payment.js";
 import User from "../models/User.js";
 import Notification from "../models/Notification.js";
 
+// Helper function to calculate payment amount based on service type
+const calculateAmount = (application) => {
+  const servicePricing = {
+    commercial: 5000,
+    engineering: 8000,
+    real_estate: 10000,
+    industrial: 12000,
+    agricultural: 6000,
+    service: 4000,
+    advertising: 3000,
+  };
+  
+  let baseAmount = servicePricing[application.serviceType] || 5000;
+  
+  // Add extra costs for additional services
+  if (application.needVirtualOffice) {
+    baseAmount += 2000;
+  }
+  
+  if (application.externalCompaniesCount > 0) {
+    baseAmount += application.externalCompaniesCount * 1000;
+  }
+  
+  return baseAmount;
+};
+
+// Helper function to get next month date
+const getNextMonthDate = () => {
+  const date = new Date();
+  date.setMonth(date.getMonth() + 1);
+  return date;
+};
+
 /**
  * @desc    Create a new application
  * @route   POST /api/applications
@@ -173,6 +206,22 @@ export const addApplication = async (req, res) => {
       });
 
       await application.save();
+
+      // Auto-create payment record after application is submitted
+      const totalAmount = calculateAmount(application);
+      const dueDate = getNextMonthDate();
+      
+      const payment = new Payment({
+        applicationId: application._id,
+        clientId: authenticatedUserId,
+        totalAmount: totalAmount,
+        dueDate: dueDate,
+        status: "pending",
+        paymentPlan: "full", // Default to full payment, client can change later
+      });
+
+      await payment.save();
+      console.log("✅ Payment record auto-created for application:", application._id, "Amount:", totalAmount);
     
   
       // Handle document uploads (req.files from Cloudinary)
@@ -268,6 +317,13 @@ if (io) {
           assignedEmployees: application.assignedEmployees,
           submittedAt: application.createdAt,
           updatedAt: application.updatedAt,
+          payment: {
+            paymentId: payment._id,
+            totalAmount: payment.totalAmount,
+            dueDate: payment.dueDate,
+            status: payment.status,
+            paymentPlan: payment.paymentPlan,
+          },
         },
       });
     } catch (error) {

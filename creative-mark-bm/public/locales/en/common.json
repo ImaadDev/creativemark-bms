@@ -535,7 +535,67 @@
     "name": "Name",
     "expiry": "Expiry",
     "cvv": "CVV",
-    "setAsDefault": "Set as default"
+    "setAsDefault": "Set as default",
+    "dashboard": {
+      "title": "Payment Dashboard",
+      "subtitle": "Manage your application payments",
+      "totalAmount": "Total Amount",
+      "pendingAmount": "Pending",
+      "submittedAmount": "Submitted",
+      "approvedAmount": "Approved",
+      "awaitingPayment": "Awaiting Payment",
+      "underReview": "Under Review",
+      "verified": "Verified",
+      "paymentPlans": "Payment Plans",
+      "searchByService": "Search by service type...",
+      "choosePaymentPlan": "Choose Payment Plan",
+      "uploadReceipt": "Upload Receipt",
+      "downloadStatement": "Download Statement",
+      "paymentHistory": "Payment History",
+      "paymentTips": "Payment Tips",
+      "chooseBetweenFull": "Choose between full payment or 3 installments",
+      "uploadClearReceipts": "Upload clear, readable receipt images",
+      "verifiedWithin24Hours": "Payments are verified within 24-48 hours"
+    },
+    "planSelection": {
+      "title": "Choose Payment Plan",
+      "paymentDetails": "Payment Details",
+      "totalAmount": "Total Amount",
+      "dueDate": "Due Date",
+      "selectPaymentOption": "Select Payment Option:",
+      "payInFull": "Pay in Full",
+      "payCompleteAmount": "Pay the complete amount",
+      "payInInstallments": "Pay in Installments",
+      "payIn3Parts": "Pay in 3 parts",
+      "each": "each",
+      "continueToUpload": "Continue to Upload Receipt"
+    },
+    "receiptUpload": {
+      "title": "Upload Payment Receipt",
+      "paymentDetails": "Payment Details",
+      "amount": "Amount",
+      "paymentPlan": "Payment Plan",
+      "receiptImage": "Receipt Image",
+      "clickToUpload": "Click to upload receipt",
+      "clickToChange": "Click to change file",
+      "supportedFormats": "PNG, JPG, PDF up to 10MB",
+      "important": "Important:",
+      "ensureReceiptClear": "Ensure the receipt is clear and readable",
+      "includeTransactionRef": "Include transaction reference number if available",
+      "verifiedWithin24Hours": "Payment will be verified within 24-48 hours",
+      "uploading": "Uploading...",
+      "uploadReceipt": "Upload Receipt"
+    },
+    "status": {
+      "pending": "Pending",
+      "submitted": "Submitted",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "installments": {
+      "installment": "Installment",
+      "uploadReceipt": "Upload Receipt"
+    }
   },
   "trackApplication": {
     "applications": "Applications",
@@ -1134,6 +1194,72 @@
       "industrial": "Industrial/agricultural/service activities require 1 external company with 1 year of operation and financial statements.",
       "advertising": "Advertising & promotions requires owning 50% share in an advertising company in your home country (renewed every 3 years).",
       "noSpecialRules": "No special external-company rules for the selected service."
+    },
+    "requests": {
+      "title": "Application Management",
+      "subtitle": "Creative Mark BMS • Admin Portal • Manage all client applications",
+      "totalApplications": "Total Applications",
+      "pending": "Pending",
+      "inProgress": "In Progress",
+      "refreshData": "Refresh Data",
+      "assignRequest": "Assign Request",
+      "loadingApplications": "Loading Applications",
+      "fetchingData": "Fetching the latest application data...",
+      "loadingRequests": "Loading requests...",
+      "tabs": {
+        "all": "All Requests",
+        "allDescription": "View all service requests",
+        "pending": "Pending Review",
+        "pendingDescription": "Requests awaiting review",
+        "inProgress": "In Progress",
+        "inProgressDescription": "Active requests being processed"
+      }
+    },
+    "requestDetails": {
+      "title": "Application Details",
+      "subtitle": "Review and manage application details",
+      "backToRequests": "Back to Requests",
+      "applicationInfo": "Application Information",
+      "clientInfo": "Client Information",
+      "serviceDetails": "Service Details",
+      "status": "Status",
+      "priority": "Priority",
+      "assignedTo": "Assigned To",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "actions": "Actions",
+      "assignTo": "Assign To",
+      "updateStatus": "Update Status",
+      "addNote": "Add Note",
+      "viewDocuments": "View Documents",
+      "timeline": "Timeline",
+      "notes": "Notes",
+      "documents": "Documents",
+      "noNotes": "No notes available",
+      "noDocuments": "No documents uploaded",
+      "addNewNote": "Add New Note",
+      "notePlaceholder": "Add a note about this application...",
+      "saveNote": "Save Note",
+      "cancel": "Cancel",
+      "statuses": {
+        "submitted": "Submitted",
+        "underReview": "Under Review",
+        "inProgress": "In Progress",
+        "completed": "Completed",
+        "rejected": "Rejected"
+      },
+      "priorities": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "retry": "Try Again",
+      "notFound": "The requested application could not be found.",
+      "overview": "Overview",
+      "clientName": "Client Name",
+      "serviceType": "Service Type",
+      "externalCompanies": "External Companies"
     }
   },
   "validation": {
