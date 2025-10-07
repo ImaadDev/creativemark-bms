@@ -22,9 +22,11 @@ import {
   FaEye
 } from 'react-icons/fa';
 import api from '../../../services/api';
+import { useTranslation } from '../../../i18n/TranslationContext';
 
 const AdminTasksPage = () => {
   const router = useRouter();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
@@ -48,10 +50,10 @@ const AdminTasksPage = () => {
   });
 
   const tabs = [
-    { id: 'all', label: 'All Tasks', icon: FaList, count: 0 },
-    { id: 'open', label: 'Open', icon: FaClock, count: 0 },
-    { id: 'in_progress', label: 'In Progress', icon: FaTasks, count: 0 },
-    { id: 'completed', label: 'Completed', icon: FaCheckCircle, count: 0 },
+    { id: 'all', label: t('admin.taskManagement.allTasks'), icon: FaList, count: 0 },
+    { id: 'open', label: t('admin.taskManagement.open'), icon: FaClock, count: 0 },
+    { id: 'in_progress', label: t('admin.taskManagement.inProgress'), icon: FaTasks, count: 0 },
+    { id: 'completed', label: t('admin.taskManagement.completed'), icon: FaCheckCircle, count: 0 },
   ];
 
   useEffect(() => {
@@ -108,7 +110,7 @@ const AdminTasksPage = () => {
         });
         
         // Show success message
-        alert('Task created successfully! The assigned employee will be notified.');
+        alert(t('admin.taskManagement.taskCreatedSuccessfully'));
       }
     } catch (error) {
       console.error('Error creating task:', error);
@@ -117,9 +119,9 @@ const AdminTasksPage = () => {
       
       // Show user-friendly error message
       if (error.response?.data?.message) {
-        alert(`Error creating task: ${error.response.data.message}`);
+        alert(`${t('admin.taskManagement.errorCreatingTask')} ${error.response.data.message}`);
       } else {
-        alert('Error creating task. Please check the console for details.');
+        alert(t('admin.taskManagement.errorCreatingTaskCheckConsole'));
       }
     }
   };
@@ -182,8 +184,8 @@ const AdminTasksPage = () => {
             </div>
             <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-[#ffd17a] border-2 border-white rounded-full"></div>
           </div>
-          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Loading Tasks</h3>
-          <p className="text-sm sm:text-base text-gray-600">Fetching the latest task data...</p>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{t('admin.taskManagement.loadingTasks')}</h3>
+          <p className="text-sm sm:text-base text-gray-600">{t('admin.taskManagement.fetchingLatestTaskData')}</p>
         </div>
       </div>
     );
@@ -203,15 +205,15 @@ const AdminTasksPage = () => {
                   </div>
                   <div className="flex-1">
                     <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
-                      Task Management
+                      {t('admin.taskManagement.taskManagement')}
                     </h1>
                     <p className="text-sm text-[#242021] font-medium uppercase tracking-wider">
-                      Creative Mark Admin Portal
+                      {t('admin.taskManagement.creativeMarkAdminPortal')}
                     </p>
                   </div>
                 </div>
                 <p className="text-sm sm:text-base lg:text-lg text-gray-600 font-medium max-w-2xl">
-                  Create, assign, and track tasks for your team members
+                  {t('admin.taskManagement.createAssignTrack')}
                 </p>
               </div>
               
@@ -221,7 +223,7 @@ const AdminTasksPage = () => {
                   className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 bg-[#ffd17a] text-[#242021] hover:bg-[#ffd17a]/90 transition-all duration-200 font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg hover:scale-105 text-sm sm:text-base"
                 >
                   <FaPlus className="mr-2 text-sm sm:text-base" />
-                  Create Task
+                  {t('admin.taskManagement.createTask')}
                 </button>
               </div>
             </div>
@@ -236,7 +238,7 @@ const AdminTasksPage = () => {
                     <FaSearch className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base" />
                     <input
                       type="text"
-                      placeholder="Search tasks..."
+                      placeholder={t('admin.taskManagement.searchTasks')}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
@@ -253,9 +255,9 @@ const AdminTasksPage = () => {
               <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Tasks</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{t('admin.taskManagement.totalTasks')}</p>
                     <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{tasks.length}</p>
-                    <p className="text-xs text-gray-500 mt-1">All time</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('admin.taskManagement.allTime')}</p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#242021] rounded-lg sm:rounded-xl flex items-center justify-center">
                     <FaTasks className="text-white text-sm sm:text-lg" />
@@ -266,12 +268,12 @@ const AdminTasksPage = () => {
               <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">In Progress</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{t('admin.taskManagement.inProgress')}</p>
                     <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600">
                       {tasks.filter(task => task.status === 'in_progress').length}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      {tasks.length > 0 ? Math.round((tasks.filter(task => task.status === 'in_progress').length / tasks.length) * 100) : 0}% of total
+                      {tasks.length > 0 ? Math.round((tasks.filter(task => task.status === 'in_progress').length / tasks.length) * 100) : 0}{t('admin.taskManagement.ofTotal')}
                     </p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center">
@@ -283,12 +285,12 @@ const AdminTasksPage = () => {
               <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Completed</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{t('admin.taskManagement.completed')}</p>
                     <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#242021]">
                       {tasks.filter(task => task.status === 'completed').length}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      {tasks.length > 0 ? Math.round((tasks.filter(task => task.status === 'completed').length / tasks.length) * 100) : 0}% completion rate
+                      {tasks.length > 0 ? Math.round((tasks.filter(task => task.status === 'completed').length / tasks.length) * 100) : 0}{t('admin.taskManagement.completionRate')}
                     </p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#ffd17a] rounded-lg sm:rounded-xl flex items-center justify-center">
@@ -300,11 +302,11 @@ const AdminTasksPage = () => {
               <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Overdue</p>
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{t('admin.taskManagement.overdue')}</p>
                     <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">
                       {tasks.filter(task => isOverdue(task.dueDate, task.status)).length}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">Need attention</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('admin.taskManagement.needAttention')}</p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg sm:rounded-xl flex items-center justify-center">
                     <FaExclamationTriangle className="text-white text-sm sm:text-lg" />
@@ -390,7 +392,7 @@ const AdminTasksPage = () => {
                           setShowTaskModal(true);
                         }}
                         className="p-2 text-gray-400 hover:text-[#ffd17a] transition-colors"
-                        title="View Details"
+                        title={t('admin.taskManagement.viewDetails')}
                       >
                         <FaEye className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
@@ -409,12 +411,12 @@ const AdminTasksPage = () => {
                   <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
                     <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                       <FaUsers className="w-3 h-3 sm:w-4 sm:h-4 text-[#ffd17a] flex-shrink-0" />
-                      <span className="truncate">Assigned to: {task.assignedTo?.fullName || task.assignedTo?.name}</span>
+                      <span className="truncate">{t('admin.taskManagement.assignedTo')} {task.assignedTo?.fullName || task.assignedTo?.name}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                       <FaClock className="w-3 h-3 sm:w-4 sm:h-4 text-[#ffd17a] flex-shrink-0" />
                       <span className={isOverdue(task.dueDate, task.status) ? 'text-red-600 font-medium' : ''}>
-                        Due: {new Date(task.dueDate).toLocaleDateString()}
+                        {t('admin.taskManagement.due')} {new Date(task.dueDate).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
@@ -424,7 +426,7 @@ const AdminTasksPage = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                            <span className="text-xs sm:text-sm font-semibold text-[#242021]">📋 Related Application</span>
+                            <span className="text-xs sm:text-sm font-semibold text-[#242021]">{t('admin.taskManagement.relatedApplication')}</span>
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                               typeof task.applicationId.status === 'object' 
                                 ? task.applicationId.status.current === 'approved' ? 'bg-green-100 text-green-800' :
@@ -433,13 +435,13 @@ const AdminTasksPage = () => {
                                   'bg-gray-100 text-gray-800'
                                 : 'bg-gray-100 text-gray-800'
                             }`}>
-                              {typeof task.applicationId.status === 'object' ? task.applicationId.status.current : task.applicationId.status || 'Unknown'}
+                              {typeof task.applicationId.status === 'object' ? task.applicationId.status.current : task.applicationId.status || t('admin.taskManagement.unknown')}
                             </span>
                           </div>
                           <p className="text-xs sm:text-sm text-[#242021] font-medium truncate">
                             {typeof task.applicationId === 'object' 
-                              ? task.applicationId.serviceType?.replace('_', ' ') || 'Unknown Service'
-                              : 'Application'
+                              ? task.applicationId.serviceType?.replace('_', ' ') || t('admin.taskManagement.unknownService')
+                              : t('admin.taskManagement.application')
                             }
                           </p>
                         </div>
@@ -456,9 +458,9 @@ const AdminTasksPage = () => {
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <FaTasks className="text-2xl sm:text-3xl text-gray-400" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-3">No tasks found</h3>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-3">{t('admin.taskManagement.noTasksFound')}</h3>
               <p className="text-sm sm:text-base text-gray-500 mb-6 sm:mb-8">
-                {searchTerm ? 'Try adjusting your search criteria.' : 'Get started by creating your first task.'}
+                {searchTerm ? t('admin.taskManagement.tryAdjustingSearch') : t('admin.taskManagement.getStartedCreating')}
               </p>
               {!searchTerm && (
                 <button
@@ -466,7 +468,7 @@ const AdminTasksPage = () => {
                   className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-[#ffd17a] text-[#242021] hover:bg-[#ffd17a]/90 transition-all duration-200 font-semibold rounded-lg sm:rounded-xl shadow-md hover:shadow-lg hover:scale-105 text-sm sm:text-base"
                 >
                   <FaPlus className="mr-2 text-sm sm:text-base" />
-                  Create Task
+                  {t('admin.taskManagement.createTask')}
                 </button>
               )}
             </div>
@@ -485,8 +487,8 @@ const AdminTasksPage = () => {
                     <FaPlus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Create New Task</h2>
-                    <p className="text-xs sm:text-sm text-[#242021] font-medium">Assign tasks to your team members</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t('admin.taskManagement.createNewTask')}</h2>
+                    <p className="text-xs sm:text-sm text-[#242021] font-medium">{t('admin.taskManagement.assignTasksToTeam')}</p>
                   </div>
                 </div>
                 <button
@@ -502,7 +504,7 @@ const AdminTasksPage = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <div className="lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Task Title *
+                    {t('admin.taskManagement.taskTitle')} *
                   </label>
                   <input
                     type="text"
@@ -510,14 +512,14 @@ const AdminTasksPage = () => {
                     value={formData.title}
                     onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                     className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 text-sm sm:text-base"
-                    placeholder="Enter a clear, descriptive task title"
+                    placeholder={t('admin.taskManagement.enterClearDescriptive')}
                   />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description *
+                  {t('admin.taskManagement.description')} *
                 </label>
                 <textarea
                   required
@@ -525,30 +527,30 @@ const AdminTasksPage = () => {
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 resize-none text-sm sm:text-base"
-                  placeholder="Provide detailed instructions and requirements for this task..."
+                  placeholder={t('admin.taskManagement.provideDetailedInstructions')}
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Priority Level
+                    {t('admin.taskManagement.priorityLevel')}
                   </label>
                   <select
                     value={formData.priority}
                     onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value }))}
                     className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 text-sm sm:text-base"
                   >
-                    <option value="low">🟢 Low Priority</option>
-                    <option value="medium">🟡 Medium Priority</option>
-                    <option value="high">🟠 High Priority</option>
-                    <option value="urgent">🔴 Urgent</option>
+                    <option value="low">{t('admin.taskManagement.lowPriority')}</option>
+                    <option value="medium">{t('admin.taskManagement.mediumPriority')}</option>
+                    <option value="high">{t('admin.taskManagement.highPriority')}</option>
+                    <option value="urgent">{t('admin.taskManagement.urgent')}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Assign To Employee *
+                    {t('admin.taskManagement.assignToEmployee')} *
                   </label>
                   <select
                     required
@@ -556,7 +558,7 @@ const AdminTasksPage = () => {
                     onChange={(e) => setFormData(prev => ({ ...prev, assignedTo: e.target.value }))}
                     className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 text-sm sm:text-base"
                   >
-                    <option value="">👤 Select Employee</option>
+                    <option value="">{t('admin.taskManagement.selectEmployee')}</option>
                     {employees.map((employee, index) => (
                       <option key={employee._id || `employee-${index}`} value={employee._id}>
                         {employee.fullName || employee.name} - {employee.role}
@@ -569,7 +571,7 @@ const AdminTasksPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    📅 Due Date & Time *
+                    {t('admin.taskManagement.dueDateTime')} *
                   </label>
                   <input
                     type="datetime-local"
@@ -582,7 +584,7 @@ const AdminTasksPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    ⏱️ Estimated Hours
+                    {t('admin.taskManagement.estimatedHours')}
                   </label>
                   <input
                     type="number"
@@ -591,7 +593,7 @@ const AdminTasksPage = () => {
                     value={formData.estimatedHours}
                     onChange={(e) => setFormData(prev => ({ ...prev, estimatedHours: e.target.value }))}
                     className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 text-sm sm:text-base"
-                    placeholder="e.g., 8 hours"
+                    placeholder={t('admin.taskManagement.eg8Hours')}
                   />
                 </div>
               </div>
@@ -599,14 +601,14 @@ const AdminTasksPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    📋 Related Application (Optional)
+                    {t('admin.taskManagement.relatedApplicationOptional')}
                   </label>
                   <select
                     value={formData.applicationId}
                     onChange={(e) => setFormData(prev => ({ ...prev, applicationId: e.target.value }))}
                     className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 text-sm sm:text-base"
                   >
-                    <option value="">No related application</option>
+                    <option value="">{t('admin.taskManagement.noRelatedApplication')}</option>
                     {applications.map((app, index) => (
                       <option key={app._id || `app-${index}`} value={app._id}>
                         {app.serviceType?.replace('_', ' ')} - {typeof app.status === 'object' ? app.status.current : app.status}
@@ -617,7 +619,7 @@ const AdminTasksPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    🏷️ Tags (Optional)
+                    {t('admin.taskManagement.tagsOptional')}
                   </label>
                   <input
                     type="text"
@@ -627,9 +629,9 @@ const AdminTasksPage = () => {
                       tags: e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag)
                     }))}
                     className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 text-sm sm:text-base"
-                    placeholder="e.g., frontend, urgent, client-work"
+                    placeholder={t('admin.taskManagement.egFrontendUrgent')}
                   />
-                  <p className="text-xs text-gray-500 mt-1">Separate tags with commas</p>
+                  <p className="text-xs text-gray-500 mt-1">{t('admin.taskManagement.separateTagsWithCommas')}</p>
                 </div>
               </div>
 
@@ -639,14 +641,14 @@ const AdminTasksPage = () => {
                   onClick={() => setShowCreateModal(false)}
                   className="px-4 sm:px-6 py-2.5 sm:py-3 border border-gray-200 text-gray-700 rounded-lg sm:rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold text-sm sm:text-base"
                 >
-                  Cancel
+                  {t('admin.taskManagement.cancel')}
                 </button>
                 <button
                   type="submit"
                   className="px-6 sm:px-8 py-2.5 sm:py-3 bg-[#ffd17a] hover:bg-[#ffd17a]/90 text-[#242021] rounded-lg sm:rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
                   <FaPlus className="w-3 h-3 sm:w-4 sm:h-4" />
-                  Create Task
+                  {t('admin.taskManagement.createTask')}
                 </button>
               </div>
             </form>

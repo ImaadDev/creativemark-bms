@@ -144,7 +144,7 @@ export default function InternalDashboard() {
       
       // Service type analysis
       const serviceTypes = applications.reduce((acc, app) => {
-        const serviceType = app.serviceDetails?.serviceType || 'Business Registration';
+        const serviceType = app.serviceDetails?.serviceType || t('adminDashboard.businessRegistration');
         acc[serviceType] = (acc[serviceType] || 0) + 1;
         return acc;
       }, {});
@@ -498,35 +498,35 @@ export default function InternalDashboard() {
         {/* Payment Revenue Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <StatCard
-            title="Total Revenue"
+            title={t('adminDashboard.totalRevenue')}
             value={`$${stats.paymentStats.totalRevenue.toLocaleString()}`}
             icon={FaDollarSign}
             color="emerald"
-            subtitle="All time revenue"
+            subtitle={t('adminDashboard.allTimeRevenue')}
             onClick={() => router.push('/admin/payments')}
           />
           <StatCard
-            title="Approved Revenue"
+            title={t('adminDashboard.approvedRevenue')}
             value={`$${stats.paymentStats.approvedRevenue.toLocaleString()}`}
             icon={FaCheckCircle}
             color="green"
-            subtitle="Verified payments"
+            subtitle={t('adminDashboard.verifiedPayments')}
             onClick={() => router.push('/admin/payments?status=approved')}
           />
           <StatCard
-            title="Pending Revenue"
+            title={t('adminDashboard.pendingRevenue')}
             value={`$${stats.paymentStats.pendingRevenue.toLocaleString()}`}
             icon={FaClock}
             color="yellow"
-            subtitle="Awaiting payment"
+            subtitle={t('adminDashboard.awaitingPayment')}
             onClick={() => router.push('/admin/payments?status=pending')}
           />
           <StatCard
-            title="Under Review"
+            title={t('adminDashboard.underReview')}
             value={`$${stats.paymentStats.submittedRevenue.toLocaleString()}`}
             icon={FaExclamationTriangle}
             color="orange"
-            subtitle="Pending verification"
+            subtitle={t('adminDashboard.pendingVerification')}
             onClick={() => router.push('/admin/payments?status=submitted')}
           />
         </div>
@@ -535,35 +535,35 @@ export default function InternalDashboard() {
         {ticketStats && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
             <StatCard
-              title="Total Tickets"
+              title={t('adminDashboard.totalTickets')}
               value={ticketStats.total || 0}
               icon={FaHeadset}
               color="blue"
-              subtitle="All support tickets"
+              subtitle={t('adminDashboard.allSupportTickets')}
               onClick={() => router.push('/admin/tickets')}
             />
             <StatCard
-              title="Open Tickets"
+              title={t('adminDashboard.openTickets')}
               value={ticketStats.open || 0}
               icon={FaExclamationCircle}
               color="orange"
-              subtitle="Awaiting response"
+              subtitle={t('adminDashboard.awaitingResponse')}
               onClick={() => router.push('/admin/tickets?status=open')}
             />
             <StatCard
-              title="In Progress"
+              title={t('adminDashboard.inProgress')}
               value={ticketStats.in_progress || 0}
               icon={FaClock}
               color="yellow"
-              subtitle="Being handled"
+              subtitle={t('adminDashboard.beingHandled')}
               onClick={() => router.push('/admin/tickets?status=in_progress')}
             />
             <StatCard
-              title="Resolved"
+              title={t('adminDashboard.resolved')}
               value={ticketStats.resolved || 0}
               icon={FaCheckCircle}
               color="green"
-              subtitle="Successfully resolved"
+              subtitle={t('adminDashboard.successfullyResolved')}
               onClick={() => router.push('/admin/tickets?status=resolved')}
             />
           </div>
@@ -620,8 +620,8 @@ export default function InternalDashboard() {
                     <FaDollarSign className="text-white text-sm sm:text-lg" />
                   </div>
                   <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Revenue by Service</h3>
-                    <p className="text-xs sm:text-sm text-gray-600">Top revenue generating services</p>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t("revenue-by-service")}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">{t('adminDashboard.topRevenueGeneratingServices')}</p>
                   </div>
                 </div>
               </div>
@@ -653,7 +653,7 @@ export default function InternalDashboard() {
                     );
                   }) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>No payment data available</p>
+                    <p>{t('adminDashboard.noPaymentDataAvailable')}</p>
                   </div>
                 )}
               </div>
@@ -669,8 +669,8 @@ export default function InternalDashboard() {
                     <FaChartPie className="text-white text-sm sm:text-lg" />
                   </div>
                   <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Payment Plans</h3>
-                    <p className="text-xs sm:text-sm text-gray-600">Distribution of payment methods</p>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t('adminDashboard.paymentPlans')}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">{t('adminDashboard.distributionOfPaymentMethods')}</p>
                   </div>
                 </div>
               </div>
@@ -682,7 +682,7 @@ export default function InternalDashboard() {
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#ffd17a]">
                       <span className="text-[#242021] text-xs font-bold">F</span>
                     </div>
-                    <span className="text-sm font-medium text-gray-700">Full Payment</span>
+                    <span className="text-sm font-medium text-gray-700">{t('adminDashboard.fullPayment')}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-20 sm:w-24 bg-gray-200 rounded-full h-2">
@@ -699,7 +699,7 @@ export default function InternalDashboard() {
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-500">
                       <span className="text-white text-xs font-bold">I</span>
                     </div>
-                    <span className="text-sm font-medium text-gray-700">Installments</span>
+                    <span className="text-sm font-medium text-gray-700">{t('adminDashboard.installments')}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-20 sm:w-24 bg-gray-200 rounded-full h-2">
@@ -713,7 +713,7 @@ export default function InternalDashboard() {
                 </div>
                 <div className="pt-4 border-t border-gray-200">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Total Payments:</span>
+                    <span className="text-gray-600">{t('adminDashboard.totalPayments')}</span>
                     <span className="font-semibold text-gray-900">{stats.paymentStats.totalPayments}</span>
                   </div>
                 </div>
@@ -806,7 +806,7 @@ export default function InternalDashboard() {
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                             <h3 className="font-semibold text-gray-900 group-hover:text-[#242021] transition-colors text-sm sm:text-base truncate">
-                              {application.serviceDetails?.serviceType || 'Business Registration'}
+                              {application.serviceDetails?.serviceType || t('adminDashboard.businessRegistration')}
                             </h3>
                             <span className={`px-2 sm:px-3 py-1 text-xs font-medium rounded-full border ${getStatusColor(application.status)} flex-shrink-0`}>
                               {formatStatus(application.status)}

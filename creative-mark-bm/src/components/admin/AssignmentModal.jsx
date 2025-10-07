@@ -13,10 +13,12 @@ import {
 import { assignApplicationToEmployees } from '../../services/applicationService';
 import { getAllEmployees } from '../../services/employeeApi';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from '../../i18n/TranslationContext';
 import Swal from 'sweetalert2';
 
 const AssignmentModal = ({ request, onClose, onAssigned }) => {
   const { user: currentUser } = useAuth();
+  const { t } = useTranslation();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [assigning, setAssigning] = useState(false);
@@ -55,11 +57,11 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
   const handleAssign = async () => {
     if (!formData.selectedEmployees || formData.selectedEmployees.length === 0) {
       Swal.fire({
-        title: 'No Employees Selected',
-        text: 'Please select at least one employee to assign this application to.',
+        title: t('admin.requests.alerts.noEmployeesSelected'),
+        text: t('admin.requests.alerts.noEmployeesSelectedMessage'),
         icon: 'warning',
         confirmButtonColor: '#059669',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('admin.requests.alerts.ok'),
         background: '#ffffff',
         customClass: {
           popup: 'rounded-2xl shadow-2xl',
@@ -77,7 +79,7 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
       .join(', ');
 
     const result = await Swal.fire({
-      title: 'Assign Application',
+      title: t('admin.requests.alerts.assignApplication'),
       html: `
         <div class="text-left">
           <p class="text-gray-700 mb-4">
@@ -99,8 +101,8 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
       showCancelButton: true,
       confirmButtonColor: '#059669',
       cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Yes, Assign It!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: t('admin.requests.actions.assignRequest'),
+      cancelButtonText: t('admin.requests.alerts.cancel'),
       reverseButtons: true,
       background: '#ffffff',
       customClass: {
@@ -119,11 +121,11 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
         // Check if current user is available
         if (!currentUser || !currentUser._id) {
           Swal.fire({
-            title: 'Authentication Error',
-            text: 'You must be logged in to assign applications.',
+            title: t('admin.requests.alerts.authenticationError'),
+            text: t('admin.requests.alerts.authenticationErrorMessage'),
             icon: 'error',
             confirmButtonColor: '#dc2626',
-            confirmButtonText: 'OK',
+            confirmButtonText: t('admin.requests.alerts.ok'),
             background: '#ffffff',
             customClass: {
               popup: 'rounded-2xl shadow-2xl',
@@ -179,7 +181,7 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
             `,
             icon: 'success',
             confirmButtonColor: '#059669',
-            confirmButtonText: 'OK',
+            confirmButtonText: t('admin.requests.alerts.ok'),
             background: '#ffffff',
             customClass: {
               popup: 'rounded-2xl shadow-2xl',
@@ -193,11 +195,11 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
           });
         } else {
           Swal.fire({
-            title: 'Assignment Failed',
-            text: 'Failed to assign application. Please try again.',
+            title: t('admin.requests.alerts.assignmentFailed'),
+            text: t('admin.requests.alerts.assignmentFailedMessage'),
             icon: 'error',
             confirmButtonColor: '#dc2626',
-            confirmButtonText: 'OK',
+            confirmButtonText: t('admin.requests.alerts.ok'),
             background: '#ffffff',
             customClass: {
               popup: 'rounded-2xl shadow-2xl',
@@ -211,11 +213,11 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
         console.error('Error assigning application:', error);
         const errorMessage = error.message || 'Error assigning application. Please try again.';
         Swal.fire({
-          title: 'Assignment Error',
-          text: errorMessage,
+          title: t('admin.requests.alerts.assignmentError'),
+          text: t('admin.requests.alerts.assignmentErrorMessage'),
           icon: 'error',
           confirmButtonColor: '#dc2626',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('admin.requests.alerts.ok'),
           background: '#ffffff',
           customClass: {
             popup: 'rounded-2xl shadow-2xl',
@@ -241,7 +243,7 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
 
   const getEmployeeName = (employeeId) => {
     const employee = employees.find(emp => emp._id === employeeId);
-    return employee ? employee.name : 'Unknown';
+    return employee ? employee.name : t('admin.requests.labels.unknown');
   };
 
   return (
@@ -250,7 +252,7 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6 rounded-t-xl">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">Assign Request</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{t('admin.requests.actions.assignRequest')}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -271,7 +273,7 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-gray-500">Service Type:</span>
-                <span className="ml-2 font-medium">{request.serviceDetails?.serviceType || 'Business Registration'}</span>
+                <span className="ml-2 font-medium">{request.serviceDetails?.serviceType || t('admin.requests.serviceTypes.businessRegistration')}</span>
               </div>
               <div>
                 <span className="text-gray-500">Partner Type:</span>
@@ -294,7 +296,7 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
                 <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
                   <FaSpinner className="animate-spin text-white text-xl" />
                 </div>
-                <p className="text-sm text-gray-600 font-medium">Loading employees...</p>
+                <p className="text-sm text-gray-600 font-medium">{t('admin.requests.loadingEmployees')}</p>
               </div>
             </div>
           ) : (
@@ -324,7 +326,7 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
                       <div className="flex-1">
                         <div className="font-bold text-gray-900">{employee.name}</div>
                         <div className="text-sm text-gray-600">{employee.email}</div>
-                        <div className="text-sm text-gray-500">{employee.role || 'Employee'} • {employee.department}</div>
+                        <div className="text-sm text-gray-500">{employee.role || t('admin.requests.labels.employee')} • {employee.department}</div>
                       </div>
                       {formData.selectedEmployees.includes(employee._id) && (
                         <FaCheck className="text-emerald-600" />
@@ -383,7 +385,7 @@ const AssignmentModal = ({ request, onClose, onAssigned }) => {
   ) : (
     <FaSave className="mr-2" />
   )}
-  {assigning ? 'Assigning...' : 'Assign Request'}
+  {assigning ? t('admin.requests.actions.assigning') : t('admin.requests.actions.assignRequest')}
 </button>
 
           </div>

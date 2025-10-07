@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSocket } from "../contexts/SocketContext";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "../i18n/TranslationContext";
 import { Bell, X, Check, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,6 +13,7 @@ const NotificationDropdown = () => {
   const [loading, setLoading] = useState(false);
   const { notifications, unreadCount, markNotificationsAsRead, markNotificationAsRead, clearAllNotifications, fetchNotifications } = useSocket();
   const { user } = useAuth();
+  const { isRTL } = useTranslation();
   const router = useRouter();
   const dropdownRef = useRef(null);
 
@@ -164,16 +166,14 @@ const NotificationDropdown = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute right-0 mt-3 left-1/2 lg:left-0 -translate-x-1/2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 z-50 overflow-hidden"
+            className={`absolute mt-3 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 z-50 overflow-hidden ${isRTL ? 'left-0' : 'right-0'} ${isRTL ? 'sm:left-0' : 'sm:right-0'}`}
             style={{ 
-              right: '0',
               maxWidth: 'calc(100vw - 2rem)',
-              transform: 'translateX(0)'
             }}
           >
             {/* Header */}
             <div className="px-4 sm:px-6 py-4 bg-gradient-to-r from-[#ffd17a]/10 to-[#ffd17a]/5 border-b border-[#ffd17a]/20 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+              <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
                 <div className="w-8 h-8 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 rounded-full flex items-center justify-center">
                   <Bell className="h-4 w-4 text-[#242021]" />
                 </div>
@@ -184,7 +184,7 @@ const NotificationDropdown = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-1">
+              <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'}`}>
                 {notifications.length > 0 && (
                   <button onClick={handleClearAllNotifications} className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-all duration-200" title="Clear all notifications">
                     <Trash2 className="h-4 w-4" />
@@ -227,11 +227,11 @@ const NotificationDropdown = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
                       className={`group relative px-4 sm:px-6 py-4 border-b border-[#ffd17a]/10 hover:bg-[#ffd17a]/5 cursor-pointer transition-all duration-200 ${
-                        !notification.read ? "bg-gradient-to-r from-[#ffd17a]/10 to-[#ffd17a]/5 border-l-4 border-l-[#ffd17a]" : "hover:shadow-sm"
+                        !notification.read ? `bg-gradient-to-r from-[#ffd17a]/10 to-[#ffd17a]/5 ${isRTL ? 'border-r-4 border-r-[#ffd17a]' : 'border-l-4 border-l-[#ffd17a]'}` : "hover:shadow-sm"
                       }`}
                       onClick={() => handleNotificationClick(notification)}
                     >
-                      <div className="flex items-start space-x-4">
+                      <div className={`flex items-start ${isRTL ? 'space-x-reverse space-x-4' : 'space-x-4'}`}>
                         <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 group-hover:scale-105 ${!notification.read ? "bg-[#ffd17a] shadow-lg" : "bg-[#ffd17a]/20 group-hover:bg-[#ffd17a]/30"}`}>
                           <span className={`text-lg ${!notification.read ? "text-[#242021]" : "text-[#242021]/70"}`}>
                             {getNotificationIcon(notification.type)}
@@ -251,7 +251,7 @@ const NotificationDropdown = () => {
                                   {notification.createdAt ? formatTime(notification.createdAt) : "Unknown time"}
                                 </p>
                                 {notification.data?.applicationId && (
-                                  <div className="flex items-center space-x-1 text-xs text-[#ffd17a] font-medium bg-[#ffd17a]/10 px-2 py-1 rounded-full">
+                                  <div className={`flex items-center text-xs text-[#ffd17a] font-medium bg-[#ffd17a]/10 px-2 py-1 rounded-full ${isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'}`}>
                                     <span>View Application</span>
                                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -260,7 +260,7 @@ const NotificationDropdown = () => {
                                 )}
                               </div>
                             </div>
-                            {!notification.read && <div className="w-3 h-3 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 rounded-full animate-pulse ml-2 flex-shrink-0"></div>}
+                            {!notification.read && <div className={`w-3 h-3 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 rounded-full animate-pulse flex-shrink-0 ${isRTL ? 'mr-2' : 'ml-2'}`}></div>}
                           </div>
                         </div>
                       </div>
@@ -273,7 +273,7 @@ const NotificationDropdown = () => {
             {/* Footer */}
             {notifications.length > 0 && (
               <div className="px-4 sm:px-6 py-4 bg-gradient-to-r from-[#ffd17a]/5 to-[#ffd17a]/2 border-t border-[#ffd17a]/10 text-center">
-                <button className="text-sm font-medium text-[#242021]/70 hover:text-[#242021] transition-colors duration-200 flex items-center justify-center space-x-2 mx-auto">
+                <button className={`text-sm font-medium text-[#242021]/70 hover:text-[#242021] transition-colors duration-200 flex items-center justify-center mx-auto ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
                   <span>View all notifications</span>
                   <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

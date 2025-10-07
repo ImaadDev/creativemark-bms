@@ -617,10 +617,10 @@ export default function ModernMultiStepForm() {
                 <Check className="w-10 h-10 text-white" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-                Application Submitted Successfully!
+                {t('application.success.title')}
               </h1>
               <p className="text-white/90 text-sm sm:text-base">
-                Thank you for submitting your application for {form.serviceType ? form.serviceType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'your service'}!
+                {t('application.success.subtitle', { serviceType: form.serviceType ? form.serviceType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'your service' })}
               </p>
             </div>
 
@@ -629,7 +629,7 @@ export default function ModernMultiStepForm() {
               <div className="max-w-3xl mx-auto">
                 <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-6 mb-6">
                   <p className="text-[#242021] text-base sm:text-lg leading-relaxed mb-4">
-                    Your application has been successfully received and is now under review by our team.
+                    {t('application.success.description')}
                   </p>
                 </div>
 
@@ -637,7 +637,7 @@ export default function ModernMultiStepForm() {
                   <div>
                     <h2 className="text-lg sm:text-xl font-bold text-[#242021] mb-4 flex items-center gap-2">
                       <div className="w-2 h-2 bg-[#ffd17a] rounded-full"></div>
-                      Next Steps:
+                      {t('application.success.nextSteps')}
                     </h2>
                     <div className="space-y-4">
                       <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -645,7 +645,7 @@ export default function ModernMultiStepForm() {
                           <span className="text-[#242021] font-bold text-sm">1</span>
                         </div>
                         <div>
-                          <p className="text-[#242021] font-medium">Your application will be reviewed by our staff/admin.</p>
+                          <p className="text-[#242021] font-medium">{t('application.success.step1')}</p>
                         </div>
                       </div>
                       
@@ -654,7 +654,7 @@ export default function ModernMultiStepForm() {
                           <span className="text-[#242021] font-bold text-sm">2</span>
                         </div>
                         <div>
-                          <p className="text-[#242021] font-medium">Once approved, you will need to make the payment in 3 installments.</p>
+                          <p className="text-[#242021] font-medium">{t('application.success.step2')}</p>
                         </div>
                       </div>
                       
@@ -663,7 +663,7 @@ export default function ModernMultiStepForm() {
                           <span className="text-[#242021] font-bold text-sm">3</span>
                         </div>
                         <div>
-                          <p className="text-[#242021] font-medium">You can upload your payment receipt directly from your dashboard for each installment.</p>
+                          <p className="text-[#242021] font-medium">{t('application.success.step3')}</p>
                         </div>
                       </div>
                       
@@ -672,7 +672,7 @@ export default function ModernMultiStepForm() {
                           <span className="text-[#242021] font-bold text-sm">4</span>
                         </div>
                         <div>
-                          <p className="text-[#242021] font-medium">You will receive notifications when your payment is verified and when the next installment is due.</p>
+                          <p className="text-[#242021] font-medium">{t('application.success.step4')}</p>
                         </div>
                       </div>
                     </div>
@@ -680,19 +680,19 @@ export default function ModernMultiStepForm() {
 
                   <div className="bg-[#ffd17a]/5 border border-[#ffd17a]/20 rounded-xl p-6">
                     <p className="text-[#242021] text-sm sm:text-base leading-relaxed">
-                      You can track your application status and payment timeline in your dashboard.
+                      {t('application.success.trackMessage')}
                     </p>
                   </div>
 
                   <div className="text-center">
                     <p className="text-[#242021] font-medium text-base sm:text-lg mb-6">
-                      Thank you for choosing <span className="font-bold text-[#ffd17a]">CreativeMark</span> for your license application!
+                      {t('application.success.thankYou')}
                     </p>
                   </div>
 
                   {applicationId && (
                     <div className="bg-white border-2 border-[#ffd17a]/20 rounded-xl p-4 text-center">
-                      <p className="text-xs font-bold uppercase tracking-wide text-[#242021]/60 mb-1">Application ID</p>
+                      <p className="text-xs font-bold uppercase tracking-wide text-[#242021]/60 mb-1">{t('application.success.applicationId')}</p>
                       <p className="font-mono text-lg font-bold text-[#242021]">{applicationId}</p>
                     </div>
                   )}
@@ -702,13 +702,13 @@ export default function ModernMultiStepForm() {
                       onClick={() => window.location.href = '/client/track-application'}
                       className="px-8 py-4 bg-[#ffd17a] hover:bg-[#ffd17a]/90 text-[#242021] text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg transform hover:scale-105"
                     >
-                      Track Your Application
+                      {t('application.success.trackApplication')}
                     </button>
                     <button 
                       onClick={() => window.location.href = '/client'}
                       className="px-8 py-4 bg-white border-2 border-[#ffd17a] text-[#ffd17a] hover:bg-[#ffd17a] hover:text-[#242021] text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg hover:shadow-xl rounded-lg transform hover:scale-105"
                     >
-                      Back to Dashboard
+                      {t('application.success.backToDashboard')}
                     </button>
                   </div>
                 </div>
@@ -760,16 +760,16 @@ export default function ModernMultiStepForm() {
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-2 sm:mb-3">
                   <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-[#ffd17a]"></div>
-                  <span className="text-sm font-medium uppercase tracking-wider text-[#ffd17a]/80">{t('application.progress') || 'Progress'}</span>
+                  <span className="text-sm font-medium uppercase tracking-wider text-[#ffd17a]/80">{t('application.progress.title')}</span>
                 </div>
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 text-[#ffd17a]">{t('application.stepOf', { current: step, total: steps.length }) || `Step ${step} of ${steps.length}`}</h2>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 text-[#ffd17a]">{t('application.progress.step')} {step} {t('application.progress.of')} {steps.length}</h2>
                 <p className="text-sm sm:text-base text-white/70">{steps[step - 1]?.title || 'Step'} - {steps[step - 1]?.description || 'Description'}</p>
               </div>
               <div className="text-center sm:text-right">
                 <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 text-[#ffd17a]">
                   {Math.round((step / steps.length) * 100)}%
                 </div>
-                <p className='text-xs sm:text-sm font-semibold text-[#ffd17a]/80'>{t('application.completed') || 'Complete'}</p>
+                <p className='text-xs sm:text-sm font-semibold text-[#ffd17a]/80'>{t('application.progress.complete')}</p>
               </div>
             </div>
           </div>
@@ -1337,7 +1337,7 @@ export default function ModernMultiStepForm() {
                                 max="100"
                                 value={company.sharePercentage} 
                                 onChange={(e) => updateExternalCompany(index, 'sharePercentage', parseFloat(e.target.value) || 0)}
-                                placeholder="Ownership percentage"
+                                placeholder={t('application.companies.ownershipPercentage')}
                                 className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-blue-500 text-sm" 
                               />
                             </div>
@@ -1350,18 +1350,18 @@ export default function ModernMultiStepForm() {
                   {form.externalCompaniesCount === 0 && (
                     <div className="text-center py-8">
                       <Building2 className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <p className="text-gray-600 mb-2">No external companies to configure</p>
+                      <p className="text-gray-600 mb-2">{t('application.companies.noCompaniesConfigure')}</p>
                       {requirements.requiredExternalCompanies > 0 ? (
                         <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-lg p-4 max-w-md mx-auto">
                           <p className="text-sm text-[#242021] font-medium mb-2">
-                            ✅ We'll arrange the required {requirements.requiredExternalCompanies} companies for you
+                            ✅ {t('application.companies.weWillArrange', { count: requirements.requiredExternalCompanies })}
                           </p>
                           <p className="text-sm text-[#242021]/80">
-                            You can proceed to the next step. Our team will handle the external company requirements.
+                            {t('application.companies.proceedToNextStep')}
                           </p>
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-500">You can proceed to the next step</p>
+                        <p className="text-sm text-gray-500">{t('application.companies.canProceed')}</p>
                       )}
                     </div>
                   )}
@@ -1377,77 +1377,77 @@ export default function ModernMultiStepForm() {
                     <Heart className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                    Family Members
+                    {t('application.family.title')}
                   </h3>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Add family members who will need residency
+                    {t('application.family.subtitle')}
                   </p>
                 </div>
 
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900">Family Members</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">{t('application.family.familyMembers')}</h3>
                     <button
                       type="button"
                       onClick={addFamilyMember}
                       className="flex items-center gap-2 px-4 py-2 bg-[#242021] text-white font-medium rounded-xl hover:bg-[#242021]/90 transition-colors"
                     >
                       <Plus className="w-4 h-4" />
-                      Add Member
+                      {t('application.family.addMember')}
                     </button>
                   </div>
                   
                   {form.familyMembers.length === 0 ? (
                     <div className="text-center py-12 text-gray-500">
                       <Users className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <p className="text-lg font-medium mb-2">No family members added</p>
-                      <p className="text-sm">Click "Add Member" to include family members who need residency</p>
+                      <p className="text-lg font-medium mb-2">{t('application.family.noFamilyMembers')}</p>
+                      <p className="text-sm">{t('application.family.clickAddMember')}</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {form.familyMembers.map((member, index) => (
                         <div key={index} className="border border-gray-200 rounded-xl p-4 sm:p-6">
                           <div className="flex items-center justify-between mb-4">
-                            <h4 className="font-semibold text-gray-900">Family Member #{index + 1}</h4>
+                            <h4 className="font-semibold text-gray-900">{t('application.family.familyMember', { number: index + 1 })}</h4>
                             <button
                               type="button"
                               onClick={() => removeFamilyMember(index)}
                               className="flex items-center gap-1 text-red-600 hover:text-red-800 text-sm font-medium"
                             >
                               <X className="w-4 h-4" />
-                              Remove
+                              {t('application.family.remove')}
                             </button>
                           </div>
                           
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.family.fullName')}</label>
                               <input 
                                 value={member.name} 
                                 onChange={(e) => updateFamilyMember(index, 'name', e.target.value)}
-                                placeholder="Enter full name"
+                                placeholder={t('application.family.enterFullName')}
                                 className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-blue-500 text-sm" 
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Relationship</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.family.relationship')}</label>
                               <select 
                                 value={member.relation} 
                                 onChange={(e) => updateFamilyMember(index, 'relation', e.target.value)}
                                 className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-blue-500 text-sm"
                               >
-                                <option value="spouse">Spouse</option>
-                                <option value="child">Child</option>
-                                <option value="parent">Parent</option>
-                                <option value="other">Other</option>
+                                <option value="spouse">{t('application.family.spouse')}</option>
+                                <option value="child">{t('application.family.child')}</option>
+                                <option value="parent">{t('application.family.parent')}</option>
+                                <option value="other">{t('application.family.other')}</option>
                               </select>
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Passport Number</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.family.passportNumber')}</label>
                               <input 
                                 value={member.passportNo} 
                                 onChange={(e) => updateFamilyMember(index, 'passportNo', e.target.value)}
-                                placeholder="Enter passport number"
+                                placeholder={t('application.family.enterPassportNumber')}
                                 className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-blue-500 text-sm" 
                               />
                             </div>
@@ -1468,10 +1468,10 @@ export default function ModernMultiStepForm() {
                     <FileImage className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                    Document Upload
+                    {t('application.documents.title')}
                   </h3>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Upload required documents for your application
+                    {t('application.documents.subtitle')}
                   </p>
                 </div>
 
@@ -1481,9 +1481,9 @@ export default function ModernMultiStepForm() {
                       {Number(form.externalCompaniesCount) >= requirements.requiredExternalCompanies ? (
                         <div className="space-y-4">
                         <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-4">
-                          <h3 className="font-semibold text-[#242021] mb-2">Document Options</h3>
+                          <h3 className="font-semibold text-[#242021] mb-2">{t('application.documents.documentOptions')}</h3>
                           <p className="text-sm text-[#242021]/80 mb-3">
-                              You have sufficient external companies. Choose your preferred option:
+                              {t('application.documents.sufficientCompanies')}
                             </p>
 
                             <div className="space-y-3">
@@ -1497,8 +1497,8 @@ export default function ModernMultiStepForm() {
                                   className="mt-1 text-[#ffd17a]"
                                 />
                                 <div>
-                                  <span className="font-medium text-[#242021]">Upload Company Documents</span>
-                                  <p className="text-sm text-[#242021]/80 mt-1">I have all company documents ready to upload</p>
+                                  <span className="font-medium text-[#242021]">{t('application.documents.uploadCompanyDocuments')}</span>
+                                  <p className="text-sm text-[#242021]/80 mt-1">{t('application.documents.haveAllDocuments')}</p>
                                 </div>
                               </label>
                               <label className="flex items-start gap-3 cursor-pointer p-3 border border-[#ffd17a]/20 rounded-lg hover:bg-[#ffd17a]/5">
@@ -1511,8 +1511,8 @@ export default function ModernMultiStepForm() {
                                   className="mt-1 text-[#ffd17a]"
                                 />
                                 <div>
-                                  <span className="font-medium text-[#242021]">Provide Documents for Me</span>
-                                  <p className="text-sm text-[#242021]/80 mt-1">I'll provide passport + ID, you arrange the company documents</p>
+                                  <span className="font-medium text-[#242021]">{t('application.documents.provideDocumentsForMe')}</span>
+                                  <p className="text-sm text-[#242021]/80 mt-1">{t('application.documents.providePassportId')}</p>
                                 </div>
                               </label>
                             </div>
@@ -1520,16 +1520,16 @@ export default function ModernMultiStepForm() {
 
                           {form.docOption === "uploadDocs" && (
                             <div className="space-y-6">
-                              <h3 className="text-lg font-semibold text-gray-900">Company Documents</h3>
+                              <h3 className="text-lg font-semibold text-gray-900">{t('application.documents.companyDocuments')}</h3>
                               {Array.from({ length: Math.min(form.externalCompaniesCount, requirements.requiredExternalCompanies) }).map((_, idx) => (
                                 <div key={idx} className="border border-gray-200 rounded-xl p-4 sm:p-6">
-                                  <h4 className="font-semibold text-gray-900 mb-4">
-                                    {form.externalCompaniesDetails[idx]?.companyName || `Company #${idx + 1}`}
+                                    <h4 className="font-semibold text-gray-900 mb-4">
+                                    {form.externalCompaniesDetails[idx]?.companyName || t('application.documents.companyNumber', { number: idx + 1 })}
                                   </h4>
                                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div>
                                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Commercial Registration
+                                        {t('application.documents.commercialRegistration')}
                                       </label>
                                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
                                         <Upload className="w-6 h-6 mx-auto mb-2 text-gray-400" />
@@ -1543,7 +1543,7 @@ export default function ModernMultiStepForm() {
                                     </div>
                                     <div>
                                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Financial Statement
+                                        {t('application.documents.financialStatement')}
                                       </label>
                                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
                                         <Upload className="w-6 h-6 mx-auto mb-2 text-gray-400" />
@@ -1557,7 +1557,7 @@ export default function ModernMultiStepForm() {
                                     </div>
                                     <div>
                                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Articles of Association
+                                        {t('application.documents.articlesOfAssociation')}
                                       </label>
                                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
                                         <Upload className="w-6 h-6 mx-auto mb-2 text-gray-400" />
@@ -1577,13 +1577,13 @@ export default function ModernMultiStepForm() {
 
                           {form.docOption === "passportOnly" && (
                             <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-6 space-y-4">
-                              <h3 className="font-semibold text-[#242021] mb-2">Personal Documents Required</h3>
+                              <h3 className="font-semibold text-[#242021] mb-2">{t('application.documents.personalDocumentsRequired')}</h3>
                               <p className="text-sm text-[#242021]/80 mb-4">
-                                Please upload your personal documents. We'll arrange all company documents on your behalf.
+                                {t('application.documents.uploadPersonalDocuments')}
                               </p>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-2">Passport</label>
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.passport')}</label>
                                   <div className="border-2 border-dashed border-[#ffd17a]/30 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
                                     <Upload className="w-6 h-6 mx-auto mb-2 text-[#ffd17a]" />
                                     <input
@@ -1595,7 +1595,7 @@ export default function ModernMultiStepForm() {
                                   </div>
                                 </div>
                                 <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-2">Iqama / ID Card</label>
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.iqamaIdCard')}</label>
                                   <div className="border-2 border-dashed border-[#ffd17a]/30 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
                                     <Upload className="w-6 h-6 mx-auto mb-2 text-[#ffd17a]" />
                                     <input
@@ -1700,10 +1700,10 @@ export default function ModernMultiStepForm() {
                     <DollarSign className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                    Payment Details
+                    {t('application.fee.title')}
                   </h3>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Review fees and payment information
+                    {t('application.fee.subtitle')}
                   </p>
                 </div>
 
@@ -1711,37 +1711,36 @@ export default function ModernMultiStepForm() {
                   <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                       <CreditCard className="w-5 h-5" />
-                      Fee Breakdown
+                      {t('application.fee.feeBreakdown')}
                     </h3>
                     <div className="space-y-3 text-sm">
                       <div className="flex justify-between py-2 border-b border-gray-200">
-                        <span className="text-gray-700">Investor visa fee:</span>
-                        <span className="font-medium">2,000 SAR</span>
+                        <span className="text-gray-700">{t('application.fee.investorVisaFee')}</span>
+                        <span className="font-medium">{t('application.fee.investorVisaFeeAmount')}</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-200">
-                        <span className="text-gray-700">Passport processing fee:</span>
-                        <span className="font-medium">650 SAR</span>
+                        <span className="text-gray-700">{t('application.fee.passportProcessingFee')}</span>
+                        <span className="font-medium">{t('application.fee.passportProcessingFeeAmount')}</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-200">
-                        <span className="text-gray-700">Work permit:</span>
-                        <span className="font-medium">9,700 SAR</span>
+                        <span className="text-gray-700">{t('application.fee.workPermit')}</span>
+                        <span className="font-medium">{t('application.fee.workPermitAmount')}</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-200">
-                        <span className="text-gray-700">Transfer fee:</span>
-                        <span className="font-medium">2,000 SAR</span>
+                        <span className="text-gray-700">{t('application.fee.transferFee')}</span>
+                        <span className="font-medium">{t('application.fee.transferFeeAmount')}</span>
                       </div>
                       <div className="flex justify-between py-3 text-lg font-bold text-gray-900 bg-white rounded-lg px-3">
-                        <span>Total Estimated:</span>
-                        <span className="text-[#ffd17a]">14,350 SAR</span>
+                        <span>{t('application.fee.totalEstimated')}</span>
+                        <span className="text-[#ffd17a]">{t('application.fee.totalEstimatedAmount')}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-4">
-                    <h4 className="font-medium text-[#242021] mb-2">Payment Information</h4>
+                    <h4 className="font-medium text-[#242021] mb-2">{t('application.fee.paymentInformation')}</h4>
                     <p className="text-sm text-[#242021]/80">
-                      This is a demonstration form. In a real application, you would be redirected to a secure payment gateway 
-                      to complete the transaction.
+                      {t('application.fee.paymentDescription')}
                     </p>
                   </div>
                 </div>
@@ -1756,10 +1755,10 @@ export default function ModernMultiStepForm() {
                     <CheckCircle className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                    Application Review
+                    {t('application.review.title')}
                   </h3>
                   <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Please review your application before submission
+                    {t('application.review.subtitle')}
                   </p>
                 </div>
 
@@ -1776,73 +1775,73 @@ export default function ModernMultiStepForm() {
                   <div className="bg-gradient-to-br from-[#ffd17a]/10 to-[#ffd17a]/5 border border-[#ffd17a]/20 rounded-2xl p-6">
                     <h3 className="text-lg font-semibold text-[#242021] mb-4 flex items-center gap-2">
                       <Check className="w-5 h-5" />
-                      Ready for Submission
+                      {t('application.review.readyForSubmission')}
                     </h3>
                     <p className="text-sm text-[#242021]/80 mb-4">
-                      Your application is complete and ready for submission. Upon submission, it will go through the following stages:
+                      {t('application.review.applicationComplete')}
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-[#ffd17a] rounded-full"></div>
-                        <span className="text-[#242021]/80">Submitted</span>
+                        <span className="text-[#242021]/80">{t('application.review.submitted')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-[#ffd17a]/60 rounded-full"></div>
-                        <span className="text-[#242021]/80">Under Review</span>
+                        <span className="text-[#242021]/80">{t('application.review.underReview')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-[#ffd17a]/40 rounded-full"></div>
-                        <span className="text-[#242021]/80">In Process</span>
+                        <span className="text-[#242021]/80">{t('application.review.inProcess')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-[#ffd17a] rounded-full"></div>
-                        <span className="text-[#242021]/80">Completed</span>
+                        <span className="text-[#242021]/80">{t('application.review.completed')}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Application Summary */}
                   <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Application Summary</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('application.review.applicationSummary')}</h3>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
                       <div>
-                        <h4 className="font-medium text-gray-900 mb-2">Personal Information</h4>
+                        <h4 className="font-medium text-gray-900 mb-2">{t('application.review.personalInformation')}</h4>
                         <div className="space-y-1 text-gray-600">
-                          <p><span className="font-medium">Name:</span> {form.fullName || "Not provided"}</p>
-                          <p><span className="font-medium">Email:</span> {form.email || "Not provided"}</p>
-                          <p><span className="font-medium">Phone:</span> {form.phone || "Not provided"}</p>
-                          <p><span className="font-medium">Nationality:</span> {form.nationality || "Not provided"}</p>
+                          <p><span className="font-medium">{t('application.review.name')}</span> {form.fullName || t('application.review.notProvided')}</p>
+                          <p><span className="font-medium">{t('application.review.email')}</span> {form.email || t('application.review.notProvided')}</p>
+                          <p><span className="font-medium">{t('application.review.phone')}</span> {form.phone || t('application.review.notProvided')}</p>
+                          <p><span className="font-medium">{t('application.review.nationality')}</span> {form.nationality || t('application.review.notProvided')}</p>
                         </div>
                       </div>
                       
                       <div>
-                        <h4 className="font-medium text-gray-900 mb-2">Service Details</h4>
+                        <h4 className="font-medium text-gray-900 mb-2">{t('application.review.serviceDetails')}</h4>
                         <div className="space-y-1 text-gray-600">
-                          <p><span className="font-medium">Service Type:</span> {form.serviceType ? form.serviceType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : "Not selected"}</p>
-                          <p><span className="font-medium">Partner Type:</span> {form.partnerType === "sole" ? "Sole Partner" : "With Saudi Partner"}</p>
+                          <p><span className="font-medium">{t('application.review.serviceType')}</span> {form.serviceType ? form.serviceType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : t('application.review.notSelected')}</p>
+                          <p><span className="font-medium">{t('application.review.partnerType')}</span> {form.partnerType === "sole" ? t('application.review.solePartner') : t('application.review.withSaudiPartner')}</p>
                           {form.partnerType === "withSaudiPartner" && form.saudiPartnerName && (
-                            <p><span className="font-medium">Saudi Partner:</span> {form.saudiPartnerName}</p>
+                            <p><span className="font-medium">{t('application.review.saudiPartner')}</span> {form.saudiPartnerName}</p>
                           )}
-                          <p><span className="font-medium">Virtual Office:</span> {form.needVirtualOffice ? "Yes" : "No"}</p>
+                          <p><span className="font-medium">{t('application.review.virtualOffice')}</span> {form.needVirtualOffice ? t('application.review.yes') : t('application.review.no')}</p>
                           {form.projectEstimatedValue && (
-                            <p><span className="font-medium">Project Value:</span> {Number(form.projectEstimatedValue).toLocaleString()} SAR</p>
+                            <p><span className="font-medium">{t('application.review.projectValue')}</span> {Number(form.projectEstimatedValue).toLocaleString()} SAR</p>
                           )}
                         </div>
                       </div>
                       
                       <div>
-                        <h4 className="font-medium text-gray-900 mb-2">External Companies</h4>
+                        <h4 className="font-medium text-gray-900 mb-2">{t('application.review.externalCompanies')}</h4>
                         <div className="space-y-1 text-gray-600">
-                          <p><span className="font-medium">Count:</span> {form.externalCompaniesCount}</p>
-                          <p><span className="font-medium">Required:</span> {requirements.requiredExternalCompanies}</p>
+                          <p><span className="font-medium">{t('application.review.count')}</span> {form.externalCompaniesCount}</p>
+                          <p><span className="font-medium">{t('application.review.required')}</span> {requirements.requiredExternalCompanies}</p>
                         </div>
                       </div>
                       
                       <div>
-                        <h4 className="font-medium text-gray-900 mb-2">Family Members</h4>
+                        <h4 className="font-medium text-gray-900 mb-2">{t('application.review.familyMembers')}</h4>
                         <div className="space-y-1 text-gray-600">
-                          <p><span className="font-medium">Count:</span> {form.familyMembers.length}</p>
+                          <p><span className="font-medium">{t('application.review.count')}</span> {form.familyMembers.length}</p>
                         </div>
                       </div>
                     </div>
@@ -1860,7 +1859,7 @@ export default function ModernMultiStepForm() {
                   className="group flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-white border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md rounded-lg" 
                 >
                   <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform duration-300" />
-                  <span className="text-sm sm:text-base">Previous Step</span>
+                  <span className="text-sm sm:text-base">{t('application.navigation.previousStep')}</span>
                 </button>
               )}
               
@@ -1872,7 +1871,7 @@ export default function ModernMultiStepForm() {
                   onClick={nextStep}
                   className="group flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#ffd17a] to-[#ffd17a]/80 text-[#242021] font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl rounded-lg"
                 >
-                  <span className="text-sm sm:text-base">Continue</span>
+                  <span className="text-sm sm:text-base">{t('application.navigation.continue')}</span>
                   <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </button>
               ) : (
@@ -1889,11 +1888,11 @@ export default function ModernMultiStepForm() {
                   {isSubmitting ? (
                     <>
                       <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-sm sm:text-base">Submitting Application...</span>
+                      <span className="text-sm sm:text-base">{t('application.navigation.submittingApplication')}</span>
                     </>
                   ) : (
                     <>
-                      <span className="text-sm sm:text-base">Submit Application</span>
+                      <span className="text-sm sm:text-base">{t('application.navigation.submitApplication')}</span>
                       <Check className="w-4 h-4 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform duration-300" />
                     </>
                   )}

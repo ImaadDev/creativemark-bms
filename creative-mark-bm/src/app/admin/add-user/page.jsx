@@ -113,15 +113,15 @@ export default function AddUserPage() {
   const [success, setSuccess] = useState('');
 
   const departments = [
-    'Administration',
-    'Human Resources',
-    'Finance',
-    'Operations',
-    'IT',
-    'Legal',
-    'Marketing',
-    'Sales',
-    'Customer Service'
+    t('admin.addUserManagement.departments.administration'),
+    t('admin.addUserManagement.departments.humanResources'),
+    t('admin.addUserManagement.departments.finance'),
+    t('admin.addUserManagement.departments.operations'),
+    t('admin.addUserManagement.departments.it'),
+    t('admin.addUserManagement.departments.legal'),
+    t('admin.addUserManagement.departments.marketing'),
+    t('admin.addUserManagement.departments.sales'),
+    t('admin.addUserManagement.departments.customerService')
   ];
 
   const userRoles = [
@@ -133,101 +133,101 @@ export default function AddUserPage() {
   // Access levels removed - no longer needed
 
   const workLocations = [
-    'Head Office',
-    'Branch Office',
-    'Remote',
-    'Hybrid'
+    t('admin.addUserManagement.workLocations.headOffice'),
+    t('admin.addUserManagement.workLocations.branchOffice'),
+    t('admin.addUserManagement.workLocations.remote'),
+    t('admin.addUserManagement.workLocations.hybrid')
   ];
 
 
   const partnerTypes = [
-    'Service Provider',
-    'Consultant',
-    'Freelancer',
-    'Agency',
-    'Vendor',
-    'Contractor'
+    t('admin.addUserManagement.partnerTypes.serviceProvider'),
+    t('admin.addUserManagement.partnerTypes.consultant'),
+    t('admin.addUserManagement.partnerTypes.freelancer'),
+    t('admin.addUserManagement.partnerTypes.agency'),
+    t('admin.addUserManagement.partnerTypes.vendor'),
+    t('admin.addUserManagement.partnerTypes.contractor')
   ];
 
   const partnershipTypes = [
-    'Free Zone Company',
-    'Branch Office',
-    'Representative Office',
-    'Subsidiary',
-    'Joint Venture',
-    'Other'
+    t('admin.addUserManagement.partnershipTypes.freeZoneCompany'),
+    t('admin.addUserManagement.partnershipTypes.branchOffice'),
+    t('admin.addUserManagement.partnershipTypes.representativeOffice'),
+    t('admin.addUserManagement.partnershipTypes.subsidiary'),
+    t('admin.addUserManagement.partnershipTypes.jointVenture'),
+    t('admin.addUserManagement.partnershipTypes.other')
   ];
 
   const legalFormOfEntityOptions = [
-    'Limited Liability Company (LLC)',
-    'Public Joint Stock Company (PJSC)',
-    'Private Joint Stock Company (PrJSC)',
-    'Partnership Limited by Shares',
-    'Limited Partnership',
-    'General Partnership',
-    'Sole Proprietorship',
-    'Branch Office',
-    'Representative Office',
-    'Free Zone Company',
-    'Other'
+    t('admin.addUserManagement.legalFormOfEntity.limitedLiabilityCompany'),
+    t('admin.addUserManagement.legalFormOfEntity.publicJointStockCompany'),
+    t('admin.addUserManagement.legalFormOfEntity.privateJointStockCompany'),
+    t('admin.addUserManagement.legalFormOfEntity.partnershipLimitedByShares'),
+    t('admin.addUserManagement.legalFormOfEntity.limitedPartnership'),
+    t('admin.addUserManagement.legalFormOfEntity.generalPartnership'),
+    t('admin.addUserManagement.legalFormOfEntity.soleProprietorship'),
+    t('admin.addUserManagement.legalFormOfEntity.branchOffice'),
+    t('admin.addUserManagement.legalFormOfEntity.representativeOffice'),
+    t('admin.addUserManagement.legalFormOfEntity.freeZoneCompany'),
+    t('admin.addUserManagement.legalFormOfEntity.other')
   ];
 
   const titleOptions = [
-    'Mr.',
-    'Ms.',
-    'Dr.',
-    'Prof.',
-    'Eng.',
-    'Other'
+    t('admin.addUserManagement.titles.mr'),
+    t('admin.addUserManagement.titles.ms'),
+    t('admin.addUserManagement.titles.dr'),
+    t('admin.addUserManagement.titles.prof'),
+    t('admin.addUserManagement.titles.eng'),
+    t('admin.addUserManagement.titles.other')
   ];
 
   const genderOptions = [
-    'Male',
-    'Female',
-    'Other'
+    t('admin.addUserManagement.genders.male'),
+    t('admin.addUserManagement.genders.female'),
+    t('admin.addUserManagement.genders.other')
   ];
 
   const specializations = [
-    'Legal Services',
-    'Financial Consulting',
-    'Technical Support',
-    'Marketing',
-    'Design',
-    'Translation',
-    'Research',
-    'Training',
-    'Quality Assurance',
-    'Project Management'
+    t('admin.addUserManagement.specializations.legalServices'),
+    t('admin.addUserManagement.specializations.financialConsulting'),
+    t('admin.addUserManagement.specializations.technicalSupport'),
+    t('admin.addUserManagement.specializations.marketing'),
+    t('admin.addUserManagement.specializations.design'),
+    t('admin.addUserManagement.specializations.translation'),
+    t('admin.addUserManagement.specializations.research'),
+    t('admin.addUserManagement.specializations.training'),
+    t('admin.addUserManagement.specializations.qualityAssurance'),
+    t('admin.addUserManagement.specializations.projectManagement')
   ];
 
   const serviceAreas = [
-    'North America',
-    'South America',
-    'Europe',
-    'Asia',
-    'Africa',
-    'Australia',
-    'Middle East',
-    'Global'
+    t('admin.addUserManagement.serviceAreas.northAmerica'),
+    t('admin.addUserManagement.serviceAreas.southAmerica'),
+    t('admin.addUserManagement.serviceAreas.europe'),
+    t('admin.addUserManagement.serviceAreas.asia'),
+    t('admin.addUserManagement.serviceAreas.africa'),
+    t('admin.addUserManagement.serviceAreas.australia'),
+    t('admin.addUserManagement.serviceAreas.middleEast'),
+    t('admin.addUserManagement.serviceAreas.global')
   ];
 
   const languages = [
-    'English',
-    'Spanish',
-    'French',
-    'German',
-    'Italian',
-    'Portuguese',
-    'Arabic',
-    'Chinese',
-    'Japanese',
-    'Russian'
+    t('admin.addUserManagement.languages.english'),
+    t('admin.addUserManagement.languages.spanish'),
+    t('admin.addUserManagement.languages.french'),
+    t('admin.addUserManagement.languages.german'),
+    t('admin.addUserManagement.languages.italian'),
+    t('admin.addUserManagement.languages.portuguese'),
+    t('admin.addUserManagement.languages.arabic'),
+    t('admin.addUserManagement.languages.chinese'),
+    t('admin.addUserManagement.languages.japanese'),
+    t('admin.addUserManagement.languages.russian')
   ];
 
   const availabilityOptions = [
-    { value: 'available', label: 'Available' },
-    { value: 'busy', label: 'Busy' },
-    { value: 'unavailable', label: 'Unavailable' }
+    { value: 'available', label: t('admin.addUserManagement.availability.available') },
+    { value: 'busy', label: t('admin.addUserManagement.availability.busy') },
+    { value: 'unavailable', label: t('admin.addUserManagement.availability.unavailable') }
   ];
 
   const handleInputChange = (e) => {
@@ -271,7 +271,7 @@ export default function AddUserPage() {
         if (!file.type.startsWith('image/')) {
           setErrors(prev => ({
             ...prev,
-            profilePicture: 'Please select a valid image file'
+            profilePicture: t('admin.addUserManagement.pleaseSelectValidImageFile')
           }));
           return;
         }
@@ -281,7 +281,7 @@ export default function AddUserPage() {
         if (!allowedTypes.includes(file.type)) {
           setErrors(prev => ({
             ...prev,
-            [fieldName]: 'Please select a valid document file (PDF, DOC, DOCX)'
+            [fieldName]: t('admin.addUserManagement.pleaseSelectValidDocumentFile')
           }));
           return;
         }
@@ -290,7 +290,7 @@ export default function AddUserPage() {
       if (file.size > 10 * 1024 * 1024) { // 10MB for documents
         setErrors(prev => ({
           ...prev,
-          [fieldName]: 'File size must be less than 10MB'
+          [fieldName]: t('admin.addUserManagement.fileSizeMustBeLessThan10MB')
         }));
         return;
       }
@@ -313,35 +313,35 @@ export default function AddUserPage() {
     const newErrors = {};
     
     if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+      newErrors.fullName = t('admin.addUserManagement.fullNameIsRequired');
     }
     
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('admin.addUserManagement.emailIsRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = t('admin.addUserManagement.emailIsInvalid');
     }
     
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('admin.addUserManagement.passwordIsRequired');
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = t('admin.addUserManagement.passwordMustBeAtLeast8Characters');
     }
     
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm password';
+      newErrors.confirmPassword = t('admin.addUserManagement.pleaseConfirmPassword');
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('admin.addUserManagement.passwordsDoNotMatch');
     }
     
     if (formData.phone && !/^[\+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\s/g, ''))) {
-      newErrors.phone = 'Phone number is invalid';
+      newErrors.phone = t('admin.addUserManagement.phoneNumberIsInvalid');
     }
     
     // Website field removed - no validation needed
 
     if (!formData.userRole) {
-      newErrors.userRole = 'User role is required';
+      newErrors.userRole = t('admin.addUserManagement.userRoleIsRequired');
     }
 
     setErrors(newErrors);
@@ -369,14 +369,14 @@ export default function AddUserPage() {
       const response = await createUser(userData);
       
       if (response.success) {
-        setSuccess(`${formData.userRole === 'employee' ? 'Employee' : formData.userRole === 'partner' ? 'Partner' : 'User'} created successfully!`);
+        setSuccess(`${formData.userRole === 'employee' ? t('admin.addUserManagement.employeeCreatedSuccessfully') : formData.userRole === 'partner' ? t('admin.addUserManagement.partnerCreatedSuccessfully') : t('admin.addUserManagement.userCreatedSuccessfully')}`);
         
         // Reset form after success
         setTimeout(() => {
           router.push('/admin/all-employees');
         }, 2000);
       } else {
-        setErrors({ general: response.message || 'Failed to create user' });
+        setErrors({ general: response.message || t('admin.addUserManagement.failedToCreateUser') });
       }
       
     } catch (error) {
@@ -409,10 +409,10 @@ export default function AddUserPage() {
           // Handle single error message
           setErrors({ general: errorData.message });
         } else {
-          setErrors({ general: error.message || 'Failed to create user. Please try again.' });
+          setErrors({ general: error.message || t('admin.addUserManagement.failedToCreateUser') });
         }
       } else {
-        setErrors({ general: error.message || 'Failed to create user. Please try again.' });
+        setErrors({ general: error.message || t('admin.addUserManagement.failedToCreateUser') });
       }
     } finally {
       setSaving(false);
@@ -570,7 +570,7 @@ export default function AddUserPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-emerald-900 font-bold text-sm sm:text-lg">{success}</p>
-              <p className="text-emerald-700 text-xs sm:text-sm">Redirecting you back to the users list...</p>
+              <p className="text-emerald-700 text-xs sm:text-sm">{t('admin.addUserManagement.redirectingToUsersList')}</p>
             </div>
           </div>
         )}
@@ -582,7 +582,7 @@ export default function AddUserPage() {
               <FaExclamationTriangle className="text-white text-sm sm:text-lg" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-red-900 font-bold text-sm sm:text-lg">Error</p>
+              <p className="text-red-900 font-bold text-sm sm:text-lg">{t('admin.addUserManagement.error')}</p>
               <p className="text-red-700 text-xs sm:text-sm">{errors.general}</p>
             </div>
           </div>
@@ -593,7 +593,7 @@ export default function AddUserPage() {
             {/* Profile Picture Section */}
             <div className="lg:col-span-1">
               <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6">Profile Picture</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6">{t('admin.addUserManagement.profilePicture')}</h3>
                 
                 <div className="text-center">
                   <div className="relative inline-block">
@@ -622,7 +622,7 @@ export default function AddUserPage() {
                   
                   <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Upload Profile Photo
+                      {t('admin.addUserManagement.uploadProfilePhoto')}
                     </label>
                     <input
                       type="file"
@@ -634,7 +634,7 @@ export default function AddUserPage() {
                       <p className="text-red-600 text-sm mt-1">{errors.profilePicture}</p>
                     )}
                     <p className="text-xs text-gray-500 mt-2">
-                      Max size: 5MB. Formats: JPG, PNG, GIF
+                      {t('admin.addUserManagement.maxSizeFormats')}
                     </p>
                   </div>
                 </div>
@@ -649,7 +649,7 @@ export default function AddUserPage() {
               <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
                   <FaLock className="mr-3 text-[#242021]" />
-                  Account Information
+                  {t('admin.addUserManagement.accountInformation')}
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -690,9 +690,9 @@ export default function AddUserPage() {
                                 {role.label}
                               </div>
                               <div className="text-xs sm:text-sm text-gray-500 mt-1">
-                                {role.value === 'employee' && 'Internal team member'}
-                                {role.value === 'partner' && 'External service provider'}
-                                {role.value === 'admin' && 'System administrator'}
+                                {role.value === 'employee' && t('admin.addUserManagement.internalTeamMember')}
+                                {role.value === 'partner' && t('admin.addUserManagement.externalServiceProvider')}
+                                {role.value === 'admin' && t('admin.addUserManagement.systemAdministrator')}
                               </div>
                             </div>
                           </div>
@@ -722,7 +722,7 @@ export default function AddUserPage() {
                         className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 pr-12 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
                           errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
                         }`}
-                        placeholder="Enter password"
+                        placeholder={t('admin.addUserManagement.enterPassword')}
                       />
                       <button
                         type="button"
@@ -750,7 +750,7 @@ export default function AddUserPage() {
                         className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 pr-12 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
                           errors.confirmPassword ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
                         }`}
-                        placeholder="Confirm password"
+                        placeholder={t('admin.addUserManagement.confirmPassword')}
                       />
                       <button
                         type="button"
@@ -771,7 +771,7 @@ export default function AddUserPage() {
               <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
                   <FaUser className="mr-3 text-[#242021]" />
-                  Personal Information
+                  {t('admin.addUserManagement.personalInformation')}
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -787,7 +787,7 @@ export default function AddUserPage() {
                       className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
                         errors.fullName ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
                       }`}
-                      placeholder="Enter full name"
+                      placeholder={t('admin.addUserManagement.enterFullName')}
                     />
                     {errors.fullName && (
                       <p className="text-red-600 text-sm mt-1">{errors.fullName}</p>
@@ -807,7 +807,7 @@ export default function AddUserPage() {
                       className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
                         errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
                       }`}
-                      placeholder="Enter email address"
+                      placeholder={t('admin.addUserManagement.enterEmailAddress')}
                     />
                     {errors.email && (
                       <p className="text-red-600 text-sm mt-1">{errors.email}</p>
@@ -821,7 +821,7 @@ export default function AddUserPage() {
                 <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
                   <FaUserTie className="mr-3 text-[#242021]" />
-                  Employment Information
+                  {t('admin.addUserManagement.employmentInformation')}
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -861,7 +861,7 @@ export default function AddUserPage() {
                       className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
                         errors.position ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
                       }`}
-                      placeholder="Enter position"
+                      placeholder={t('admin.addUserManagement.enterPosition')}
                     />
                     {errors.position && (
                       <p className="text-red-600 text-sm mt-1">{errors.position}</p>
@@ -921,7 +921,7 @@ export default function AddUserPage() {
                       className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
                         errors.manager ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
                       }`}
-                      placeholder="Enter manager name"
+                      placeholder={t('admin.addUserManagement.enterManagerName')}
                     />
                     {errors.manager && (
                       <p className="text-red-600 text-sm mt-1">{errors.manager}</p>
@@ -940,7 +940,7 @@ export default function AddUserPage() {
                       className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
                         errors.salary ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
                       }`}
-                      placeholder="Enter salary"
+                      placeholder={t('admin.addUserManagement.enterSalary')}
                     />
                     {errors.salary && (
                       <p className="text-red-600 text-sm mt-1">{errors.salary}</p>
@@ -992,7 +992,7 @@ export default function AddUserPage() {
                           value={formData.clientEngagementManager}
                           onChange={handleInputChange}
                           className={getInputClassName('clientEngagementManager', "w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base")}
-                          placeholder="Enter client engagement manager name"
+                          placeholder={t('admin.addUserManagement.enterClientEngagementManagerName')}
                         />
                         {errors.clientEngagementManager && (
                           <p className="text-red-600 text-sm mt-1">{errors.clientEngagementManager}</p>
@@ -1020,7 +1020,7 @@ export default function AddUserPage() {
                           value={formData.legalEntityName}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter legal entity name"
+                          placeholder={t('admin.addUserManagement.enterLegalEntityName')}
                         />
                       </div>
 
@@ -1051,7 +1051,7 @@ export default function AddUserPage() {
                           value={formData.businessAddress}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter business address"
+                          placeholder={t('admin.addUserManagement.enterBusinessAddress')}
                         />
                       </div>
                     </div>
@@ -1092,7 +1092,7 @@ export default function AddUserPage() {
                           value={formData.gmFullName}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter full name"
+                          placeholder={t('admin.addUserManagement.enterFullName')}
                         />
                       </div>
 
@@ -1120,7 +1120,7 @@ export default function AddUserPage() {
                           value={formData.countryOfBirth}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter country of birth"
+                          placeholder={t('admin.addUserManagement.enterCountryOfBirth')}
                         />
                       </div>
 
@@ -1134,7 +1134,7 @@ export default function AddUserPage() {
                           value={formData.gmNationality}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter nationality"
+                          placeholder={t('admin.addUserManagement.enterNationality')}
                         />
                       </div>
 
@@ -1149,7 +1149,7 @@ export default function AddUserPage() {
                           value={formData.passportNumber}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter passport number"
+                          placeholder={t('admin.addUserManagement.enterPassportNumber')}
                         />
                       </div>
 
@@ -1194,7 +1194,7 @@ export default function AddUserPage() {
                           value={formData.gmEmail}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter email address"
+                          placeholder={t('admin.addUserManagement.enterEmailAddress')}
                         />
                       </div>
 
@@ -1289,7 +1289,7 @@ export default function AddUserPage() {
                           value={formData.city}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter city"
+                          placeholder={t('admin.addUserManagement.enterCity')}
                         />
                       </div>
 
@@ -1331,7 +1331,7 @@ export default function AddUserPage() {
                           value={formData.country}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter country"
+                          placeholder={t('admin.addUserManagement.enterCountry')}
                         />
                       </div>
 
@@ -1356,7 +1356,7 @@ export default function AddUserPage() {
                           value={formData.bankName}
                           onChange={handleInputChange}
                           className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter bank name"
+                          placeholder={t('admin.addUserManagement.enterBankName')}
                         />
                       </div>
 
@@ -1570,7 +1570,7 @@ export default function AddUserPage() {
                 className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base"
               >
                 <FaTimes className="mr-2 text-sm sm:text-base" />
-                {t('buttons.resetForm')}
+                {t('admin.addUserManagement.resetForm')}
               </button>
               <button
                 type="button"
@@ -1597,7 +1597,7 @@ export default function AddUserPage() {
                   className="flex items-center px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base"
                 >
                   <FaTimes className="mr-2 text-sm sm:text-base" />
-                  Reset Form
+                  {t('admin.addUserManagement.resetForm')}
                 </button>
                 <button
                   type="submit"

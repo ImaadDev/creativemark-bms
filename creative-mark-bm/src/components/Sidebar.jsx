@@ -118,7 +118,7 @@ export default function Sidebar({ role, isOpen, onClose }) {
       {/* Mobile Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 lg:hidden z-20"
+          className={`fixed inset-0 bg-black/50 lg:hidden z-20 transition-opacity duration-300 ${isRTL ? 'backdrop-blur-sm' : ''}`}
           onClick={onClose}
         />
       )}
@@ -128,31 +128,36 @@ export default function Sidebar({ role, isOpen, onClose }) {
         className={`
           fixed lg:static inset-y-0 z-30
           w-72 flex flex-col h-full lg:rounded-3xl
-          transform transition-transform duration-300
+          transform transition-transform duration-300 ease-in-out
           ${isRTL ? 'right-0' : 'left-0'}
           ${isOpen ? 'translate-x-0' : `${isRTL ? 'translate-x-full' : '-translate-x-full'} lg:translate-x-0`}
+          ${isRTL ? 'lg:rounded-l-3xl lg:rounded-r-none' : 'lg:rounded-r-3xl lg:rounded-l-none'}
         `}
         style={{
           background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-          borderRight: '1px solid rgba(255, 209, 122, 0.2)',
+          borderRight: isRTL ? 'none' : '1px solid rgba(255, 209, 122, 0.2)',
+          borderLeft: isRTL ? '1px solid rgba(255, 209, 122, 0.2)' : 'none',
+          boxShadow: isRTL 
+            ? 'inset -1px 0 0 rgba(255, 209, 122, 0.1), 2px 0 10px rgba(0, 0, 0, 0.1)' 
+            : 'inset 1px 0 0 rgba(255, 209, 122, 0.1), -2px 0 10px rgba(0, 0, 0, 0.1)',
         }}
       >
         {/* Header */}
         <div className="p-4 border-b" style={{ borderBottomColor: 'rgba(255, 209, 122, 0.2)' }}>
           <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
             <div 
-              className="w-20 h-20 rounded-lg flex items-center justify-center">
+              className="w-20 h-20 rounded-lg flex items-center justify-center flex-shrink-0">
               <Image src={logo} alt="Creative Mark" width={60} height={60} />
             </div>
-            <div>
-              <h1 className="text-lg font-semibold" style={{ color: '#ffd17a' }}>Creative Mark</h1>
-              <p className="text-xs uppercase text-gray-300">{role} Portal</p>
+            <div className={`flex-1 min-w-0 ${isRTL ? 'text-right' : 'text-left'}`}>
+              <h1 className="text-lg font-semibold truncate" style={{ color: '#ffd17a' }}>Creative Mark</h1>
+              <p className="text-xs uppercase text-gray-300 truncate">{role} Portal</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 overflow-y-auto">
+        <nav className={`flex-1 p-4 overflow-y-auto ${isRTL ? 'scrollbar-thin scrollbar-thumb-[#ffd17a]/30 scrollbar-track-transparent' : ''}`}>
           {links[role]?.map((link) => {
             const IconComponent = getIcon(link.icon);
             const isActive = isActiveLink(link.href);
@@ -163,19 +168,24 @@ export default function Sidebar({ role, isOpen, onClose }) {
                 href={link.href}
                 onClick={onClose}
                 className={`
-                  flex items-center p-3 mb-2 rounded-lg
-                  ${isActive ? 'bg-[#ffd17a]/20' : 'hover:bg-[#ffd17a]/10'}
+                  flex items-center p-3 mb-2 rounded-lg transition-all duration-200 group
+                  ${isActive ? 'bg-[#ffd17a]/20 shadow-lg' : 'hover:bg-[#ffd17a]/10 hover:shadow-md'}
+                  ${isRTL ? 'hover:translate-x-1' : 'hover:-translate-x-1'}
                 `}
-                style={{ color: '#ffd17a' }}
+                style={{ 
+                  color: '#ffd17a',
+                  transform: isActive ? (isRTL ? 'translateX(4px)' : 'translateX(-4px)') : 'translateX(0)',
+                }}
               >
-                <IconComponent className={`w-5 h-5 ${isRTL ? 'ml-3' : 'mr-3'}`} />
-                <span className="flex-1">{link.name}</span>
+                <IconComponent className={`w-5 h-5 flex-shrink-0 ${isRTL ? 'ml-3' : 'mr-3'}`} />
+                <span className={`flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>{link.name}</span>
                 {link.badge && (
                   <span 
-                    className="text-xs px-2 py-1 rounded-full"
+                    className={`text-xs px-2 py-1 rounded-full flex-shrink-0 ${isRTL ? 'mr-2' : 'ml-2'} transition-all duration-200 group-hover:scale-105`}
                     style={{ 
                       background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
                       color: '#242021',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                     }}
                   >
                     {link.badge}
@@ -190,8 +200,11 @@ export default function Sidebar({ role, isOpen, onClose }) {
         <div className="p-4 border-t" style={{ borderTopColor: 'rgba(255, 209, 122, 0.2)' }}>
           <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
             <div 
-              className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)' }}
+              className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200 hover:scale-105"
+              style={{ 
+                background: 'linear-gradient(135deg, #ffd17a 0%, #e6b855 100%)',
+                boxShadow: '0 2px 8px rgba(255, 209, 122, 0.3)',
+              }}
             >
               {loading ? (
                 <FaSpinner className="animate-spin text-[#242021]" />
@@ -206,11 +219,11 @@ export default function Sidebar({ role, isOpen, onClose }) {
                 </span>
               )}
             </div>
-            <div>
-              <p className="text-sm font-semibold" style={{ color: '#ffd17a' }}>
+            <div className={`flex-1 min-w-0 ${isRTL ? 'text-right' : 'text-left'}`}>
+              <p className="text-sm font-semibold truncate transition-colors duration-200" style={{ color: '#ffd17a' }}>
                 {loading ? 'Loading...' : (currentUser?.fullName || user?.fullName || 'User')}
               </p>
-              <p className="text-xs text-gray-300 capitalize">
+              <p className="text-xs text-gray-300 capitalize truncate">
                 {currentUser?.role || user?.role || role}
               </p>
             </div>

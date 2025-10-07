@@ -22,11 +22,13 @@ import {
 } from 'react-icons/fa';
 import { getAllApplications, deleteApplication } from '../../services/applicationService';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from '../../i18n/TranslationContext';
 import Swal from 'sweetalert2';
 
 const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestSelect, onRequestAssign, refreshTrigger }) => {
   const router = useRouter();
   const { user: currentUser } = useAuth();
+  const { t } = useTranslation();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -124,17 +126,17 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
     const currentStatus = status?.current || status;
     switch (currentStatus) {
       case 'submitted':
-        return 'Submitted';
+        return t('admin.requests.statuses.submitted');
       case 'under_review':
-        return 'Under Review';
+        return t('admin.requests.statuses.underReview');
       case 'in_process':
-        return 'In Process';
+        return t('admin.requests.statuses.inProcess');
       case 'approved':
-        return 'Approved';
+        return t('admin.requests.statuses.approved');
       case 'completed':
-        return 'Completed';
+        return t('admin.requests.statuses.completed');
       default:
-        return currentStatus || 'Unknown';
+        return currentStatus || t('admin.requests.statuses.unknown');
     }
   };
 
@@ -166,11 +168,11 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
   const handleDeleteRequest = async (request) => {
     if (!currentUser || !["admin", "staff"].includes(currentUser.role)) {
       Swal.fire({
-        title: 'Permission Denied',
-        text: 'Only admin and staff can delete applications.',
+        title: t('admin.requests.alerts.permissionDenied'),
+        text: t('admin.requests.alerts.permissionDeniedMessage'),
         icon: 'error',
         confirmButtonColor: '#dc2626',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('admin.requests.alerts.ok'),
         background: '#ffffff',
         customClass: {
           popup: 'rounded-2xl shadow-2xl',
@@ -182,7 +184,7 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
     }
 
     const result = await Swal.fire({
-      title: 'Delete Application',
+      title: t('admin.requests.alerts.deleteApplication'),
       html: `
         <div class="text-left">
           <p class="text-gray-700 mb-4">
@@ -211,8 +213,8 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
       showCancelButton: true,
       confirmButtonColor: '#dc2626',
       cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Yes, Delete It!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: t('admin.requests.actions.delete'),
+      cancelButtonText: t('admin.requests.alerts.cancel'),
       reverseButtons: true,
       background: '#ffffff',
       customClass: {
@@ -258,11 +260,11 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
         
         // Show success alert
         Swal.fire({
-          title: 'Successfully Deleted!',
-          text: 'The application has been permanently deleted.',
+          title: t('admin.requests.alerts.deleteApplication'),
+          text: t('admin.requests.alerts.deleteApplicationMessage'),
           icon: 'success',
           confirmButtonColor: '#059669',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('admin.requests.alerts.ok'),
           background: '#ffffff',
           customClass: {
             popup: 'rounded-2xl shadow-2xl',
@@ -274,11 +276,11 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
       } catch (error) {
         console.error('Error deleting application:', error);
         Swal.fire({
-          title: 'Deletion Failed',
-          text: `Failed to delete application: ${error.message}`,
+          title: t('admin.requests.alerts.deletionFailed'),
+          text: t('admin.requests.alerts.deletionFailedMessage'),
           icon: 'error',
           confirmButtonColor: '#dc2626',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('admin.requests.alerts.ok'),
           background: '#ffffff',
           customClass: {
             popup: 'rounded-2xl shadow-2xl',
@@ -376,14 +378,14 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
                   <div className="flex-1">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
                       <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
-                        {request.serviceDetails?.serviceType || 'Business Registration'}
+                        {request.serviceDetails?.serviceType || t('admin.requests.serviceTypes.businessRegistration')}
                       </h3>
                       <div className="flex flex-wrap gap-2">
                         <span className={`inline-block text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 border rounded-full ${getStatusColor(request.status)}`}>
                           {formatStatus(request.status)}
                         </span>
                         <span className={`inline-block text-xs font-medium px-2 py-1 rounded-full ${getPriorityColor('Medium')}`}>
-                          Medium
+                          {t('admin.requests.priorities.medium')}
                         </span>
                       </div>
                     </div>
@@ -426,7 +428,7 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
                         External Companies: {request.serviceDetails?.externalCompaniesCount || 0}
                       </p>
                       <p className="text-xs sm:text-sm text-gray-600">
-                        Virtual Office: {request.serviceDetails?.needVirtualOffice ? 'Yes' : 'No'}
+                        Virtual Office: {request.serviceDetails?.needVirtualOffice ? t('admin.requests.virtualOffice.yes') : t('admin.requests.virtualOffice.no')}
                       </p>
                     </div>
                   </div>
@@ -468,7 +470,7 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
                   className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 bg-[#242021] text-white hover:bg-[#242021]/90 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md group"
                 >
                   <FaEye className="mr-2 w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm">View Details</span>
+                  <span className="text-xs sm:text-sm">{t('admin.requests.actions.view')}</span>
                 </button>
                 
                 {/* Show assign button if no employees assigned or if assignedEmployees is empty/undefined */}
@@ -483,7 +485,7 @@ const RequestsList = ({ statusFilter = 'all', assignedFilter = 'all', onRequestS
                     className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 bg-[#ffd17a] text-gray-900 hover:bg-[#ffd17a]/90 transition-all duration-200 font-medium rounded-lg shadow-sm hover:shadow-md group"
                   >
                     <FaUserCheck className="mr-2 w-3 h-3 sm:w-4 sm:h-4" />
-                    <span className="text-xs sm:text-sm">Assign</span>
+                    <span className="text-xs sm:text-sm">{t('admin.requests.actions.assign')}</span>
                   </button>
                 )}
                 

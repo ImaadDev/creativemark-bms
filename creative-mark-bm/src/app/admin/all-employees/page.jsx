@@ -134,11 +134,11 @@ export default function AllEmployeesPage() {
   const handleDeleteEmployee = async (employee) => {
     if (!currentUser || currentUser.role !== "admin") {
       Swal.fire({
-        title: 'Permission Denied',
-        text: 'Only admin can delete employees.',
+        title: t('admin.employeeManagementDetails.permissionDenied'),
+        text: t('admin.employeeManagementDetails.onlyAdminCanDelete'),
         icon: 'error',
         confirmButtonColor: '#dc2626',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('buttons.confirm'),
         background: '#ffffff',
         customClass: {
           popup: 'rounded-2xl shadow-2xl',
@@ -150,29 +150,29 @@ export default function AllEmployeesPage() {
     }
 
     const result = await Swal.fire({
-      title: 'Delete Employee',
+      title: t('admin.employeeManagementDetails.deleteEmployee'),
       html: `
         <div class="text-left">
           <p class="text-gray-700 mb-4">
-            Are you sure you want to delete <strong>${employee.name}</strong>?
+            ${t('admin.employeeManagementDetails.areYouSureDelete')} <strong>${employee.name}</strong>?
           </p>
           <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-            <p class="text-red-800 font-semibold mb-2">⚠️ This action cannot be undone and will permanently remove:</p>
+            <p class="text-red-800 font-semibold mb-2">${t('admin.employeeManagementDetails.actionCannotBeUndone')}</p>
             <ul class="text-red-700 text-sm space-y-1">
-              <li>• Employee account and profile</li>
-              <li>• All associated data and records</li>
-              <li>• Access permissions and assignments</li>
+              <li>${t('admin.employeeManagementDetails.employeeAccountAndProfile')}</li>
+              <li>${t('admin.employeeManagementDetails.allAssociatedData')}</li>
+              <li>${t('admin.employeeManagementDetails.accessPermissions')}</li>
             </ul>
           </div>
           <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
             <p class="text-gray-600 text-sm">
-              <strong>Employee:</strong> ${employee.name}
+              <strong>${t('admin.employeeManagementDetails.employeeLabel')}</strong> ${employee.name}
             </p>
             <p class="text-gray-600 text-sm">
-              <strong>Email:</strong> ${employee.email}
+              <strong>${t('admin.employeeManagementDetails.emailLabel')}</strong> ${employee.email}
             </p>
             <p class="text-gray-600 text-sm">
-              <strong>Department:</strong> ${employee.department || 'N/A'}
+              <strong>${t('admin.employeeManagementDetails.departmentLabel')}</strong> ${employee.department || t('admin.employeeManagementDetails.nA')}
             </p>
           </div>
         </div>
@@ -181,8 +181,8 @@ export default function AllEmployeesPage() {
       showCancelButton: true,
       confirmButtonColor: '#dc2626',
       cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Yes, Delete Employee!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: t('admin.employeeManagementDetails.yesDeleteEmployee'),
+      cancelButtonText: t('buttons.cancel'),
       reverseButtons: true,
       background: '#ffffff',
       customClass: {
@@ -200,8 +200,8 @@ export default function AllEmployeesPage() {
 
         // Show loading alert
         Swal.fire({
-          title: 'Deleting Employee...',
-          text: 'Please wait while we delete the employee.',
+          title: t('admin.employeeManagementDetails.deletingEmployee'),
+          text: t('admin.employeeManagementDetails.pleaseWaitDelete'),
           icon: 'info',
           allowOutsideClick: false,
           allowEscapeKey: false,
@@ -223,11 +223,11 @@ export default function AllEmployeesPage() {
 
         // Show success alert
         Swal.fire({
-          title: 'Successfully Deleted!',
-          text: `${employee.name} has been permanently deleted.`,
+          title: t('admin.employeeManagementDetails.successfullyDeleted'),
+          text: `${employee.name} ${t('admin.employeeManagementDetails.hasBeenPermanentlyDeleted')}`,
           icon: 'success',
           confirmButtonColor: '#059669',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('buttons.confirm'),
           background: '#ffffff',
           customClass: {
             popup: 'rounded-2xl shadow-2xl',
@@ -239,11 +239,11 @@ export default function AllEmployeesPage() {
       } catch (error) {
         console.error('Error deleting employee:', error);
         Swal.fire({
-          title: 'Deletion Failed',
-          text: `Failed to delete employee: ${error.message}`,
+          title: t('admin.employeeManagementDetails.deletionFailed'),
+          text: `${t('admin.employeeManagementDetails.failedToDeleteEmployee')} ${error.message}`,
           icon: 'error',
           confirmButtonColor: '#dc2626',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('buttons.confirm'),
           background: '#ffffff',
           customClass: {
             popup: 'rounded-2xl shadow-2xl',
@@ -259,7 +259,7 @@ export default function AllEmployeesPage() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
+    if (!dateString) return t('admin.employeeManagementDetails.nA');
     return new Date(dateString).toLocaleDateString();
   };
 
@@ -450,7 +450,7 @@ export default function AllEmployeesPage() {
                   <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                     <div className="flex items-center text-xs sm:text-sm text-gray-600">
                       <FaBuilding className="mr-2 sm:mr-3 text-[#ffd17a] flex-shrink-0" />
-                      <span className='truncate'>{employee.department || 'N/A'}</span>
+                      <span className='truncate'>{employee.department || t('admin.employeeManagementDetails.nA')}</span>
                     </div>
                     <div className="flex items-center text-xs sm:text-sm text-gray-600">
                       <FaUserCheck className="mr-2 sm:mr-3 text-[#ffd17a] flex-shrink-0" />
@@ -577,14 +577,14 @@ export default function AllEmployeesPage() {
                       <FaBuilding className="mr-3 sm:mr-4 text-[#ffd17a] flex-shrink-0" />
                       <div className="min-w-0 flex-1">
                         <span className='text-xs sm:text-sm text-gray-500'>{t('admin.department')}</span>
-                        <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedEmployee.department || "N/A"}</p>
+                        <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedEmployee.department || t('admin.employeeManagementDetails.nA')}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
                       <FaUserCheck className="mr-3 sm:mr-4 text-[#ffd17a] flex-shrink-0" />
                       <div className="min-w-0 flex-1">
                         <span className='text-xs sm:text-sm text-gray-500'>{t('admin.role')}</span>
-                        <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedEmployee.role || "Employee"}</p>
+                        <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedEmployee.role || t('admin.employeeManagementDetails.employee')}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -593,7 +593,7 @@ export default function AllEmployeesPage() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <span className='text-xs sm:text-sm text-gray-500'>{t('admin.status')}</span>
-                        <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedEmployee.status || "Active"}</p>
+                        <p className="text-sm sm:text-base text-gray-700 font-semibold truncate">{selectedEmployee.status || t('admin.employeeManagementDetails.active')}</p>
                       </div>
                     </div>
                     <div className="flex items-center">

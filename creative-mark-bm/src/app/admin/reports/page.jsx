@@ -83,7 +83,7 @@ export default function ReportsPage() {
         await loadDashboardData();
       } catch (error) {
         console.error('Error initializing reports page:', error);
-        setError('Failed to load reports data');
+        setError(t('admin.reportsManagement.failedToLoadReportsData'));
       } finally {
         setLoading(false);
       }
@@ -121,7 +121,7 @@ export default function ReportsPage() {
       
     } catch (error) {
       console.error('Error loading dashboard data:', error);
-      setError('Failed to load analytics data');
+      setError(t('admin.reportsManagement.failedToLoadAnalyticsData'));
     } finally {
       setLoading(false);
     }
@@ -138,11 +138,11 @@ export default function ReportsPage() {
       if (response.success) {
         setApplicationReports(response.data);
       } else {
-        setError('Failed to load application reports');
+        setError(t('admin.reportsManagement.failedToLoadApplicationReports'));
       }
     } catch (error) {
       console.error('Error loading application reports:', error);
-      setError('Failed to load application reports');
+      setError(t('admin.reportsManagement.failedToLoadApplicationReports'));
     } finally {
       setLoading(false);
     }
@@ -159,11 +159,11 @@ export default function ReportsPage() {
       if (response.success) {
         setEmployeeReports(response.data);
       } else {
-        setError('Failed to load employee reports');
+        setError(t('admin.reportsManagement.failedToLoadEmployeeReports'));
       }
     } catch (error) {
       console.error('Error loading employee reports:', error);
-      setError('Failed to load employee reports');
+      setError(t('admin.reportsManagement.failedToLoadEmployeeReports'));
     } finally {
       setLoading(false);
     }
@@ -180,11 +180,11 @@ export default function ReportsPage() {
       if (response.success) {
         setFinancialReports(response.data);
       } else {
-        setError('Failed to load financial reports');
+        setError(t('admin.reportsManagement.failedToLoadFinancialReports'));
       }
     } catch (error) {
       console.error('Error loading financial reports:', error);
-      setError('Failed to load financial reports');
+      setError(t('admin.reportsManagement.failedToLoadFinancialReports'));
     } finally {
       setLoading(false);
     }
@@ -344,8 +344,8 @@ export default function ReportsPage() {
       .sort((a, b) => new Date(b.timestamps?.createdAt || b.createdAt) - new Date(a.timestamps?.createdAt || a.createdAt))
       .slice(0, 10)
       .map(app => ({
-        clientName: app.client?.name || 'Unknown Client',
-        clientEmail: app.client?.email || 'unknown@email.com',
+        clientName: app.client?.name || t('admin.reportsManagement.unknownClient'),
+        clientEmail: app.client?.email || t('admin.reportsManagement.unknownEmail'),
         serviceType: app.serviceDetails?.serviceType || app.serviceType || 'business_registration',
         status: app.status,
         assignedEmployees: Math.floor(Math.random() * 3) + 1,
@@ -532,10 +532,10 @@ export default function ReportsPage() {
                 <div className="group relative bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-blue-100 text-sm font-medium">Total Applications</p>
+                      <p className="text-blue-100 text-sm font-medium">{t('admin.reportsManagement.totalApplications')}</p>
                       <p className="text-3xl font-bold">{formatNumber(comprehensiveStats.totalApplications)}</p>
                       <p className="text-blue-200 text-xs mt-1">
-                        {comprehensiveStats.completedApplications} completed
+                        {comprehensiveStats.completedApplications} {t('admin.reportsManagement.completed')}
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
@@ -547,10 +547,10 @@ export default function ReportsPage() {
                 <div className="group relative bg-gradient-to-br from-emerald-500 to-emerald-600 p-6 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-emerald-100 text-sm font-medium">Active Clients</p>
+                      <p className="text-emerald-100 text-sm font-medium">{t('admin.reportsManagement.activeClients')}</p>
                       <p className="text-3xl font-bold">{formatNumber(comprehensiveStats.activeClients)}</p>
                       <p className="text-emerald-200 text-xs mt-1">
-                        {comprehensiveStats.totalClients} total clients
+                        {comprehensiveStats.totalClients} {t('admin.reportsManagement.totalClients')}
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
@@ -562,10 +562,10 @@ export default function ReportsPage() {
                 <div className="group relative bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-purple-100 text-sm font-medium">Team Members</p>
+                      <p className="text-purple-100 text-sm font-medium">{t('admin.reportsManagement.teamMembers')}</p>
                       <p className="text-3xl font-bold">{formatNumber(comprehensiveStats.activeEmployees)}</p>
                       <p className="text-purple-200 text-xs mt-1">
-                        {comprehensiveStats.totalEmployees} total employees
+                        {comprehensiveStats.totalEmployees} {t('admin.reportsManagement.totalEmployees')}
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
@@ -577,10 +577,10 @@ export default function ReportsPage() {
                 <div className="group relative bg-gradient-to-br from-orange-500 to-orange-600 p-6 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-orange-100 text-sm font-medium">Success Rate</p>
+                      <p className="text-orange-100 text-sm font-medium">{t('admin.reportsManagement.successRate')}</p>
                       <p className="text-3xl font-bold">{comprehensiveStats.successRate.toFixed(1)}%</p>
                       <p className="text-orange-200 text-xs mt-1">
-                        {comprehensiveStats.averageProcessingTime} avg days
+                        {comprehensiveStats.averageProcessingTime} {t('admin.reportsManagement.avgDays')}
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
@@ -601,8 +601,8 @@ export default function ReportsPage() {
                       {formatNumber(comprehensiveStats.completedApplications)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Completed</h3>
-                  <p className="text-sm text-gray-600">Successfully processed applications</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.completedApplications')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.successfullyProcessed')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 border border-yellow-200">
@@ -614,8 +614,8 @@ export default function ReportsPage() {
                       {formatNumber(comprehensiveStats.pendingApplications)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Pending</h3>
-                  <p className="text-sm text-gray-600">Applications awaiting review</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.pendingApplications')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.awaitingReview')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
@@ -627,8 +627,8 @@ export default function ReportsPage() {
                       {formatNumber(comprehensiveStats.inProgressApplications)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">In Progress</h3>
-                  <p className="text-sm text-gray-600">Currently being processed</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.inProgressApplications')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.currentlyBeingProcessed')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border border-red-200">
@@ -640,8 +640,8 @@ export default function ReportsPage() {
                       {formatNumber(comprehensiveStats.rejectedApplications)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Rejected</h3>
-                  <p className="text-sm text-gray-600">Applications that were rejected</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.rejectedApplications')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.applicationsRejected')}</p>
                 </div>
               </div>
 
@@ -652,7 +652,7 @@ export default function ReportsPage() {
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                       <FaFileAlt className="text-white text-sm" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900">Application Status</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">{t('admin.reportsManagement.applicationStatus')}</h3>
                   </div>
                   <div className="space-y-3">
                     {analytics.statusBreakdown.map((item, index) => (
@@ -674,7 +674,7 @@ export default function ReportsPage() {
                     <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
                       <FaChartBar className="text-white text-sm" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900">Service Types</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">{t('admin.reportsManagement.serviceTypes')}</h3>
                   </div>
                   <div className="space-y-3">
                     {analytics.serviceTypeBreakdown.map((item, index) => (
@@ -695,17 +695,17 @@ export default function ReportsPage() {
                   <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
                     <FaFileAlt className="text-white text-sm" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Recent Applications</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">{t('admin.reportsManagement.recentApplications')}</h3>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="min-w-full">
                     <thead>
                       <tr className="border-b border-purple-200">
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Client</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Service Type</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Assigned</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Date</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.client')}</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.serviceType')}</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.status')}</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.assigned')}</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.date')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -743,17 +743,17 @@ export default function ReportsPage() {
 
           {activeTab === 'applications' && applicationReports && (
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Application Reports</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.reportsManagement.applicationReports')}</h3>
               <div className="overflow-x-auto">
                 <table className="min-w-full">
                   <thead>
                     <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Application ID</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Client</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Service Type</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Processing Days</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Created</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.applicationId')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.client')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.serviceType')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.status')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.processingDays')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.created')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -778,7 +778,7 @@ export default function ReportsPage() {
                           </span>
                         </td>
                         <td className="py-3 px-4 text-sm text-gray-700">
-                          {app.processingDays} days
+                          {app.processingDays} {t('admin.reportsManagement.days')}
                         </td>
                         <td className="py-3 px-4 text-sm text-gray-500">
                           {formatDate(app.createdAt)}
@@ -793,17 +793,17 @@ export default function ReportsPage() {
 
           {activeTab === 'employees' && employeeReports && (
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Employee Performance</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.reportsManagement.employeePerformance')}</h3>
               <div className="overflow-x-auto">
                 <table className="min-w-full">
                   <thead>
                     <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Employee</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Assigned</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Completed</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">In Progress</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Completion Rate</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-700">Avg Processing</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.employee')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.assignedApplications')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.completedApplications')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.inProgressApplications')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.completionRate')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.avgProcessing')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -830,7 +830,7 @@ export default function ReportsPage() {
                           </span>
                         </td>
                         <td className="py-3 px-4 text-sm text-gray-700">
-                          {emp.avgProcessingDays ? `${emp.avgProcessingDays} days` : 'N/A'}
+                          {emp.avgProcessingDays ? `${emp.avgProcessingDays} ${t('admin.reportsManagement.days')}` : t('admin.paymentManagement.nA')}
                         </td>
                       </tr>
                     ))}
@@ -842,7 +842,7 @@ export default function ReportsPage() {
 
           {activeTab === 'clients' && (
             <div className="p-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Client Analytics</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">{t('admin.reportsManagement.clientAnalytics')}</h3>
               
               {/* Client Overview */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -855,8 +855,8 @@ export default function ReportsPage() {
                       {formatNumber(comprehensiveStats.totalClients)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Total Clients</h3>
-                  <p className="text-sm text-gray-600">Registered clients in the system</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.totalClients')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.registeredClients')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
@@ -868,8 +868,8 @@ export default function ReportsPage() {
                       {formatNumber(comprehensiveStats.activeClients)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Active Clients</h3>
-                  <p className="text-sm text-gray-600">Currently active clients</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.activeClients')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.currentlyActive')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
@@ -881,23 +881,23 @@ export default function ReportsPage() {
                       {((comprehensiveStats.activeClients / comprehensiveStats.totalClients) * 100).toFixed(1)}%
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Activity Rate</h3>
-                  <p className="text-sm text-gray-600">Percentage of active clients</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.activityRate')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.percentageActive')}</p>
                 </div>
               </div>
 
               {/* Client List */}
               <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Client Details</h4>
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.reportsManagement.clientDetails')}</h4>
                 <div className="overflow-x-auto">
                   <table className="min-w-full">
                     <thead>
                       <tr className="border-b border-gray-200">
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Client Name</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Email</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Applications</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-700">Joined Date</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.clientName')}</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.email')}</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.status')}</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.applications')}</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-700">{t('admin.reportsManagement.joinedDate')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -918,7 +918,7 @@ export default function ReportsPage() {
                                 'bg-green-100 text-green-800' : 
                                 'bg-gray-100 text-gray-800'
                             }`}>
-                              {client.status === 'active' || !client.status ? 'Active' : client.status}
+                              {client.status === 'active' || !client.status ? t('admin.reportsManagement.active') : client.status}
                             </span>
                           </td>
                           <td className="py-3 px-4 text-sm text-gray-700">
@@ -938,7 +938,7 @@ export default function ReportsPage() {
 
           {activeTab === 'performance' && (
             <div className="p-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Performance Analytics</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">{t('admin.reportsManagement.performanceAnalytics')}</h3>
               
               {/* Performance Overview */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -951,8 +951,8 @@ export default function ReportsPage() {
                       {comprehensiveStats.successRate.toFixed(1)}%
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Success Rate</h3>
-                  <p className="text-sm text-gray-600">Application completion rate</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.successRate')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.applicationCompletion')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
@@ -964,8 +964,8 @@ export default function ReportsPage() {
                       {comprehensiveStats.averageProcessingTime}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Avg Processing Time</h3>
-                  <p className="text-sm text-gray-600">Days to complete applications</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.avgProcessingTime')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.daysToComplete')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
@@ -977,8 +977,8 @@ export default function ReportsPage() {
                       {comprehensiveStats.clientSatisfaction.toFixed(1)}%
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Client Satisfaction</h3>
-                  <p className="text-sm text-gray-600">Overall satisfaction rating</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.clientSatisfaction')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.overallSatisfaction')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
@@ -990,14 +990,14 @@ export default function ReportsPage() {
                       {formatCurrency(comprehensiveStats.totalRevenue)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Total Revenue</h3>
-                  <p className="text-sm text-gray-600">Generated from completed applications</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.totalRevenue')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.generatedFromCompleted')}</p>
                 </div>
               </div>
 
               {/* Employee Performance */}
               <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 mb-8">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Employee Performance Overview</h4>
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.reportsManagement.employeePerformanceOverview')}</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {employees.slice(0, 6).map((employee, index) => (
                     <div key={index} className="bg-white rounded-lg p-4 border border-indigo-200">
@@ -1015,13 +1015,13 @@ export default function ReportsPage() {
                           <p className="font-semibold text-green-600">
                             {applications.filter(app => app.assignedEmployees?.some(emp => emp === employee._id)).length}
                           </p>
-                          <p className="text-gray-600">Assigned</p>
+                          <p className="text-gray-600">{t('admin.reportsManagement.assignedApplications')}</p>
                         </div>
                         <div className="text-center">
                           <p className="font-semibold text-blue-600">
                             {Math.floor(Math.random() * 90) + 10}%
                           </p>
-                          <p className="text-gray-600">Success</p>
+                          <p className="text-gray-600">{t('admin.reportsManagement.success')}</p>
                         </div>
                       </div>
                     </div>
@@ -1033,7 +1033,7 @@ export default function ReportsPage() {
 
           {activeTab === 'financial' && (
             <div className="p-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Financial Reports</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">{t('admin.reportsManagement.financialReports')}</h3>
               
               {/* Financial Overview */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -1046,8 +1046,8 @@ export default function ReportsPage() {
                       {formatCurrency(comprehensiveStats.totalRevenue)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Total Revenue</h3>
-                  <p className="text-sm text-gray-600">From completed applications</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.totalRevenue')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.generatedFromCompleted')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
@@ -1059,8 +1059,8 @@ export default function ReportsPage() {
                       {formatNumber(comprehensiveStats.completedApplications)}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Paid Applications</h3>
-                  <p className="text-sm text-gray-600">Applications with completed payments</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.paidApplications')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.applicationsWithCompleted')}</p>
                 </div>
                 
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
@@ -1072,27 +1072,27 @@ export default function ReportsPage() {
                       {formatCurrency(comprehensiveStats.totalRevenue / Math.max(comprehensiveStats.completedApplications, 1))}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Average Revenue</h3>
-                  <p className="text-sm text-gray-600">Per completed application</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('admin.reportsManagement.averageRevenue')}</h3>
+                  <p className="text-sm text-gray-600">{t('admin.reportsManagement.perCompletedApplication')}</p>
                 </div>
               </div>
 
               {/* Service Revenue Breakdown */}
               <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Service Revenue Breakdown</h4>
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.reportsManagement.serviceRevenueBreakdown')}</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
-                    { service: 'Business Registration', revenue: comprehensiveStats.totalRevenue * 0.4, count: Math.floor(comprehensiveStats.completedApplications * 0.4) },
-                    { service: 'Commercial Registration', revenue: comprehensiveStats.totalRevenue * 0.3, count: Math.floor(comprehensiveStats.completedApplications * 0.3) },
-                    { service: 'Engineering Consultation', revenue: comprehensiveStats.totalRevenue * 0.2, count: Math.floor(comprehensiveStats.completedApplications * 0.2) },
-                    { service: 'Other Services', revenue: comprehensiveStats.totalRevenue * 0.1, count: Math.floor(comprehensiveStats.completedApplications * 0.1) }
+                    { service: t('admin.reportsManagement.businessRegistration'), revenue: comprehensiveStats.totalRevenue * 0.4, count: Math.floor(comprehensiveStats.completedApplications * 0.4) },
+                    { service: t('admin.reportsManagement.commercialRegistration'), revenue: comprehensiveStats.totalRevenue * 0.3, count: Math.floor(comprehensiveStats.completedApplications * 0.3) },
+                    { service: t('admin.reportsManagement.engineeringConsultation'), revenue: comprehensiveStats.totalRevenue * 0.2, count: Math.floor(comprehensiveStats.completedApplications * 0.2) },
+                    { service: t('admin.reportsManagement.otherServices'), revenue: comprehensiveStats.totalRevenue * 0.1, count: Math.floor(comprehensiveStats.completedApplications * 0.1) }
                   ].map((item, index) => (
                     <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
                       <div className="flex items-center justify-between mb-2">
                         <h5 className="font-semibold text-gray-900">{item.service}</h5>
                         <span className="text-lg font-bold text-emerald-600">{formatCurrency(item.revenue)}</span>
                       </div>
-                      <p className="text-sm text-gray-600">{item.count} applications</p>
+                      <p className="text-sm text-gray-600">{item.count} {t('admin.reportsManagement.applicationsCount')}</p>
                       <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
                         <div 
                           className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-2 rounded-full transition-all duration-500"

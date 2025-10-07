@@ -82,9 +82,9 @@ const InternalRequestsContent = () => {
   const getStatusFilter = (tabId) => {
     switch (tabId) {
       case 'pending':
-        return 'Submitted';
+        return t('admin.requests.statuses.submitted');
       case 'in-progress':
-        return 'In Progress';
+        return t('admin.requests.statuses.inProgress');
       default:
         return 'all';
     }

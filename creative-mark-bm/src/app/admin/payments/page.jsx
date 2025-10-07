@@ -71,13 +71,13 @@ export default function AdminPaymentsPage() {
         setVerificationAction("");
         setAdminNotes("");
         setSelectedPayment(null);
-        alert(`Payment ${verificationAction}d successfully!`);
+        alert(t('admin.paymentManagement.paymentSuccess', { action: verificationAction }));
       } else {
-        alert(response.message || `Failed to ${verificationAction} payment`);
+        alert(response.message || t('admin.paymentManagement.failedToAction', { action: verificationAction }));
       }
     } catch (error) {
       console.error("Error verifying payment:", error);
-      alert(`Failed to ${verificationAction} payment. Please try again.`);
+      alert(t('admin.paymentManagement.failedToActionRetry', { action: verificationAction }));
     } finally {
       setVerifying(false);
     }
@@ -140,65 +140,65 @@ export default function AdminPaymentsPage() {
         <div className="mb-8 md:mb-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-[#242021] mb-2 tracking-tight">Payment Verification</h1>
-              <p className="text-gray-600 text-base md:text-lg">Review and verify client payment receipts</p>
+              <h1 className="text-4xl md:text-5xl font-bold text-[#242021] mb-2 tracking-tight">{t('admin.paymentManagement.paymentVerification')}</h1>
+              <p className="text-gray-600 text-base md:text-lg">{t('admin.paymentManagement.reviewAndVerify')}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-br from-[#242021] to-[#3a3537] text-[#ffd17a] shadow-2xl">
               <div className="flex items-center justify-between mb-3">
-                <span className='text-sm font-semibold uppercase tracking-wide opacity-80'>Total Pending</span>
+                <span className='text-sm font-semibold uppercase tracking-wide opacity-80'>{t('admin.paymentManagement.totalPending')}</span>
                 <div className="p-2 rounded-xl bg-[#ffd17a]/20"><Clock size={18} /></div>
               </div>
               <div className="text-4xl md:text-5xl font-bold mb-1">{stats.totalPending}</div>
-              <div className='text-xs opacity-70'>Payments</div>
+              <div className='text-xs opacity-70'>{t('admin.paymentManagement.payments')}</div>
             </div>
 
             <div className="p-6 md:p-8 rounded-3xl bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all">
               <div className="flex items-center justify-between mb-3">
-                <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>Submitted</span>
+                <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>{t('admin.paymentManagement.submitted')}</span>
                 <div className="p-2 rounded-xl bg-blue-100"><Receipt size={18} className="text-blue-600" /></div>
               </div>
               <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">{stats.submittedPayments}</div>
-              <div className="text-xs text-gray-500">Awaiting Review</div>
+              <div className="text-xs text-gray-500">{t('admin.paymentManagement.awaitingReview')}</div>
             </div>
 
             <div className="p-6 md:p-8 rounded-3xl bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all">
               <div className="flex items-center justify-between mb-3">
-                <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>Full Payments</span>
+                <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>{t('admin.paymentManagement.fullPayments')}</span>
                 <div className="p-2 rounded-xl bg-green-100"><DollarSign size={18} className="text-green-600" /></div>
               </div>
               <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">{stats.fullPayments}</div>
-              <div className='text-xs text-gray-500'>One-time</div>
+              <div className='text-xs text-gray-500'>{t('admin.paymentManagement.oneTime')}</div>
             </div>
 
             <div className="p-6 md:p-8 rounded-3xl bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-all">
               <div className="flex items-center justify-between mb-3">
-                <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>Installments</span>
+                <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>{t('admin.paymentManagement.installments')}</span>
                 <div className="p-2 rounded-xl bg-purple-100"><Calendar size={18} className="text-purple-600" /></div>
               </div>
               <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">{stats.installmentPayments}</div>
-              <div className='text-xs text-gray-500'>Multi-part</div>
+              <div className='text-xs text-gray-500'>{t('admin.paymentManagement.multiPart')}</div>
             </div>
           </div>
         </div>
 
         <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h2 className='text-2xl font-bold text-[#242021]'>Pending Payments</h2>
+            <h2 className='text-2xl font-bold text-[#242021]'>{t('admin.paymentManagement.pendingPayments')}</h2>
             <div className="flex gap-2">
-              <button onClick={() => setFilter("all")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "all" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>All</button>
-              <button onClick={() => setFilter("submitted")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "submitted" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>Submitted</button>
-              <button onClick={() => setFilter("full")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "full" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>Full</button>
-              <button onClick={() => setFilter("installments")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "installments" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>Installments</button>
+              <button onClick={() => setFilter("all")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "all" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>{t('admin.paymentManagement.all')}</button>
+              <button onClick={() => setFilter("submitted")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "submitted" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>{t('admin.paymentManagement.submitted')}</button>
+              <button onClick={() => setFilter("full")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "full" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>{t('admin.paymentManagement.full')}</button>
+              <button onClick={() => setFilter("installments")} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === "installments" ? "bg-[#242021] text-[#ffd17a]" : "bg-gray-100 text-gray-600"}`}>{t('admin.paymentManagement.installments')}</button>
             </div>
           </div>
 
           <div className="mb-4">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-              <input type="text" placeholder="Search by service type or client name..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-gray-50 text-gray-800 pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#242021] border border-gray-200" />
+              <input type="text" placeholder={t('admin.paymentManagement.searchPlaceholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-gray-50 text-gray-800 pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#242021] border border-gray-200" />
             </div>
           </div>
 
@@ -213,7 +213,7 @@ export default function AdminPaymentsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <h3 className="font-semibold text-gray-900 text-lg">
-                          {payment.applicationId?.serviceType?.charAt(0).toUpperCase() + payment.applicationId?.serviceType?.slice(1)} Application
+                          {payment.applicationId?.serviceType?.charAt(0).toUpperCase() + payment.applicationId?.serviceType?.slice(1)} {t('admin.paymentManagement.application')}
                         </h3>
                         <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${getStatusStyle(payment.status)}`}>
                           {getStatusIcon(payment.status)}
@@ -228,7 +228,7 @@ export default function AdminPaymentsPage() {
                         </span>
                       </div>
                       <div className="text-sm text-gray-500">
-                        Client: {payment.clientId?.fullName} • Amount: ${payment.totalAmount} • Submitted: {payment.createdAt ? formatDate(payment.createdAt) : 'N/A'}
+                        {t('admin.paymentManagement.client')}: {payment.clientId?.fullName} • {t('admin.paymentManagement.amount')}: ${payment.totalAmount} • {t('admin.paymentManagement.submitted')}: {payment.createdAt ? formatDate(payment.createdAt) : t('admin.paymentManagement.nA')}
                       </div>
                     </div>
                   </div>
@@ -240,14 +240,14 @@ export default function AdminPaymentsPage() {
                           className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
                         >
                           <CheckCircle size={16} />
-                          Approve
+                          {t('admin.paymentManagement.approve')}
                         </button>
                         <button 
                           onClick={() => openVerificationModal(payment, null, "reject")}
                           className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
                         >
                           <XCircle size={16} />
-                          Reject
+                          {t('admin.paymentManagement.reject')}
                         </button>
                       </>
                     )}
@@ -267,7 +267,7 @@ export default function AdminPaymentsPage() {
                       <div key={index} className="p-3 bg-white rounded-xl border border-gray-200">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-sm font-semibold text-gray-700">
-                            Installment {index + 1}
+                            {t('admin.paymentManagement.installment')} {index + 1}
                           </span>
                           <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${getStatusStyle(installment.status)}`}>
                             {getStatusIcon(installment.status)}
@@ -281,13 +281,13 @@ export default function AdminPaymentsPage() {
                               onClick={() => openVerificationModal(payment, index, "approve")}
                               className="flex-1 px-2 py-1 bg-green-600 text-white text-xs font-semibold rounded hover:bg-green-700 transition-colors"
                             >
-                              Approve
+                              {t('admin.paymentManagement.approve')}
                             </button>
                             <button
                               onClick={() => openVerificationModal(payment, index, "reject")}
                               className="flex-1 px-2 py-1 bg-red-600 text-white text-xs font-semibold rounded hover:bg-red-700 transition-colors"
                             >
-                              Reject
+                              {t('admin.paymentManagement.reject')}
                             </button>
                           </div>
                         )}
@@ -301,22 +301,22 @@ export default function AdminPaymentsPage() {
                   <div className="mt-4 p-3 bg-white rounded-xl border border-gray-200">
                     <div className="flex items-center gap-2 mb-2">
                       <Receipt size={16} className="text-gray-600" />
-                      <span className="text-sm font-semibold text-gray-700">Payment Receipt</span>
+                      <span className="text-sm font-semibold text-gray-700">{t('admin.paymentManagement.paymentReceipt')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <img 
                         src={payment.receiptImage} 
-                        alt="Payment Receipt" 
+                        alt={t('admin.paymentManagement.paymentReceipt')} 
                         className="w-20 h-20 object-cover rounded-lg border border-gray-200"
                       />
                       <div className="flex-1">
-                        <p className="text-sm text-gray-600">Receipt uploaded</p>
+                        <p className="text-sm text-gray-600">{t('admin.paymentManagement.receiptUploaded')}</p>
                         <button 
                           onClick={() => window.open(payment.receiptImage, '_blank')}
                           className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
                         >
                           <Eye size={14} />
-                          View Full Size
+                          {t('admin.paymentManagement.viewFullSize')}
                         </button>
                       </div>
                     </div>
@@ -335,12 +335,12 @@ export default function AdminPaymentsPage() {
             <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-6 rounded-t-3xl flex justify-between items-center">
               <div>
                 <h2 className='text-2xl font-bold text-[#ffd17a]'>
-                  {verificationAction === "approve" ? "Approve Payment" : "Reject Payment"}
+                  {verificationAction === 'approve' ? t('admin.paymentManagement.approvePayment') : t('admin.paymentManagement.rejectPayment')}
                 </h2>
                 <p className="text-[#ffd17a]/70 text-sm mt-1">
                   {selectedPayment.installmentIndex !== undefined 
                     ? `Installment #${selectedPayment.installmentIndex + 1}`
-                    : "Full Payment"
+                    : t('admin.paymentManagement.fullPayment')
                   }
                 </p>
               </div>
@@ -350,14 +350,14 @@ export default function AdminPaymentsPage() {
             </div>
             <form onSubmit={handleVerification} className="p-6 space-y-6">
               <div className="p-4 bg-gray-50 rounded-xl">
-                <h3 className="font-semibold text-gray-900 mb-2">Payment Details</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t('admin.paymentManagement.paymentDetails')}</h3>
                 <div className="space-y-2 text-sm text-gray-600">
                   <div className="flex justify-between">
-                    <span>Client:</span>
+                    <span>{t('admin.paymentManagement.client')}:</span>
                     <span className="font-semibold">{selectedPayment.clientId?.fullName}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Amount:</span>
+                    <span>{t('admin.paymentManagement.amount')}:</span>
                     <span className="font-semibold">
                       ${selectedPayment.installmentIndex !== undefined 
                         ? (selectedPayment.totalAmount / 3).toFixed(2)
@@ -366,7 +366,7 @@ export default function AdminPaymentsPage() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Service:</span>
+                    <span>{t('admin.paymentManagement.service')}:</span>
                     <span className="font-semibold">
                       {selectedPayment.applicationId?.serviceType?.charAt(0).toUpperCase() + selectedPayment.applicationId?.serviceType?.slice(1)}
                     </span>
@@ -388,11 +388,11 @@ export default function AdminPaymentsPage() {
               )}
 
               <div>
-                <label className='block text-gray-700 font-semibold mb-2 text-sm'>Admin Notes (Optional)</label>
+                <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('admin.paymentManagement.adminNotes')}</label>
                 <textarea
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
-                  placeholder="Add any notes about this verification..."
+                  placeholder={t('admin.paymentManagement.addNotesPlaceholder')}
                   className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#242021] resize-none"
                   rows={3}
                 />
@@ -402,11 +402,11 @@ export default function AdminPaymentsPage() {
                 <div className="flex items-start gap-3">
                   <AlertCircle size={20} className="text-blue-600 mt-0.5 flex-shrink-0" />
                   <div className="text-sm text-blue-800">
-                    <p className="font-medium mb-1">Verification Action:</p>
+                    <p className="font-medium mb-1">{t('admin.paymentManagement.verificationAction')}</p>
                     <p className="text-xs">
                       {verificationAction === "approve" 
-                        ? "This will approve the payment and activate the application."
-                        : "This will reject the payment and notify the client to re-upload."
+                        ? t('admin.paymentManagement.approveMessage')
+                        : t('admin.paymentManagement.rejectMessage')
                       }
                     </p>
                   </div>
@@ -419,7 +419,7 @@ export default function AdminPaymentsPage() {
                   onClick={() => setIsVerificationModalOpen(false)} 
                   className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
                 >
-                  Cancel
+                  {t('admin.paymentManagement.cancel')}
                 </button>
                 <button 
                   type="submit" 
@@ -430,7 +430,7 @@ export default function AdminPaymentsPage() {
                       : "bg-red-600 text-white hover:bg-red-700"
                   }`}
                 >
-                  {verifying ? 'Processing...' : `${verificationAction === "approve" ? "Approve" : "Reject"} Payment`}
+                  {verifying ? t('admin.paymentManagement.processing') : `${verificationAction === "approve" ? t('admin.paymentManagement.approve') : t('admin.paymentManagement.reject')} ${t('admin.paymentManagement.payment')}`}
                 </button>
               </div>
             </form>

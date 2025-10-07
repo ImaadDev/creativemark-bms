@@ -16,7 +16,7 @@ import {
 
 export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
   const { user: currentUser, handleLogout: authHandleLogout } = useAuth();
-  const { t } = useTranslation();
+  const { t, isRTL } = useTranslation();
   const router = useRouter();
 
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -58,7 +58,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
         <div className="flex items-center justify-between h-18 sm:h-20 lg:h-22 px-6 sm:px-8 lg:px-12">
           
           {/* Left Section */}
-          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
+          <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-2 sm:space-x-3 lg:space-x-4' : 'space-x-2 sm:space-x-3 lg:space-x-4'}`}>
             {/* Mobile Menu Toggle */}
             <button
               onClick={onToggleSidebar}
@@ -70,22 +70,22 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             </button>
 
             {/* Breadcrumb / Title */}
-            <div className="flex items-center space-x-3">
+            <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
               {!isSidebarOpen && (
                 <div className="hidden md:block lg:hidden">
                   <h1 className="text-lg sm:text-xl font-bold" style={{ color: '#ffd17a' }}>Creative Mark</h1>
                 </div>
               )}
-              <div className="hidden lg:flex items-center space-x-2 text-sm">
+              <div className={`hidden lg:flex items-center text-sm ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
                 <span className="text-gray-300">{t('navigation.dashboard')}</span>
-                <FaChevronDown className="h-3 w-3 text-gray-400 transform -rotate-90" />
+                <FaChevronDown className={`h-3 w-3 text-gray-400 transform ${isRTL ? 'rotate-90' : '-rotate-90'}`} />
                 <span className="text-[#ffd17a] font-medium">{t('navigation.overview')}</span>
               </div>
             </div>
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-0 md:space-x-2 lg:space-x-4">
+          <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-0 md:space-x-2 lg:space-x-4' : 'space-x-0 md:space-x-2 lg:space-x-4'}`}>
             
             {/* Notifications */}
             {currentUser && <NotificationDropdown />}
@@ -113,7 +113,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-xl transition-all duration-300 hover:bg-white/10"
+                className={`flex items-center p-2 sm:p-3 rounded-xl transition-all duration-300 hover:bg-white/10 ${isRTL ? 'space-x-reverse space-x-2 sm:space-x-3' : 'space-x-2 sm:space-x-3'}`}
                 style={{ color: '#ffd17a' }}
               >
                 {/* Avatar */}
@@ -137,11 +137,11 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
               </button>
 
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-64 sm:w-72 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 py-4 z-30">
+                <div className={`absolute mt-2 w-64 sm:w-72 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 py-4 z-30 ${isRTL ? 'left-0' : 'right-0'} max-w-[calc(100vw-2rem)]`}>
                   <div className="px-4 pb-3 border-b border-gray-200/50">
                     <button
                       onClick={() => setShowUserMenu(false)}
-                      className="flex items-center space-x-3 w-full p-2 rounded-xl hover:bg-gray-50 transition-colors"
+                      className={`flex items-center w-full p-2 rounded-xl hover:bg-gray-50 transition-colors ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}
                     >
                       <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200">
                         {currentUser?.profilePicture ? (
@@ -153,7 +153,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                           </div>
                         )}
                       </div>
-                      <div className="flex-1 text-left">
+                      <div className={`flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                         <div className="font-semibold text-gray-900 text-sm">{currentUser?.fullName || 'User'}</div>
                         <div className="text-xs text-gray-600">{currentUser?.email || 'user@example.com'}</div>
                         <div className="text-xs text-gray-500 mt-1">{currentUser?.role}</div>
@@ -164,7 +164,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                   <div className="py-2">
                     <button
                       onClick={() => { setShowUserMenu(false); router.push(`/${currentUser?.role}/profile`) }}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors"
+                      className={`w-full flex items-center px-4 py-3 hover:bg-gray-50 transition-colors ${isRTL ? 'space-x-reverse space-x-3 text-right' : 'space-x-3 text-left'}`}
                     >
                       <FaUser className="h-4 w-4 text-gray-600" />
                       <span className="text-sm font-medium text-gray-900">{t('navigation.profileSettings')}</span>
@@ -172,7 +172,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
                     <button
                       onClick={() => { setShowUserMenu(false); router.push(`/${currentUser?.role}/settings`) }}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors"
+                      className={`w-full flex items-center px-4 py-3 hover:bg-gray-50 transition-colors ${isRTL ? 'space-x-reverse space-x-3 text-right' : 'space-x-3 text-left'}`}
                     >
                       <FaCog className="h-4 w-4 text-gray-600" />
                       <span className="text-sm font-medium text-gray-900">{t('navigation.accountSettings')}</span>
@@ -181,7 +181,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                     <button
                       onClick={refreshUserData}
                       disabled={refreshing}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors disabled:opacity-50"
+                      className={`w-full flex items-center px-4 py-3 hover:bg-gray-50 transition-colors disabled:opacity-50 ${isRTL ? 'space-x-reverse space-x-3 text-right' : 'space-x-3 text-left'}`}
                     >
                       {refreshing ? <FaSpinner className="h-4 w-4 text-blue-600 animate-spin" /> : <FaCalendar className="h-4 w-4 text-blue-600" />}
                       <span className="text-sm font-medium text-blue-900">{refreshing ? t('messages.refreshing') : t('navigation.refreshProfile')}</span>
@@ -191,7 +191,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors text-red-600"
+                      className={`w-full flex items-center px-4 py-3 hover:bg-gray-50 transition-colors text-red-600 ${isRTL ? 'space-x-reverse space-x-3 text-right' : 'space-x-3 text-left'}`}
                     >
                       <FaSignOutAlt className="h-4 w-4" />
                       <span className="text-sm font-medium">{t('buttons.logout')}</span>

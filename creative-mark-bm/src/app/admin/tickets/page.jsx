@@ -5,8 +5,10 @@ import { getAllTickets, deleteTicket } from '../../../services/ticketService';
 import { getAllEmployees } from "../../../services/employeeApi";
 import api from '../../../services/api';
 import Swal from 'sweetalert2';
+import { useTranslation } from '../../../i18n/TranslationContext';
 
 export default function AdminTicketDashboard() {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -28,10 +30,10 @@ export default function AdminTicketDashboard() {
         if (response.success) {
           setTickets(response.tickets || []);
         } else {
-          setError(response.message || 'Failed to load tickets');
+          setError(response.message || t('admin.ticketManagement.failedToLoadTickets'));
         }
       } catch (err) {
-        setError('Failed to load tickets');
+        setError(t('admin.ticketManagement.failedToLoadTickets'));
         console.error('Error loading tickets:', err);
       } finally {
         setLoading(false);
@@ -78,11 +80,11 @@ export default function AdminTicketDashboard() {
         
         // Show success alert
         Swal.fire({
-          title: 'Success!',
-          text: `Ticket assigned to ${employee.name || employee.fullName}`,
+          title: t('admin.ticketManagement.success'),
+          text: `${t('admin.ticketManagement.ticketAssignedTo')} ${employee.name || employee.fullName}`,
           icon: 'success',
           confirmButtonColor: '#242021',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('admin.ticketManagement.ok'),
           background: '#fff',
           color: '#242021',
           customClass: {
@@ -96,10 +98,10 @@ export default function AdminTicketDashboard() {
       console.error('Error assigning ticket:', err);
       Swal.fire({
         title: 'Error!',
-        text: 'Failed to assign ticket',
+        text: t('admin.ticketManagement.failedToAssignTicket'),
         icon: 'error',
         confirmButtonColor: '#dc2626',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('admin.ticketManagement.ok'),
         background: '#fff',
         color: '#242021',
         customClass: {
@@ -134,11 +136,11 @@ export default function AdminTicketDashboard() {
         
         // Show success alert
         Swal.fire({
-          title: 'Updated!',
-          text: `Ticket status changed to ${newStatus.replace('_', ' ')}`,
+          title: t('admin.ticketManagement.updated'),
+          text: `${t('admin.ticketManagement.ticketStatusChangedTo')} ${newStatus.replace('_', ' ')}`,
           icon: 'success',
           confirmButtonColor: '#242021',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('admin.ticketManagement.ok'),
           background: '#fff',
           color: '#242021',
           customClass: {
@@ -152,10 +154,10 @@ export default function AdminTicketDashboard() {
       console.error('Error updating status:', err);
       Swal.fire({
         title: 'Error!',
-        text: 'Failed to update ticket status',
+        text: t('admin.ticketManagement.failedToUpdateTicketStatus'),
         icon: 'error',
         confirmButtonColor: '#dc2626',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('admin.ticketManagement.ok'),
         background: '#fff',
         color: '#242021',
         customClass: {
@@ -174,14 +176,14 @@ export default function AdminTicketDashboard() {
     const ticket = tickets.find(t => t._id === ticketId);
     
     const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: `Delete ticket "${ticket?.title}"? This action cannot be undone.`,
+      title: t('admin.ticketManagement.areYouSure'),
+      text: `${t('admin.ticketManagement.deleteTicketConfirm')} "${ticket?.title}"? ${t('admin.ticketManagement.thisActionCannotBeUndone')}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#dc2626',
       cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: t('admin.ticketManagement.yesDeleteIt'),
+      cancelButtonText: t('admin.ticketManagement.cancel'),
       background: '#fff',
       color: '#242021',
       customClass: {
@@ -202,11 +204,11 @@ export default function AdminTicketDashboard() {
           setIsDetailsOpen(false);
           
           Swal.fire({
-            title: 'Deleted!',
-            text: 'Ticket has been deleted successfully.',
+            title: t('admin.ticketManagement.deleted'),
+            text: t('admin.ticketManagement.ticketHasBeenDeleted'),
             icon: 'success',
             confirmButtonColor: '#242021',
-            confirmButtonText: 'OK',
+            confirmButtonText: t('admin.ticketManagement.ok'),
             background: '#fff',
             color: '#242021',
             customClass: {
@@ -218,10 +220,10 @@ export default function AdminTicketDashboard() {
         } else {
           Swal.fire({
             title: 'Error!',
-            text: response.message || 'Failed to delete ticket',
+            text: response.message || t('admin.ticketManagement.failedToDeleteTicket'),
             icon: 'error',
             confirmButtonColor: '#dc2626',
-            confirmButtonText: 'OK',
+            confirmButtonText: t('admin.ticketManagement.ok'),
             background: '#fff',
             color: '#242021',
             customClass: {
@@ -235,10 +237,10 @@ export default function AdminTicketDashboard() {
         console.error('Error deleting ticket:', err);
         Swal.fire({
           title: 'Error!',
-          text: 'Failed to delete ticket',
+          text: t('admin.ticketManagement.failedToDeleteTicket'),
           icon: 'error',
           confirmButtonColor: '#dc2626',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('admin.ticketManagement.ok'),
           background: '#fff',
           color: '#242021',
           customClass: {
@@ -260,7 +262,7 @@ export default function AdminTicketDashboard() {
 
   const filteredTickets = tickets.filter((ticket) => {
     const matchesFilter = filter === "all" || ticket.status === filter;
-    const customerName = ticket.userId?.name || ticket.userId?.fullName || 'Unknown';
+    const customerName = ticket.userId?.name || ticket.userId?.fullName || t('admin.ticketManagement.unknown');
     const matchesSearch = 
       ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -297,9 +299,9 @@ export default function AdminTicketDashboard() {
 
   const getStatusLabel = (status) => {
     switch(status) {
-      case "in_progress": return "In Progress";
-      case "open": return "Open";
-      case "resolved": return "Resolved";
+      case "in_progress": return t('admin.ticketManagement.inProgress');
+      case "open": return t('admin.ticketManagement.open');
+      case "resolved": return t('admin.ticketManagement.resolved');
       default: return status;
     }
   };
@@ -310,9 +312,9 @@ export default function AdminTicketDashboard() {
         <div className="mb-8 md:mb-12">
           <div className="mb-6">
             <h1 className="text-4xl md:text-5xl font-bold text-[#242021] mb-2 tracking-tight">
-              Admin Dashboard
+              {t('admin.ticketManagement.adminDashboard')}
             </h1>
-            <p className="text-gray-600 text-base md:text-lg">Manage tickets, assign employees, and track progress</p>
+            <p className="text-gray-600 text-base md:text-lg">{t('admin.ticketManagement.manageTicketsDescription')}</p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
@@ -325,7 +327,7 @@ export default function AdminTicketDashboard() {
               }`}
             >
               <div className="text-2xl md:text-3xl font-bold mb-1">{stats.all}</div>
-              <div className="text-xs md:text-sm opacity-80">All Tickets</div>
+              <div className="text-xs md:text-sm opacity-80">{t('admin.ticketManagement.allTickets')}</div>
             </button>
 
             <button
@@ -337,7 +339,7 @@ export default function AdminTicketDashboard() {
               }`}
             >
               <div className="text-2xl md:text-3xl font-bold mb-1">{stats.open}</div>
-              <div className="text-xs md:text-sm opacity-80">Open</div>
+              <div className="text-xs md:text-sm opacity-80">{t('admin.ticketManagement.open')}</div>
             </button>
 
             <button
@@ -349,7 +351,7 @@ export default function AdminTicketDashboard() {
               }`}
             >
               <div className="text-2xl md:text-3xl font-bold mb-1">{stats.in_progress}</div>
-              <div className="text-xs md:text-sm opacity-80">In Progress</div>
+              <div className="text-xs md:text-sm opacity-80">{t('admin.ticketManagement.inProgress')}</div>
             </button>
 
             <button
@@ -361,12 +363,12 @@ export default function AdminTicketDashboard() {
               }`}
             >
               <div className="text-2xl md:text-3xl font-bold mb-1">{stats.resolved}</div>
-              <div className="text-xs md:text-sm opacity-80">Resolved</div>
+              <div className="text-xs md:text-sm opacity-80">{t('admin.ticketManagement.resolved')}</div>
             </button>
 
             <div className="col-span-2 sm:col-span-3 lg:col-span-1 p-4 md:p-6 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 text-white shadow-xl">
               <div className="text-2xl md:text-3xl font-bold mb-1">{stats.unassigned}</div>
-              <div className="text-xs md:text-sm opacity-90">Unassigned</div>
+              <div className="text-xs md:text-sm opacity-90">{t('admin.ticketManagement.unassigned')}</div>
             </div>
           </div>
         </div>
@@ -376,7 +378,7 @@ export default function AdminTicketDashboard() {
             <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="text"
-              placeholder="Search by ticket title, customer name..."
+              placeholder={t('admin.ticketManagement.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-white text-gray-800 pl-14 pr-6 py-4 md:py-5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#242021] placeholder-gray-400 shadow-lg border border-gray-200"
@@ -389,13 +391,13 @@ export default function AdminTicketDashboard() {
             <table className="w-full">
               <thead className="bg-gradient-to-r from-[#242021] to-[#3a3537] text-[#ffd17a]">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">Ticket</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">Customer</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">Priority</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">Status</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">Assigned To</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">Date</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">{t('admin.ticketManagement.ticket')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">{t('admin.ticketManagement.customer')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">{t('admin.ticketManagement.priority')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">{t('admin.ticketManagement.status')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">{t('admin.ticketManagement.assignedTo')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">{t('admin.ticketManagement.date')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide">{t('admin.ticketManagement.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -403,7 +405,7 @@ export default function AdminTicketDashboard() {
                   <tr>
                     <td colSpan="7" className="px-6 py-12 text-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#242021] mx-auto mb-4"></div>
-                      <p className="text-gray-500 text-lg">Loading tickets...</p>
+                      <p className="text-gray-500 text-lg">{t('admin.ticketManagement.loadingTickets')}</p>
                     </td>
                   </tr>
                 ) : error ? (
@@ -417,7 +419,7 @@ export default function AdminTicketDashboard() {
                   <tr>
                     <td colSpan="7" className="px-6 py-12 text-center">
                       <AlertCircle size={48} className="mx-auto mb-4 text-gray-300" />
-                      <p className="text-gray-500 text-lg">No tickets found</p>
+                      <p className="text-gray-500 text-lg">{t('admin.ticketManagement.noTicketsFound')}</p>
                     </td>
                   </tr>
                 ) : (
@@ -435,7 +437,7 @@ export default function AdminTicketDashboard() {
                       
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {ticket.userId?.name || ticket.userId?.fullName || 'Unknown'}
+                          {ticket.userId?.name || ticket.userId?.fullName || t('admin.ticketManagement.unknown')}
                         </div>
                         <div className="text-xs text-gray-500">
                           {ticket.userId?.email || ''}
@@ -455,9 +457,9 @@ export default function AdminTicketDashboard() {
                             disabled={updatingStatus === ticket._id}
                             className={`px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#242021] ${getStatusBadge(ticket.status)} ${updatingStatus === ticket._id ? 'opacity-50 cursor-not-allowed' : ''}`}
                           >
-                            <option value="open">Open</option>
-                            <option value="in_progress">In Progress</option>
-                            <option value="resolved">Resolved</option>
+                            <option value="open">{t('admin.ticketManagement.open')}</option>
+                            <option value="in_progress">{t('admin.ticketManagement.inProgress')}</option>
+                            <option value="resolved">{t('admin.ticketManagement.resolved')}</option>
                             <option value="closed">Closed</option>
                           </select>
                           {updatingStatus === ticket._id && (
@@ -498,7 +500,7 @@ export default function AdminTicketDashboard() {
                               ) : (
                                 <User size={14} />
                               )}
-                              <span className="text-xs font-medium">Assign</span>
+                              <span className="text-xs font-medium">{t('admin.ticketManagement.assign')}</span>
                               <ChevronDown size={14} />
                             </button>
                           )}
@@ -538,7 +540,7 @@ export default function AdminTicketDashboard() {
                           <button
                             onClick={() => openTicketDetails(ticket)}
                             className="p-2 hover:bg-blue-50 rounded-lg transition-colors text-blue-600"
-                            title="View Details"
+                            title={t('admin.ticketManagement.viewDetails')}
                           >
                             <Eye size={18} />
                           </button>
@@ -546,7 +548,7 @@ export default function AdminTicketDashboard() {
                             onClick={() => handleDeleteTicket(ticket._id)}
                             disabled={deletingTicket === ticket._id}
                             className={`p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600 ${deletingTicket === ticket._id ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            title="Delete Ticket"
+                            title={t('admin.ticketManagement.deleteTicket')}
                           >
                             {deletingTicket === ticket._id ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
@@ -572,7 +574,7 @@ export default function AdminTicketDashboard() {
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-bold text-[#ffd17a] mb-2">{selectedTicket.title}</h2>
-                  <p className="text-[#ffd17a]/70 text-sm">Ticket #{selectedTicket._id} • Created {new Date(selectedTicket.createdAt).toLocaleDateString()}</p>
+                  <p className="text-[#ffd17a]/70 text-sm">{t('admin.ticketManagement.ticketNumber')}{selectedTicket._id} • {t('admin.ticketManagement.created')} {new Date(selectedTicket.createdAt).toLocaleDateString()}</p>
                 </div>
                 <button
                   onClick={() => setIsDetailsOpen(false)}
@@ -588,7 +590,7 @@ export default function AdminTicketDashboard() {
                
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.ticketManagement.description')}</label>
                   <p className="p-4 bg-gray-50 rounded-xl text-gray-700 border border-gray-200">
                     {selectedTicket.description}
                   </p>
@@ -596,13 +598,13 @@ export default function AdminTicketDashboard() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Priority</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.ticketManagement.priority')}</label>
                     <span className="inline-block px-4 py-2 rounded-xl text-sm font-semibold capitalize bg-gray-100 text-gray-700 border border-gray-200">
                       {selectedTicket.priority}
                     </span>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.ticketManagement.category')}</label>
                     <span className="inline-block px-4 py-2 rounded-xl text-sm font-semibold capitalize bg-gray-100 text-gray-700 border border-gray-200">
                       {selectedTicket.category}
                     </span>
@@ -610,7 +612,7 @@ export default function AdminTicketDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.ticketManagement.status')}</label>
                   <div className="relative">
                     <select
                       value={selectedTicket.status}
@@ -621,9 +623,9 @@ export default function AdminTicketDashboard() {
                       disabled={updatingStatus === selectedTicket._id}
                       className={`w-full px-4 py-3 rounded-xl text-sm font-semibold border focus:outline-none focus:ring-2 focus:ring-[#242021] ${getStatusBadge(selectedTicket.status)} ${updatingStatus === selectedTicket._id ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      <option value="open">Open</option>
-                      <option value="in_progress">In Progress</option>
-                      <option value="resolved">Resolved</option>
+                      <option value="open">{t('admin.ticketManagement.open')}</option>
+                      <option value="in_progress">{t('admin.ticketManagement.inProgress')}</option>
+                      <option value="resolved">{t('admin.ticketManagement.resolved')}</option>
                       <option value="closed">Closed</option>
                     </select>
                     {updatingStatus === selectedTicket._id && (
@@ -635,7 +637,7 @@ export default function AdminTicketDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Assigned Employee</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.ticketManagement.assignedTo')}</label>
                   {selectedTicket.assignedTo ? (
                     <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold">
@@ -653,10 +655,10 @@ export default function AdminTicketDashboard() {
                         {assigningTicket === selectedTicket._id ? (
                           <div className="flex items-center gap-2">
                             <Loader2 className="h-4 w-4 animate-spin" />
-                            Changing...
+                            {t('admin.ticketManagement.changing')}
                           </div>
                         ) : (
-                          'Change'
+                          t('admin.ticketManagement.change')
                         )}
                       </button>
                     </div>
@@ -669,12 +671,12 @@ export default function AdminTicketDashboard() {
                       {assigningTicket === selectedTicket._id ? (
                         <>
                           <Loader2 className="h-5 w-5 animate-spin" />
-                          Assigning...
+                          {t('admin.ticketManagement.assigning')}
                         </>
                       ) : (
                         <>
                           <User size={20} />
-                          Assign Employee
+                          {t('admin.ticketManagement.assignEmployee')}
                         </>
                       )}
                     </button>
@@ -710,7 +712,7 @@ export default function AdminTicketDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Tags</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.ticketManagement.tags')}</label>
                   <div className="flex flex-wrap gap-2">
                     {selectedTicket.tags && selectedTicket.tags.length > 0 ? (
                       selectedTicket.tags.map((tag, idx) => (
@@ -719,7 +721,7 @@ export default function AdminTicketDashboard() {
                         </span>
                       ))
                     ) : (
-                      <span className="text-gray-500 text-sm">No tags assigned</span>
+                      <span className="text-gray-500 text-sm">{t('admin.ticketManagement.noTagsAssigned')}</span>
                     )}
                   </div>
                 </div>

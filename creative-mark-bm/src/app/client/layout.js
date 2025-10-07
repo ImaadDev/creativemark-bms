@@ -3,9 +3,11 @@ import { useState } from "react";
 import { useAuthGuard } from "../../hooks/useAuthGuard";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
+import { useTranslation } from "../../i18n/TranslationContext";
 
 export default function ClientLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { isRTL } = useTranslation();
   
   // Protect client routes - only allow client role
   const isAuthenticated = useAuthGuard(['client']);
@@ -30,7 +32,7 @@ export default function ClientLayout({ children }) {
         isOpen={isSidebarOpen} 
         onClose={closeSidebar} 
       />
-      <div className="flex-1 flex flex-col lg:ml-0">
+      <div className={`flex-1 flex flex-col ${isRTL ? 'lg:mr-0' : 'lg:ml-0'}`}>
         <Navbar 
           onToggleSidebar={toggleSidebar} 
           isSidebarOpen={isSidebarOpen} 

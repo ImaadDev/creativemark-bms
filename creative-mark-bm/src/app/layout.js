@@ -13,6 +13,7 @@ const montserrat = Montserrat({
 export const metadata = {
   title: "Creative Mark Dashboard",
   description: "Dashboard for Creative Mark system",
+
 };
 
 export default function RootLayout({ children }) {
