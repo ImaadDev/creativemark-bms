@@ -5,6 +5,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { resetPassword } from "../../services/auth";
 import { useTranslation } from "../../i18n/TranslationContext";
 
+// Force dynamic rendering to prevent prerendering issues
+export const dynamic = 'force-dynamic';
+
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
   const router = useRouter();

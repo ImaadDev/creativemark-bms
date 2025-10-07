@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { forgotPassword } from "../../services/auth";
 import { useTranslation } from "../../i18n/TranslationContext";
 
+// Force dynamic rendering to prevent prerendering issues
+export const dynamic = 'force-dynamic';
+
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const router = useRouter();
