@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { CreditCard, DollarSign, TrendingUp, Calendar, Download, Search, CheckCircle, XCircle, Clock, ChevronRight, Plus, FileText, X, Upload, Eye, AlertCircle, Receipt } from "lucide-react";
+import { CreditCard, DollarSign as RiyalSign, TrendingUp, Calendar, Download, Search, CheckCircle, XCircle, Clock, ChevronRight, Plus, FileText, X, Upload, Eye, AlertCircle, Receipt } from "lucide-react";
 import { useTranslation } from "../../../i18n/TranslationContext";
 import { useAuth } from "../../../contexts/AuthContext";
 import { paymentService } from "../../../services/paymentService";
@@ -191,9 +191,9 @@ export default function ClientPaymentDashboard() {
             <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-br from-[#242021] to-[#3a3537] text-[#ffd17a] shadow-2xl">
               <div className="flex items-center justify-between mb-3">
                 <span className='text-sm font-semibold uppercase tracking-wide opacity-80'>{t('payments.dashboard.totalAmount')}</span>
-                <div className="p-2 rounded-xl bg-[#ffd17a]/20"><DollarSign size={18} /></div>
+                <div className="p-2 rounded-xl bg-[#ffd17a]/20"><RiyalSign size={18} /></div>
               </div>
-              <div className="text-4xl md:text-5xl font-bold mb-1">${stats.totalAmount.toFixed(2)}</div>
+              <div className="text-4xl md:text-5xl font-bold mb-1">{stats.totalAmount.toFixed(2)} SAR</div>
               <div className='text-xs opacity-70'>{t('payments.all')} {t('payments.title')}</div>
             </div>
 
@@ -202,7 +202,7 @@ export default function ClientPaymentDashboard() {
                 <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>{t('payments.dashboard.pendingAmount')}</span>
                 <div className="p-2 rounded-xl bg-amber-100"><Clock size={18} className="text-amber-600" /></div>
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">${stats.pendingAmount.toFixed(2)}</div>
+              <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">{stats.pendingAmount.toFixed(2)} SAR</div>
               <div className="text-xs text-gray-500">{t('payments.dashboard.awaitingPayment')}</div>
             </div>
 
@@ -211,7 +211,7 @@ export default function ClientPaymentDashboard() {
                 <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>{t('payments.dashboard.submittedAmount')}</span>
                 <div className="p-2 rounded-xl bg-blue-100"><Upload size={18} className="text-blue-600" /></div>
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">${stats.submittedAmount.toFixed(2)}</div>
+              <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">{stats.submittedAmount.toFixed(2)} SAR</div>
               <div className='text-xs text-gray-500'>{t('payments.dashboard.underReview')}</div>
             </div>
 
@@ -220,7 +220,7 @@ export default function ClientPaymentDashboard() {
                 <span className='text-sm font-semibold uppercase tracking-wide text-gray-600'>{t('payments.dashboard.approvedAmount')}</span>
                 <div className="p-2 rounded-xl bg-green-100"><CheckCircle size={18} className="text-green-600" /></div>
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">${stats.approvedAmount.toFixed(2)}</div>
+              <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">{stats.approvedAmount.toFixed(2)} SAR</div>
               <div className='text-xs text-gray-500'>{t('payments.dashboard.verified')}</div>
             </div>
           </div>
@@ -265,7 +265,7 @@ export default function ClientPaymentDashboard() {
                             </span>
                           </div>
                           <div className="text-sm text-gray-500">
-                            Amount: ${payment.totalAmount} • Due: {payment.dueDate ? formatDate(payment.dueDate) : 'N/A'}
+                            Amount: {payment.totalAmount} SAR • Due: {payment.dueDate ? formatDate(payment.dueDate) : 'N/A'}
                           </div>
                         </div>
                       </div>
@@ -301,7 +301,7 @@ export default function ClientPaymentDashboard() {
                                 {installment.status}
                               </span>
                             </div>
-                            <div className="text-lg font-bold text-gray-900">${installment.amount}</div>
+                            <div className="text-lg font-bold text-gray-900">{installment.amount} SAR</div>
                             {installment.status === "pending" && (
                               <button
                                 onClick={() => openReceiptUpload(payment, index)}
@@ -386,7 +386,7 @@ export default function ClientPaymentDashboard() {
                 <div className="space-y-2 text-sm text-gray-600">
                   <div className="flex justify-between">
                     <span>{t('payments.planSelection.totalAmount')}:</span>
-                    <span className="font-semibold">${selectedPayment.totalAmount}</span>
+                    <span className="font-semibold">{selectedPayment.totalAmount} SAR</span>
                   </div>
                   <div className="flex justify-between">
                     <span>{t('payments.planSelection.dueDate')}:</span>
@@ -418,7 +418,7 @@ export default function ClientPaymentDashboard() {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">💰 {t('payments.planSelection.payInFull')}</div>
-                      <div className="text-sm text-gray-600">{t('payments.planSelection.payCompleteAmount')}: ${selectedPayment.totalAmount}</div>
+                      <div className="text-sm text-gray-600">{t('payments.planSelection.payCompleteAmount')}: {selectedPayment.totalAmount} SAR</div>
                     </div>
                   </div>
                 </div>
@@ -443,7 +443,7 @@ export default function ClientPaymentDashboard() {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">🧾 {t('payments.planSelection.payInInstallments')}</div>
-                      <div className="text-sm text-gray-600">{t('payments.planSelection.payIn3Parts')}: ${(selectedPayment.totalAmount / 3).toFixed(2)} {t('payments.planSelection.each')}</div>
+                      <div className="text-sm text-gray-600">{t('payments.planSelection.payIn3Parts')}: {(selectedPayment.totalAmount / 3).toFixed(2)} SAR {t('payments.planSelection.each')}</div>
                     </div>
                   </div>
                 </div>
@@ -479,8 +479,8 @@ export default function ClientPaymentDashboard() {
                 <h2 className='text-2xl font-bold text-[#ffd17a]'>{t('payments.receiptUpload.title')}</h2>
                 <p className="text-[#ffd17a]/70 text-sm mt-1">
                   {selectedPayment.installmentIndex !== undefined 
-                    ? `Installment #${selectedPayment.installmentIndex + 1} - $${(selectedPayment.totalAmount / 3).toFixed(2)}`
-                    : `Total Amount - $${selectedPayment.totalAmount}`
+                    ? `Installment #${selectedPayment.installmentIndex + 1} - ${(selectedPayment.totalAmount / 3).toFixed(2)} SAR`
+                    : `Total Amount - ${selectedPayment.totalAmount} SAR`
                   }
                 </p>
               </div>
@@ -494,8 +494,8 @@ export default function ClientPaymentDashboard() {
                     <span>Amount:</span>
                     <span className="font-semibold">
                       {selectedPayment.installmentIndex !== undefined 
-                        ? `$${(selectedPayment.totalAmount / 3).toFixed(2)}`
-                        : `$${selectedPayment.totalAmount}`
+                        ? `${(selectedPayment.totalAmount / 3).toFixed(2)} SAR`
+                        : `${selectedPayment.totalAmount} SAR`
                       }
                     </span>
                   </div>

@@ -250,6 +250,7 @@
   "application": {
     "title": "Business Registration Application",
     "subtitle": "Complete your business registration in just a few simple steps",
+    "description": "Complete your business registration in just a few simple steps",
     "backToDashboard": "Back to Dashboard",
     "applicationSubmitted": "Application Submitted!",
     "submittedMessage": "Your application has been submitted successfully. You will receive updates via email.",
@@ -293,7 +294,9 @@
       "emailAddress": "Email Address",
       "phoneNumber": "Phone Number",
       "fieldLocked": "This field is locked and cannot be changed",
-      "canUpdate": "You can update your phone number if needed"
+      "canUpdate": "You can update your phone number if needed",
+      "enterFullName": "Enter your full legal name",
+      "enterEmail": "Enter your email address"
     },
     "background": {
       "title": "Background Information",
@@ -1984,6 +1987,16 @@
     "clientSettings": "Client Settings",
     "manageYourClientAccount": "Manage Your Client Account",
     "configureAccountPreferences": "Configure your account preferences, security settings, and client-specific options"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "Sorry, we couldn't find the page you're looking for. It might have been moved, deleted, or you entered the wrong URL.",
+    "goBack": "Go Back",
+    "goHome": "Go Home",
+    "needHelp": "Need Help?",
+    "helpDescription": "If you believe this is an error, please contact our support team.",
+    "contactSupport": "Contact Support",
+    "refreshPage": "Refresh Page"
   },
   "adminDashboard": {
     "totalRevenue": "Total Revenue",

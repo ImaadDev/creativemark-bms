@@ -13,7 +13,11 @@ const montserrat = Montserrat({
 export const metadata = {
   title: "Creative Mark Dashboard",
   description: "Dashboard for Creative Mark system",
-
+  icons: {
+    icon: '/CreativeMarkFavicon.png',
+    shortcut: '/CreativeMarkFavicon.png',
+    apple: '/CreativeMarkFavicon.png',
+  },
 };
 
 export default function RootLayout({ children }) {

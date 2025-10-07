@@ -21,7 +21,7 @@ import {
   Building,
   Heart,
   FileImage,
-  DollarSign,
+  DollarSign as RiyalSign,
   CheckCircle
 } from "lucide-react";
 import { createApplication } from "../../../services/applicationService";
@@ -628,7 +628,7 @@ export default function ModernMultiStepForm() {
     { id: 5, title: t('application.steps.companies') || 'Companies', icon: Building, description: t('application.steps.externalCompanies') || 'External companies' },
     { id: 6, title: t('application.steps.family') || 'Family', icon: Heart, description: t('application.steps.familyMembers') || 'Family members' },
     { id: 7, title: t('application.steps.documents') || 'Documents', icon: FileImage, description: t('application.steps.fileUploads') || 'File uploads' },
-    { id: 8, title: t('application.steps.fee') || 'Fee', icon: DollarSign, description: t('application.steps.feeDetails') || 'Fee details' },
+    { id: 8, title: t('application.steps.fee') || 'Fee', icon: RiyalSign, description: t('application.steps.feeDetails') || 'Fee details' },
     { id: 9, title: t('application.steps.review') || 'Review', icon: CheckCircle, description: t('application.steps.finalReview') || 'Final review' }
   ];
 
@@ -794,7 +794,7 @@ export default function ModernMultiStepForm() {
                   onClick={() => window.location.href = '/client'}
                   className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border border-[#ffd17a]/30 bg-[#ffd17a]/10 text-[#ffd17a] rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-[#ffd17a]/20 group"
                 >
-                  <span className='group-hover:scale-105 transition-transform duration-300'>{t('application.navigation.backToDashboard')}</span>
+                  <span className='group-hover:scale-105 transition-transform duration-300'>{t('application.backToDashboard')}</span>
                 </button>
               </div>
             </div>
@@ -1787,7 +1787,7 @@ export default function ModernMultiStepForm() {
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 mb-6 shadow-xl">
-                    <DollarSign className="w-8 h-8 text-white" />
+                    <RiyalSign className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                     {t('application.fee.title')}

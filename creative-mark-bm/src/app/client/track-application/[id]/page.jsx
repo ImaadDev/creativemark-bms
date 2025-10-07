@@ -13,7 +13,7 @@ import {
   FaGlobe,
   FaBuilding,
   FaUsers,
-  FaDollarSign,
+  FaDollarSign as FaRiyalSign,
   FaHome,
   FaCheckCircle,
   FaExclamationTriangle,
@@ -621,7 +621,7 @@ export default function ApplicationDetailPage() {
                 <div className="p-4 sm:p-6 bg-[#242021]">
                   <div className="flex items-center gap-3 sm:gap-4">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-amber-400 rounded-lg">
-                      <FaDollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
+                      <FaRiyalSign className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
                     </div>
                     <div>
                       <h3 className="text-base sm:text-lg font-bold text-amber-400">{t('trackApplicationDetails.paymentInfo')}</h3>

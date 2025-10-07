@@ -17,7 +17,7 @@ import {
   FaEye,
   FaBell,
   FaCalendarAlt,
-  FaDollarSign,
+  FaDollarSign as FaRiyalSign,
   FaChartLine,
   FaUsers,
   FaBuilding,
@@ -279,10 +279,10 @@ const ClientDashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
-      case 'completed': return 'text-amber-600 bg-amber-100';
-      case 'approved': return 'text-amber-600 bg-amber-100';
+      case 'completed': return 'text-[#ffd17a] bg-[#ffd17a]/20';
+      case 'approved': return 'text-[#ffd17a] bg-[#ffd17a]/20';
       case 'in progress': return 'text-blue-600 bg-blue-100';
-      case 'pending': return 'text-yellow-600 bg-yellow-100';
+      case 'pending': return 'text-[#ffd17a] bg-[#ffd17a]/20';
       case 'rejected': return 'text-red-600 bg-red-100';
       default: return 'text-gray-600 bg-gray-100';
     }
@@ -292,7 +292,7 @@ const ClientDashboard = () => {
     switch (type) {
       case 'urgent': return <FaExclamationTriangle className="text-red-500" />;
       case 'info': return <FaBell className="text-blue-500" />;
-      case 'reminder': return <FaClock className="text-yellow-500" />;
+      case 'reminder': return <FaClock className="text-[#ffd17a]" />;
       default: return <FaBell className="text-gray-500" />;
     }
   };
@@ -301,9 +301,9 @@ const ClientDashboard = () => {
     return (
       <div className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="bg-gray-50 border-l-4 border-amber-600 p-8 sm:p-12">
+          <div className="bg-gray-50 border-l-4 border-[#ffd17a] p-8 sm:p-12">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <div className="animate-spin h-8 w-8 border-4 border-amber-600 border-t-transparent"></div>
+              <div className="animate-spin h-8 w-8 border-4 border-[#ffd17a] border-t-transparent"></div>
               <span className="text-gray-700 font-medium">{t('client.loading.dashboard')}</span>
             </div>
           </div>
@@ -346,8 +346,8 @@ const ClientDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="text-center py-16 sm:py-24 bg-gray-50 border-2 border-gray-200">
             <div className="max-w-md mx-auto px-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center mx-auto mb-6">
-                <FaFileAlt className="w-10 h-10 text-amber-900" />
+              <div className="w-20 h-20 bg-gradient-to-br from-[#ffd17a]/20 to-[#ffd17a]/30 flex items-center justify-center mx-auto mb-6">
+                <FaFileAlt className="w-10 h-10 text-[#ffd17a]" />
               </div>
               <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                 {t('client.noData.title')}
@@ -357,7 +357,7 @@ const ClientDashboard = () => {
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className="w-full sm:w-auto px-8 py-4 bg-amber-900 hover:bg-amber-950 text-white text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg"
+                className="w-full sm:w-auto px-8 py-4 bg-[#ffd17a] hover:bg-[#ffd17a]/80 text-white text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg"
               >
                 {t('buttons.retry')}
               </button>
@@ -371,16 +371,16 @@ const ClientDashboard = () => {
   return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         {/* Header Section */}
-        <div className="backdrop-blur-sm p-4 lg:m-2 rounded-b-4xl lg:rounded-3xl border-b border-amber-200/20 bg-[#242021]">
+        <div className="backdrop-blur-sm p-4 lg:m-2 rounded-b-4xl lg:rounded-3xl border-b border-[#ffd17a]/20 bg-[#242021]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
-                  <span className="text-sm font-medium uppercase tracking-wider text-amber-400/80">{t('client.dashboard.title')}</span>
+                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-[#ffd17a]"></div>
+                  <span className="text-sm font-medium uppercase tracking-wider text-[#ffd17a]/80">{t('client.dashboard.title')}</span>
                 </div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-3 text-amber-400">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-3 text-[#ffd17a]">
                   {t('client.dashboard.welcomeBack', { name: dashboardData.user.name })}
                 </h1>
                 <p className="text-sm sm:text-base lg:text-lg text-white/70">
@@ -390,13 +390,13 @@ const ClientDashboard = () => {
               <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                 <Link
                   href="/client/track-application"
-                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border border-amber-400/30 bg-amber-400/10 text-amber-400 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-amber-400/20 group"
+                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider border border-[#ffd17a]/30 bg-[#ffd17a]/10 text-[#ffd17a] rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-[#ffd17a]/20 group"
                 >
                   <span className="group-hover:scale-105 transition-transform duration-300">{t('client.buttons.trackApplications')}</span>
                 </Link>
                 <Link
                   href="/client/application"
-                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group"
+                  className="w-full sm:w-auto px-6 py-3 text-sm font-semibold uppercase tracking-wider bg-gradient-to-r from-[#ffd17a] to-[#ffd17a] text-gray-900 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-lg group"
                 >
                   <span className="group-hover:scale-105 transition-transform duration-300">{t('client.buttons.newApplication')}</span>
                 </Link>
@@ -410,7 +410,7 @@ const ClientDashboard = () => {
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
-          <div className="group bg-white border border-amber-100/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg shadow-sm">
+          <div className="group bg-white border border-[#ffd17a]/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg shadow-sm">
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
@@ -418,19 +418,19 @@ const ClientDashboard = () => {
                     {t('client.stats.totalApplications')}
                   </h3>
                   <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">{dashboardData.statistics.totalRequests}</p>
-                  <div className="flex items-center text-xs sm:text-sm font-medium text-amber-600">
+                  <div className="flex items-center text-xs sm:text-sm font-medium text-[#ffd17a]">
                     <FaTrendingUp className="mr-1 sm:mr-2 text-xs sm:text-sm" />
                     <span>{t('client.stats.allTime')}</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a] rounded-lg">
                   <FaFileContract className="text-sm sm:text-base lg:text-xl text-gray-900" />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="group bg-white border border-amber-100/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg shadow-sm">
+          <div className="group bg-white border border-[#ffd17a]/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg shadow-sm">
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
@@ -438,19 +438,19 @@ const ClientDashboard = () => {
                     {t('client.stats.inProgress')}
                   </h3>
                   <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">{dashboardData.statistics.inProgressRequests}</p>
-                  <div className="flex items-center text-xs sm:text-sm font-medium text-amber-600">
+                  <div className="flex items-center text-xs sm:text-sm font-medium text-[#ffd17a]">
                     <FaHourglassHalf className="mr-1 sm:mr-2 text-xs sm:text-sm" />
                     <span>{t('client.stats.activeProcesses')}</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a] rounded-lg">
                   <FaClock className="text-sm sm:text-base lg:text-xl text-gray-900" />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="group bg-white border border-amber-100/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg shadow-sm">
+          <div className="group bg-white border border-[#ffd17a]/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg shadow-sm">
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
@@ -458,19 +458,19 @@ const ClientDashboard = () => {
                     {t('client.stats.completed')}
                   </h3>
                   <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">{dashboardData.statistics.completedRequests}</p>
-                  <div className="flex items-center text-xs sm:text-sm font-medium text-amber-600">
+                  <div className="flex items-center text-xs sm:text-sm font-medium text-[#ffd17a]">
                     <FaCheckCircle className="mr-1 sm:mr-2 text-xs sm:text-sm" />
                     <span>{t('client.stats.successfullyFinished')}</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a] rounded-lg">
                   <FaCheckCircle className="text-sm sm:text-base lg:text-xl text-gray-900" />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="group bg-white border border-amber-100/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg shadow-sm">
+          <div className="group bg-white border border-[#ffd17a]/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg shadow-sm">
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
@@ -478,13 +478,13 @@ const ClientDashboard = () => {
                     {t('client.stats.totalInvestment')}
                   </h3>
                   <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">{dashboardData.statistics.totalSpent.toLocaleString()} SAR</p>
-                  <div className="flex items-center text-xs sm:text-sm font-medium text-amber-600">
-                    <FaDollarSign className="mr-1 sm:mr-2 text-xs sm:text-sm" />
+                  <div className="flex items-center text-xs sm:text-sm font-medium text-[#ffd17a]">
+                    <FaRiyalSign className="mr-1 sm:mr-2 text-xs sm:text-sm" />
                     <span>{t('client.stats.serviceInvestments')}</span>
                   </div>
                 </div>
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
-                  <FaDollarSign className="text-sm sm:text-base lg:text-xl text-gray-900" />
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a] rounded-lg">
+                  <FaRiyalSign className="text-sm sm:text-base lg:text-xl text-gray-900" />
                 </div>
               </div>
             </div>
@@ -494,16 +494,16 @@ const ClientDashboard = () => {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Recent Applications */}
-          <div className="lg:col-span-2 bg-white rounded-t-4xl  border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+          <div className="lg:col-span-2 bg-white rounded-t-4xl  border border-[#ffd17a]/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
             <div className="p-4 sm:p-6 bg-[#242021]">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">{t('client.recentApplications.title')}</h2>
+                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-[#ffd17a]"></div>
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#ffd17a]">{t('client.recentApplications.title')}</h2>
                 </div>
                 <Link
                   href="/client/track-application"
-                  className="px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-amber-400/10 text-amber-400 border border-amber-400/30 rounded-lg hover:bg-amber-400/20"
+                  className="px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-[#ffd17a]/10 text-[#ffd17a] border border-[#ffd17a]/30 rounded-lg hover:bg-[#ffd17a]/20"
                 >
                   {t('client.recentApplications.viewAll')}
                 </Link>
@@ -513,19 +513,19 @@ const ClientDashboard = () => {
               <div className="space-y-4 sm:space-y-6">
                 {dashboardData.recentRequests.length > 0 ? (
                   dashboardData.recentRequests.map((request) => (
-                    <div key={request.id} className="group bg-gray-50 border border-amber-100/50 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-lg">
+                    <div key={request.id} className="group bg-gray-50 border border-[#ffd17a]/50 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-lg">
                       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2 mb-2 sm:mb-3">
-                              <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-amber-400"></div>
+                              <div className="w-1.5 h-1.5 rounded-full shadow-sm bg-[#ffd17a]"></div>
                               <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
                                 {t('client.recentApplications.applicationDetails')}
                               </h3>
                             </div>
                             <p className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">{request.type}</p>
                             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm">
-                              <div className="flex items-center space-x-2 text-amber-600">
+                              <div className="flex items-center space-x-2 text-[#ffd17a]">
                                 <FaFileAlt className="text-xs sm:text-sm" />
                                 <span className="font-medium">ID: {request.id.slice(-8).toUpperCase()}</span>
                               </div>
@@ -544,11 +544,11 @@ const ClientDashboard = () => {
                         <div className="space-y-2 sm:space-y-3">
                           <div className="flex justify-between text-xs sm:text-sm font-medium text-gray-700">
                             <span>{t('client.recentApplications.progress')}</span>
-                            <span className="font-bold text-amber-600">{request.progress}%</span>
+                            <span className="font-bold text-[#ffd17a]">{request.progress}%</span>
                           </div>
                           <div className="w-full bg-gray-200 h-2 sm:h-3 rounded-lg overflow-hidden">
                             <div
-                              className="h-2 sm:h-3 transition-all duration-1000 ease-out bg-gradient-to-r from-amber-400 to-amber-500 rounded-lg"
+                              className="h-2 sm:h-3 transition-all duration-1000 ease-out bg-gradient-to-r from-[#ffd17a] to-[#ffd17a] rounded-lg"
                               style={{ width: `${request.progress}%` }}
                             ></div>
                           </div>
@@ -558,7 +558,7 @@ const ClientDashboard = () => {
                           <p className="text-xs sm:text-sm font-medium text-gray-600">{request.nextAction}</p>
                           <Link
                             href={`/client/track-application/${request._id}`}
-                            className="px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 rounded-lg"
+                            className="px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group bg-gradient-to-r from-[#ffd17a] to-[#ffd17a] text-gray-900 rounded-lg"
                           >
                             <span className="group-hover:scale-105 transition-transform duration-300">{t('client.recentApplications.viewDetails')}</span>
                           </Link>
@@ -569,8 +569,8 @@ const ClientDashboard = () => {
                 ) : (
                   <div className="text-center py-16 sm:py-24 bg-gray-50 border-2 border-gray-200">
                     <div className="max-w-md mx-auto px-4">
-                      <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center mx-auto mb-6">
-                        <FaFileAlt className="w-10 h-10 text-amber-900" />
+                      <div className="w-20 h-20 bg-gradient-to-br from-[#ffd17a]/20 to-[#ffd17a]/30 flex items-center justify-center mx-auto mb-6">
+                        <FaFileAlt className="w-10 h-10 text-[#ffd17a]" />
                       </div>
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                         {t('client.noApplications.title')}
@@ -580,7 +580,7 @@ const ClientDashboard = () => {
                       </p>
                       <Link 
                         href="/client/application"
-                        className="w-full sm:w-auto px-8 py-4 bg-amber-900 hover:bg-amber-950 text-white text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg"
+                        className="w-full sm:w-auto px-8 py-4 bg-[#ffd17a] hover:bg-[#ffd17a]/80 text-white text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-lg"
                       >
                         {t('client.noApplications.startNew')}
                       </Link>
@@ -594,11 +594,11 @@ const ClientDashboard = () => {
           {/* Sidebar */}
           <div className="space-y-4 sm:space-y-6">
             {/* Notifications */}
-            <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+            <div className="bg-white border border-[#ffd17a]/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
               <div className="p-4 sm:p-6 bg-[#242021]">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
-                  <h3 className="text-base sm:text-lg font-bold text-amber-400">{t('client.notifications.recent')}</h3>
+                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-[#ffd17a]"></div>
+                  <h3 className="text-base sm:text-lg font-bold text-[#ffd17a]">{t('client.notifications.recent')}</h3>
                 </div>
               </div>
               <div className="p-4 sm:p-6">
@@ -608,10 +608,10 @@ const ClientDashboard = () => {
                       <Link
                         key={notification.id}
                         href={notification.actionUrl}
-                        className="block p-3 sm:p-4 bg-gray-50 border border-amber-100/30 hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 group rounded-lg"
+                        className="block p-3 sm:p-4 bg-gray-50 border border-[#ffd17a]/30 hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 group rounded-lg"
                       >
                         <div className="flex items-start gap-3 sm:gap-4">
-                          <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                          <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a] rounded-lg">
                             {getNotificationIcon(notification.type)}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -634,10 +634,10 @@ const ClientDashboard = () => {
                     </div>
                   )}
                 </div>
-                <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-amber-100/30">
+                <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-[#ffd17a]/30">
                   <Link
                     href="/client/notifications"
-                    className="inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-amber-400/10 text-amber-600 border border-amber-400/30 rounded-lg hover:bg-amber-400/20"
+                    className="inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-300 hover:-translate-y-1 hover:shadow-md bg-[#ffd17a]/10 text-[#ffd17a] border border-[#ffd17a]/30 rounded-lg hover:bg-[#ffd17a]/20"
                   >
                     {t('client.notifications.viewAll')}
                   </Link>
@@ -646,11 +646,11 @@ const ClientDashboard = () => {
             </div>
 
             {/* Upcoming Deadlines */}
-            <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+            <div className="bg-white border border-[#ffd17a]/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
               <div className="p-4 sm:p-6 bg-[#242021]">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
-                  <h3 className="text-base sm:text-lg font-bold text-amber-400">{t('client.deadlines.upcoming')}</h3>
+                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-[#ffd17a]"></div>
+                  <h3 className="text-base sm:text-lg font-bold text-[#ffd17a]">{t('client.deadlines.upcoming')}</h3>
                 </div>
               </div>
               <div className="p-4 sm:p-6">
@@ -664,13 +664,13 @@ const ClientDashboard = () => {
                     </div>
                   ) : dashboardData.upcomingDeadlines && dashboardData.upcomingDeadlines.length > 0 ? (
                     dashboardData.upcomingDeadlines.map((deadline) => (
-                      <div key={deadline.id} className="bg-gray-50 border border-amber-100/30 p-3 sm:p-4 hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 group rounded-lg">
+                      <div key={deadline.id} className="bg-gray-50 border border-[#ffd17a]/30 p-3 sm:p-4 hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 group rounded-lg">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-3 mb-2 sm:mb-3">
                           <h4 className="text-xs sm:text-sm font-semibold text-gray-900 group-hover:text-gray-800">{deadline.title}</h4>
                           <span className={`px-2 sm:px-3 py-1 text-xs font-bold transition-all duration-300 group-hover:scale-105 ${
                             deadline.priority === 'high' ? 'bg-red-100 text-red-800' :
-                            deadline.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-amber-100 text-amber-800'
+                            deadline.priority === 'medium' ? 'bg-[#ffd17a]/20 text-[#ffd17a]' :
+                            'bg-[#ffd17a]/20 text-[#ffd17a]'
                           } rounded-lg`}>
                             {deadline.daysLeft} {t('client.deadlines.daysLeft')}
                           </span>
@@ -694,25 +694,25 @@ const ClientDashboard = () => {
             </div>
 
             {/* Quick Stats */}
-            <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+            <div className="bg-white border border-[#ffd17a]/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
               <div className="p-4 sm:p-6 bg-[#242021]">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
-                  <h3 className="text-base sm:text-lg font-bold text-amber-400">{t('client.quickStats.title')}</h3>
+                  <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-[#ffd17a]"></div>
+                  <h3 className="text-base sm:text-lg font-bold text-[#ffd17a]">{t('client.quickStats.title')}</h3>
                 </div>
               </div>
               <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
-                <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-50 border border-amber-100/30 hover:bg-white hover:shadow-sm transition-all duration-300 group rounded-lg">
+                <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-50 border border-[#ffd17a]/30 hover:bg-white hover:shadow-sm transition-all duration-300 group rounded-lg">
                   <span className='text-xs sm:text-sm font-medium text-gray-700'>{t('client.quickStats.documentsUploaded')}</span>
-                  <span className="font-bold text-sm sm:text-lg text-amber-600">{dashboardData.statistics.documentsUploaded}</span>
+                  <span className="font-bold text-sm sm:text-lg text-[#ffd17a]">{dashboardData.statistics.documentsUploaded}</span>
                 </div>
-                <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-50 border border-amber-100/30 hover:bg-white hover:shadow-sm transition-all duration-300 group rounded-lg">
+                <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-50 border border-[#ffd17a]/30 hover:bg-white hover:shadow-sm transition-all duration-300 group rounded-lg">
                   <span className='text-xs sm:text-sm font-medium text-gray-700'>{t('client.quickStats.avgProcessingTime')}</span>
-                  <span className="font-bold text-sm sm:text-lg text-amber-600">{dashboardData.statistics.avgProcessingTime} days</span>
+                  <span className="font-bold text-sm sm:text-lg text-[#ffd17a]">{dashboardData.statistics.avgProcessingTime} days</span>
                 </div>
-                <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-50 border border-amber-100/30 hover:bg-white hover:shadow-sm transition-all duration-300 group rounded-lg">
+                <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-50 border border-[#ffd17a]/30 hover:bg-white hover:shadow-sm transition-all duration-300 group rounded-lg">
                   <span className='text-xs sm:text-sm font-medium text-gray-700'>{t('client.quickStats.successRate')}</span>
-                  <span className="font-bold text-sm sm:text-lg text-amber-600">95%</span>
+                  <span className="font-bold text-sm sm:text-lg text-[#ffd17a]">95%</span>
                 </div>
               </div>
             </div>
@@ -720,20 +720,20 @@ const ClientDashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white border border-amber-100/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
+        <div className="bg-white border border-[#ffd17a]/50 overflow-hidden group hover:shadow-lg transition-all duration-300 rounded-lg shadow-sm">
           <div className="p-4 sm:p-6 lg:p-8 bg-[#242021]">
             <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-amber-400"></div>
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-400">{t('client.quickActions.title')}</h2>
+              <div className="w-2 h-2 rounded-full shadow-lg animate-pulse bg-[#ffd17a]"></div>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#ffd17a]">{t('client.quickActions.title')}</h2>
             </div>
           </div>
           <div className="p-4 sm:p-6 lg:p-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               <Link
                 href="/client/application"
-                className="group flex flex-col items-center p-4 sm:p-6 lg:p-8 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg"
+                className="group flex flex-col items-center p-4 sm:p-6 lg:p-8 bg-gray-50 border border-[#ffd17a]/50 hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg"
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center mb-4 sm:mb-6 shadow-md group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center mb-4 sm:mb-6 shadow-md group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a] rounded-lg">
                   <FaPlus className="text-sm sm:text-base lg:text-xl text-gray-900" />
                 </div>
                 <span className='font-bold text-gray-900 text-center text-xs sm:text-sm uppercase tracking-wider group-hover:scale-105 transition-transform duration-300'>{t('client.quickActions.newApplication')}</span>
@@ -741,9 +741,9 @@ const ClientDashboard = () => {
 
               <Link
                 href="/client/track-application"
-                className="group flex flex-col items-center p-4 sm:p-6 lg:p-8 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg"
+                className="group flex flex-col items-center p-4 sm:p-6 lg:p-8 bg-gray-50 border border-[#ffd17a]/50 hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg"
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center mb-4 sm:mb-6 shadow-md group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center mb-4 sm:mb-6 shadow-md group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a] rounded-lg">
                   <FaEye className="text-sm sm:text-base lg:text-xl text-gray-900" />
                 </div>
                 <span className='font-bold text-gray-900 text-center text-xs sm:text-sm uppercase tracking-wider group-hover:scale-105 transition-transform duration-300'>{t('client.quickActions.trackApplications')}</span>
@@ -751,19 +751,19 @@ const ClientDashboard = () => {
 
               <Link
                 href="/client/payments"
-                className="group flex flex-col items-center p-4 sm:p-6 lg:p-8 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg"
+                className="group flex flex-col items-center p-4 sm:p-6 lg:p-8 bg-gray-50 border border-[#ffd17a]/50 hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg"
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center mb-4 sm:mb-6 shadow-md group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
-                  <FaDollarSign className="text-sm sm:text-base lg:text-xl text-gray-900" />
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center mb-4 sm:mb-6 shadow-md group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a] rounded-lg">
+                  <FaRiyalSign className="text-sm sm:text-base lg:text-xl text-gray-900" />
                 </div>
                 <span className='font-bold text-gray-900 text-center text-xs sm:text-sm uppercase tracking-wider group-hover:scale-105 transition-transform duration-300'>{t('client.quickActions.viewPayments')}</span>
               </Link>
 
               <Link
                 href="/client/support"
-                className="group flex flex-col items-center p-4 sm:p-6 lg:p-8 bg-gray-50 border border-amber-100/50 hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg"
+                className="group flex flex-col items-center p-4 sm:p-6 lg:p-8 bg-gray-50 border border-[#ffd17a]/50 hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-lg"
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center mb-4 sm:mb-6 shadow-md group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center mb-4 sm:mb-6 shadow-md group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a] rounded-lg">
                   <FaHandshake className="text-sm sm:text-base lg:text-xl text-gray-900" />
                 </div>
                 <span className='font-bold text-gray-900 text-center text-xs sm:text-sm uppercase tracking-wider group-hover:scale-105 transition-transform duration-300'>{t('client.quickActions.contactSupport')}</span>
