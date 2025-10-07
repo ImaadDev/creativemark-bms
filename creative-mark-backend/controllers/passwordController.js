@@ -41,7 +41,7 @@ export const forgotPassword = async (req, res) => {
       normalizedEmail
     )}`;
 
-    // 6️⃣ Prepare professional email content
+    // 6️⃣ Prepare professional email content with Tailwind CSS
     const html = `
     <!DOCTYPE html>
     <html lang="en">
@@ -49,297 +49,103 @@ export const forgotPassword = async (req, res) => {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Password Reset - CreativeMark</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                background-color: #f8f9fa;
-            }
-            
-            .email-container {
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #ffffff;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            }
-            
-            .header {
-                background: linear-gradient(135deg, #242021 0%, #2a2422 100%);
-                padding: 40px 30px;
-                text-align: center;
-                position: relative;
-            }
-            
-            .header::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23ffd17a" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-                opacity: 0.1;
-            }
-            
-            .logo {
-                position: relative;
-                z-index: 1;
-                width: 60px;
-                height: 60px;
-                background-color: rgba(255, 209, 122, 0.2);
-                border-radius: 16px;
-                margin: 0 auto 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 24px;
-                font-weight: bold;
-                color: #ffd17a;
-            }
-            
-            .header h1 {
-                color: #ffffff;
-                font-size: 28px;
-                font-weight: 700;
-                margin-bottom: 8px;
-                position: relative;
-                z-index: 1;
-            }
-            
-            .header p {
-                color: #ffd17a;
-                font-size: 16px;
-                position: relative;
-                z-index: 1;
-            }
-            
-            .content {
-                padding: 40px 30px;
-            }
-            
-            .greeting {
-                font-size: 18px;
-                color: #242021;
-                margin-bottom: 20px;
-                font-weight: 600;
-            }
-            
-            .message {
-                font-size: 16px;
-                color: #555;
-                margin-bottom: 30px;
-                line-height: 1.7;
-            }
-            
-            .reset-button {
-                display: inline-block;
-                background: linear-gradient(135deg, #242021 0%, #2a2422 100%);
-                color: #ffffff;
-                text-decoration: none;
-                padding: 16px 32px;
-                border-radius: 8px;
-                font-weight: 600;
-                font-size: 16px;
-                text-align: center;
-                margin: 20px 0;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(36, 32, 33, 0.3);
-            }
-            
-            .reset-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(36, 32, 33, 0.4);
-            }
-            
-            .security-info {
-                background-color: #f8f9fa;
-                border-left: 4px solid #ffd17a;
-                padding: 20px;
-                margin: 30px 0;
-                border-radius: 0 8px 8px 0;
-            }
-            
-            .security-info h3 {
-                color: #242021;
-                font-size: 16px;
-                margin-bottom: 10px;
-                display: flex;
-                align-items: center;
-            }
-            
-            .security-info h3::before {
-                content: '🔒';
-                margin-right: 8px;
-            }
-            
-            .security-info ul {
-                list-style: none;
-                padding-left: 0;
-            }
-            
-            .security-info li {
-                color: #666;
-                margin-bottom: 8px;
-                padding-left: 20px;
-                position: relative;
-            }
-            
-            .security-info li::before {
-                content: '✓';
-                color: #ffd17a;
-                font-weight: bold;
-                position: absolute;
-                left: 0;
-            }
-            
-            .warning {
-                background-color: #fff3cd;
-                border: 1px solid #ffeaa7;
-                border-radius: 8px;
-                padding: 20px;
-                margin: 30px 0;
-            }
-            
-            .warning h3 {
-                color: #856404;
-                font-size: 16px;
-                margin-bottom: 10px;
-                display: flex;
-                align-items: center;
-            }
-            
-            .warning h3::before {
-                content: '⚠️';
-                margin-right: 8px;
-            }
-            
-            .warning p {
-                color: #856404;
-                font-size: 14px;
-                margin: 0;
-            }
-            
-            .footer {
-                background-color: #f8f9fa;
-                padding: 30px;
-                text-align: center;
-                border-top: 1px solid #e9ecef;
-            }
-            
-            .footer p {
-                color: #666;
-                font-size: 14px;
-                margin-bottom: 10px;
-            }
-            
-            .footer .company-info {
-                color: #242021;
-                font-weight: 600;
-                margin-top: 15px;
-            }
-            
-            .social-links {
-                margin-top: 20px;
-            }
-            
-            .social-links a {
-                display: inline-block;
-                margin: 0 10px;
-                color: #242021;
-                text-decoration: none;
-                font-size: 14px;
-            }
-            
-            .social-links a:hover {
-                color: #ffd17a;
-            }
-            
-            @media (max-width: 600px) {
-                .email-container {
-                    margin: 0;
-                    border-radius: 0;
-                }
-                
-                .header, .content, .footer {
-                    padding: 20px;
-                }
-                
-                .header h1 {
-                    font-size: 24px;
-                }
-                
-                .reset-button {
-                    display: block;
-                    width: 100%;
-                    text-align: center;
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'brand-dark': '#242021',
+                            'brand-light': '#2a2422',
+                            'brand-accent': '#ffd17a',
+                        }
+                    }
                 }
             }
-        </style>
+        </script>
     </head>
-    <body>
-        <div class="email-container">
+    <body class="bg-gray-50 font-sans">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
             <!-- Header -->
-            <div class="header">
-                <div class="logo">CM</div>
-                <h1>Password Reset Request</h1>
-                <p>CreativeMark Business Management System</p>
+            <div class="bg-gradient-to-br from-brand-dark to-brand-light px-8 py-10 text-center relative">
+                <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><pattern id=\"grid\" width=\"10\" height=\"10\" patternUnits=\"userSpaceOnUse\"><path d=\"M 10 0 L 0 0 0 10\" fill=\"none\" stroke=\"%23ffd17a\" stroke-width=\"0.5\" opacity=\"0.1\"/></pattern></defs><rect width=\"100\" height=\"100\" fill=\"url(%23grid)\"/></svg>');"></div>
+                <div class="relative z-10">
+                    <div class="w-16 h-16 bg-brand-accent bg-opacity-20 rounded-2xl mx-auto mb-5 flex items-center justify-center text-2xl font-bold text-brand-accent">
+                        CM
+                    </div>
+                    <h1 class="text-white text-3xl font-bold mb-2">Password Reset Request</h1>
+                    <p class="text-brand-accent text-lg">CreativeMark Business Management System</p>
+                </div>
             </div>
             
             <!-- Content -->
-            <div class="content">
-                <div class="greeting">Hello ${user.fullName || 'Valued Client'},</div>
+            <div class="px-8 py-10">
+                <div class="text-brand-dark text-xl font-semibold mb-5">
+                    Hello ${user.fullName || 'Valued Client'},
+                </div>
                 
-                <div class="message">
+                <div class="text-gray-600 text-base mb-8 leading-relaxed">
                     We received a request to reset your password for your CreativeMark account. If you made this request, click the button below to reset your password.
                 </div>
                 
-                <div style="text-align: center;">
-                    <a href="${resetLink}" class="reset-button">Reset My Password</a>
+                <div class="text-center mb-8">
+                    <a href="${resetLink}" class="inline-block bg-gradient-to-r from-brand-dark to-brand-light text-white font-semibold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+                        Reset My Password
+                    </a>
                 </div>
                 
-                <div class="security-info">
-                    <h3>Security Information</h3>
-                    <ul>
-                        <li>This link will expire in 1 hour for your security</li>
-                        <li>You can only use this link once</li>
-                        <li>If you didn't request this, please ignore this email</li>
-                        <li>Your password will remain unchanged until you click the link</li>
+                <div class="bg-gray-50 border-l-4 border-brand-accent p-5 mb-8 rounded-r-lg">
+                    <h3 class="text-brand-dark text-lg font-semibold mb-3 flex items-center">
+                        🔒 Security Information
+                    </h3>
+                    <ul class="space-y-2">
+                        <li class="text-gray-600 flex items-start">
+                            <span class="text-brand-accent font-bold mr-2">✓</span>
+                            This link will expire in 1 hour for your security
+                        </li>
+                        <li class="text-gray-600 flex items-start">
+                            <span class="text-brand-accent font-bold mr-2">✓</span>
+                            You can only use this link once
+                        </li>
+                        <li class="text-gray-600 flex items-start">
+                            <span class="text-brand-accent font-bold mr-2">✓</span>
+                            If you didn't request this, please ignore this email
+                        </li>
+                        <li class="text-gray-600 flex items-start">
+                            <span class="text-brand-accent font-bold mr-2">✓</span>
+                            Your password will remain unchanged until you click the link
+                        </li>
                     </ul>
                 </div>
                 
-                <div class="warning">
-                    <h3>Important Security Notice</h3>
-                    <p>If you didn't request a password reset, please ignore this email. Your account remains secure and no changes have been made.</p>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-5 mb-8">
+                    <h3 class="text-yellow-800 text-lg font-semibold mb-3 flex items-center">
+                        ⚠️ Important Security Notice
+                    </h3>
+                    <p class="text-yellow-700 text-sm">
+                        If you didn't request a password reset, please ignore this email. Your account remains secure and no changes have been made.
+                    </p>
                 </div>
                 
-                <div class="message">
-                    <strong>Having trouble with the button?</strong><br>
+                <div class="text-gray-600 text-base leading-relaxed">
+                    <strong class="text-brand-dark">Having trouble with the button?</strong><br>
                     Copy and paste this link into your browser:<br>
-                    <a href="${resetLink}" style="color: #242021; word-break: break-all;">${resetLink}</a>
+                    <a href="${resetLink}" class="text-brand-dark break-all hover:text-brand-accent transition-colors">${resetLink}</a>
                 </div>
             </div>
             
             <!-- Footer -->
-            <div class="footer">
-                <p>This email was sent from CreativeMark Business Management System</p>
-                <p>If you have any questions, please contact our support team</p>
+            <div class="bg-gray-50 px-8 py-8 text-center border-t border-gray-200">
+                <p class="text-gray-600 text-sm mb-2">This email was sent from CreativeMark Business Management System</p>
+                <p class="text-gray-600 text-sm mb-5">If you have any questions, please contact our support team</p>
                 
-                <div class="social-links">
-                    <a href="#">Website</a>
-                    <a href="#">Support</a>
-                    <a href="#">Privacy Policy</a>
+                <div class="flex justify-center space-x-6 mb-5">
+                    <a href="#" class="text-brand-dark text-sm hover:text-brand-accent transition-colors">Website</a>
+                    <a href="#" class="text-brand-dark text-sm hover:text-brand-accent transition-colors">Support</a>
+                    <a href="#" class="text-brand-dark text-sm hover:text-brand-accent transition-colors">Privacy Policy</a>
                 </div>
                 
-                <div class="company-info">
+                <div class="text-brand-dark font-semibold text-sm">
                     © 2024 CreativeMark. All rights reserved.
                 </div>
             </div>
@@ -398,7 +204,7 @@ export const resetPassword = async (req, res) => {
 
     await user.save();
 
-    // Send confirmation email
+    // Send confirmation email with Tailwind CSS
     const confirmationHtml = `
     <!DOCTYPE html>
     <html lang="en">
@@ -406,227 +212,87 @@ export const resetPassword = async (req, res) => {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Password Reset Successful - CreativeMark</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                background-color: #f8f9fa;
-            }
-            
-            .email-container {
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #ffffff;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            }
-            
-            .header {
-                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-                padding: 40px 30px;
-                text-align: center;
-                position: relative;
-            }
-            
-            .logo {
-                width: 60px;
-                height: 60px;
-                background-color: rgba(255, 255, 255, 0.2);
-                border-radius: 16px;
-                margin: 0 auto 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 24px;
-                font-weight: bold;
-                color: #ffffff;
-            }
-            
-            .header h1 {
-                color: #ffffff;
-                font-size: 28px;
-                font-weight: 700;
-                margin-bottom: 8px;
-            }
-            
-            .header p {
-                color: rgba(255, 255, 255, 0.9);
-                font-size: 16px;
-            }
-            
-            .content {
-                padding: 40px 30px;
-            }
-            
-            .greeting {
-                font-size: 18px;
-                color: #242021;
-                margin-bottom: 20px;
-                font-weight: 600;
-            }
-            
-            .message {
-                font-size: 16px;
-                color: #555;
-                margin-bottom: 30px;
-                line-height: 1.7;
-            }
-            
-            .success-info {
-                background-color: #d4edda;
-                border: 1px solid #c3e6cb;
-                border-radius: 8px;
-                padding: 20px;
-                margin: 30px 0;
-            }
-            
-            .success-info h3 {
-                color: #155724;
-                font-size: 16px;
-                margin-bottom: 10px;
-                display: flex;
-                align-items: center;
-            }
-            
-            .success-info h3::before {
-                content: '✅';
-                margin-right: 8px;
-            }
-            
-            .success-info p {
-                color: #155724;
-                font-size: 14px;
-                margin: 0;
-            }
-            
-            .security-tips {
-                background-color: #f8f9fa;
-                border-left: 4px solid #ffd17a;
-                padding: 20px;
-                margin: 30px 0;
-                border-radius: 0 8px 8px 0;
-            }
-            
-            .security-tips h3 {
-                color: #242021;
-                font-size: 16px;
-                margin-bottom: 10px;
-                display: flex;
-                align-items: center;
-            }
-            
-            .security-tips h3::before {
-                content: '🛡️';
-                margin-right: 8px;
-            }
-            
-            .security-tips ul {
-                list-style: none;
-                padding-left: 0;
-            }
-            
-            .security-tips li {
-                color: #666;
-                margin-bottom: 8px;
-                padding-left: 20px;
-                position: relative;
-            }
-            
-            .security-tips li::before {
-                content: '•';
-                color: #ffd17a;
-                font-weight: bold;
-                position: absolute;
-                left: 0;
-            }
-            
-            .footer {
-                background-color: #f8f9fa;
-                padding: 30px;
-                text-align: center;
-                border-top: 1px solid #e9ecef;
-            }
-            
-            .footer p {
-                color: #666;
-                font-size: 14px;
-                margin-bottom: 10px;
-            }
-            
-            .footer .company-info {
-                color: #242021;
-                font-weight: 600;
-                margin-top: 15px;
-            }
-            
-            @media (max-width: 600px) {
-                .email-container {
-                    margin: 0;
-                    border-radius: 0;
-                }
-                
-                .header, .content, .footer {
-                    padding: 20px;
-                }
-                
-                .header h1 {
-                    font-size: 24px;
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'brand-dark': '#242021',
+                            'brand-light': '#2a2422',
+                            'brand-accent': '#ffd17a',
+                        }
+                    }
                 }
             }
-        </style>
+        </script>
     </head>
-    <body>
-        <div class="email-container">
+    <body class="bg-gray-50 font-sans">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
             <!-- Header -->
-            <div class="header">
-                <div class="logo">CM</div>
-                <h1>Password Reset Successful</h1>
-                <p>CreativeMark Business Management System</p>
+            <div class="bg-gradient-to-br from-green-500 to-teal-500 px-8 py-10 text-center">
+                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl mx-auto mb-5 flex items-center justify-center text-2xl font-bold text-white">
+                    CM
+                </div>
+                <h1 class="text-white text-3xl font-bold mb-2">Password Reset Successful</h1>
+                <p class="text-white text-opacity-90 text-lg">CreativeMark Business Management System</p>
             </div>
             
             <!-- Content -->
-            <div class="content">
-                <div class="greeting">Hello ${user.fullName || 'Valued Client'},</div>
+            <div class="px-8 py-10">
+                <div class="text-brand-dark text-xl font-semibold mb-5">
+                    Hello ${user.fullName || 'Valued Client'},
+                </div>
                 
-                <div class="message">
+                <div class="text-gray-600 text-base mb-8 leading-relaxed">
                     Your password has been successfully reset. You can now log in to your CreativeMark account using your new password.
                 </div>
                 
-                <div class="success-info">
-                    <h3>Password Reset Confirmed</h3>
-                    <p>Your account password was changed on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}. If you did not make this change, please contact our support team immediately.</p>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-5 mb-8">
+                    <h3 class="text-green-800 text-lg font-semibold mb-3 flex items-center">
+                        ✅ Password Reset Confirmed
+                    </h3>
+                    <p class="text-green-700 text-sm">
+                        Your account password was changed on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}. If you did not make this change, please contact our support team immediately.
+                    </p>
                 </div>
                 
-                <div class="security-tips">
-                    <h3>Security Tips</h3>
-                    <ul>
-                        <li>Use a strong, unique password</li>
-                        <li>Don't share your password with anyone</li>
-                        <li>Log out from shared devices</li>
-                        <li>Enable two-factor authentication if available</li>
+                <div class="bg-gray-50 border-l-4 border-brand-accent p-5 mb-8 rounded-r-lg">
+                    <h3 class="text-brand-dark text-lg font-semibold mb-3 flex items-center">
+                        🛡️ Security Tips
+                    </h3>
+                    <ul class="space-y-2">
+                        <li class="text-gray-600 flex items-start">
+                            <span class="text-brand-accent font-bold mr-2">•</span>
+                            Use a strong, unique password
+                        </li>
+                        <li class="text-gray-600 flex items-start">
+                            <span class="text-brand-accent font-bold mr-2">•</span>
+                            Don't share your password with anyone
+                        </li>
+                        <li class="text-gray-600 flex items-start">
+                            <span class="text-brand-accent font-bold mr-2">•</span>
+                            Log out from shared devices
+                        </li>
+                        <li class="text-gray-600 flex items-start">
+                            <span class="text-brand-accent font-bold mr-2">•</span>
+                            Enable two-factor authentication if available
+                        </li>
                     </ul>
                 </div>
                 
-                <div class="message">
-                    <strong>Need help?</strong><br>
+                <div class="text-gray-600 text-base leading-relaxed">
+                    <strong class="text-brand-dark">Need help?</strong><br>
                     If you have any questions or concerns, please don't hesitate to contact our support team.
                 </div>
             </div>
             
             <!-- Footer -->
-            <div class="footer">
-                <p>This email was sent from CreativeMark Business Management System</p>
-                <p>If you have any questions, please contact our support team</p>
+            <div class="bg-gray-50 px-8 py-8 text-center border-t border-gray-200">
+                <p class="text-gray-600 text-sm mb-2">This email was sent from CreativeMark Business Management System</p>
+                <p class="text-gray-600 text-sm mb-5">If you have any questions, please contact our support team</p>
                 
-                <div class="company-info">
+                <div class="text-brand-dark font-semibold text-sm">
                     © 2024 CreativeMark. All rights reserved.
                 </div>
             </div>
