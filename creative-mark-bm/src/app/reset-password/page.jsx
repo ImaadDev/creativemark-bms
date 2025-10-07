@@ -1,93 +1,62 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "../contexts/AuthContext";
-import { login } from "../services/auth";
-import Image from "next/image";
-import { useTranslation } from "../i18n/TranslationContext";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { resetPassword } from "../../services/auth";
+import { useTranslation } from "../../i18n/TranslationContext";
 
-export default function LoginPage() {
+export default function ResetPasswordPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { updateUser } = useAuth();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    role: "client" // Default role
-  });
+  const searchParams = useSearchParams();
+  
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error when user starts typing
-    if (error) setError("");
-  }
+  const token = searchParams.get("token");
+  const email = searchParams.get("email");
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    
-    try {
-      // Call backend login API
-      console.log("Frontend: Attempting login with:", formData);
-      const response = await login({
-        email: formData.email,
-        password: formData.password
-      });
-      
-      console.log("Frontend: Login response received:", response);
-      
-      if (response.success) {
-        console.log("Frontend: Login successful, user data:", response.user);
-        console.log("Frontend: Cookies after login:", document.cookie);
-        
-        // Update AuthContext with user data
-        updateUser(response.user);
-        
-        // Navigate to appropriate page
-        console.log("Frontend: Navigating to role:", response.user.role);
-        switch (response.user.role) {
-          case 'employee':
-            console.log("Frontend: Redirecting to /employee");
-            router.push('/employee');
-            break;
-          case 'partner':
-            console.log("Frontend: Redirecting to /partner");
-            router.push('/partner');
-            break;
-          case 'admin':
-            console.log("Frontend: Redirecting to /admin");
-            router.push('/admin');
-            break;
-          case 'client':
-          default:
-            console.log("Frontend: Redirecting to /client");
-            router.push('/client');
-            break;
-        }
-      } else {
-        setError(response.message || "Login failed");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setError(error.message || "Login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (!token || !email) {
+      setError(t('auth.invalidResetLink'));
     }
-  }
+  }, [token, email, t]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+
+    if (!newPassword || !confirmPassword) {
+      return setError(t('auth.fillAllFields'));
+    }
+    if (newPassword !== confirmPassword) {
+      return setError(t('auth.passwordsDoNotMatch'));
+    }
+    if (newPassword.length < 6) {
+      return setError(t('auth.passwordTooShort'));
+    }
+
+    try {
+      setLoading(true);
+      const res = await resetPassword({ token, email, newPassword });
+      setMessage(res.message || t('auth.passwordResetSuccess'));
+      setTimeout(() => router.push("/"), 2000);
+    } catch (err) {
+      console.error("Reset password error:", err);
+      setError(err.message || t('auth.resetPasswordFailed'));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex relative overflow-hidden">
-     
-
       {/* Left Side - Animated Visual Section */}
       <div className="hidden lg:flex lg:w-1/2 xl:w-2/5 relative overflow-hidden bg-gradient-to-br from-[#242021] via-[#2a2422] to-[#242021]">
         {/* Animated Background Elements */}
@@ -121,21 +90,21 @@ export default function LoginPage() {
             </div>
             
             <h1 className="text-4xl xl:text-5xl font-bold mb-6 animate-fade-in text-white">
-              {t('auth.welcomeBack')}
+              {t('auth.resetPasswordTitle')}
             </h1>
             <p className="text-xl text-[#ffd17a] mb-8 animate-fade-in delay-300">
-              {t('auth.signInToAccount')}
+              {t('auth.resetPasswordSubtitle')}
             </p>
             
             {/* Animated Stats */}
             <div className="grid grid-cols-2 gap-6 mt-12">
               <div className="text-center animate-fade-in delay-500 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="text-3xl font-bold mb-2 text-[#ffd17a]">10K+</div>
-                <div className='text-sm text-white/80'>{t('auth.activeUsers')}</div>
+                <div className="text-3xl font-bold mb-2 text-[#ffd17a]">🔐</div>
+                <div className='text-sm text-white/80'>{t('auth.secureProcess')}</div>
               </div>
               <div className="text-center animate-fade-in delay-700 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="text-3xl font-bold mb-2 text-[#ffd17a]">99.9%</div>
-                <div className='text-sm text-white/80'>{t('auth.uptime')}</div>
+                <div className="text-3xl font-bold mb-2 text-[#ffd17a]">✅</div>
+                <div className='text-sm text-white/80'>{t('auth.quickReset')}</div>
               </div>
             </div>
           </div>
@@ -152,7 +121,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right Side - Login Form */}
+      {/* Right Side - Reset Password Form */}
       <div className="w-full lg:w-1/2 xl:w-3/5 flex items-center justify-center p-4 lg:p-0">
         <div className="w-full">
           <div className="bg-white/95 backdrop-blur-sm p-6 sm:p-8 lg:p-10 animate-fade-in">
@@ -165,8 +134,8 @@ export default function LoginPage() {
                   className="w-6 h-6 sm:w-8 sm:h-8 object-contain"
                 />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 tracking-tight">{t('auth.signIn')}</h2>
-              <p className="text-gray-600 text-sm sm:text-base">{t('auth.welcomeBackSignIn')}</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 tracking-tight">{t('auth.resetPassword')}</h2>
+              <p className="text-gray-600 text-sm sm:text-base">{t('auth.enterNewPassword')}</p>
             </div>
 
             {/* Error Message */}
@@ -183,33 +152,32 @@ export default function LoginPage() {
               </div>
             )}
 
+            {/* Success Message */}
+            {message && (
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg sm:rounded-xl animate-fade-in">
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-semibold text-green-800">{message}</span>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit}>
               <div className="space-y-4 sm:space-y-6">
-                {/* Email Field */}
+                {/* New Password Field */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('auth.emailAddress')} *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder={t('auth.enterEmailAddress')}
-                    className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                  />
-                </div>
-
-                {/* Password Field */}
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('auth.password')} *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('auth.newPassword')} *</label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
                       required
-                      placeholder={t('auth.enterPassword')}
+                      placeholder={t('auth.enterNewPassword')}
                       className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base pr-12"
                     />
                     <button
@@ -231,42 +199,54 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2">
+                {/* Confirm Password Field */}
+                <div className="group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('auth.confirmPassword')} *</label>
+                  <div className="relative">
                     <input
-                      type="checkbox"
-                      className="w-4 h-4 border-gray-300 rounded focus:ring-[#ffd17a]/20 focus:ring-2"
-                      style={{accentColor: '#ffd17a'}}
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      placeholder={t('auth.confirmNewPassword')}
+                      className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base pr-12"
                     />
-                    <span className='text-sm text-gray-700'>{t('auth.rememberMe')}</span>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => router.push('/forgot-password')}
-                    className="text-sm cursor-pointer font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors"
-                  >
-                    {t('auth.forgotPassword')}
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#242021] transition-colors"
+                    >
+                      {showConfirmPassword ? (
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className={`w-full py-3 sm:py-4 text-sm sm:text-base font-bold uppercase tracking-wide transition-all cursor-pointer duration-200 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md ${
-                    isLoading
+                  disabled={loading}
+                  className={`w-full py-3 sm:py-4 text-sm sm:text-base font-bold uppercase tracking-wide transition-all duration-200 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md ${
+                    loading
                       ? "bg-gray-400 text-gray-200 cursor-not-allowed"
                       : "bg-[#242021] text-white hover:bg-[#242021]/90 focus:outline-none focus:ring-4 focus:ring-[#ffd17a]/20"
                   }`}
                 >
-                  {isLoading ? (
+                  {loading ? (
                     <div className="flex items-center justify-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin cursor-pointer"></div>
-                      {t('auth.signingIn')}
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin"></div>
+                      {t('auth.resettingPassword')}
                     </div>
                   ) : (
-                    t('auth.signInButton')
+                    t('auth.resetPasswordButton')
                   )}
                 </button>
               </div>
@@ -276,13 +256,13 @@ export default function LoginPage() {
             <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200/50">
               <div className="text-center text-sm">
                 <span className="text-gray-600">
-                  {t('auth.dontHaveAccount')} {" "}
+                  {t('auth.rememberPassword')} {" "}
                   <button
                     type="button"
-                    onClick={() => router.push('/register')}
-                    className="font-semibold text-[#242021] cursor-pointer hover:text-[#242021]/80 hover:underline transition-colors"
+                    onClick={() => router.push('/')}
+                    className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors"
                   >
-                    {t('auth.registerHere')}
+                    {t('auth.signIn')}
                   </button>
                 </span>
               </div>
@@ -290,6 +270,31 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+        
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out;
+        }
+        
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+        
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-700 { animation-delay: 0.7s; }
+      `}</style>
     </div>
   );
 }

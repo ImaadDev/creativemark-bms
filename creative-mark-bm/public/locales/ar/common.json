@@ -494,11 +494,16 @@
       "advertising": "الإعلان والترويج لا يتطلب شركات خارجية.",
       "noSpecialRules": "لا توجد متطلبات خاصة للشركات الخارجية لهذا النوع من الخدمة."
     },
-    "navigation": {
-      "previousStep": "الخطوة السابقة",
-      "continue": "متابعة",
-      "submitApplication": "إرسال الطلب",
-      "submittingApplication": "جاري إرسال الطلب..."
+    "validation": {
+      "passportRequired": "جواز السفر مطلوب",
+      "idCardRequired": "بطاقة الهوية/الإقامة مطلوبة",
+      "documentsRequired": "مستند واحد على الأقل مطلوب",
+      "passportFileRequired": "يرجى رفع جواز السفر",
+      "idCardFileRequired": "يرجى رفع بطاقة الهوية/الإقامة",
+      "saudiPartnerIqamaRequired": "إقامة الشريك السعودي مطلوبة",
+      "companyDocumentsRequired": "مستندات الشركة مطلوبة",
+      "selectDocumentOption": "يرجى اختيار خيار المستندات",
+      "uploadAtLeastOneDocument": "يرجى رفع مستند واحد على الأقل مطلوب"
     }
   },
   "support": {
@@ -1888,7 +1893,32 @@
     "privacyPolicy": "سياسة الخصوصية",
     "creatingAccount": "جاري إنشاء الحساب...",
     "createAccountButton": "إنشاء حساب",
-    "alreadyHaveAccount": "لديك حساب بالفعل؟"
+    "alreadyHaveAccount": "لديك حساب بالفعل؟",
+    "forgotPasswordTitle": "نسيت كلمة المرور؟",
+    "forgotPasswordSubtitle": "لا تقلق، سنساعدك في إعادة تعيينها",
+    "secureReset": "إعادة تعيين آمنة",
+    "quickProcess": "عملية سريعة",
+    "enterEmailForReset": "أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين",
+    "resetLinkSent": "تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني",
+    "sendingResetLink": "جاري إرسال رابط إعادة التعيين...",
+    "sendResetLink": "إرسال رابط إعادة التعيين",
+    "rememberPassword": "تذكرت كلمة المرور؟",
+    "resetPasswordTitle": "إعادة تعيين كلمة المرور",
+    "resetPasswordSubtitle": "أنشئ كلمة مرور جديدة آمنة",
+    "secureProcess": "عملية آمنة",
+    "quickReset": "إعادة تعيين سريعة",
+    "enterNewPassword": "أدخل كلمة المرور الجديدة",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+    "resettingPassword": "جاري إعادة تعيين كلمة المرور...",
+    "resetPasswordButton": "إعادة تعيين كلمة المرور",
+    "invalidResetLink": "رابط إعادة التعيين غير صالح أو منتهي الصلاحية",
+    "fillAllFields": "يرجى ملء جميع الحقول",
+    "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
+    "passwordTooShort": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+    "passwordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح!",
+    "resetPasswordFailed": "فشل في إعادة تعيين كلمة المرور",
+    "somethingWentWrong": "حدث خطأ ما"
   },
   "profile": {
     "loadingProfile": "جاري تحميل الملف الشخصي...",

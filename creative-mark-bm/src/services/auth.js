@@ -112,3 +112,27 @@ export const updateUserSettings = async (settingsData) => {
     throw new Error(err.response?.data?.message || err.message || "Failed to update settings");
   }
 };
+
+
+export const forgotPassword = async (email) => {
+  try {
+    const res = await api.post("/auth/forgot-password", { email }); 
+    return res.data;
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    throw new Error(
+      err.response?.data?.message || err.message || "Failed to send reset link"
+    );
+  }
+};
+
+
+export const resetPassword = async ({ token, email, newPassword }) => {
+  try {
+    const res = await api.post("/auth/reset-password", { token, email, newPassword });
+    return res.data;
+  } catch (err) {
+    console.error("Reset password error:", err);
+    throw new Error(err.response?.data?.message || "Failed to reset password");
+  }
+};

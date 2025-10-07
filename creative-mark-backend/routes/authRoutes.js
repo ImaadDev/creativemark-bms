@@ -1,5 +1,7 @@
 import express from "express";
 import { registerUser, loginUser, getCurrentUser, logoutUser, createUser, updateProfile, updatePassword, updateSettings, deleteUser } from "../controllers/authController.js";
+import { forgotPassword, resetPassword } from "../controllers/passwordController.js";
+
 import authMiddleware from "../middlewares/authMiddleware.js";
 import upload, { handleUploadError } from "../config/upload.js";
 
@@ -8,6 +10,12 @@ const router = express.Router();
 // Register new user
 router.post("/register", registerUser);
 
+
+// Forgot password
+router.post("/forgot-password", forgotPassword);
+
+// Reset password
+router.post("/reset-password", resetPassword);
 
 
 // Create new user (Employee, Partner, or Admin) - Admin only
@@ -33,5 +41,8 @@ router.delete("/users/:id", authMiddleware, deleteUser);
 
 // Logout user
 router.post("/logout", logoutUser);
+
+
+
 
 export default router;

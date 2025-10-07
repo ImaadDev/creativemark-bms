@@ -52,10 +52,7 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
-      process.env.CLIENT_URL || "http://localhost:3000",
-      "https://creativemark-bms.vercel.app", // Vercel frontend URL
-      "http://localhost:3000" // Development
-    ];
+      process.env.CLIENT_URL];
     
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);

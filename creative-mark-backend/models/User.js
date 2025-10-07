@@ -12,7 +12,8 @@ const UserSchema = new mongoose.Schema({
     enum: ["saudi", "gulf", "premium", "foreign"], 
   },
   passwordHash: { type: String, required: true }, // 🔐 Hashed password
-
+  passwordResetToken: { type: String },
+  passwordResetExpires: { type: Date },
   // Profile picture
   profilePicture: { type: String }, // URL to profile picture
 

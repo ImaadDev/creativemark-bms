@@ -140,7 +140,7 @@ export default function ModernMultiStepForm() {
     return { requiredExternalCompanies: 0, note: t('application.requirements.noSpecialRules') };
   }
 
-  const requirements = getRequirements();
+  const globalRequirements = getRequirements();
 
   // Enhanced validation functions
   const validateField = (name, value, formData = form) => {
@@ -254,10 +254,10 @@ export default function ModernMultiStepForm() {
         break;
       case 5:
         // External companies validation
-        const requirements = getRequirements();
+        const companyRequirements = getRequirements();
         
         // If service requires external companies and user has 0 companies
-        if (requirements.requiredExternalCompanies > 0 && form.externalCompaniesCount === 0) {
+        if (companyRequirements.requiredExternalCompanies > 0 && form.externalCompaniesCount === 0) {
           // Check if user has selected "CreativeMark will provide"
           if (!form.companyArrangesExternalCompanies) {
             newErrors.companyArrangesExternalCompanies = t('validation.selectOptionOrAddCompanies');
@@ -282,6 +282,46 @@ export default function ModernMultiStepForm() {
               newErrors[`company_${i}_crNumber`] = t('validation.crNumberRequired');
             }
           }
+        }
+        break;
+      case 7:
+        // Document validation
+        const docRequirements = getRequirements();
+        
+        // Always require passport
+        if (!form.passportFile) {
+          newErrors.passportFile = t('application.validation.passportRequired');
+        }
+        
+        // Always require ID card
+        if (!form.uploadedFiles.idCard || form.uploadedFiles.idCard.length === 0) {
+          newErrors.idCard = t('application.validation.idCardRequired');
+        }
+        
+        // If service requires external companies
+        if (docRequirements.requiredExternalCompanies > 0) {
+          // If user has sufficient companies and chose to upload docs
+          if (form.externalCompaniesCount >= docRequirements.requiredExternalCompanies && form.docOption === "uploadDocs") {
+            // Check if at least one company document is uploaded
+            let hasCompanyDocuments = false;
+            for (let i = 0; i < Math.min(form.externalCompaniesCount, docRequirements.requiredExternalCompanies); i++) {
+              if ((form.uploadedFiles[`cr_${i}`] && form.uploadedFiles[`cr_${i}`].length > 0) ||
+                  (form.uploadedFiles[`fs_${i}`] && form.uploadedFiles[`fs_${i}`].length > 0) ||
+                  (form.uploadedFiles[`aoa_${i}`] && form.uploadedFiles[`aoa_${i}`].length > 0)) {
+                hasCompanyDocuments = true;
+                break;
+              }
+            }
+            if (!hasCompanyDocuments) {
+              newErrors.companyDocuments = t('application.validation.companyDocumentsRequired');
+            }
+          }
+          // If user doesn't have sufficient companies or chose passport only, no additional validation needed
+        }
+        
+        // If user has Saudi partner, require Saudi partner Iqama
+        if (form.serviceType === "commercial" && form.partnerType === "withSaudiPartner" && !form.saudiPartnerIqama) {
+          newErrors.saudiPartnerIqama = t('application.validation.saudiPartnerIqamaRequired');
         }
         break;
       default:
@@ -442,6 +482,16 @@ export default function ModernMultiStepForm() {
           fieldsToTouch.externalCompaniesCount = true;
           if (getRequirements().requiredExternalCompanies > 0 && form.externalCompaniesCount === 0) {
             fieldsToTouch.companyArrangesExternalCompanies = true;
+          }
+          break;
+        case 7:
+          fieldsToTouch.passportFile = true;
+          fieldsToTouch.idCard = true;
+          if (form.serviceType === "commercial" && form.partnerType === "withSaudiPartner") {
+            fieldsToTouch.saudiPartnerIqama = true;
+          }
+          if (getRequirements().requiredExternalCompanies > 0 && form.externalCompaniesCount >= getRequirements().requiredExternalCompanies && form.docOption === "uploadDocs") {
+            fieldsToTouch.companyDocuments = true;
           }
           break;
       }
@@ -1112,7 +1162,7 @@ export default function ModernMultiStepForm() {
                   {form.serviceType && (
                   <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
                     <h3 className="font-semibold text-gray-900 mb-2">{t('application.serviceType.requirementsSummary')}</h3>
-                    <p className="text-sm text-gray-700">{requirements.note}</p>
+                    <p className="text-sm text-gray-700">{globalRequirements.note}</p>
                   </div>
                   )}
                 </div>
@@ -1219,13 +1269,13 @@ export default function ModernMultiStepForm() {
                     <p className='text-sm text-gray-600 mt-2'>{t('application.companies.externalCompaniesNote')}</p>
                   </div>
 
-                  {requirements.requiredExternalCompanies > 0 && (
+                  {globalRequirements.requiredExternalCompanies > 0 && (
                     <div className="bg-gray-50 border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
                       <h3 className="font-semibold text-gray-900 mb-2">{t('application.companies.requirements')}</h3>
                       <p className="text-sm text-gray-700 mb-2">
-                        {t('application.companies.serviceRequires', { count: requirements.requiredExternalCompanies })}
+                        {t('application.companies.serviceRequires', { count: globalRequirements.requiredExternalCompanies })}
                       </p>
-                      <p className="text-sm text-gray-600 mb-3">{requirements.note}</p>
+                      <p className="text-sm text-gray-600 mb-3">{globalRequirements.note}</p>
                       <div className="bg-gray-100 border border-gray-200 p-3 transition-all duration-300 hover:shadow-md">
                         <p className="text-sm text-gray-700 font-medium">
                           💡 {t('application.companies.dontHaveCompanies')}
@@ -1351,10 +1401,10 @@ export default function ModernMultiStepForm() {
                     <div className="text-center py-8">
                       <Building2 className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                       <p className="text-gray-600 mb-2">{t('application.companies.noCompaniesConfigure')}</p>
-                      {requirements.requiredExternalCompanies > 0 ? (
+                      {globalRequirements.requiredExternalCompanies > 0 ? (
                         <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-lg p-4 max-w-md mx-auto">
                           <p className="text-sm text-[#242021] font-medium mb-2">
-                            ✅ {t('application.companies.weWillArrange', { count: requirements.requiredExternalCompanies })}
+                            ✅ {t('application.companies.weWillArrange', { count: globalRequirements.requiredExternalCompanies })}
                           </p>
                           <p className="text-sm text-[#242021]/80">
                             {t('application.companies.proceedToNextStep')}
@@ -1476,9 +1526,9 @@ export default function ModernMultiStepForm() {
                 </div>
 
                 <div className="space-y-6">
-                  {requirements.requiredExternalCompanies > 0 ? (
+                  {globalRequirements.requiredExternalCompanies > 0 ? (
                     <div className="space-y-6">
-                      {Number(form.externalCompaniesCount) >= requirements.requiredExternalCompanies ? (
+                      {Number(form.externalCompaniesCount) >= globalRequirements.requiredExternalCompanies ? (
                         <div className="space-y-4">
                         <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-4">
                           <h3 className="font-semibold text-[#242021] mb-2">{t('application.documents.documentOptions')}</h3>
@@ -1521,7 +1571,7 @@ export default function ModernMultiStepForm() {
                           {form.docOption === "uploadDocs" && (
                             <div className="space-y-6">
                               <h3 className="text-lg font-semibold text-gray-900">{t('application.documents.companyDocuments')}</h3>
-                              {Array.from({ length: Math.min(form.externalCompaniesCount, requirements.requiredExternalCompanies) }).map((_, idx) => (
+                              {Array.from({ length: Math.min(form.externalCompaniesCount, globalRequirements.requiredExternalCompanies) }).map((_, idx) => (
                                 <div key={idx} className="border border-gray-200 rounded-xl p-4 sm:p-6">
                                     <h4 className="font-semibold text-gray-900 mb-4">
                                     {form.externalCompaniesDetails[idx]?.companyName || t('application.documents.companyNumber', { number: idx + 1 })}
@@ -1584,7 +1634,11 @@ export default function ModernMultiStepForm() {
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
                                   <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.passport')}</label>
-                                  <div className="border-2 border-dashed border-[#ffd17a]/30 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
+                                  <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                                    touched.passportFile && errors.passportFile 
+                                      ? 'border-red-300 bg-red-50/50' 
+                                      : 'border-[#ffd17a]/30 hover:border-[#ffd17a]/50'
+                                  }`}>
                                     <Upload className="w-6 h-6 mx-auto mb-2 text-[#ffd17a]" />
                                     <input
                                       type="file"
@@ -1593,10 +1647,20 @@ export default function ModernMultiStepForm() {
                                       className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#ffd17a]/20 file:text-[#242021]"
                                     />
                                   </div>
+                                  {touched.passportFile && errors.passportFile && (
+                                    <div className="flex items-center gap-2 text-red-600 text-sm mt-2">
+                                      <X className="w-4 h-4" />
+                                      {errors.passportFile}
+                                    </div>
+                                  )}
                                 </div>
                                 <div>
                                   <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.iqamaIdCard')}</label>
-                                  <div className="border-2 border-dashed border-[#ffd17a]/30 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
+                                  <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                                    touched.idCard && errors.idCard 
+                                      ? 'border-red-300 bg-red-50/50' 
+                                      : 'border-[#ffd17a]/30 hover:border-[#ffd17a]/50'
+                                  }`}>
                                     <Upload className="w-6 h-6 mx-auto mb-2 text-[#ffd17a]" />
                                     <input
                                       type="file"
@@ -1605,6 +1669,12 @@ export default function ModernMultiStepForm() {
                                       className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#ffd17a]/20 file:text-[#242021]"
                                     />
                                   </div>
+                                  {touched.idCard && errors.idCard && (
+                                    <div className="flex items-center gap-2 text-red-600 text-sm mt-2">
+                                      <X className="w-4 h-4" />
+                                      {errors.idCard}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -1614,8 +1684,8 @@ export default function ModernMultiStepForm() {
                         <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-6 space-y-4">
                           <h3 className="font-semibold text-[#242021] mb-2">We'll Arrange External Companies for You</h3>
                           <p className="text-sm text-[#242021]/80 mb-4">
-                            You have {form.externalCompaniesCount} external companies, but {requirements.requiredExternalCompanies} are required. 
-                            Don't worry - we'll arrange the missing {requirements.requiredExternalCompanies - form.externalCompaniesCount} companies for you.
+                            You have {form.externalCompaniesCount} external companies, but {globalRequirements.requiredExternalCompanies} are required. 
+                            Don't worry - we'll arrange the missing {globalRequirements.requiredExternalCompanies - form.externalCompaniesCount} companies for you.
                           </p>
                           <div className="bg-white border border-[#ffd17a]/20 rounded-lg p-4 mb-4">
                             <h4 className="font-medium text-[#242021] mb-2">What we need from you:</h4>
@@ -1661,21 +1731,35 @@ export default function ModernMultiStepForm() {
                         No external company requirements for this service. Please upload your personal documents.
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.passport')}</label>
+                              <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                                touched.passportFile && errors.passportFile 
+                                  ? 'border-red-300 bg-red-50/50' 
+                                  : 'border-[#ffd17a]/30 hover:border-[#ffd17a]/50'
+                              }`}>
+                                <Upload className="w-6 h-6 mx-auto mb-2 text-[#ffd17a]" />
+                                <input
+                                  type="file"
+                                  name="passport"
+                                  onChange={handlePassportChange}
+                                  className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#ffd17a]/20 file:text-[#242021]"
+                                />
+                              </div>
+                              {touched.passportFile && errors.passportFile && (
+                                <div className="flex items-center gap-2 text-red-600 text-sm mt-2">
+                                  <X className="w-4 h-4" />
+                                  {errors.passportFile}
+                                </div>
+                              )}
+                            </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Passport</label>
-                          <div className="border-2 border-dashed border-[#ffd17a]/30 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
-                            <Upload className="w-6 h-6 mx-auto mb-2 text-[#ffd17a]" />
-                            <input
-                              type="file"
-                              name="passport"
-                              onChange={handlePassportChange}
-                              className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#ffd17a]/20 file:text-[#242021]"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Iqama / ID Card</label>
-                          <div className="border-2 border-dashed border-[#ffd17a]/30 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.iqamaIdCard')}</label>
+                          <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                            touched.idCard && errors.idCard 
+                              ? 'border-red-300 bg-red-50/50' 
+                              : 'border-[#ffd17a]/30 hover:border-[#ffd17a]/50'
+                          }`}>
                             <Upload className="w-6 h-6 mx-auto mb-2 text-[#ffd17a]" />
                             <input
                               type="file"
@@ -1684,6 +1768,12 @@ export default function ModernMultiStepForm() {
                               className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#ffd17a]/20 file:text-[#242021]"
                             />
                           </div>
+                          {touched.idCard && errors.idCard && (
+                            <div className="flex items-center gap-2 text-red-600 text-sm mt-2">
+                              <X className="w-4 h-4" />
+                              {errors.idCard}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1834,7 +1924,7 @@ export default function ModernMultiStepForm() {
                         <h4 className="font-medium text-gray-900 mb-2">{t('application.review.externalCompanies')}</h4>
                         <div className="space-y-1 text-gray-600">
                           <p><span className="font-medium">{t('application.review.count')}</span> {form.externalCompaniesCount}</p>
-                          <p><span className="font-medium">{t('application.review.required')}</span> {requirements.requiredExternalCompanies}</p>
+                          <p><span className="font-medium">{t('application.review.required')}</span> {globalRequirements.requiredExternalCompanies}</p>
                         </div>
                       </div>
                       

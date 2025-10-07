@@ -490,11 +490,11 @@ export default function RegisterPage() {
                 />
                 <label className="text-sm text-gray-700 leading-relaxed">
                   {t('auth.iAgreeToThe')} {" "}
-                  <button type="button" className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors">
+                  <button type="button" className="font-semibold cursor-pointer text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors">
                     {t('auth.termsAndConditions')}
                   </button>{" "}
                   {t('auth.and')} {" "}
-                  <button type="button" className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors">
+                  <button type="button" className="font-semibold cursor-pointer text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors">
                     {t('auth.privacyPolicy')}
                   </button>
                 </label>
@@ -504,7 +504,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-3 sm:py-4 font-bold text-white transition-all duration-200 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md text-sm sm:text-base ${
+                className={`w-full py-3 cursor-pointer sm:py-4 font-bold text-white transition-all duration-200 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md text-sm sm:text-base ${
                   isLoading
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-[#242021] hover:bg-[#242021]/90 focus:outline-none focus:ring-4 focus:ring-[#ffd17a]/20"
@@ -512,7 +512,7 @@ export default function RegisterPage() {
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 border-2 cursor-pointer border-white border-t-transparent rounded-full animate-spin"></div>
                     {t('auth.creatingAccount')}
                   </div>
                 ) : (
@@ -528,7 +528,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => router.push('/')}
-                className="font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors"
+                className="font-semibold cursor-pointer text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors"
               >
                 {t('auth.signIn')}
               </button>

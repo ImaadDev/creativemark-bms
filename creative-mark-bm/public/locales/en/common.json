@@ -494,11 +494,16 @@
       "advertising": "Advertising and promotions have no external company requirements.",
       "noSpecialRules": "No special external company requirements for this service type."
     },
-    "navigation": {
-      "previousStep": "Previous Step",
-      "continue": "Continue",
-      "submitApplication": "Submit Application",
-      "submittingApplication": "Submitting Application..."
+    "validation": {
+      "passportRequired": "Passport is required",
+      "idCardRequired": "ID Card/Iqama is required",
+      "documentsRequired": "At least one document is required",
+      "passportFileRequired": "Please upload your passport",
+      "idCardFileRequired": "Please upload your ID Card/Iqama",
+      "saudiPartnerIqamaRequired": "Saudi partner Iqama is required",
+      "companyDocumentsRequired": "Company documents are required",
+      "selectDocumentOption": "Please select a document option",
+      "uploadAtLeastOneDocument": "Please upload at least one required document"
     }
   },
   "support": {
@@ -1888,7 +1893,32 @@
     "privacyPolicy": "Privacy Policy",
     "creatingAccount": "Creating Account...",
     "createAccountButton": "Create Account",
-    "alreadyHaveAccount": "Already have an account?"
+    "alreadyHaveAccount": "Already have an account?",
+    "forgotPasswordTitle": "Forgot Your Password?",
+    "forgotPasswordSubtitle": "No worries, we'll help you reset it",
+    "secureReset": "Secure Reset",
+    "quickProcess": "Quick Process",
+    "enterEmailForReset": "Enter your email and we'll send you a reset link",
+    "resetLinkSent": "Reset link sent to your email",
+    "sendingResetLink": "Sending Reset Link...",
+    "sendResetLink": "Send Reset Link",
+    "rememberPassword": "Remember your password?",
+    "resetPasswordTitle": "Reset Your Password",
+    "resetPasswordSubtitle": "Create a new secure password",
+    "secureProcess": "Secure Process",
+    "quickReset": "Quick Reset",
+    "enterNewPassword": "Enter your new password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm new password",
+    "resettingPassword": "Resetting Password...",
+    "resetPasswordButton": "Reset Password",
+    "invalidResetLink": "Invalid or expired reset link",
+    "fillAllFields": "Please fill out all fields",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "passwordResetSuccess": "Password reset successfully!",
+    "resetPasswordFailed": "Failed to reset password",
+    "somethingWentWrong": "Something went wrong"
   },
   "profile": {
     "loadingProfile": "Loading profile...",
