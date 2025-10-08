@@ -70,10 +70,11 @@ export const registerUser = async (req, res) => {
 
     await user.save();
 
-    // 3️⃣ Send verification email
+    // 3️⃣ Prepare verification link
     const verifyLink = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
 
-    await sendEmail(
+    // 4️⃣ Send email asynchronously (non-blocking)
+    sendEmail(
       normalizedEmail,
       `Welcome to ${process.env.BRAND_NAME} - Verify Your Email`,
       `
@@ -81,47 +82,30 @@ export const registerUser = async (req, res) => {
         <html>
         <body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5;">
           <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 8px;">
-            
-            <!-- Header -->
             <div style="background: #242021; padding: 40px 20px; text-align: center; border-radius: 8px 8px 0 0;">
               <h1 style="margin: 0; color: #ffd17a; font-size: 28px;">Welcome to CreativeMark!</h1>
               <p style="margin: 12px 0 0; color: #ffd17a; opacity: 0.8;">Verify your email to get started</p>
             </div>
-
-            <!-- Content -->
             <div style="padding: 40px 20px;">
               <p style="margin: 0 0 20px; color: #333; font-size: 16px;">Hi <strong>${fullName}</strong>,</p>
-              
               <p style="margin: 0 0 30px; color: #666; line-height: 1.6;">
                 Thank you for joining CreativeMark. Please verify your email address to complete your registration.
               </p>
-
-              <!-- Button -->
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${verifyLink}" 
-                   style="display: inline-block; padding: 16px 40px; background: #242021; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                  Verify Email
-                </a>
+                <a href="${verifyLink}" style="display: inline-block; padding: 16px 40px; background: #242021; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Verify Email</a>
               </div>
-
-              <!-- Alternative Link -->
               <p style="margin: 30px 0 0; padding: 20px; background: #f8f9fa; border-radius: 8px; font-size: 13px; color: #666; word-break: break-all;">
                 Or copy this link: ${verifyLink}
               </p>
-
-              <!-- Warning -->
               <div style="margin: 30px 0; padding: 16px; background: #fff3cd; border-left: 4px solid #ffd17a; border-radius: 4px;">
                 <p style="margin: 0; color: #856404; font-size: 14px;">
                   ⏰ <strong>This link expires in 1 hour.</strong>
                 </p>
               </div>
-
               <p style="margin: 30px 0 0; color: #999; font-size: 13px;">
                 If you didn't create this account, you can safely ignore this email.
               </p>
             </div>
-
-            <!-- Footer -->
             <div style="background: #f8f9fa; padding: 30px 20px; text-align: center; border-top: 1px solid #e9ecef; border-radius: 0 0 8px 8px;">
               <p style="margin: 0; color: #666; font-size: 14px;">
                 Best regards,<br><strong style="color: #242021;">CreativeMark Team</strong>
@@ -130,16 +114,19 @@ export const registerUser = async (req, res) => {
                 © ${new Date().getFullYear()} CreativeMark. All rights reserved.
               </p>
             </div>
-
           </div>
         </body>
         </html>
       `
-    );
-    
+    )
+      .then(() => console.log("✅ Verification email sent to:", normalizedEmail))
+      .catch((err) => console.error("❌ Email send failed:", err.message));
+
+    // 5️⃣ Send instant response to frontend
     return res.status(201).json({
       success: true,
-      message: "Verification email sent. Please check your inbox.",
+      message:
+        "Account created successfully. Please check your email to verify your account.",
     });
   } catch (error) {
     console.error("Register Error:", error);
@@ -149,6 +136,7 @@ export const registerUser = async (req, res) => {
     });
   }
 };
+
 
 
 export const verifyEmail = async (req, res) => {
