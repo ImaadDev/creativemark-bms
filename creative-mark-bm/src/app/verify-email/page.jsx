@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { verifyEmail, sendVerificationEmail } from "../../services/auth";
 import { useTranslation } from "../../i18n/TranslationContext";
 
-export default function VerifyEmailPage() {
+// Force dynamic rendering to prevent prerendering issues
+export const dynamic = 'force-dynamic';
+
+function VerifyEmailContent() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -217,3 +220,17 @@ export default function VerifyEmailPage() {
   );
 }
 
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#ffd17a] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading...</p>
+        </div>
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
+  );
+}

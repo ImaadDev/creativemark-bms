@@ -75,153 +75,60 @@ export const registerUser = async (req, res) => {
 
     await sendEmail(
       normalizedEmail,
-      `🎉 Welcome to ${process.env.BRAND_NAME} - Verify Your Email`,
+      `Welcome to ${process.env.BRAND_NAME} - Verify Your Email`,
       `
         <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Verify Your Email</title>
-        </head>
-        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
-          <div style="max-width: 600px; margin: 40px auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);">
+        <html>
+        <body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+          <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 8px;">
             
-            <!-- Header with Brand Colors -->
-            <div style="background: linear-gradient(135deg, #242021 0%, #2a2422 100%); padding: 48px 32px; text-align: center;">
-              <div style="width: 80px; height: 80px; margin: 0 auto 24px; background: rgba(255, 209, 122, 0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255, 209, 122, 0.3);">
-                <div style="width: 48px; height: 48px; background: #ffd17a; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #242021;">
-                  ✓
-                </div>
-              </div>
-              <h1 style="margin: 0; font-size: 32px; font-weight: bold; color: #ffd17a; line-height: 1.2;">
-                Welcome to CreativeMark!
-              </h1>
-              <p style="margin: 16px 0 0; font-size: 16px; color: rgba(255, 209, 122, 0.8); line-height: 1.5;">
-                You're one step away from getting started
-              </p>
+            <!-- Header -->
+            <div style="background: #242021; padding: 40px 20px; text-align: center; border-radius: 8px 8px 0 0;">
+              <h1 style="margin: 0; color: #ffd17a; font-size: 28px;">Welcome to CreativeMark!</h1>
+              <p style="margin: 12px 0 0; color: #ffd17a; opacity: 0.8;">Verify your email to get started</p>
             </div>
 
-            <!-- Main Content -->
-            <div style="padding: 48px 32px;">
-              <!-- Greeting -->
-              <div style="margin-bottom: 32px;">
-                <h2 style="margin: 0 0 16px; font-size: 24px; font-weight: bold; color: #242021;">
-                  Hi ${fullName}! 👋
-                </h2>
-                <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.6;">
-                  Thank you for joining <strong style="color: #242021;">CreativeMark</strong>. We're excited to have you on board!
+            <!-- Content -->
+            <div style="padding: 40px 20px;">
+              <p style="margin: 0 0 20px; color: #333; font-size: 16px;">Hi <strong>${fullName}</strong>,</p>
+              
+              <p style="margin: 0 0 30px; color: #666; line-height: 1.6;">
+                Thank you for joining CreativeMark. Please verify your email address to complete your registration.
+              </p>
+
+              <!-- Button -->
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${verifyLink}" 
+                   style="display: inline-block; padding: 16px 40px; background: #242021; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                  Verify Email
+                </a>
+              </div>
+
+              <!-- Alternative Link -->
+              <p style="margin: 30px 0 0; padding: 20px; background: #f8f9fa; border-radius: 8px; font-size: 13px; color: #666; word-break: break-all;">
+                Or copy this link: ${verifyLink}
+              </p>
+
+              <!-- Warning -->
+              <div style="margin: 30px 0; padding: 16px; background: #fff3cd; border-left: 4px solid #ffd17a; border-radius: 4px;">
+                <p style="margin: 0; color: #856404; font-size: 14px;">
+                  ⏰ <strong>This link expires in 1 hour.</strong>
                 </p>
               </div>
 
-              <!-- Verification Box -->
-              <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px; padding: 24px; margin-bottom: 32px; border: 2px solid #e9ecef;">
-                <p style="margin: 0 0 24px; font-size: 16px; color: #495057; line-height: 1.6; text-align: center;">
-                  To complete your registration and access all features, please verify your email address by clicking the button below:
-                </p>
-                
-                <!-- Verify Button -->
-                <div style="text-align: center; margin: 32px 0;">
-                  <a href="${verifyLink}" 
-                     style="display: inline-block; padding: 18px 42px; background: linear-gradient(135deg, #242021 0%, #2a2422 100%); color: white; text-decoration: none; border-radius: 50px; font-size: 12px; font-weight: bold; box-shadow: 0 8px 24px rgba(36, 32, 33, 0.3); transition: all 0.3s ease;">
-                    ✉️ Verify My Email
-                  </a>
-                </div>
-
-                <!-- Alternative Link -->
-                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #dee2e6;">
-                  <p style="margin: 0 0 8px; font-size: 13px; color: #6c757d; text-align: center;">
-                    Button not working? Copy and paste this link into your browser:
-                  </p>
-                  <p style="margin: 0; font-size: 12px; color: #0066cc; word-break: break-all; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 8px;">
-                    ${verifyLink}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Important Info -->
-              <div style="background: #fff3cd; border-left: 4px solid #ffd17a; border-radius: 12px; padding: 20px; margin-bottom: 32px;">
-                <div style="display: flex; align-items: flex-start; gap: 12px;">
-                  <div style="font-size: 24px; line-height: 1;">⏰</div>
-                  <div>
-                    <p style="margin: 0; font-size: 14px; color: #856404; font-weight: 600;">
-                      Important: This verification link will expire in 1 hour
-                    </p>
-                    <p style="margin: 8px 0 0; font-size: 13px; color: #856404;">
-                      If you didn't request this verification, you can safely ignore this email.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- What's Next -->
-              <div style="margin-bottom: 32px;">
-                <h3 style="margin: 0 0 16px; font-size: 18px; font-weight: bold; color: #242021;">
-                  What happens next? 🚀
-                </h3>
-                <div style="space-y: 12px;">
-                  <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
-                    <div style="width: 24px; height: 24px; background: #242021; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
-                      <span style="color: #ffd17a; font-size: 14px; font-weight: bold;">1</span>
-                    </div>
-                    <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.6;">
-                      <strong style="color: #242021;">Verify your email</strong> by clicking the button above
-                    </p>
-                  </div>
-                  <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
-                    <div style="width: 24px; height: 24px; background: #242021; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
-                      <span style="color: #ffd17a; font-size: 14px; font-weight: bold;">2</span>
-                    </div>
-                    <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.6;">
-                      <strong style="color: #242021;">Sign in</strong> to your account
-                    </p>
-                  </div>
-                  <div style="display: flex; align-items: flex-start; gap: 12px;">
-                    <div style="width: 24px; height: 24px; background: #242021; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
-                      <span style="color: #ffd17a; font-size: 14px; font-weight: bold;">3</span>
-                    </div>
-                    <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.6;">
-                      <strong style="color: #242021;">Start exploring</strong> all our amazing features!
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Help Section -->
-              <div style="background: #e7f3ff; border-radius: 12px; padding: 20px; text-align: center;">
-                <p style="margin: 0 0 12px; font-size: 14px; color: #004085; font-weight: 600;">
-                  Need help? We're here for you! 💬
-                </p>
-                <p style="margin: 0; font-size: 13px; color: #004085;">
-                  Email us at <a href="mailto:support@creativemark.com" style="color: #0056b3; text-decoration: none; font-weight: 600;">support@creativemark.com</a>
-                </p>
-              </div>
+              <p style="margin: 30px 0 0; color: #999; font-size: 13px;">
+                If you didn't create this account, you can safely ignore this email.
+              </p>
             </div>
 
             <!-- Footer -->
-            <div style="background: #f8f9fa; padding: 32px; text-align: center; border-top: 1px solid #e9ecef;">
-              <p style="margin: 0 0 16px; font-size: 14px; color: #6c757d; font-weight: 600;">
-                Best regards,<br>
-                <span style="color: #242021; font-size: 18px; font-weight: bold;">The CreativeMark Team</span>
+            <div style="background: #f8f9fa; padding: 30px 20px; text-align: center; border-top: 1px solid #e9ecef; border-radius: 0 0 8px 8px;">
+              <p style="margin: 0; color: #666; font-size: 14px;">
+                Best regards,<br><strong style="color: #242021;">CreativeMark Team</strong>
               </p>
-              
-              <!-- Social Links (Optional) -->
-              <div style="margin: 24px 0;">
-                <p style="margin: 0 0 12px; font-size: 12px; color: #adb5bd;">Follow us on social media</p>
-                <div style="display: inline-flex; gap: 16px;">
-                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">f</a>
-                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">𝕏</a>
-                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">in</a>
-                </div>
-              </div>
-
-              <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #dee2e6;">
-                <p style="margin: 0; font-size: 11px; color: #adb5bd; line-height: 1.5;">
-                  © ${new Date().getFullYear()} CreativeMark. All rights reserved.<br>
-                  This email was sent to ${normalizedEmail} because you created an account.<br>
-                  If you didn't request this, please ignore this email.
-                </p>
-              </div>
+              <p style="margin: 20px 0 0; color: #999; font-size: 12px;">
+                © ${new Date().getFullYear()} CreativeMark. All rights reserved.
+              </p>
             </div>
 
           </div>
@@ -301,120 +208,60 @@ export const sendVerificationEmail = async (req, res) => {
 
     await sendEmail(
       email,
-      `🔄 Verify Your Email - ${process.env.BRAND_NAME}`,
+      `Verify Your Email - ${process.env.BRAND_NAME}`,
       `
         <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Verify Your Email</title>
-        </head>
-        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
-          <div style="max-width: 600px; margin: 40px auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);">
+        <html>
+        <body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+          <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 8px;">
             
-            <!-- Header with Brand Colors -->
-            <div style="background: linear-gradient(135deg, #242021 0%, #2a2422 100%); padding: 48px 32px; text-align: center;">
-              <div style="width: 80px; height: 80px; margin: 0 auto 24px; background: rgba(255, 209, 122, 0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255, 209, 122, 0.3);">
-                <div style="width: 48px; height: 48px; background: #ffd17a; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #242021;">
-                  📧
-                </div>
-              </div>
-              <h1 style="margin: 0; font-size: 32px; font-weight: bold; color: #ffd17a; line-height: 1.2;">
-                Verify Your Email
-              </h1>
-              <p style="margin: 16px 0 0; font-size: 16px; color: rgba(255, 209, 122, 0.8); line-height: 1.5;">
-                A new verification link has been sent
-              </p>
+            <!-- Header -->
+            <div style="background: #242021; padding: 40px 20px; text-align: center; border-radius: 8px 8px 0 0;">
+              <h1 style="margin: 0; color: #ffd17a; font-size: 28px;">Verify Your Email</h1>
+              <p style="margin: 12px 0 0; color: #ffd17a; opacity: 0.8;">New verification link requested</p>
             </div>
 
-            <!-- Main Content -->
-            <div style="padding: 48px 32px;">
-              <!-- Greeting -->
-              <div style="margin-bottom: 32px;">
-                <h2 style="margin: 0 0 16px; font-size: 24px; font-weight: bold; color: #242021;">
-                  Hi ${user.fullName}! 👋
-                </h2>
-                <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.6;">
-                  You requested a new verification link for your <strong style="color: #242021;">CreativeMark</strong> account.
+            <!-- Content -->
+            <div style="padding: 40px 20px;">
+              <p style="margin: 0 0 20px; color: #333; font-size: 16px;">Hi <strong>${user.fullName}</strong>,</p>
+              
+              <p style="margin: 0 0 30px; color: #666; line-height: 1.6;">
+                You requested a new verification link for your CreativeMark account. Click the button below to verify your email.
+              </p>
+
+              <!-- Button -->
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${verifyLink}" 
+                   style="display: inline-block; padding: 16px 40px; background: #242021; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                  Verify Email
+                </a>
+              </div>
+
+              <!-- Alternative Link -->
+              <p style="margin: 30px 0 0; padding: 20px; background: #f8f9fa; border-radius: 8px; font-size: 13px; color: #666; word-break: break-all;">
+                Or copy this link: ${verifyLink}
+              </p>
+
+              <!-- Warning -->
+              <div style="margin: 30px 0; padding: 16px; background: #fff3cd; border-left: 4px solid #ffd17a; border-radius: 4px;">
+                <p style="margin: 0; color: #856404; font-size: 14px;">
+                  ⏰ <strong>This link expires in 1 hour.</strong>
                 </p>
               </div>
 
-              <!-- Verification Box -->
-              <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px; padding: 32px; margin-bottom: 32px; border: 2px solid #e9ecef;">
-                <p style="margin: 0 0 24px; font-size: 16px; color: #495057; line-height: 1.6; text-align: center;">
-                  Click the button below to verify your email address:
-                </p>
-                
-                <!-- Verify Button -->
-                <div style="text-align: center; margin: 32px 0;">
-                  <a href="${verifyLink}" 
-                     style="display: inline-block; padding: 18px 48px; background: linear-gradient(135deg, #242021 0%, #2a2422 100%); color: white; text-decoration: none; border-radius: 50px; font-size: 16px; font-weight: bold; box-shadow: 0 8px 24px rgba(36, 32, 33, 0.3);">
-                    ✉️ Verify My Email
-                  </a>
-                </div>
-
-                <!-- Alternative Link -->
-                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #dee2e6;">
-                  <p style="margin: 0 0 8px; font-size: 13px; color: #6c757d; text-align: center;">
-                    Button not working? Copy and paste this link into your browser:
-                  </p>
-                  <p style="margin: 0; font-size: 12px; color: #0066cc; word-break: break-all; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 8px;">
-                    ${verifyLink}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Important Info -->
-              <div style="background: #fff3cd; border-left: 4px solid #ffd17a; border-radius: 12px; padding: 20px; margin-bottom: 32px;">
-                <div style="display: flex; align-items: flex-start; gap: 12px;">
-                  <div style="font-size: 24px; line-height: 1;">⏰</div>
-                  <div>
-                    <p style="margin: 0; font-size: 14px; color: #856404; font-weight: 600;">
-                      Important: This verification link will expire in 1 hour
-                    </p>
-                    <p style="margin: 8px 0 0; font-size: 13px; color: #856404;">
-                      If you didn't request this, please ignore this email.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Help Section -->
-              <div style="background: #e7f3ff; border-radius: 12px; padding: 20px; text-align: center;">
-                <p style="margin: 0 0 12px; font-size: 14px; color: #004085; font-weight: 600;">
-                  Need help? We're here for you! 💬
-                </p>
-                <p style="margin: 0; font-size: 13px; color: #004085;">
-                  Email us at <a href="mailto:support@creativemark.com" style="color: #0056b3; text-decoration: none; font-weight: 600;">support@creativemark.com</a>
-                </p>
-              </div>
+              <p style="margin: 30px 0 0; color: #999; font-size: 13px;">
+                If you didn't request this, you can safely ignore this email.
+              </p>
             </div>
 
             <!-- Footer -->
-            <div style="background: #f8f9fa; padding: 32px; text-align: center; border-top: 1px solid #e9ecef;">
-              <p style="margin: 0 0 16px; font-size: 14px; color: #6c757d; font-weight: 600;">
-                Best regards,<br>
-                <span style="color: #242021; font-size: 18px; font-weight: bold;">The CreativeMark Team</span>
+            <div style="background: #f8f9fa; padding: 30px 20px; text-align: center; border-top: 1px solid #e9ecef; border-radius: 0 0 8px 8px;">
+              <p style="margin: 0; color: #666; font-size: 14px;">
+                Best regards,<br><strong style="color: #242021;">CreativeMark Team</strong>
               </p>
-              
-              <!-- Social Links -->
-              <div style="margin: 24px 0;">
-                <p style="margin: 0 0 12px; font-size: 12px; color: #adb5bd;">Follow us on social media</p>
-                <div style="display: inline-flex; gap: 16px;">
-                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">f</a>
-                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">𝕏</a>
-                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">in</a>
-                </div>
-              </div>
-
-              <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #dee2e6;">
-                <p style="margin: 0; font-size: 11px; color: #adb5bd; line-height: 1.5;">
-                  © ${new Date().getFullYear()} CreativeMark. All rights reserved.<br>
-                  This email was sent to ${email} because you requested a verification link.<br>
-                  If you didn't request this, please ignore this email.
-                </p>
-              </div>
+              <p style="margin: 20px 0 0; color: #999; font-size: 12px;">
+                © ${new Date().getFullYear()} CreativeMark. All rights reserved.
+              </p>
             </div>
 
           </div>
