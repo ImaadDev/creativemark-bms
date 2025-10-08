@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import {sendEmail} from '../utils/mailer.js'
+import {sendEmail} from '../utils/sendEmail.js'
 
 /**
  * Generate JWT Token
@@ -74,7 +74,7 @@ export const registerUser = async (req, res) => {
     const verifyLink = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
 
     // 4️⃣ Send email asynchronously (non-blocking)
-    sendEmail(
+    await sendEmail(
       normalizedEmail,
       `Welcome to ${process.env.BRAND_NAME} - Verify Your Email`,
       `
@@ -119,9 +119,7 @@ export const registerUser = async (req, res) => {
         </html>
       `
     )
-      .then(() => console.log("✅ Verification email sent to:", normalizedEmail))
-      .catch((err) => console.error("❌ Email send failed:", err.message));
-
+     
     // 5️⃣ Send instant response to frontend
     return res.status(201).json({
       success: true,

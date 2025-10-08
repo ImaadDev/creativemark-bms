@@ -9,7 +9,8 @@ import { useTranslation } from "../../i18n/TranslationContext";
 export const dynamic = 'force-dynamic';
 
 function ResetPasswordForm() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const isRTL = language === 'ar';
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -59,9 +60,9 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 lg:bg-white">
+    <div className={`relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 lg:bg-white ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Left Side with #242021 Background - Desktop Only */}
-      <div className="hidden lg:block fixed left-0 top-0 bottom-0 w-1/2 bg-[#242021] overflow-hidden">
+      <div className={`hidden lg:block fixed top-0 bottom-0 w-1/2 bg-[#242021] overflow-hidden ${isRTL ? 'right-0' : 'left-0'}`}>
         {/* Animated Background Gradient Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#ffd17a]/10 rounded-full blur-3xl animate-pulse" />
@@ -136,7 +137,7 @@ function ResetPasswordForm() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center lg:justify-end px-4 py-8 lg:pr-12 xl:pr-20">
+      <div className={`relative z-10 min-h-screen flex items-center justify-center px-4 py-8 lg:px-12 xl:px-20 ${isRTL ? 'lg:mr-[50%]' : 'lg:ml-[50%]'}`}>
         <div className="w-full max-w-md">
           {/* Reset Password Card with Glassmorphism */}
           <div className="md:bg-white/60 md:backdrop-blur-xl md:rounded-3xl md:border md:border-white/50 md:shadow-2xl p-6 sm:p-8 lg:p-10 md:hover:shadow-3xl transition-all duration-500">

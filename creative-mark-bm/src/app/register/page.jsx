@@ -7,7 +7,8 @@ import { register } from "../../services/auth";
 import { useTranslation } from "../../i18n/TranslationContext";
 
 export default function RegisterPage() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const isRTL = language === 'ar';
   const router = useRouter();
   const { updateUser } = useAuth();
   const [formData, setFormData] = useState({
@@ -181,9 +182,9 @@ export default function RegisterPage() {
 
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 lg:bg-white">
+    <div className={`relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 lg:bg-white ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Left Side with #242021 Background - Desktop Only */}
-      <div className="hidden lg:block fixed left-0 top-0 bottom-0 w-1/2 bg-[#242021] overflow-hidden">
+      <div className={`hidden lg:block fixed top-0 bottom-0 w-1/2 bg-[#242021] overflow-hidden ${isRTL ? 'right-0' : 'left-0'}`}>
         {/* Animated Background Gradient Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#ffd17a]/10 rounded-full blur-3xl animate-pulse" />
@@ -259,12 +260,12 @@ export default function RegisterPage() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center lg:justify-end px-4 py-8 lg:pr-12 xl:pr-20">
+      <div className={`relative z-10 min-h-screen flex items-center justify-center px-4 py-8 lg:px-12 xl:px-20 ${isRTL ? 'lg:mr-[50%]' : 'lg:ml-[50%]'}`}>
         <div className="w-full max-w-md">
           {/* Register Card with Glassmorphism */}
           <div className="md:bg-white/60 md:backdrop-blur-xl md:rounded-3xl md:border md:border-white/50 md:shadow-2xl p-6 sm:p-8 lg:p-10 md:hover:shadow-3xl transition-all duration-500">
             {/* Header */}
-            <div className="text-center mb-6 sm:mb-8">
+            <div className={`mb-6 sm:mb-8 ${isRTL ? 'text-right' : 'text-center'}`}>
               {/* Logo with Glow Effect */}
               <div className="relative inline-block mb-6">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/60 rounded-2xl blur-xl opacity-60 animate-pulse" />
@@ -278,9 +279,9 @@ export default function RegisterPage() {
                 </div>
               </div>
               
-              <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-2 tracking-tight">{t('auth.createAccount')}</h2>
-              <div className="h-1 w-16 mx-auto bg-gradient-to-r from-transparent via-[#ffd17a] to-transparent rounded-full mb-3" />
-              <p className="text-gray-600 text-sm sm:text-base">{t('auth.joinUsStartJourney')}</p>
+              <h2 className={`text-3xl sm:text-4xl font-black text-gray-900 mb-2 tracking-tight ${isRTL ? 'text-right' : 'text-center'}`}>{t('auth.createAccount')}</h2>
+              <div className={`h-1 w-16 bg-gradient-to-r from-transparent via-[#ffd17a] to-transparent rounded-full mb-3 ${isRTL ? 'mr-auto' : 'mx-auto'}`} />
+              <p className={`text-gray-600 text-sm sm:text-base ${isRTL ? 'text-right' : 'text-center'}`}>{t('auth.joinUsStartJourney')}</p>
             </div>
 
             {/* Success Message */}
@@ -317,7 +318,7 @@ export default function RegisterPage() {
               {/* Full Name & Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.fullName')} *</label>
+                  <label className={`block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021] ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.fullName')} *</label>
                   <input
                     type="text"
                     name="fullName"
@@ -325,11 +326,12 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     required
                     placeholder={t('auth.fullNamePlaceholder')}
-                    className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400"
+                    className={`w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400 ${isRTL ? 'text-right' : 'text-left'}`}
+                    dir={isRTL ? 'rtl' : 'ltr'}
                   />
                 </div>
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.email')} *</label>
+                  <label className={`block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021] ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.email')} *</label>
                   <input
                     type="email"
                     name="email"
@@ -337,22 +339,24 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     required
                     placeholder={t('auth.emailPlaceholder')}
-                    className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400"
+                    className={`w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400 ${isRTL ? 'text-right' : 'text-left'}`}
+                    dir={isRTL ? 'ltr' : 'ltr'}
                   />
                 </div>
               </div>
 
               {/* Phone with Country Code */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.phoneNumber')}</label>
-                <div className="flex gap-2">
+                <label className={`block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021] ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.phoneNumber')}</label>
+                <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
                   {/* Country Code Selector with Flag */}
                   <div className="relative flex-shrink-0">
                     <select
                       name="phoneCountryCode"
                       value={formData.phoneCountryCode}
                       onChange={handleChange}
-                      className="w-48 px-3 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm appearance-none cursor-pointer"
+                      className={`w-48 px-3 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm appearance-none cursor-pointer ${isRTL ? 'text-right' : 'text-left'}`}
+                      dir={isRTL ? 'ltr' : 'ltr'}
                     >
                       <option value=''>{t('auth.code')}</option>
                       {countries.map((country) => (
@@ -364,7 +368,7 @@ export default function RegisterPage() {
                  
                     
                     {/* Dropdown Arrow */}
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <div className={`absolute inset-y-0 flex items-center pointer-events-none ${isRTL ? 'left-0 pl-3' : 'right-0 pr-3'}`}>
                       <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
@@ -379,7 +383,8 @@ export default function RegisterPage() {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder={t('auth.enterPhoneNumber')}
-                      className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400"
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400 ${isRTL ? 'text-right' : 'text-left'}`}
+                      dir={isRTL ? 'ltr' : 'ltr'}
                     />
                   </div>
                 </div>
@@ -387,13 +392,14 @@ export default function RegisterPage() {
 
               {/* Nationality Dropdown with Flag */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.nationality')}</label>
+                <label className={`block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021] ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.nationality')}</label>
                 <div className="relative">
                   <select
                     name="nationality"
                     value={formData.nationality}
                     onChange={handleChange} // This is the handler that triggers the phone code update
-                    className="w-full px-3 sm:px-4 py-3 sm:py-4 pl-12 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer"
+                    className={`w-full px-3 sm:px-4 py-3 sm:py-4 pl-12 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer ${isRTL ? 'text-right' : 'text-left'}`}
+                    dir={isRTL ? 'rtl' : 'ltr'}
                   >
                     <option value=''>{t('auth.selectNationality')}</option>
                     {countries.map((country) => (
@@ -406,7 +412,7 @@ export default function RegisterPage() {
                 
                   
                   {/* Dropdown Arrow */}
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <div className={`absolute inset-y-0 flex items-center pointer-events-none ${isRTL ? 'left-0 pl-3' : 'right-0 pr-3'}`}>
                     <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -416,13 +422,14 @@ export default function RegisterPage() {
 
               {/* Residency Status */}
               <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.residencyStatus')}</label>
+                <label className={`block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021] ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.residencyStatus')}</label>
                 <div className="relative">
                   <select
                   name="residencyStatus"
                   value={formData.residencyStatus}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer"
+                  className={`w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer ${isRTL ? 'text-right' : 'text-left'}`}
+                  dir={isRTL ? 'rtl' : 'ltr'}
                 >
                   <option value=''>{t('auth.selectResidencyStatus')}</option>
                   <option value='saudi'>{t('auth.saudi')}</option>
@@ -430,7 +437,7 @@ export default function RegisterPage() {
                   <option value='premium'>{t('auth.premiumResidency')}</option>
                   <option value='foreign'>{t('auth.foreign')}</option>
                 </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <div className={`absolute inset-y-0 flex items-center pointer-events-none ${isRTL ? 'left-0 pl-3' : 'right-0 pr-3'}`}>
                     <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -441,7 +448,7 @@ export default function RegisterPage() {
               {/* Passwords */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.password')} *</label>
+                  <label className={`block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021] ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.password')} *</label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -450,12 +457,13 @@ export default function RegisterPage() {
                       onChange={handleChange}
                       required
                       placeholder="••••••••"
-                      className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base pr-12 placeholder-gray-400"
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400 ${isRTL ? 'pr-3 pl-12 text-right' : 'pr-12 text-left'}`}
+                      dir={isRTL ? 'ltr' : 'ltr'}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#242021] transition-colors"
+                      className={`absolute top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#242021] transition-colors ${isRTL ? 'left-3' : 'right-3'}`}
                     >
                       {showPassword ? (
                         <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -471,7 +479,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021]">{t('auth.confirmPassword')} *</label>
+                  <label className={`block text-sm font-semibold text-gray-700 mb-2 transition-colors duration-200 group-focus-within:text-[#242021] ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.confirmPassword')} *</label>
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
@@ -480,12 +488,13 @@ export default function RegisterPage() {
                       onChange={handleChange}
                       required
                       placeholder="••••••••"
-                      className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base pr-12 placeholder-gray-400"
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base placeholder-gray-400 ${isRTL ? 'pr-3 pl-12 text-right' : 'pr-12 text-left'}`}
+                      dir={isRTL ? 'ltr' : 'ltr'}
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#242021] transition-colors"
+                      className={`absolute top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#242021] transition-colors ${isRTL ? 'left-3' : 'right-3'}`}
                     >
                       {showConfirmPassword ? (
                         <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

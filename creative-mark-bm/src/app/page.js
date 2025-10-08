@@ -11,7 +11,8 @@ import { useTranslation } from "../i18n/TranslationContext";
 export const dynamic = 'force-dynamic';
 
 function LoginForm() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const isRTL = language === 'ar';
   const router = useRouter();
   const searchParams = useSearchParams();
   const { updateUser } = useAuth();
@@ -145,9 +146,9 @@ function LoginForm() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 lg:bg-white">
+    <div className={`relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 lg:bg-white ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Left Side with #242021 Background - Desktop Only */}
-      <div className="hidden lg:block fixed left-0 top-0 bottom-0 w-1/2 bg-[#242021] overflow-hidden">
+      <div className={`hidden lg:block fixed top-0 bottom-0 w-1/2 bg-[#242021] overflow-hidden ${isRTL ? 'right-0' : 'left-0'}`}>
         {/* Animated Background Gradient Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#ffd17a]/10 rounded-full blur-3xl animate-pulse" />
@@ -212,7 +213,7 @@ function LoginForm() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8 lg:ml-[50%] lg:px-12 xl:px-20">
+      <div className={`relative z-10 min-h-screen flex items-center justify-center px-4 py-8 lg:px-12 xl:px-20 ${isRTL ? 'lg:mr-[50%]' : 'lg:ml-[50%]'}`}>
         <div className={`w-full max-w-md transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           
           {/* Login Card with Glassmorphism */}
@@ -233,9 +234,9 @@ function LoginForm() {
                 </div>
               </div>
               
-              <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-2 tracking-tight">{t('auth.signIn')}</h2>
-              <div className="h-1 w-16 mx-auto bg-gradient-to-r from-transparent via-[#ffd17a] to-transparent rounded-full mb-3" />
-              <p className="text-gray-600 text-sm sm:text-base">{t('auth.welcomeBackSignIn')}</p>
+              <h2 className={`text-3xl sm:text-4xl font-black text-gray-900 mb-2 tracking-tight ${isRTL ? 'text-right' : 'text-center'}`}>{t('auth.signIn')}</h2>
+              <div className={`h-1 w-16 bg-gradient-to-r from-transparent via-[#ffd17a] to-transparent rounded-full mb-3 ${isRTL ? 'mr-auto' : 'mx-auto'}`} />
+              <p className={`text-gray-600 text-sm sm:text-base ${isRTL ? 'text-right' : 'text-center'}`}>{t('auth.welcomeBackSignIn')}</p>
             </div>
 
             {/* Success Message */}
@@ -301,7 +302,7 @@ function LoginForm() {
               <div className="space-y-4 sm:space-y-6">
                 {/* Email Field */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('auth.emailAddress')} *</label>
+                  <label className={`block text-sm font-semibold text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.emailAddress')} *</label>
                   <input
                     type="email"
                     name="email"
@@ -309,13 +310,14 @@ function LoginForm() {
                     onChange={handleChange}
                     required
                     placeholder={t('auth.enterEmailAddress')}
-                    className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
+                    className={`w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${isRTL ? 'text-right' : 'text-left'}`}
+                    dir={isRTL ? 'ltr' : 'ltr'}
                   />
                 </div>
 
                 {/* Password Field */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t('auth.password')} *</label>
+                  <label className={`block text-sm font-semibold text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.password')} *</label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -324,12 +326,13 @@ function LoginForm() {
                       onChange={handleChange}
                       required
                       placeholder={t('auth.enterPassword')}
-                      className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base pr-12"
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${isRTL ? 'pr-3 pl-12 text-right' : 'pr-12 text-left'}`}
+                      dir={isRTL ? 'ltr' : 'ltr'}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#242021] transition-colors"
+                      className={`absolute top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#242021] transition-colors ${isRTL ? 'left-3' : 'right-3'}`}
                     >
                       {showPassword ? (
                         <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -346,19 +349,19 @@ function LoginForm() {
                 </div>
 
                 {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2">
+                <div className={`flex items-center ${isRTL ? 'flex-row-reverse' : 'flex-row'} justify-between`}>
+                  <label className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
                     <input
                       type="checkbox"
                       className="w-4 h-4 border-gray-300 rounded focus:ring-[#ffd17a]/20 focus:ring-2"
                       style={{accentColor: '#ffd17a'}}
                     />
-                    <span className='text-sm text-gray-700'>{t('auth.rememberMe')}</span>
+                    <span className={`text-sm text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>{t('auth.rememberMe')}</span>
                   </label>
                   <button
                     type="button"
                     onClick={() => router.push('/forgot-password')}
-                    className="text-sm cursor-pointer font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors"
+                    className={`text-sm cursor-pointer font-semibold text-[#242021] hover:text-[#242021]/80 hover:underline transition-colors ${isRTL ? 'text-right' : 'text-left'}`}
                   >
                     {t('auth.forgotPassword')}
                   </button>
@@ -396,17 +399,17 @@ function LoginForm() {
 
             {/* Footer Links */}
             <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200/50">
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-4">
+              <div className={isRTL ? 'text-right' : 'text-center'}>
+                <p className={`text-sm text-gray-600 mb-4 ${isRTL ? 'text-right' : 'text-center'}`}>
                   {t('auth.dontHaveAccount')}{" "}
                   <button
                     type="button"
                     onClick={() => router.push('/register')}
-                    className="group font-semibold text-[#242021] hover:text-[#ffd17a] transition-all duration-200 inline-flex items-center gap-2"
+                    className={`group font-semibold text-[#242021] hover:text-[#ffd17a] transition-all duration-200 inline-flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}
                   >
                     <span>{t('auth.registerHere')}</span>
-                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <svg className={`w-4 h-4 transition-transform ${isRTL ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={isRTL ? "M11 7l-5 5m0 0l5 5m-5-5h12" : "M13 7l5 5m0 0l-5 5m5-5H6"} />
                     </svg>
                   </button>
                 </p>
