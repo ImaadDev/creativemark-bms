@@ -32,14 +32,11 @@ const NotificationDropdown = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!user?.id) {
-        console.log('❌ No user ID for fetching notifications');
         return;
       }
-      console.log('🔔 Fetching notifications for user:', user.id);
       setLoading(true);
       try {
         await fetchNotifications();
-        console.log('✅ Notifications fetched successfully');
       } catch (error) {
         console.error('❌ Error fetching notifications:', error);
       } finally {
@@ -133,13 +130,7 @@ const NotificationDropdown = () => {
 
   if (!user) return null;
 
-  // Debug logging
-  console.log('🔔 NotificationDropdown render:', {
-    user: user?.id,
-    notifications: notifications.length,
-    unreadCount,
-    loading
-  });
+ 
 
   return (
     <div className="relative" ref={dropdownRef}>

@@ -1640,6 +1640,8 @@
       "applicationsRejected": "الطلبات التي تم رفضها",
       "applicationStatus": "حالة الطلب",
       "serviceTypes": "أنواع الخدمات",
+      "applicationsTrend": "اتجاه الطلبات",
+      "monthlyRevenue": "الإيرادات الشهرية",
       "recentApplications": "الطلبات الأخيرة",
       "client": "العميل",
       "serviceType": "نوع الخدمة",

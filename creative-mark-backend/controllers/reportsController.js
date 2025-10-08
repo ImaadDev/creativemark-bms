@@ -163,8 +163,33 @@ export const getDashboardAnalytics = async (req, res) => {
         $group: {
           _id: "$status",
           count: { $sum: 1 },
-          totalAmount: { $sum: "$amount" }
+          totalAmount: { $sum: "$totalAmount" }
         }
+      }
+    ]);
+
+    // Get monthly revenue trends (last 12 months)
+    const monthlyRevenue = await Payment.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+          },
+          status: { $in: ["approved", "submitted"] }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
+          },
+          totalRevenue: { $sum: "$totalAmount" },
+          paymentCount: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { "_id.year": 1, "_id.month": 1 }
       }
     ]);
 
@@ -241,6 +266,12 @@ export const getDashboardAnalytics = async (req, res) => {
           status: item._id,
           count: item.count,
           totalAmount: item.totalAmount
+        })),
+        monthlyRevenue: monthlyRevenue.map(item => ({
+          month: item._id.month,
+          year: item._id.year,
+          totalRevenue: item.totalRevenue,
+          paymentCount: item.paymentCount
         })),
         clientActivity
       }

@@ -35,8 +35,8 @@ export const getAllEmployees = async (req, res) => {
       .sort({ createdAt: -1 }); // Latest first
 
     if (!employees || employees.length === 0) {
-      return res.status(404).json({
-        success: false,
+      return res.status(200).json({
+        success: true,
         message: "No employees found",
         count: 0,
         data: [],

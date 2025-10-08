@@ -147,7 +147,7 @@ export default function Sidebar({ role, isOpen, onClose }) {
           <div className={`flex items-center ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
             <div 
               className="w-20 h-20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Image src={logo} alt="Creative Mark" width={60} height={60} />
+              <Image src={logo} alt="Creative Mark" className="object-contain" />
             </div>
             <div className={`flex-1 min-w-0 ${isRTL ? 'text-right' : 'text-left'}`}>
               <h1 className="text-lg font-semibold truncate" style={{ color: '#ffd17a' }}>Creative Mark</h1>

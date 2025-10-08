@@ -19,7 +19,7 @@ export const getAllEmployees = async () => {
 
     return {
       success: response.data.success || false,
-      data: response.data.data,
+      data: response.data.data || [],
       count: response.data.count || response.data.data.length,
       message: response.data.message || "",
     };

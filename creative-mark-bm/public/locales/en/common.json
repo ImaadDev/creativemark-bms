@@ -1640,6 +1640,8 @@
       "applicationsRejected": "Applications that were rejected",
       "applicationStatus": "Application Status",
       "serviceTypes": "Service Types",
+      "applicationsTrend": "Applications Trend",
+      "monthlyRevenue": "Monthly Revenue",
       "recentApplications": "Recent Applications",
       "client": "Client",
       "serviceType": "Service Type",

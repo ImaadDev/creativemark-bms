@@ -8,15 +8,10 @@ import api from './api';
 // Get all notifications for a user
 export const getNotifications = async (userId) => {
   try {
-    console.log('🔔 Fetching notifications for user:', userId);
     const response = await api.get(`/notifications/${userId}`);
-    console.log('📨 Notifications response:', response.data);
     return response.data;
   } catch (error) {
     console.error('❌ Error fetching notifications:', error);
-    console.error('❌ Error response:', error.response?.data);
-    console.error('❌ Error status:', error.response?.status);
-    console.error('❌ Error headers:', error.response?.headers);
     throw error;
   }
 };
@@ -57,9 +52,7 @@ export const createNotification = async (notificationData) => {
 // Get unread notification count
 export const getUnreadCount = async (userId) => {
   try {
-    console.log('🔢 Fetching unread count for user:', userId);
     const response = await api.get(`/notifications/${userId}/unread-count`);
-    console.log('📊 Unread count response:', response.data);
     return response.data;
   } catch (error) {
     console.error('❌ Error fetching unread count:', error);

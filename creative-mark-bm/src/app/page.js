@@ -145,87 +145,47 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex relative overflow-hidden">
-     
-
-      {/* Left Side - Animated Visual Section */}
-      <div className="hidden lg:flex lg:w-1/2 xl:w-2/5 relative overflow-hidden bg-gradient-to-br from-[#242021] via-[#2a2422] to-[#242021]">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0">
-          {/* Floating Circles */}
-          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-[#ffd17a]/10 animate-pulse"></div>
-          <div className="absolute top-1/2 right-1/3 w-24 h-24 bg-[#ffd17a]/20 animate-bounce delay-300"></div>
-          <div className="absolute bottom-1/4 left-1/3 w-40 h-40 bg-[#ffd17a]/5 animate-pulse delay-700"></div>
-          
-          {/* Grid Pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="grid grid-cols-8 gap-4 h-full p-8 transform rotate-12">
-              {[...Array(64)].map((_, i) => (
-                <div key={i} className="bg-[#ffd17a]/20 animate-pulse" style={{animationDelay: `${i * 100}ms`}}></div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 flex items-center justify-center w-full p-12">
-          <div className="text-center text-white max-w-md">
-            <div className="mb-8 animate-bounce">
-              <div className="w-20 h-20 mx-auto mb-4 bg-[#ffd17a]/20 rounded-2xl flex items-center justify-center shadow-lg">
-                <img 
-                  src="/CreativeMarkFavicon.png" 
-                  alt="CreativeMark Logo" 
-                  className="w-12 h-12 object-contain"
-                />
-              </div>
-            </div>
-            
-            <h1 className="text-4xl xl:text-5xl font-bold mb-6 animate-fade-in text-white">
-              {t('auth.welcomeBack')}
-            </h1>
-            <p className="text-xl text-[#ffd17a] mb-8 animate-fade-in delay-300">
-              {t('auth.signInToAccount')}
-            </p>
-            
-            {/* Animated Stats */}
-            <div className="grid grid-cols-2 gap-6 mt-12">
-              <div className="text-center animate-fade-in delay-500 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="text-3xl font-bold mb-2 text-[#ffd17a]">10K+</div>
-                <div className='text-sm text-white/80'>{t('auth.activeUsers')}</div>
-              </div>
-              <div className="text-center animate-fade-in delay-700 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="text-3xl font-bold mb-2 text-[#ffd17a]">99.9%</div>
-                <div className='text-sm text-white/80'>{t('auth.uptime')}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Animated Wave */}
-        <div className="absolute bottom-0 left-0 w-full">
-          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-20">
-            <path d="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z" fill="#ffd17a" fillOpacity="0.1">
-              <animate attributeName="d" dur="10s" repeatCount="indefinite" 
-                values="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z;M0,60 C300,0 900,120 1200,60 L1200,120 L0,120 Z;M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z"/>
-            </path>
-          </svg>
-        </div>
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      {/* Animated Background Gradient Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#ffd17a]/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#242021]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-[#ffd17a]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
       </div>
 
-      {/* Right Side - Login Form */}
-      <div className="w-full lg:w-1/2 xl:w-3/5 flex items-center justify-center p-4 lg:p-0">
-        <div className="w-full">
-          <div className="bg-white/95 backdrop-blur-sm p-6 sm:p-8 lg:p-10 animate-fade-in">
+      {/* Floating Shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-[10%] w-2 h-2 bg-[#ffd17a] rounded-full animate-float" />
+        <div className="absolute top-40 right-[15%] w-3 h-3 bg-[#242021]/20 rounded-full animate-float-delayed" />
+        <div className="absolute bottom-32 left-[20%] w-2 h-2 bg-[#ffd17a]/60 rounded-full animate-float-slow" />
+        <div className="absolute bottom-48 right-[25%] w-3 h-3 bg-[#242021]/30 rounded-full animate-float" />
+        <div className="absolute top-1/3 right-[40%] w-2 h-2 bg-[#ffd17a]/40 rounded-full animate-float-delayed" />
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8">
+        <div className={`w-full max-w-md transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          
+          {/* Login Card with Glassmorphism */}
+          <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-6 sm:p-8 lg:p-10 hover:shadow-3xl transition-all duration-500">
             {/* Header */}
             <div className="text-center mb-6 sm:mb-8">
-              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 mb-4 bg-gradient-to-br from-[#242021] to-[#2a2422] rounded-xl sm:rounded-2xl shadow-lg animate-bounce">
-                <img 
-                  src="/CreativeMarkFavicon.png" 
-                  alt="CreativeMark Logo" 
-                  className="w-6 h-6 sm:w-8 sm:h-8 object-contain"
-                />
+              {/* Logo with Glow Effect */}
+              <div className="relative inline-block mb-6">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/60 rounded-2xl blur-xl opacity-60 animate-pulse" />
+                <div className="relative w-16 h-16 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-2xl flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20">
+                  <Image
+                    src="/CreativeMarkFavicon.png"
+                    alt="CreativeMark Logo"
+                    width={40}
+                    height={40}
+                    className="object-contain drop-shadow-lg"
+                  />
+                </div>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 tracking-tight">{t('auth.signIn')}</h2>
+              
+              <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-2 tracking-tight">{t('auth.signIn')}</h2>
+              <div className="h-1 w-16 mx-auto bg-gradient-to-r from-transparent via-[#ffd17a] to-transparent rounded-full mb-3" />
               <p className="text-gray-600 text-sm sm:text-base">{t('auth.welcomeBackSignIn')}</p>
             </div>
 
@@ -355,23 +315,31 @@ function LoginForm() {
                   </button>
                 </div>
 
-                {/* Submit Button */}
+                {/* Submit Button with Gradient Effect */}
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`w-full py-3 sm:py-4 text-sm sm:text-base font-bold uppercase tracking-wide transition-all cursor-pointer duration-200 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md ${
+                  className={`group relative overflow-hidden w-full py-4 text-base font-bold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 ${
                     isLoading
                       ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                      : "bg-[#242021] text-white hover:bg-[#242021]/90 focus:outline-none focus:ring-4 focus:ring-[#ffd17a]/20"
+                      : "bg-gradient-to-br from-[#242021] to-[#2a2422] text-white hover:shadow-2xl"
                   }`}
                 >
+                  {!isLoading && (
+                    <span className="absolute inset-0 bg-gradient-to-r from-[#ffd17a]/0 via-[#ffd17a]/20 to-[#ffd17a]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                  )}
                   {isLoading ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin cursor-pointer"></div>
-                      {t('auth.signingIn')}
-                    </div>
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span className="relative">{t('auth.signingIn')}</span>
+                    </>
                   ) : (
-                    t('auth.signInButton')
+                    <>
+                      <span className="relative">{t('auth.signInButton')}</span>
+                      <svg className="w-5 h-5 relative group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </>
                   )}
                 </button>
               </div>
@@ -379,22 +347,50 @@ function LoginForm() {
 
             {/* Footer Links */}
             <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200/50">
-              <div className="text-center text-sm">
-                <span className="text-gray-600">
-                  {t('auth.dontHaveAccount')} {" "}
+              <div className="text-center">
+                <p className="text-sm text-gray-600 mb-4">
+                  {t('auth.dontHaveAccount')}{" "}
                   <button
                     type="button"
                     onClick={() => router.push('/register')}
-                    className="font-semibold text-[#242021] cursor-pointer hover:text-[#242021]/80 hover:underline transition-colors"
+                    className="group font-semibold text-[#242021] hover:text-[#ffd17a] transition-all duration-200 inline-flex items-center gap-2"
                   >
-                    {t('auth.registerHere')}
+                    <span>{t('auth.registerHere')}</span>
+                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
                   </button>
-                </span>
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Custom CSS for animations */}
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(-20px) translateX(10px); }
+        }
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(-25px) translateX(-10px); }
+        }
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float-delayed 7s ease-in-out infinite;
+        }
+        .animate-float-slow {
+          animation: float-slow 8s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }

@@ -15,23 +15,18 @@ export function TranslationProvider({ children }) {
     const loadTranslations = async () => {
       try {
         setLoading(true);
-        console.log(`Loading translations for locale: ${locale}`);
         const response = await fetch(`/locales/${locale}/common.json`);
-        console.log(`Response status: ${response.status}`);
         
         if (response.ok) {
           const data = await response.json();
-          console.log('Translations loaded successfully:', data);
           setTranslations(data);
         } else {
           console.error(`Failed to load translations for locale: ${locale}`);
           // Fallback to default locale if current locale fails
           if (locale !== defaultLocale) {
-            console.log(`Trying fallback to default locale: ${defaultLocale}`);
             const fallbackResponse = await fetch(`/locales/${defaultLocale}/common.json`);
             if (fallbackResponse.ok) {
               const fallbackData = await fallbackResponse.json();
-              console.log('Fallback translations loaded:', fallbackData);
               setTranslations(fallbackData);
             }
           }

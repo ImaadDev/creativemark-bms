@@ -53,21 +53,16 @@ export const SocketProvider = ({ children }) => {
   const fetchUnreadCount = useCallback(async () => {
     const userId = user?.id || user?._id;
     if (!userId) {
-      console.log('❌ No user ID for fetchUnreadCount');
       return;
     }
 
     try {
-      console.log('🔢 Fetching unread count for user:', userId);
       const data = await getUnreadCount(userId);
-      console.log('📊 Unread count data:', data);
       if (data.success) {
         setUnreadCount(data.unreadCount);
         localStorage.setItem(`unreadCount_${userId}`, data.unreadCount.toString());
-        console.log('✅ Unread count updated:', data.unreadCount);
       }
     } catch (error) {
-      console.error('❌ Error fetching unread count:', error);
       const stored = localStorage.getItem(`unreadCount_${userId}`);
       if (stored) {
         setUnreadCount(parseInt(stored));
@@ -79,17 +74,13 @@ export const SocketProvider = ({ children }) => {
   const fetchNotifications = useCallback(async () => {
     const userId = user?.id || user?._id;
     if (!userId) {
-      console.log('❌ No user ID for fetchNotifications');
       return;
     }
 
     try {
-      console.log('🔔 Fetching notifications for user:', userId);
       const data = await getNotifications(userId);
-      console.log('📨 Notifications data:', data);
       if (data.success) {
         mergeNotifications(data.notifications || []);
-        console.log('✅ Notifications merged:', data.notifications?.length || 0);
       }
     } catch (error) {
       console.error('❌ Error fetching notifications:', error);
@@ -98,7 +89,6 @@ export const SocketProvider = ({ children }) => {
         try {
           const parsedNotifications = JSON.parse(stored);
           setNotifications(parsedNotifications);
-          console.log('📱 Using stored notifications:', parsedNotifications.length);
         } catch (err) {
           console.error('Failed to parse localStorage notifications:', err);
         }
@@ -128,13 +118,10 @@ export const SocketProvider = ({ children }) => {
   // Socket setup
   useEffect(() => {
     if (!user) {
-      console.log('❌ No user for socket setup');
       return;
     }
 
-    console.log('🔌 Setting up socket for user:', user.id || user._id);
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
-    console.log('🌐 Backend URL:', backendUrl);
     
     const newSocket = io(backendUrl, {
       withCredentials: true,
@@ -147,18 +134,14 @@ export const SocketProvider = ({ children }) => {
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
-      console.log("✅ Socket connected with ID:", newSocket.id);
       setIsConnected(true);
       const userId = user.id || user._id;
       if (userId) {
-        console.log("👤 Joining user room:", userId);
-        newSocket.emit("join_user_room", userId);
         fetchUnreadCount();
       }
     });
 
     newSocket.on("disconnect", (reason) => {
-      console.log("❌ Socket disconnected:", reason);
       setIsConnected(false);
     });
     
@@ -169,7 +152,6 @@ export const SocketProvider = ({ children }) => {
 
     // Unified notification handler
     const handleNotification = (notification) => {
-      console.log("📨 Received notification:", notification);
       mergeNotifications([notification]);
       incrementUnread();
     };
@@ -185,7 +167,6 @@ export const SocketProvider = ({ children }) => {
     newSocket.on("payment_verification", handleNotification);
 
     return () => {
-      console.log("🧹 Cleaning up socket");
       newSocket.close();
     };
   }, [user, fetchUnreadCount]);

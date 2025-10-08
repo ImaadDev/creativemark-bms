@@ -76,8 +76,7 @@ export default function ClientsPage() {
         getAllApplications()
       ]);
       
-      console.log("Clients API response:", clientsResponse);
-      console.log("Applications API response:", applicationsResponse);
+    
       
       const clientsData = clientsResponse.success ? (clientsResponse.data || []) : [];
       const applicationsData = applicationsResponse.data || [];
