@@ -210,11 +210,11 @@ export default function RegisterPage() {
             {/* Large Logo with Glow */}
             <div className="relative inline-block mb-8">
               <div className="absolute inset-0 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/60 rounded-3xl blur-2xl opacity-40 animate-pulse" />
-              <div className="relative w-24 h-24 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-3xl flex items-center justify-center shadow-2xl">
+              <div className="relative w-24 h-24 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-full flex items-center justify-center shadow-2xl">
                 <img 
                   src="/CreativeMarkFavicon.png" 
                   alt="CreativeMark Logo" 
-                  className="w-16 h-16 object-contain drop-shadow-lg"
+                  className="w-48 h-48 object-contain drop-shadow-lg"
                   onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/48x48/242021/ffd17a?text=CM"; }}
                 />
               </div>
@@ -260,20 +260,20 @@ export default function RegisterPage() {
       </div>
 
       {/* Main Content */}
-      <div className={`relative z-10 min-h-screen flex items-center justify-center px-4 py-8 lg:px-12 xl:px-20 ${isRTL ? 'lg:mr-[50%]' : 'lg:ml-[50%]'}`}>
-        <div className="w-full max-w-md">
+      <div className={`relative z-10 min-h-screen flex items-center justify-center px-4 py-6 lg:px-12 xl:px-20 ${isRTL ? 'lg:mr-[50%]' : 'lg:ml-[50%]'}`}>
+        <div className="w-full max-w-5xl">
           {/* Register Card with Glassmorphism */}
-          <div className="md:bg-white/60 md:backdrop-blur-xl md:rounded-3xl md:border md:border-white/50 md:shadow-2xl p-6 sm:p-8 lg:p-10 md:hover:shadow-3xl transition-all duration-500">
+          <div className="p-6 sm:p-8 lg:p-10 transition-all duration-500">
             {/* Header */}
             <div className={`mb-6 sm:mb-8 ${isRTL ? 'text-right' : 'text-center'}`}>
               {/* Logo with Glow Effect */}
               <div className="relative inline-block mb-6">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/60 rounded-2xl blur-xl opacity-60 animate-pulse" />
-                <div className="relative w-16 h-16 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-2xl flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20">
+                <div className="relative w-24 h-24 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-full flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20">
                   <img 
                     src="/CreativeMarkFavicon.png" 
-                    alt="CreativeMark Logo" 
-                    className="w-10 h-10 object-contain drop-shadow-lg"
+                    alt="CreativeMark Logo"
+                    className="w-48 h-48 object-contain drop-shadow-lg"
                     onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/48x48/242021/ffd17a?text=CM"; }}
                   />
                 </div>
@@ -355,7 +355,7 @@ export default function RegisterPage() {
                       name="phoneCountryCode"
                       value={formData.phoneCountryCode}
                       onChange={handleChange}
-                      className={`w-48 px-3 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm appearance-none cursor-pointer ${isRTL ? 'text-right' : 'text-left'}`}
+                      className={`w-16 lg:w-48 px-3 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm appearance-none cursor-pointer ${isRTL ? 'text-right' : 'text-left'}`}
                       dir={isRTL ? 'ltr' : 'ltr'}
                     >
                       <option value=''>{t('auth.code')}</option>
@@ -535,7 +535,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`group relative overflow-hidden w-full py-4 text-base font-bold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 ${
+                className={`group relative overflow-hidden w-full py-4 text-base font-bold rounded-2xl transition-all cursor-pointer duration-300 transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 ${
                   isLoading
                     ? "bg-gray-400 text-gray-200 cursor-not-allowed"
                     : "bg-gradient-to-br from-[#242021] to-[#2a2422] text-white hover:shadow-2xl"
@@ -569,7 +569,7 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => router.push('/')}
-                    className="group font-semibold text-[#242021] hover:text-[#ffd17a] transition-all duration-200 inline-flex items-center gap-2"
+                    className="group font-semibold cursor-pointer text-[#242021] hover:text-[#ffd17a] transition-all duration-200 inline-flex items-center gap-2"
                   >
                     <span>{t('auth.signIn')}</span>
                     <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

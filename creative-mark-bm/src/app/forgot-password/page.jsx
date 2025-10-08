@@ -63,11 +63,11 @@ const ForgotPassword = () => {
             {/* Large Logo with Glow */}
             <div className="relative inline-block mb-8">
               <div className="absolute inset-0 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/60 rounded-3xl blur-2xl opacity-40 animate-pulse" />
-              <div className="relative w-24 h-24 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-3xl flex items-center justify-center shadow-2xl">
+              <div className="relative w-32 h-32 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-full flex items-center justify-center shadow-2xl">
                 <img 
                   src="/CreativeMarkFavicon.png" 
                   alt="CreativeMark Logo" 
-                  className="w-16 h-16 object-contain drop-shadow-lg"
+                  className="w-32 h-32 object-contain drop-shadow-lg"
                 />
               </div>
             </div>
@@ -115,17 +115,17 @@ const ForgotPassword = () => {
       <div className={`relative z-10 min-h-screen flex items-center justify-center px-4 py-8 lg:px-12 xl:px-20 ${isRTL ? 'lg:mr-[50%]' : 'lg:ml-[50%]'}`}>
         <div className="w-full max-w-md">
           {/* Forgot Password Card with Glassmorphism */}
-          <div className="md:bg-white/60 md:backdrop-blur-xl md:rounded-3xl md:border md:border-white/50 md:shadow-2xl p-6 sm:p-8 lg:p-10 md:hover:shadow-3xl transition-all duration-500">
+          <div className="p-6 transition-all duration-500">
             {/* Header */}
             <div className="text-center mb-6 sm:mb-8">
               {/* Logo with Glow Effect */}
               <div className="relative inline-block mb-6">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/60 rounded-2xl blur-xl opacity-60 animate-pulse" />
-                <div className="relative w-16 h-16 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-2xl flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20">
+                <div className="relative w-24 h-24 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-full flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20">
                   <img 
                     src="/CreativeMarkFavicon.png" 
                     alt="CreativeMark Logo" 
-                    className="w-10 h-10 object-contain drop-shadow-lg"
+                    className="w-24 h-24 object-contain drop-shadow-lg"
                   />
                 </div>
               </div>
