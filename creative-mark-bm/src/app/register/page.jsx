@@ -129,17 +129,23 @@ export default function RegisterPage() {
       console.log("Register response:", response);
       
       if (response.success) {
-        setSuccess("Registration successful! Redirecting...");
+        // Show success message about email verification
+        setSuccess(response.message || t('auth.registrationSuccessCheckEmail'));
         
-        // Update AuthContext with user data
-        updateUser(response.user);
-        
-        // Redirect to client dashboard after a short delay
-        setTimeout(() => {
-          router.push('/client');
-        }, 2000);
+        // Don't update AuthContext or redirect - user needs to verify email first
+        // Clear the form
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          phoneCountryCode: "+966",
+          nationality: "",
+          residencyStatus: "",
+          password: "",
+          confirmPassword: ""
+        });
       } else {
-        setError(response.message || "Registration failed");
+        setError(response.message || t('auth.registrationFailed'));
       }
       
     } catch (error) {
@@ -330,7 +336,7 @@ export default function RegisterPage() {
                       name="phoneCountryCode"
                       value={formData.phoneCountryCode}
                       onChange={handleChange}
-                      className="w-40 px-3 py-3 sm:py-4 pl-10 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base appearance-none cursor-pointer"
+                      className="w-48 px-3 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm appearance-none cursor-pointer"
                     >
                       <option value=''>{t('auth.code')}</option>
                       {countries.map((country) => (

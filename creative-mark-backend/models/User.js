@@ -14,6 +14,12 @@ const UserSchema = new mongoose.Schema({
   passwordHash: { type: String, required: true }, // 🔐 Hashed password
   passwordResetToken: { type: String },
   passwordResetExpires: { type: Date },
+
+  // Email verification
+  isVerified: { type: Boolean, default: false },
+  verificationToken: { type: String },
+  verificationTokenExpires: { type: Date },
+
   // Profile picture
   profilePicture: { type: String }, // URL to profile picture
 

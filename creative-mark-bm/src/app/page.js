@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
-import { login } from "../services/auth";
+import { login, sendVerificationEmail } from "../services/auth";
 import Image from "next/image";
 import { useTranslation } from "../i18n/TranslationContext";
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { updateUser } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
@@ -19,6 +20,17 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [resendingEmail, setResendingEmail] = useState(false);
+
+  useEffect(() => {
+    // Check if user just verified their email
+    const verified = searchParams.get("verified");
+    if (verified === "true") {
+      setSuccess(t('auth.emailVerifiedSuccess'));
+    }
+  }, [searchParams, t]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -26,8 +38,32 @@ export default function LoginPage() {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
+    // Clear messages when user starts typing
     if (error) setError("");
+    if (success) setSuccess("");
+    if (needsVerification) setNeedsVerification(false);
+  }
+
+  async function handleResendVerification() {
+    if (!formData.email) {
+      setError("Please enter your email address");
+      return;
+    }
+
+    setResendingEmail(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await sendVerificationEmail(formData.email);
+      setSuccess(response.message || t('auth.verificationEmailSent'));
+      setNeedsVerification(false);
+    } catch (error) {
+      console.error("Resend verification error:", error);
+      setError(error.message || t('auth.verificationFailedOrExpired'));
+    } finally {
+      setResendingEmail(false);
+    }
   }
 
   async function handleSubmit(e) {
@@ -78,7 +114,15 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error("Login error:", error);
-      setError(error.message || "Login failed. Please try again.");
+      const errorMsg = error.message || "Login failed. Please try again.";
+      
+      // Check if it's an email verification error
+      if (errorMsg.includes("verify your email") || errorMsg.includes("verify")) {
+        setNeedsVerification(true);
+        setError(errorMsg);
+      } else {
+        setError(errorMsg);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -169,6 +213,20 @@ export default function LoginPage() {
               <p className="text-gray-600 text-sm sm:text-base">{t('auth.welcomeBackSignIn')}</p>
             </div>
 
+            {/* Success Message */}
+            {success && (
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg sm:rounded-xl animate-fade-in">
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-semibold text-green-800">{success}</span>
+                </div>
+              </div>
+            )}
+
             {/* Error Message */}
             {error && (
               <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg sm:rounded-xl animate-shake">
@@ -179,6 +237,37 @@ export default function LoginPage() {
                     </svg>
                   </div>
                   <span className="text-sm font-semibold text-red-800">{error}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Resend Verification Button */}
+            {needsVerification && formData.email && (
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl">
+                <div className="flex flex-col sm:flex-row items-center gap-3">
+                  <div className="flex items-center gap-2 flex-1">
+                    <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <span className="text-sm font-medium text-blue-800">{t('auth.didntReceiveEmail')}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={resendingEmail}
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed whitespace-nowrap"
+                  >
+                    {resendingEmail ? (
+                      <span className="flex items-center gap-2">
+                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        {t('auth.sending')}
+                      </span>
+                    ) : (
+                      t('auth.resendEmail')
+                    )}
+                  </button>
                 </div>
               </div>
             )}

@@ -136,3 +136,42 @@ export const resetPassword = async ({ token, email, newPassword }) => {
     throw new Error(err.response?.data?.message || "Failed to reset password");
   }
 };
+
+
+/**
+ * Send email verification link after registration
+ * @param {string} email - user email address
+ */
+export const sendVerificationEmail = async (email) => {
+  try {
+    const res = await api.post("/auth/send-verification-email", { email });
+    return res.data;
+  } catch (err) {
+    console.error("Send verification email error:", err);
+    throw new Error(
+      err.response?.data?.message || "Failed to send verification email"
+    );
+  }
+};
+
+/**
+ * Verify email using token from verification link
+ * @param {string} token - verification token from email link
+ */
+export const verifyEmail = async (token) => {
+  try {
+    const res = await api.get(`/auth/verify-email?token=${token}`);
+    return res.data;
+  } catch (err) {
+    console.error("Email verification error:", err);
+    console.error("Error response:", err.response?.data);
+    
+    // If the error response has a message, throw it with proper error object
+    const error = new Error(
+      err.response?.data?.message || err.message || "Invalid or expired verification link"
+    );
+    error.response = err.response;
+    throw error;
+  }
+};
+

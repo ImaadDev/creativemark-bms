@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+import {sendEmail} from '../utils/mailer.js'
 
 /**
  * Generate JWT Token
@@ -46,6 +46,14 @@ export const registerUser = async (req, res) => {
       });
     }
 
+    // 1️⃣ Generate verification token
+    const verificationToken = jwt.sign(
+      { email: normalizedEmail },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // 2️⃣ Create unverified user
     const user = new User({
       fullName,
       email: normalizedEmail,
@@ -54,41 +62,375 @@ export const registerUser = async (req, res) => {
       nationality,
       residencyStatus,
       passwordHash: password,
-      role: "client", // always client
+      role: "client",
+      isVerified: false,
+      verificationToken,
+      verificationTokenExpires: Date.now() + 3600000, // 1 hour
     });
 
     await user.save();
 
-    const token = generateToken(user._id, user.role);
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // none for cross-domain in prod
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: "/", // Ensure cookie is available for all paths
-      domain: process.env.NODE_ENV === "production" ? undefined : undefined, // Let browser handle domain
-    });
-    
+    // 3️⃣ Send verification email
+    const verifyLink = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
 
-    res.status(201).json({
+    await sendEmail(
+      normalizedEmail,
+      `🎉 Welcome to ${process.env.BRAND_NAME} - Verify Your Email`,
+      `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Verify Your Email</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+          <div style="max-width: 600px; margin: 40px auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);">
+            
+            <!-- Header with Brand Colors -->
+            <div style="background: linear-gradient(135deg, #242021 0%, #2a2422 100%); padding: 48px 32px; text-align: center;">
+              <div style="width: 80px; height: 80px; margin: 0 auto 24px; background: rgba(255, 209, 122, 0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255, 209, 122, 0.3);">
+                <div style="width: 48px; height: 48px; background: #ffd17a; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #242021;">
+                  ✓
+                </div>
+              </div>
+              <h1 style="margin: 0; font-size: 32px; font-weight: bold; color: #ffd17a; line-height: 1.2;">
+                Welcome to CreativeMark!
+              </h1>
+              <p style="margin: 16px 0 0; font-size: 16px; color: rgba(255, 209, 122, 0.8); line-height: 1.5;">
+                You're one step away from getting started
+              </p>
+            </div>
+
+            <!-- Main Content -->
+            <div style="padding: 48px 32px;">
+              <!-- Greeting -->
+              <div style="margin-bottom: 32px;">
+                <h2 style="margin: 0 0 16px; font-size: 24px; font-weight: bold; color: #242021;">
+                  Hi ${fullName}! 👋
+                </h2>
+                <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.6;">
+                  Thank you for joining <strong style="color: #242021;">CreativeMark</strong>. We're excited to have you on board!
+                </p>
+              </div>
+
+              <!-- Verification Box -->
+              <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px; padding: 24px; margin-bottom: 32px; border: 2px solid #e9ecef;">
+                <p style="margin: 0 0 24px; font-size: 16px; color: #495057; line-height: 1.6; text-align: center;">
+                  To complete your registration and access all features, please verify your email address by clicking the button below:
+                </p>
+                
+                <!-- Verify Button -->
+                <div style="text-align: center; margin: 32px 0;">
+                  <a href="${verifyLink}" 
+                     style="display: inline-block; padding: 18px 42px; background: linear-gradient(135deg, #242021 0%, #2a2422 100%); color: white; text-decoration: none; border-radius: 50px; font-size: 12px; font-weight: bold; box-shadow: 0 8px 24px rgba(36, 32, 33, 0.3); transition: all 0.3s ease;">
+                    ✉️ Verify My Email
+                  </a>
+                </div>
+
+                <!-- Alternative Link -->
+                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #dee2e6;">
+                  <p style="margin: 0 0 8px; font-size: 13px; color: #6c757d; text-align: center;">
+                    Button not working? Copy and paste this link into your browser:
+                  </p>
+                  <p style="margin: 0; font-size: 12px; color: #0066cc; word-break: break-all; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 8px;">
+                    ${verifyLink}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Important Info -->
+              <div style="background: #fff3cd; border-left: 4px solid #ffd17a; border-radius: 12px; padding: 20px; margin-bottom: 32px;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                  <div style="font-size: 24px; line-height: 1;">⏰</div>
+                  <div>
+                    <p style="margin: 0; font-size: 14px; color: #856404; font-weight: 600;">
+                      Important: This verification link will expire in 1 hour
+                    </p>
+                    <p style="margin: 8px 0 0; font-size: 13px; color: #856404;">
+                      If you didn't request this verification, you can safely ignore this email.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- What's Next -->
+              <div style="margin-bottom: 32px;">
+                <h3 style="margin: 0 0 16px; font-size: 18px; font-weight: bold; color: #242021;">
+                  What happens next? 🚀
+                </h3>
+                <div style="space-y: 12px;">
+                  <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
+                    <div style="width: 24px; height: 24px; background: #242021; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                      <span style="color: #ffd17a; font-size: 14px; font-weight: bold;">1</span>
+                    </div>
+                    <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.6;">
+                      <strong style="color: #242021;">Verify your email</strong> by clicking the button above
+                    </p>
+                  </div>
+                  <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
+                    <div style="width: 24px; height: 24px; background: #242021; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                      <span style="color: #ffd17a; font-size: 14px; font-weight: bold;">2</span>
+                    </div>
+                    <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.6;">
+                      <strong style="color: #242021;">Sign in</strong> to your account
+                    </p>
+                  </div>
+                  <div style="display: flex; align-items: flex-start; gap: 12px;">
+                    <div style="width: 24px; height: 24px; background: #242021; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                      <span style="color: #ffd17a; font-size: 14px; font-weight: bold;">3</span>
+                    </div>
+                    <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.6;">
+                      <strong style="color: #242021;">Start exploring</strong> all our amazing features!
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Help Section -->
+              <div style="background: #e7f3ff; border-radius: 12px; padding: 20px; text-align: center;">
+                <p style="margin: 0 0 12px; font-size: 14px; color: #004085; font-weight: 600;">
+                  Need help? We're here for you! 💬
+                </p>
+                <p style="margin: 0; font-size: 13px; color: #004085;">
+                  Email us at <a href="mailto:support@creativemark.com" style="color: #0056b3; text-decoration: none; font-weight: 600;">support@creativemark.com</a>
+                </p>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="background: #f8f9fa; padding: 32px; text-align: center; border-top: 1px solid #e9ecef;">
+              <p style="margin: 0 0 16px; font-size: 14px; color: #6c757d; font-weight: 600;">
+                Best regards,<br>
+                <span style="color: #242021; font-size: 18px; font-weight: bold;">The CreativeMark Team</span>
+              </p>
+              
+              <!-- Social Links (Optional) -->
+              <div style="margin: 24px 0;">
+                <p style="margin: 0 0 12px; font-size: 12px; color: #adb5bd;">Follow us on social media</p>
+                <div style="display: inline-flex; gap: 16px;">
+                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">f</a>
+                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">𝕏</a>
+                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">in</a>
+                </div>
+              </div>
+
+              <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #dee2e6;">
+                <p style="margin: 0; font-size: 11px; color: #adb5bd; line-height: 1.5;">
+                  © ${new Date().getFullYear()} CreativeMark. All rights reserved.<br>
+                  This email was sent to ${normalizedEmail} because you created an account.<br>
+                  If you didn't request this, please ignore this email.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </body>
+        </html>
+      `
+    );
+    
+    return res.status(201).json({
       success: true,
-      message: "Client registered successfully",
-      user: {
-        id: user._id,
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-        phoneCountryCode: user.phoneCountryCode,
-        nationality: user.nationality,
-        residencyStatus: user.residencyStatus,
-        role: user.role,
-      },
+      message: "Verification email sent. Please check your inbox.",
     });
   } catch (error) {
-    console.error("Register Client Error:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Register Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
+
+
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token) {
+      return res.status(400).json({ success: false, message: "Invalid or missing token" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (user.isVerified) {
+      return res.status(200).json({ success: true, message: "Email already verified. You can now log in.", alreadyVerified: true });
+    }
+
+    // Check if token expired manually (optional)
+    if (user.verificationTokenExpires < Date.now()) {
+      return res.status(400).json({ success: false, message: "Verification link expired" });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
+    await user.save();
+
+    return res.status(200).json({ success: true, message: "Email verified successfully" });
+  } catch (error) {
+    console.error("Email Verification Error:", error);
+    res.status(500).json({ success: false, message: "Invalid or expired token" });
+  }
+};
+
+
+// ✅ Send verification email
+export const sendVerificationEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (user.isVerified)
+      return res.json({ success: true, message: "Email already verified" });
+
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    
+    // Update user with new verification token
+    user.verificationToken = token;
+    user.verificationTokenExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    const verifyLink = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+
+    await sendEmail(
+      email,
+      `🔄 Verify Your Email - ${process.env.BRAND_NAME}`,
+      `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Verify Your Email</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+          <div style="max-width: 600px; margin: 40px auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);">
+            
+            <!-- Header with Brand Colors -->
+            <div style="background: linear-gradient(135deg, #242021 0%, #2a2422 100%); padding: 48px 32px; text-align: center;">
+              <div style="width: 80px; height: 80px; margin: 0 auto 24px; background: rgba(255, 209, 122, 0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255, 209, 122, 0.3);">
+                <div style="width: 48px; height: 48px; background: #ffd17a; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #242021;">
+                  📧
+                </div>
+              </div>
+              <h1 style="margin: 0; font-size: 32px; font-weight: bold; color: #ffd17a; line-height: 1.2;">
+                Verify Your Email
+              </h1>
+              <p style="margin: 16px 0 0; font-size: 16px; color: rgba(255, 209, 122, 0.8); line-height: 1.5;">
+                A new verification link has been sent
+              </p>
+            </div>
+
+            <!-- Main Content -->
+            <div style="padding: 48px 32px;">
+              <!-- Greeting -->
+              <div style="margin-bottom: 32px;">
+                <h2 style="margin: 0 0 16px; font-size: 24px; font-weight: bold; color: #242021;">
+                  Hi ${user.fullName}! 👋
+                </h2>
+                <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.6;">
+                  You requested a new verification link for your <strong style="color: #242021;">CreativeMark</strong> account.
+                </p>
+              </div>
+
+              <!-- Verification Box -->
+              <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px; padding: 32px; margin-bottom: 32px; border: 2px solid #e9ecef;">
+                <p style="margin: 0 0 24px; font-size: 16px; color: #495057; line-height: 1.6; text-align: center;">
+                  Click the button below to verify your email address:
+                </p>
+                
+                <!-- Verify Button -->
+                <div style="text-align: center; margin: 32px 0;">
+                  <a href="${verifyLink}" 
+                     style="display: inline-block; padding: 18px 48px; background: linear-gradient(135deg, #242021 0%, #2a2422 100%); color: white; text-decoration: none; border-radius: 50px; font-size: 16px; font-weight: bold; box-shadow: 0 8px 24px rgba(36, 32, 33, 0.3);">
+                    ✉️ Verify My Email
+                  </a>
+                </div>
+
+                <!-- Alternative Link -->
+                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #dee2e6;">
+                  <p style="margin: 0 0 8px; font-size: 13px; color: #6c757d; text-align: center;">
+                    Button not working? Copy and paste this link into your browser:
+                  </p>
+                  <p style="margin: 0; font-size: 12px; color: #0066cc; word-break: break-all; text-align: center; background: #f8f9fa; padding: 12px; border-radius: 8px;">
+                    ${verifyLink}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Important Info -->
+              <div style="background: #fff3cd; border-left: 4px solid #ffd17a; border-radius: 12px; padding: 20px; margin-bottom: 32px;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                  <div style="font-size: 24px; line-height: 1;">⏰</div>
+                  <div>
+                    <p style="margin: 0; font-size: 14px; color: #856404; font-weight: 600;">
+                      Important: This verification link will expire in 1 hour
+                    </p>
+                    <p style="margin: 8px 0 0; font-size: 13px; color: #856404;">
+                      If you didn't request this, please ignore this email.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Help Section -->
+              <div style="background: #e7f3ff; border-radius: 12px; padding: 20px; text-align: center;">
+                <p style="margin: 0 0 12px; font-size: 14px; color: #004085; font-weight: 600;">
+                  Need help? We're here for you! 💬
+                </p>
+                <p style="margin: 0; font-size: 13px; color: #004085;">
+                  Email us at <a href="mailto:support@creativemark.com" style="color: #0056b3; text-decoration: none; font-weight: 600;">support@creativemark.com</a>
+                </p>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="background: #f8f9fa; padding: 32px; text-align: center; border-top: 1px solid #e9ecef;">
+              <p style="margin: 0 0 16px; font-size: 14px; color: #6c757d; font-weight: 600;">
+                Best regards,<br>
+                <span style="color: #242021; font-size: 18px; font-weight: bold;">The CreativeMark Team</span>
+              </p>
+              
+              <!-- Social Links -->
+              <div style="margin: 24px 0;">
+                <p style="margin: 0 0 12px; font-size: 12px; color: #adb5bd;">Follow us on social media</p>
+                <div style="display: inline-flex; gap: 16px;">
+                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">f</a>
+                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">𝕏</a>
+                  <a href="#" style="display: inline-block; width: 36px; height: 36px; background: #242021; border-radius: 50%; text-decoration: none; line-height: 36px; color: #ffd17a; font-weight: bold;">in</a>
+                </div>
+              </div>
+
+              <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #dee2e6;">
+                <p style="margin: 0; font-size: 11px; color: #adb5bd; line-height: 1.5;">
+                  © ${new Date().getFullYear()} CreativeMark. All rights reserved.<br>
+                  This email was sent to ${email} because you requested a verification link.<br>
+                  If you didn't request this, please ignore this email.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </body>
+        </html>
+      `
+    );
+
+    res.json({ success: true, message: "Verification email sent" });
+  } catch (err) {
+    console.error("Send verification email error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
 
 /**
  * @desc    Register Admin (protected, main office only)
@@ -109,6 +451,14 @@ export const loginUser = async (req, res) => {
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
+
+    if (!user.isVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "Please verify your email before logging in.",
+      });
+    }
+    
 
     const token = generateToken(user._id, user.role);
   
