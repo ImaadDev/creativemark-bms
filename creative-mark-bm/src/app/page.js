@@ -212,7 +212,7 @@ function LoginForm() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center lg:justify-end px-4 py-8 lg:pr-12 xl:pr-20">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8 lg:ml-[50%] lg:px-12 xl:px-20">
         <div className={`w-full max-w-md transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           
           {/* Login Card with Glassmorphism */}
