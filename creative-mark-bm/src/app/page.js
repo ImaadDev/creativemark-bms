@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 import { login, sendVerificationEmail } from "../services/auth";
 import Image from "next/image";
 import { useTranslation } from "../i18n/TranslationContext";
 
-export default function LoginPage() {
+// Force dynamic rendering to prevent prerendering issues
+export const dynamic = 'force-dynamic';
+
+function LoginForm() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -23,14 +26,27 @@ export default function LoginPage() {
   const [success, setSuccess] = useState("");
   const [needsVerification, setNeedsVerification] = useState(false);
   const [resendingEmail, setResendingEmail] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check if user just verified their email
-    const verified = searchParams.get("verified");
-    if (verified === "true") {
-      setSuccess(t('auth.emailVerifiedSuccess'));
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Check if user just verified their email - only on client side
+    if (!mounted) return;
+    
+    try {
+      if (searchParams) {
+        const verified = searchParams.get("verified");
+        if (verified === "true") {
+          setSuccess(t('auth.emailVerifiedSuccess'));
+        }
+      }
+    } catch (error) {
+      console.error("Error reading search params:", error);
     }
-  }, [searchParams, t]);
+  }, [searchParams, t, mounted]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -380,5 +396,20 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#ffd17a] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading...</p>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

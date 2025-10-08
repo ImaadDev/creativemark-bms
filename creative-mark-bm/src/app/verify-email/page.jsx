@@ -18,48 +18,65 @@ function VerifyEmailContent() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const token = searchParams.get("token");
-  
-    if (!token) {
-      setStatus("error");
-      setMessage(t('auth.invalidVerificationLink'));
-      return;
-    }
-  
-    const handleVerification = async () => {
-      try {
-        const res = await verifyEmail(token);
-        
-        if (res.success) {
-          setStatus("success");
-          
-          // Check if email was already verified
-          if (res.alreadyVerified) {
-            setMessage(res.message || t('auth.emailAlreadyVerified'));
-          } else {
-            setMessage(res.message || t('auth.emailVerifiedSuccess'));
-          }
-          
-          // Redirect to login page after 3 seconds
-          setTimeout(() => router.push("/?verified=true"), 3000);
-        } else {
-          setStatus("error");
-          setMessage(res.message || t('auth.verificationFailedOrExpired'));
-        }
-      } catch (err) {
-        console.error("Email verification error:", err);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Only run on client side after mounting
+    if (!mounted) return;
+    
+    // Safe check for SSR
+    try {
+      if (!searchParams) return;
+      
+      const token = searchParams.get("token");
+    
+      if (!token) {
         setStatus("error");
-        
-        // Better error message handling
-        const errorMessage = err.response?.data?.message || err.message || t('auth.verificationFailedOrExpired');
-        setMessage(errorMessage);
+        setMessage(t('auth.invalidVerificationLink'));
+        return;
       }
-    };
-  
-    handleVerification();
-  }, [searchParams, router]);
+    
+      const handleVerification = async () => {
+        try {
+          const res = await verifyEmail(token);
+          
+          if (res.success) {
+            setStatus("success");
+            
+            // Check if email was already verified
+            if (res.alreadyVerified) {
+              setMessage(res.message || t('auth.emailAlreadyVerified'));
+            } else {
+              setMessage(res.message || t('auth.emailVerifiedSuccess'));
+            }
+            
+            // Redirect to login page after 3 seconds
+            setTimeout(() => router.push("/?verified=true"), 3000);
+          } else {
+            setStatus("error");
+            setMessage(res.message || t('auth.verificationFailedOrExpired'));
+          }
+        } catch (err) {
+          console.error("Email verification error:", err);
+          setStatus("error");
+          
+          // Better error message handling
+          const errorMessage = err.response?.data?.message || err.message || t('auth.verificationFailedOrExpired');
+          setMessage(errorMessage);
+        }
+      };
+    
+      handleVerification();
+    } catch (error) {
+      console.error("Error in verification useEffect:", error);
+      setStatus("error");
+      setMessage(t('auth.verificationFailedOrExpired'));
+    }
+  }, [searchParams, router, t, mounted]);
   
  
 
