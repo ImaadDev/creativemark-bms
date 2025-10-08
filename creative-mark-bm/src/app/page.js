@@ -145,16 +145,65 @@ function LoginForm() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
-      {/* Animated Background Gradient Orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100 lg:bg-white">
+      {/* Left Side with #242021 Background - Desktop Only */}
+      <div className="hidden lg:block fixed left-0 top-0 bottom-0 w-1/2 bg-[#242021] overflow-hidden">
+        {/* Animated Background Gradient Orbs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#ffd17a]/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#ffd17a]/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-[#ffd17a]/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
+        </div>
+
+        {/* Floating Shapes */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-[15%] w-3 h-3 bg-[#ffd17a]/40 rounded-full animate-float" />
+          <div className="absolute top-40 left-[30%] w-4 h-4 bg-[#ffd17a]/30 rounded-full animate-float-delayed" />
+          <div className="absolute bottom-32 left-[20%] w-3 h-3 bg-[#ffd17a]/50 rounded-full animate-float-slow" />
+          <div className="absolute bottom-48 left-[40%] w-4 h-4 bg-[#ffd17a]/35 rounded-full animate-float" />
+          <div className="absolute top-1/3 left-[25%] w-3 h-3 bg-[#ffd17a]/45 rounded-full animate-float-delayed" />
+          <div className="absolute top-1/4 left-[50%] w-2 h-2 bg-[#ffd17a]/60 rounded-full animate-float-slow" />
+          <div className="absolute bottom-1/3 left-[35%] w-3 h-3 bg-[#ffd17a]/40 rounded-full animate-float" />
+          <div className="absolute top-2/3 left-[45%] w-2 h-2 bg-[#ffd17a]/55 rounded-full animate-float-delayed" />
+        </div>
+
+        {/* Content for Left Side */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-12">
+          <div className="text-center">
+            {/* Large Logo with Glow */}
+            <div className="relative inline-block mb-8">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/60 rounded-3xl blur-2xl opacity-40 animate-pulse" />
+              <div className="relative w-24 h-24 bg-gradient-to-br from-[#ffd17a] via-[#ffd17a]/95 to-[#ffd17a]/90 rounded-3xl flex items-center justify-center shadow-2xl">
+                <Image
+                  src="/CreativeMarkFavicon.png"
+                  alt="CreativeMark Logo"
+                  width={60}
+                  height={60}
+                  className="object-contain drop-shadow-lg"
+                />
+              </div>
+            </div>
+
+            <h1 className="text-5xl font-black text-white mb-6 tracking-tight">
+              CreativeMark
+            </h1>
+            <div className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-[#ffd17a] to-transparent rounded-full mb-6" />
+            <p className="text-gray-300 text-lg max-w-md">
+              {mounted && t('auth.welcomeToCreativeMark')}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Background Only */}
+      <div className="lg:hidden absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#ffd17a]/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#242021]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
         <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-[#ffd17a]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
       </div>
 
-      {/* Floating Shapes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Mobile Floating Shapes Only */}
+      <div className="lg:hidden absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-[10%] w-2 h-2 bg-[#ffd17a] rounded-full animate-float" />
         <div className="absolute top-40 right-[15%] w-3 h-3 bg-[#242021]/20 rounded-full animate-float-delayed" />
         <div className="absolute bottom-32 left-[20%] w-2 h-2 bg-[#ffd17a]/60 rounded-full animate-float-slow" />
@@ -163,7 +212,7 @@ function LoginForm() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8">
+      <div className="relative z-10 min-h-screen flex items-center justify-center lg:justify-end px-4 py-8 lg:pr-12 xl:pr-20">
         <div className={`w-full max-w-md transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           
           {/* Login Card with Glassmorphism */}
