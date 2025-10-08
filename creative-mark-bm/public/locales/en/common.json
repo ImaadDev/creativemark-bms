@@ -337,11 +337,11 @@
       "title": "Partnership Details",
       "subtitle": "Configure your business partnerships",
       "saudiPartnerName": "Saudi Partner Name",
-      "enterPartnerName": "Enter your Saudi partner's full name",
-      "partnerNameDescription": "Enter the full legal name of your Saudi business partner",
+      "enterSaudiPartnerName": "Enter your Saudi partner's full name",
+      "saudiPartnerNameNote": "Enter the full legal name of your Saudi business partner",
       "saudiPartnerIqama": "Saudi Partner Iqama/ID Card",
-      "uploadPartnerIqama": "Upload your Saudi partner's Iqama or National ID card",
-      "partnerIqamaDescription": "Upload a clear copy of your Saudi partner's Iqama or National ID card",
+      "uploadSaudiPartnerIqama": "Upload your Saudi partner's Iqama or National ID card",
+      "saudiPartnerIqamaNote": "Upload a clear copy of your Saudi partner's Iqama or National ID card",
       "fileSelected": "File selected",
       "noPartnershipRequired": "No Partnership Required",
       "noPartnershipDescription": "Your selected service type does not require a Saudi partner. You can proceed to the next step."
@@ -1280,19 +1280,6 @@
       "minimumProjectValue": "Minimum: 300,000,000 SAR",
       "realEstateRequirement": "Real estate projects require a minimum value of 300 million SAR",
       "requirementsSummary": "Requirements Summary"
-    },
-    "partnerships": {
-      "title": "Partnership Details",
-      "description": "Configure your business partnerships",
-      "saudiPartnerName": "Saudi Partner Name",
-      "enterSaudiPartnerName": "Enter your Saudi partner's full name",
-      "saudiPartnerNameNote": "Enter the full legal name of your Saudi business partner",
-      "saudiPartnerIqama": "Saudi Partner Iqama/ID Card",
-      "uploadSaudiPartnerIqama": "Upload your Saudi partner's Iqama or National ID card",
-      "fileSelected": "File selected",
-      "saudiPartnerIqamaNote": "Upload a clear copy of your Saudi partner's Iqama or National ID card",
-      "noPartnershipRequired": "No Partnership Required",
-      "noPartnershipDescription": "Your selected service type does not require a Saudi partner. You can proceed to the next step."
     },
     "companies": {
       "title": "External Companies",

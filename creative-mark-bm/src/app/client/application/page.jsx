@@ -32,7 +32,8 @@ import { useTranslation } from "../../../i18n/TranslationContext";
 
 export default function ModernMultiStepForm() {
   const { user } = useContext(AuthContext);
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const isRTL = language === 'ar';
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -771,7 +772,7 @@ export default function ModernMultiStepForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className={`min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
         {/* Header Section */}
         <div className="backdrop-blur-sm lg:rounded-3xl lg:m-2 border-b border-[#ffd17a]/20 bg-[#242021]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -1172,14 +1173,14 @@ export default function ModernMultiStepForm() {
             {/* Step 4: Partnership Details */}
             {step === 4 && (
               <div className="space-y-6">
-                <div className="text-center mb-8">
+                <div className={`mb-8 ${isRTL ? 'text-right' : 'text-center'}`}>
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 mb-6 shadow-xl">
                     <Handshake className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                  <h3 className={`text-2xl sm:text-3xl font-bold text-gray-900 mb-4 ${isRTL ? 'text-right' : 'text-center'}`}>
                     {t('application.steps.partnerships')}
                   </h3>
-                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                  <p className={`text-lg text-gray-600 max-w-2xl leading-relaxed ${isRTL ? 'text-right ml-auto' : 'text-center mx-auto'}`}>
                     {t('application.steps.partnerDetails')}
                   </p>
                 </div>
@@ -1188,46 +1189,48 @@ export default function ModernMultiStepForm() {
                   {form.serviceType === "commercial" && form.partnerType === "withSaudiPartner" && (
                     <div className="space-y-6">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">{t('application.partnerships.saudiPartnerName')} *</label>
+                        <label className={`block text-sm font-semibold text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.saudiPartnerName')} *</label>
                         <input 
                           name="saudiPartnerName" 
                           value={form.saudiPartnerName} 
                           onChange={handleChange}
                           onBlur={handleBlur}
                           placeholder={t('application.partnerships.enterSaudiPartnerName')} 
-                          className={getInputClassName("saudiPartnerName")} 
+                          className={`${getInputClassName("saudiPartnerName")} ${isRTL ? 'text-right' : 'text-left'}`}
+                          dir={isRTL ? 'rtl' : 'ltr'}
                         />
                         {renderErrorMessage("saudiPartnerName")}
-                        <p className='text-sm text-gray-600 mt-2'>{t('application.partnerships.saudiPartnerNameNote')}</p>
+                        <p className={`text-sm text-gray-600 mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.saudiPartnerNameNote')}</p>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">{t('application.partnerships.saudiPartnerIqama')} *</label>
-                        <div className="border-2 border-dashed border-gray-300 p-6 text-center hover:border-gray-400 transition-colors">
-                          <Upload className="w-8 h-8 mx-auto mb-3 text-gray-400" />
-                          <p className='text-sm text-gray-600 mb-3'>{t('application.partnerships.uploadSaudiPartnerIqama')}</p>
+                        <label className={`block text-sm font-semibold text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.saudiPartnerIqama')} *</label>
+                        <div className={`border-2 border-dashed border-gray-300 p-6 hover:border-gray-400 transition-colors ${isRTL ? 'text-right' : 'text-center'}`}>
+                          <Upload className={`w-8 h-8 mb-3 text-gray-400 ${isRTL ? 'ml-auto' : 'mx-auto'}`} />
+                          <p className={`text-sm text-gray-600 mb-3 ${isRTL ? 'text-right' : 'text-center'}`}>{t('application.partnerships.uploadSaudiPartnerIqama')}</p>
                           <input
                             type="file"
                             accept="image/*,.pdf"
                             onChange={handleSaudiPartnerIqamaChange}
-                            className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#ffd17a]/10 file:text-[#242021]"
+                            className={`w-full text-sm text-gray-600 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#ffd17a]/10 file:text-[#242021] ${isRTL ? 'file:ml-4' : 'file:mr-4'}`}
+                            dir={isRTL ? 'rtl' : 'ltr'}
                           />
                           {form.saudiPartnerIqama && (
-                            <p className="text-sm text-[#ffd17a] mt-2 font-medium">
+                            <p className={`text-sm text-[#ffd17a] mt-2 font-medium ${isRTL ? 'text-right' : 'text-center'}`}>
                               ✓ {t('application.partnerships.fileSelected')}: {form.saudiPartnerIqama.name}
                             </p>
                           )}
                         </div>
                         {renderErrorMessage("saudiPartnerIqama")}
-                        <p className='text-sm text-gray-600 mt-2'>{t('application.partnerships.saudiPartnerIqamaNote')}</p>
+                        <p className={`text-sm text-gray-600 mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.saudiPartnerIqamaNote')}</p>
                       </div>
                     </div>
                   )}
 
                   {form.serviceType && form.serviceType !== "commercial" && (
                     <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-4">
-                      <h3 className="font-semibold text-[#242021] mb-2">{t('application.partnerships.noPartnershipRequired')}</h3>
-                      <p className="text-sm text-[#242021]/80">
+                      <h3 className={`font-semibold text-[#242021] mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.noPartnershipRequired')}</h3>
+                      <p className={`text-sm text-[#242021]/80 ${isRTL ? 'text-right' : 'text-left'}`}>
                         {t('application.partnerships.noPartnershipDescription')}
                       </p>
                     </div>
@@ -1513,14 +1516,14 @@ export default function ModernMultiStepForm() {
             {/* Step 7: Document Upload */}
             {step === 7 && (
               <div className="space-y-6">
-                <div className="text-center mb-8">
+                <div className={`mb-8 ${isRTL ? 'text-right' : 'text-center'}`}>
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 mb-6 shadow-xl">
                     <FileImage className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                  <h3 className={`text-2xl sm:text-3xl font-bold text-gray-900 mb-4 ${isRTL ? 'text-right' : 'text-center'}`}>
                     {t('application.documents.title')}
                   </h3>
-                  <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                  <p className={`text-lg text-gray-600 max-w-2xl leading-relaxed ${isRTL ? 'text-right ml-auto' : 'text-center mx-auto'}`}>
                     {t('application.documents.subtitle')}
                   </p>
                 </div>
@@ -1578,7 +1581,7 @@ export default function ModernMultiStepForm() {
                                   </h4>
                                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div>
-                                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                                      <label className={`block text-sm font-medium text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>
                                         {t('application.documents.commercialRegistration')}
                                       </label>
                                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
@@ -1592,7 +1595,7 @@ export default function ModernMultiStepForm() {
                                       </div>
                                     </div>
                                     <div>
-                                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                                      <label className={`block text-sm font-medium text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>
                                         {t('application.documents.financialStatement')}
                                       </label>
                                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
@@ -1606,7 +1609,7 @@ export default function ModernMultiStepForm() {
                                       </div>
                                     </div>
                                     <div>
-                                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                                      <label className={`block text-sm font-medium text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>
                                         {t('application.documents.articlesOfAssociation')}
                                       </label>
                                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
@@ -1633,7 +1636,7 @@ export default function ModernMultiStepForm() {
                               </p>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.passport')}</label>
+                                  <label className={`block text-sm font-medium text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.documents.passport')}</label>
                                   <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                                     touched.passportFile && errors.passportFile 
                                       ? 'border-red-300 bg-red-50/50' 
@@ -1655,7 +1658,7 @@ export default function ModernMultiStepForm() {
                                   )}
                                 </div>
                                 <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.iqamaIdCard')}</label>
+                                  <label className={`block text-sm font-medium text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.documents.iqamaIdCard')}</label>
                                   <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                                     touched.idCard && errors.idCard 
                                       ? 'border-red-300 bg-red-50/50' 
@@ -1682,22 +1685,25 @@ export default function ModernMultiStepForm() {
                         </div>
                       ) : (
                         <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-6 space-y-4">
-                          <h3 className="font-semibold text-[#242021] mb-2">We'll Arrange External Companies for You</h3>
+                          <h3 className="font-semibold text-[#242021] mb-2">{t('application.documents.weWillArrangeCompanies')}</h3>
                           <p className="text-sm text-[#242021]/80 mb-4">
-                            You have {form.externalCompaniesCount} external companies, but {globalRequirements.requiredExternalCompanies} are required. 
-                            Don't worry - we'll arrange the missing {globalRequirements.requiredExternalCompanies - form.externalCompaniesCount} companies for you.
+                            {t('application.documents.missingCompanies', {
+                              count: form.externalCompaniesCount,
+                              required: globalRequirements.requiredExternalCompanies,
+                              missing: globalRequirements.requiredExternalCompanies - form.externalCompaniesCount
+                            })}
                           </p>
                           <div className="bg-white border border-[#ffd17a]/20 rounded-lg p-4 mb-4">
-                            <h4 className="font-medium text-[#242021] mb-2">What we need from you:</h4>
+                            <h4 className="font-medium text-[#242021] mb-2">{t('application.documents.whatWeNeed')}</h4>
                             <ul className="text-sm text-[#242021]/80 space-y-1">
-                              <li>• Your passport copy</li>
-                              <li>• Your Iqama/ID card copy</li>
-                              <li>• We'll handle the rest!</li>
+                              <li>• {t('application.documents.yourPassportCopy')}</li>
+                              <li>• {t('application.documents.yourIqamaCopy')}</li>
+                              <li>• {t('application.documents.weWillHandleRest')}</li>
                             </ul>
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Passport</label>
+                              <label className={`block text-sm font-medium text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.documents.passport')}</label>
                               <div className="border-2 border-dashed border-[#ffd17a]/30 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
                                 <Upload className="w-6 h-6 mx-auto mb-2 text-[#ffd17a]" />
                                 <input
@@ -1709,7 +1715,7 @@ export default function ModernMultiStepForm() {
                               </div>
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Iqama / ID Card</label>
+                              <label className={`block text-sm font-medium text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.documents.iqamaIdCard')}</label>
                               <div className="border-2 border-dashed border-[#ffd17a]/30 rounded-lg p-4 text-center hover:border-[#ffd17a]/50 transition-colors">
                                 <Upload className="w-6 h-6 mx-auto mb-2 text-[#ffd17a]" />
                                 <input
@@ -1726,13 +1732,13 @@ export default function ModernMultiStepForm() {
                     </div>
                   ) : (
                     <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-6">
-                      <h3 className="font-semibold text-[#242021] mb-2">Personal Documents Required</h3>
+                      <h3 className="font-semibold text-[#242021] mb-2">{t('application.documents.personalDocumentsRequired')}</h3>
                       <p className="text-sm text-[#242021]/80 mb-4">
-                        No external company requirements for this service. Please upload your personal documents.
+                        {t('application.documents.noExternalRequirements')}
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.passport')}</label>
+                              <label className={`block text-sm font-medium text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.documents.passport')}</label>
                               <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                                 touched.passportFile && errors.passportFile 
                                   ? 'border-red-300 bg-red-50/50' 
@@ -1754,7 +1760,7 @@ export default function ModernMultiStepForm() {
                               )}
                             </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('application.documents.iqamaIdCard')}</label>
+                          <label className={`block text-sm font-medium text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.documents.iqamaIdCard')}</label>
                           <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                             touched.idCard && errors.idCard 
                               ? 'border-red-300 bg-red-50/50' 
