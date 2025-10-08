@@ -167,7 +167,7 @@ function LoginForm() {
         <div className={`w-full max-w-md transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           
           {/* Login Card with Glassmorphism */}
-          <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl p-6 sm:p-8 lg:p-10 hover:shadow-3xl transition-all duration-500">
+          <div className="md:bg-white/60 md:backdrop-blur-xl md:rounded-3xl md:border md:border-white/50 md:shadow-2xl p-6 sm:p-8 lg:p-10 md:hover:shadow-3xl transition-all duration-500">
             {/* Header */}
             <div className="text-center mb-6 sm:mb-8">
               {/* Logo with Glow Effect */}
