@@ -6,7 +6,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const sendEmail = async (to, subject, html) => {
   try {
     const response = await resend.emails.send({
-        from: 'CreativeMark <no-reply@creativemaark.com>', // must be verified in Resend
+        from: `CreativeMark <${process.env.FROM_EMAIL}>`, // must be verified in Resend
         to,
         subject,
         html
