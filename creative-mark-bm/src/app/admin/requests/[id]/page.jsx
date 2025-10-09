@@ -38,6 +38,7 @@ import Section from '../../../../components/admin/requests/Section';
 import KeyValueList from '../../../../components/admin/requests/KeyValueList';
 import DocumentCard from '../../../../components/admin/requests/DocumentCard';
 import Tabs from '../../../../components/admin/requests/Tabs';
+import RegistrationSlipGenerator from '../../../../components/admin/RegistrationSlipGenerator';
 import { useTranslation } from '../../../../i18n/TranslationContext';
 
 const ApplicationDetailsPage = () => {
@@ -50,6 +51,7 @@ const ApplicationDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showPaymentPlanModal, setShowPaymentPlanModal] = useState(false);
+  const [showRegistrationSlip, setShowRegistrationSlip] = useState(false);
   const [paymentPlanForm, setPaymentPlanForm] = useState({
     totalAmount: '',
     installmentCount: 3
@@ -515,9 +517,11 @@ const ApplicationDetailsPage = () => {
                   Assign Employee
                 </button>
                 
-            <button className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-medium rounded-lg hover:from-indigo-700 hover:to-indigo-800 transition-all duration-200 shadow-lg hover:shadow-xl">
+            <button 
+                  onClick={() => setShowRegistrationSlip(true)}
+                  className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-medium rounded-lg hover:from-indigo-700 hover:to-indigo-800 transition-all duration-200 shadow-lg hover:shadow-xl">
                   <FaFileExport className="mr-2" />
-                  Export Report
+                  Generate Registration Slip
                 </button>
                 
             <button className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white font-medium rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl">
@@ -535,6 +539,17 @@ const ApplicationDetailsPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Modern Header */}
         <ApplicationHeader application={application} />
+
+        {/* Quick Actions Bar */}
+        <div className="flex flex-wrap gap-3 mb-6 sm:mb-8">
+          <button
+            onClick={() => setShowRegistrationSlip(true)}
+            className="group flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
+            <FaFileExport className="text-base sm:text-lg" />
+            <span className="text-sm sm:text-base">Generate Registration Slip</span>
+          </button>
+        </div>
 
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -656,6 +671,14 @@ const ApplicationDetailsPage = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Registration Slip Modal */}
+      {showRegistrationSlip && application && (
+        <RegistrationSlipGenerator
+          application={application}
+          onClose={() => setShowRegistrationSlip(false)}
+        />
       )}
     </div>
   );

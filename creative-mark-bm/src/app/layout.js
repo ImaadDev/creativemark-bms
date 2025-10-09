@@ -1,4 +1,4 @@
-import { Montserrat } from "next/font/google";
+import { Montserrat} from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../contexts/AuthContext";
 import { SocketProvider } from "../contexts/SocketContext";
@@ -10,14 +10,12 @@ const montserrat = Montserrat({
   subsets: ["latin"],
 });
 
+
+
+
 export const metadata = {
-  title: "Creative Mark Dashboard",
-  description: "Dashboard for Creative Mark system",
-  icons: {
-    icon: '/CreativeMarkFavicon.png',
-    shortcut: '/CreativeMarkFavicon.png',
-    apple: '/CreativeMarkFavicon.png',
-  },
+  title: "Creativemark Business Management System",
+  description: "Dashboard for Creativemark Business Management System",
 };
 
 export default function RootLayout({ children }) {
