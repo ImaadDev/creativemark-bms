@@ -31,6 +31,7 @@ import {
 import { useTranslation } from "../../../i18n/TranslationContext";
 import { useAuth } from "../../../contexts/AuthContext";
 import { paymentService } from "../../../services/paymentService";
+import BeautifulInvoice from "../../../components/admin/BeautifulInvoice";
 
 export default function ClientPaymentDashboard() {
   const { t } = useTranslation();
@@ -49,6 +50,8 @@ export default function ClientPaymentDashboard() {
   const [sortBy, setSortBy] = useState("newest");
   const [activeTab, setActiveTab] = useState("overview");
   const [dateRange, setDateRange] = useState("all");
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
+  const [selectedPaymentForInvoice, setSelectedPaymentForInvoice] = useState(null);
 
   // Load payments on component mount
   useEffect(() => {
@@ -557,13 +560,23 @@ export default function ClientPaymentDashboard() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+                        <div className="flex gap-2 sm:gap-3 flex-shrink-0 flex-wrap">
                           {payment.status === "pending" && (
                             <button 
                               onClick={() => openPaymentPlanModal(payment)}
                               className="px-3 sm:px-4 py-2 bg-[#242021] text-[#ffd17a] text-xs sm:text-sm font-semibold rounded-lg hover:bg-[#3a3537] transition-colors whitespace-nowrap"
                             >
                               {t('payments.dashboard.choosePaymentPlan')}
+                            </button>
+                          )}
+                          {(payment.status === "approved" || payment.status === "submitted") && (
+                            <button 
+                              onClick={() => { setSelectedPaymentForInvoice(payment); setIsInvoiceOpen(true); }}
+                              className="px-3 sm:px-4 py-2 bg-blue-600 text-white text-xs sm:text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1.5"
+                              title={t('invoice.title')}
+                            >
+                              <FileText size={14} className="sm:w-4 sm:h-4" />
+                              <span className="hidden md:inline">{t('invoice.title')}</span>
                             </button>
                           )}
                           <button 
@@ -695,6 +708,17 @@ export default function ClientPaymentDashboard() {
         </div>
       </div>
 
+      {/* Beautiful Invoice - Bilingual */}
+      {isInvoiceOpen && selectedPaymentForInvoice && (
+        <BeautifulInvoice
+          payment={selectedPaymentForInvoice}
+          onClose={() => {
+            setIsInvoiceOpen(false);
+            setSelectedPaymentForInvoice(null);
+          }}
+        />
+      )}
+
       {/* Payment History Modal */}
       {isHistoryModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
@@ -819,6 +843,15 @@ export default function ClientPaymentDashboard() {
                       </div>
                       
                       <div className="flex gap-2 lg:flex-col">
+                        {(payment.status === "approved" || payment.status === "submitted") && (
+                          <button 
+                            onClick={() => { setSelectedPaymentForInvoice(payment); setIsInvoiceOpen(true); setIsHistoryModalOpen(false); }} 
+                            className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                          >
+                            <FileText size={16} />
+                            {t('invoice.title')}
+                          </button>
+                        )}
                         <button 
                           onClick={() => { setSelectedPayment(payment); setIsPaymentDetailsOpen(true); setIsHistoryModalOpen(false); }} 
                           className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2"

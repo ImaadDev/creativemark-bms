@@ -21,11 +21,13 @@ import {
   BarChart3,
   History,
   ExternalLink,
-  X
+  X,
+  FileText
 } from "lucide-react";
 import { useTranslation } from "../../../i18n/TranslationContext";
 import { useAuth } from "../../../contexts/AuthContext";
 import { paymentService } from "../../../services/paymentService";
+import BeautifulInvoice from "../../../components/admin/BeautifulInvoice";
 
 export default function AdminPaymentsPage() {
   const { t } = useTranslation();
@@ -43,6 +45,8 @@ export default function AdminPaymentsPage() {
   const [sortBy, setSortBy] = useState("newest");
   const [dateRange, setDateRange] = useState("all");
   const [activeTab, setActiveTab] = useState("pending");
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
+  const [selectedPaymentForInvoice, setSelectedPaymentForInvoice] = useState(null);
 
   // Load payments on component mount
   useEffect(() => {
@@ -508,7 +512,7 @@ export default function AdminPaymentsPage() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+                        <div className="flex gap-2 sm:gap-3 flex-shrink-0 flex-wrap">
                           {payment.status === "submitted" && (
                             <>
                               <button 
@@ -528,8 +532,17 @@ export default function AdminPaymentsPage() {
                             </>
                           )}
                           <button 
+                            onClick={() => { setSelectedPaymentForInvoice(payment); setIsInvoiceOpen(true); }}
+                            className="px-3 sm:px-4 py-2 bg-[#242021] text-[#ffd17a] text-xs sm:text-sm font-semibold rounded-lg hover:bg-[#3a3537] transition-colors flex items-center gap-1 sm:gap-2"
+                            title="Generate Invoice"
+                          >
+                            <FileText size={14} className="sm:w-4 sm:h-4" />
+                            <span className="hidden md:inline">Invoice</span>
+                          </button>
+                          <button 
                             onClick={() => { setSelectedPayment(payment); setIsPaymentDetailsOpen(true); }} 
                             className="p-2 hover:bg-gray-100 rounded-xl transition-colors group-hover:bg-white"
+                            title="View Details"
                           >
                             <Eye size={16} className="text-gray-400 group-hover:text-gray-600" />
                           </button>
@@ -675,6 +688,13 @@ export default function AdminPaymentsPage() {
                   <span className='font-medium text-sm'>{t('admin.paymentManagement.bulkApprove')}</span>
                 </button>
                 <button className="w-full p-3 sm:p-4 bg-white rounded-xl text-left flex items-center gap-3 border border-gray-200 hover:shadow-md transition-all">
+                  <FileText size={18} className="sm:w-5 sm:h-5 text-gray-600" />
+                  <div>
+                    <span className='font-medium text-gray-900 text-sm block'>Generate Invoices</span>
+                    <span className='text-xs text-gray-500'>Bulk invoice generation</span>
+                  </div>
+                </button>
+                <button className="w-full p-3 sm:p-4 bg-white rounded-xl text-left flex items-center gap-3 border border-gray-200 hover:shadow-md transition-all">
                   <Download size={18} className="sm:w-5 sm:h-5 text-gray-600" />
                   <span className='font-medium text-gray-900 text-sm'>{t('admin.paymentManagement.exportReports')}</span>
                 </button>
@@ -740,130 +760,133 @@ export default function AdminPaymentsPage() {
         </div>
       </div>
 
-      {/* Payment Verification Modal */}
+      {/* Payment Verification Modal - Extra Compact */}
       {isVerificationModalOpen && selectedPayment && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl lg:rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden">
-            <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-4 sm:p-6 rounded-t-2xl lg:rounded-t-3xl flex justify-between items-center">
-              <div>
-                <h2 className='text-xl sm:text-2xl font-bold text-[#ffd17a]'>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-50 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[70vh] sm:max-h-[75vh] my-2 flex flex-col">
+            {/* Header - Extra Compact */}
+            <div className="bg-gradient-to-r from-[#242021] to-[#3a3537] p-2 sm:p-3 rounded-t-xl flex justify-between items-center gap-2 flex-shrink-0">
+              <div className="flex-1 min-w-0">
+                <h2 className='text-sm sm:text-base font-bold text-[#ffd17a] break-words leading-tight'>
                   {verificationAction === 'approve' ? t('admin.paymentManagement.approvePayment') : t('admin.paymentManagement.rejectPayment')}
                 </h2>
-                <p className="text-[#ffd17a]/70 text-sm mt-1">
+                <p className="text-[#ffd17a]/80 text-xs leading-tight">
                   {selectedPayment.installmentIndex !== undefined 
                     ? `Installment #${selectedPayment.installmentIndex + 1}`
                     : t('admin.paymentManagement.fullPayment')
                   }
                 </p>
               </div>
-              <button onClick={() => setIsVerificationModalOpen(false)} className="text-[#ffd17a] p-2 hover:bg-white/10 rounded-xl">
-                <X size={20} className="sm:w-6 sm:h-6" />
+              <button 
+                onClick={() => setIsVerificationModalOpen(false)} 
+                className="text-[#ffd17a] p-1 hover:bg-white/10 rounded transition-colors flex-shrink-0"
+              >
+                <X size={16} className="sm:w-[18px] sm:h-[18px]" />
               </button>
             </div>
-            <form onSubmit={handleVerification} className="p-6 space-y-6">
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <h3 className="font-semibold text-gray-900 mb-2">{t('admin.paymentManagement.paymentDetails')}</h3>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex justify-between">
-                    <span>{t('admin.paymentManagement.client')}:</span>
-                    <span className="font-semibold">{selectedPayment.clientId?.fullName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>{t('admin.paymentManagement.amount')}:</span>
-                    <span className="font-semibold">
-                      ${selectedPayment.installmentIndex !== undefined 
-                        ? (selectedPayment.totalAmount / 3).toFixed(2)
-                        : selectedPayment.totalAmount
-                      }
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>{t('admin.paymentManagement.service')}:</span>
-                    <span className="font-semibold">
-                      {selectedPayment.applicationId?.serviceType?.charAt(0).toUpperCase() + selectedPayment.applicationId?.serviceType?.slice(1)}
-                    </span>
+            
+            {/* Scrollable Content - Extra Compact */}
+            <div className="overflow-y-auto flex-1 p-2 sm:p-3">
+              <form onSubmit={handleVerification} className="space-y-2 sm:space-y-3">
+                {/* Extra Compact Payment Details */}
+                <div className="p-2 bg-gray-50 rounded border border-gray-200">
+                  <h3 className="font-semibold text-gray-900 mb-1 text-xs flex items-center gap-1">
+                    <User size={11} className="text-gray-600" />
+                    {t('admin.paymentManagement.paymentDetails')}
+                  </h3>
+                  <div className="space-y-0.5 text-xs text-gray-600">
+                    <div className="flex justify-between gap-2">
+                      <span className="text-gray-500">{t('admin.paymentManagement.client')}:</span>
+                      <span className="font-semibold text-right break-words text-gray-900">{selectedPayment.clientId?.fullName}</span>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <span className="text-gray-500">{t('admin.paymentManagement.amount')}:</span>
+                      <span className="font-bold text-gray-900">
+                        {selectedPayment.installmentIndex !== undefined 
+                          ? selectedPayment.installments[selectedPayment.installmentIndex]?.amount || (selectedPayment.totalAmount / 3).toFixed(2)
+                          : selectedPayment.totalAmount
+                        } SAR
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <span className="text-gray-500">{t('admin.paymentManagement.service')}:</span>
+                      <span className="font-semibold text-right break-words text-gray-900">
+                        {selectedPayment.applicationId?.serviceType?.charAt(0).toUpperCase() + selectedPayment.applicationId?.serviceType?.slice(1)}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Receipt Images */}
-              {(selectedPayment.receiptImage || (selectedPayment.installments && selectedPayment.installments.some(inst => inst.receiptImage))) && (
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-4">{t('admin.paymentManagement.receiptImages')}</h3>
-                  
-                  {/* Main Payment Receipt */}
-                  {selectedPayment.receiptImage && (
-                    <div className="mb-6">
-                      <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                        {t('admin.paymentManagement.mainPaymentReceipt')}
-                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">{t('admin.paymentManagement.fullPayment')}</span>
-                      </h4>
-                      <div className="border border-gray-200 rounded-xl p-4">
-                        <img 
-                          src={selectedPayment.receiptImage} 
-                          alt="Main Payment Receipt" 
-                          className="w-full max-h-64 object-contain rounded-lg"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Installment Receipts */}
-                  {selectedPayment.installments && selectedPayment.installments.some(inst => inst.receiptImage) && (
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-3">{t('admin.paymentManagement.installmentReceipts')}</h4>
-                      <div className="space-y-4">
-                        {selectedPayment.installments.map((installment, index) => (
-                          installment.receiptImage && (
-                            <div key={index} className="border border-gray-200 rounded-xl p-4">
-                              <div className="flex items-center gap-2 mb-3">
-                                <h5 className="text-sm font-medium text-gray-700">{t('admin.paymentManagement.installment')} {index + 1} {t('admin.paymentManagement.receipt')}</h5>
-                                <span className={`px-2 py-0.5 text-xs rounded-full ${
-                                  installment.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                  installment.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                                  installment.status === 'submitted' ? 'bg-blue-100 text-blue-700' :
-                                  'bg-gray-100 text-gray-700'
-                                }`}>
-                                  {installment.status}
-                                </span>
-                              </div>
-                              <div className="mb-2 text-sm text-gray-600">
-                                <p>{t('admin.paymentManagement.amount')}: {installment.amount} SAR</p>
-                                {installment.uploadedAt && (
-                                  <p>{t('admin.paymentManagement.uploaded')}: {formatDate(installment.uploadedAt)}</p>
-                                )}
-                              </div>
-                              <img 
-                                src={installment.receiptImage} 
-                                alt={`Installment ${index + 1} Receipt`} 
-                                className="w-full max-h-64 object-contain rounded-lg"
-                              />
+                {/* Receipt Image - Extra Compact - Only relevant receipt */}
+                {(() => {
+                  // If verifying a specific installment, show only that installment's receipt
+                  if (selectedPayment.installmentIndex !== undefined && selectedPayment.installments) {
+                    const installment = selectedPayment.installments[selectedPayment.installmentIndex];
+                    if (installment?.receiptImage) {
+                      return (
+                        <div>
+                          <h3 className="font-semibold text-gray-900 mb-1 text-xs flex items-center gap-1">
+                            <Receipt size={11} className="text-gray-600" />
+                            {t('admin.paymentManagement.installment')} #{selectedPayment.installmentIndex + 1} {t('admin.paymentManagement.receipt')}
+                          </h3>
+                          <div className="border border-gray-200 rounded p-1.5 bg-gray-50">
+                            <div className="mb-1 text-xs text-gray-600 flex justify-between items-center">
+                              <span className="font-medium">{installment.amount} SAR</span>
+                              {installment.uploadedAt && (
+                                <span className="text-xs text-gray-400">{new Date(installment.uploadedAt).toLocaleDateString()}</span>
+                              )}
                             </div>
-                          )
-                        ))}
+                            <img 
+                              src={installment.receiptImage} 
+                              alt={`Installment ${selectedPayment.installmentIndex + 1} Receipt`} 
+                              className="w-full max-h-32 sm:max-h-36 object-contain rounded border border-gray-200 bg-white"
+                            />
+                          </div>
+                        </div>
+                      );
+                    }
+                  }
+                  // If verifying full payment, show main receipt only
+                  else if (selectedPayment.receiptImage) {
+                    return (
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-1 text-xs flex items-center gap-1">
+                          <Receipt size={11} className="text-gray-600" />
+                          {t('admin.paymentManagement.paymentReceipt')}
+                        </h3>
+                        <div className="border border-gray-200 rounded p-1.5 bg-gray-50">
+                          <img 
+                            src={selectedPayment.receiptImage} 
+                            alt="Payment Receipt" 
+                            className="w-full max-h-32 sm:max-h-36 object-contain rounded border border-gray-200 bg-white"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    );
+                  }
+                  return null;
+                })()}
+
+                {/* Extra Compact Admin Notes */}
+                <div>
+                  <label className='block text-gray-700 font-semibold mb-1 text-xs flex items-center gap-1'>
+                    <FileText size={11} />
+                    {t('admin.paymentManagement.adminNotes')}
+                  </label>
+                  <textarea
+                    value={adminNotes}
+                    onChange={(e) => setAdminNotes(e.target.value)}
+                    placeholder={t('admin.paymentManagement.addNotesPlaceholder')}
+                    className="w-full p-1.5 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#242021] resize-none text-xs"
+                    rows={2}
+                  />
                 </div>
-              )}
 
-              <div>
-                <label className='block text-gray-700 font-semibold mb-2 text-sm'>{t('admin.paymentManagement.adminNotes')}</label>
-                <textarea
-                  value={adminNotes}
-                  onChange={(e) => setAdminNotes(e.target.value)}
-                  placeholder={t('admin.paymentManagement.addNotesPlaceholder')}
-                  className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#242021] resize-none"
-                  rows={3}
-                />
-              </div>
-
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <AlertCircle size={20} className="text-blue-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm text-blue-800">
-                    <p className="font-medium mb-1">{t('admin.paymentManagement.verificationAction')}</p>
-                    <p className="text-xs">
+                {/* Extra Compact Info Banner */}
+                <div className="bg-blue-50 border border-blue-200 rounded p-2">
+                  <div className="flex items-start gap-1.5">
+                    <AlertCircle size={12} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                    <p className="text-xs text-blue-800 leading-tight">
                       {verificationAction === "approve" 
                         ? t('admin.paymentManagement.approveMessage')
                         : t('admin.paymentManagement.rejectMessage')
@@ -871,31 +894,43 @@ export default function AdminPaymentsPage() {
                     </p>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex gap-3 pt-2">
-                <button 
-                  type="button" 
-                  onClick={() => setIsVerificationModalOpen(false)} 
-                  className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
-                >
-                  {t('admin.paymentManagement.cancel')}
-                </button>
-                <button 
-                  type="submit" 
-                  disabled={verifying}
-                  className={`flex-1 py-3 font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-                    verificationAction === "approve"
-                      ? "bg-green-600 text-white hover:bg-green-700"
-                      : "bg-red-600 text-white hover:bg-red-700"
-                  }`}
-                >
-                  {verifying ? t('admin.paymentManagement.processing') : `${verificationAction === "approve" ? t('admin.paymentManagement.approve') : t('admin.paymentManagement.reject')} ${t('admin.paymentManagement.payment')}`}
-                </button>
-              </div>
-            </form>
+                {/* Action Buttons - Extra Compact & Sticky */}
+                <div className="flex gap-2 pt-1 sticky bottom-0 bg-white pb-1 -mx-2 px-2 sm:-mx-3 sm:px-3">
+                  <button 
+                    type="button" 
+                    onClick={() => setIsVerificationModalOpen(false)} 
+                    className="flex-1 py-1.5 bg-gray-100 text-gray-700 font-semibold rounded hover:bg-gray-200 transition-colors text-xs"
+                  >
+                    {t('admin.paymentManagement.cancel')}
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={verifying}
+                    className={`flex-1 py-1.5 font-bold rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs ${
+                      verificationAction === "approve"
+                        ? "bg-green-600 text-white hover:bg-green-700"
+                        : "bg-red-600 text-white hover:bg-red-700"
+                    }`}
+                  >
+                    {verifying ? '...' : `${verificationAction === "approve" ? '✓ ' + t('admin.paymentManagement.approve') : '✗ ' + t('admin.paymentManagement.reject')}`}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
+      )}
+
+      {/* Beautiful Invoice - Bilingual */}
+      {isInvoiceOpen && selectedPaymentForInvoice && (
+        <BeautifulInvoice
+          payment={selectedPaymentForInvoice}
+          onClose={() => {
+            setIsInvoiceOpen(false);
+            setSelectedPaymentForInvoice(null);
+          }}
+        />
       )}
 
       {/* Payment History Modal */}
@@ -1064,6 +1099,13 @@ export default function AdminPaymentsPage() {
                       
                       <div className="flex gap-2 lg:flex-col">
                         <button 
+                          onClick={() => { setSelectedPaymentForInvoice(payment); setIsInvoiceOpen(true); }} 
+                          className="px-4 py-2 bg-[#242021] text-[#ffd17a] text-sm font-semibold rounded-lg hover:bg-[#3a3537] transition-colors flex items-center gap-2"
+                        >
+                          <FileText size={16} />
+                          Invoice
+                        </button>
+                        <button 
                           onClick={() => { setSelectedPayment(payment); setIsPaymentDetailsOpen(true); setIsHistoryModalOpen(false); }} 
                           className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2"
                         >
@@ -1073,7 +1115,7 @@ export default function AdminPaymentsPage() {
                         {payment.status === "submitted" && (
                           <button 
                             onClick={() => { openVerificationModal(payment, null, "approve"); setIsHistoryModalOpen(false); }}
-                            className="px-4 py-2 bg-[#242021] text-[#ffd17a] text-sm font-semibold rounded-lg hover:bg-[#3a3537] transition-colors"
+                            className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors"
                           >
                             {t('admin.paymentManagement.verifyPayment')}
                           </button>
