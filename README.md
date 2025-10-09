@@ -483,7 +483,7 @@ We welcome contributions! Please follow these steps:
 
 ## 🐛 Known Issues
 
-See [GitHub Issues](https://github.com/yourusername/creativemark-bms/issues) for current bugs and feature requests.
+See [GitHub Issues](https://github.com/ImaadDev/creativemark-bms/issues) for current bugs and feature requests.
 
 ---
 
@@ -495,10 +495,10 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-- **Project Lead** - [Your Name](https://github.com/yourusername)
-- **Backend Developer** - [Name](https://github.com/username)
-- **Frontend Developer** - [Name](https://github.com/username)
-- **UI/UX Designer** - [Name](https://github.com/username)
+- **Project Lead** - [Imad Hussain Khan](https://github.com/ImaadDev)
+- **Backend Developer** - [Imad Hussain Khan](https://github.com/ImaadDev)
+- **Frontend Developer** - [Imad Hussain Khan](https://github.com/ImaadDev)
+- **UI/UX Designer** - [Imad Hussain Khan](https://github.com/ImaadDev)
 
 ---
 
@@ -516,7 +516,7 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Email:** support@creativemark.com
+- **Email:** imaddeveloper0@gmail.com
 - **Documentation:** [docs.creativemark.com](https://docs.creativemark.com)
 - **Issues:** [GitHub Issues](https://github.com/yourusername/creativemark-bms/issues)
 - **Discussions:** [GitHub Discussions](https://github.com/yourusername/creativemark-bms/discussions)
@@ -542,7 +542,7 @@ If you find this project useful, please consider giving it a ⭐ on GitHub!
 
 **[⬆ back to top](#-creative-mark-bms---business-management-system)**
 
-Made with ❤️ by Creative Mark Team
+Made with ❤️ by Imad Hussain Khan
 
 **[Backend README](./creative-mark-backend/README.md)** • **[Frontend README](./creative-mark-bm/README.md)** • **[Testing Guide](./TESTING_GUIDE.md)**
 
