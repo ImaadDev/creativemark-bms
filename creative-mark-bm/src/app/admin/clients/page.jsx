@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getAllClients } from "../../../services/clientApi";
+import { getAllClients, deleteClient } from "../../../services/clientApi";
 import { getAllApplications } from "../../../services/applicationService";
-import { deleteUser } from "../../../services/userService";
 import { getCurrentUser } from "../../../services/auth";
 import { 
   FaSearch, 
@@ -230,7 +229,11 @@ export default function ClientsPage() {
           }
         });
 
-        await deleteUser(client._id || client.id, currentUser._id);
+        const result = await deleteClient(client._id || client.id);
+        
+        if (!result.success) {
+          throw new Error(result.message || 'Failed to delete client');
+        }
 
         // Remove the deleted client from the local state
         setClients(prev => prev.filter(c => (c._id || c.id) !== (client._id || client.id)));

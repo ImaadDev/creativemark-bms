@@ -14,6 +14,7 @@ export const getClientPayments = async (req, res) => {
 
     const payments = await Payment.find({ clientId: userId })
       .populate("applicationId", "serviceType status")
+      .populate("clientId", "fullName name email phone phoneCountryCode nationality address")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -43,9 +44,9 @@ export const getPaymentDetails = async (req, res) => {
 
     const payment = await Payment.findById(paymentId)
       .populate("applicationId", "serviceType status userId")
-      .populate("clientId", "fullName email")
-      .populate("paidBy", "fullName email")
-      .populate("verifiedBy", "fullName email");
+      .populate("clientId", "fullName name email phone phoneCountryCode nationality address")
+      .populate("paidBy", "fullName name email")
+      .populate("verifiedBy", "fullName name email");
 
     if (!payment) {
       return res.status(404).json({
@@ -323,8 +324,8 @@ export const getPendingPayments = async (req, res) => {
       ]
     })
       .populate("applicationId", "serviceType status")
-      .populate("clientId", "fullName email")
-      .populate("paidBy", "fullName email")
+      .populate("clientId", "fullName name email phone phoneCountryCode nationality address")
+      .populate("paidBy", "fullName name email")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -607,8 +608,8 @@ export const getAllPayments = async (req, res) => {
     // Get all payments with populated data
     const payments = await Payment.find({})
       .populate('applicationId', 'serviceType clientId')
-      .populate('clientId', 'name email')
-      .populate('verifiedBy', 'name')
+      .populate('clientId', 'fullName name email phone phoneCountryCode nationality address')
+      .populate('verifiedBy', 'fullName name')
       .sort({ createdAt: -1 });
 
     console.log("Found", payments.length, "payments");

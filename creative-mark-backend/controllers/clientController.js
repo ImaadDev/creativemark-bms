@@ -3,6 +3,11 @@ import Application from "../models/Application.js";
 import ApplicationDocument from "../models/Document.js";
 import ApplicationTimeline from "../models/Timeline.js";
 import Payment from "../models/Payment.js";
+import Message from "../models/Message.js";
+import Notification from "../models/Notification.js";
+import Task from "../models/Task.js";
+import Ticket from "../models/Ticket.js";
+import TicketReply from "../models/TicketReply.js";
 
 /**
  * @desc    Get all clients with full details and application counts
@@ -181,82 +186,133 @@ export const deleteClient = async (req, res) => {
       });
     }
 
-    // Start a transaction to ensure all deletions succeed or none do
-    const session = await User.startSession();
-    session.startTransaction();
+    console.log(`Starting deletion process for client: ${client.fullName} (${clientId})`);
 
-    try {
-      // 1. Get all applications for this client
-      const applications = await Application.find({ userId: clientId }).session(session);
-      const applicationIds = applications.map(app => app._id);
+    // 1. Get all applications for this client
+    const applications = await Application.find({ userId: clientId });
+    const applicationIds = applications.map(app => app._id);
+    console.log(`Found ${applicationIds.length} applications for client`);
 
-      // 2. Delete all documents related to these applications
-      if (applicationIds.length > 0) {
-        await ApplicationDocument.deleteMany(
-          { applicationId: { $in: applicationIds } },
-          { session }
-        );
-        console.log(`Deleted documents for ${applicationIds.length} applications`);
-      }
+    // Get all tickets for this client to get ticket IDs
+    const tickets = await Ticket.find({ userId: clientId });
+    const ticketIds = tickets.map(ticket => ticket._id);
+    console.log(`Found ${ticketIds.length} tickets for client`);
 
-      // 3. Delete all timeline entries related to these applications
-      if (applicationIds.length > 0) {
-        await ApplicationTimeline.deleteMany(
-          { applicationId: { $in: applicationIds } },
-          { session }
-        );
-        console.log(`Deleted timeline entries for ${applicationIds.length} applications`);
-      }
+    let deletedDocumentsCount = 0;
+    let deletedTimelineCount = 0;
+    let deletedPaymentsCount = 0;
+    let deletedTasksCount = 0;
+    let deletedMessagesCount = 0;
+    let deletedNotificationsCount = 0;
+    let deletedTicketsCount = 0;
+    let deletedTicketRepliesCount = 0;
 
-      // 4. Delete all payments related to these applications
-      if (applicationIds.length > 0) {
-        await Payment.deleteMany(
-          { applicationId: { $in: applicationIds } },
-          { session }
-        );
-        console.log(`Deleted payments for ${applicationIds.length} applications`);
-      }
-
-      // 5. Delete all applications for this client
-      const deletedApplications = await Application.deleteMany(
-        { userId: clientId },
-        { session }
-      );
-      console.log(`Deleted ${deletedApplications.deletedCount} applications`);
-
-      // 6. Finally, delete the client user
-      const deletedClient = await User.findByIdAndDelete(clientId, { session });
-      console.log(`Deleted client: ${deletedClient.fullName}`);
-
-      // Commit the transaction
-      await session.commitTransaction();
-
-      res.status(200).json({
-        success: true,
-        message: "Client and all associated data deleted successfully",
-        data: {
-          deletedClient: {
-            id: deletedClient._id,
-            name: deletedClient.fullName,
-            email: deletedClient.email
-          },
-          deletedApplications: deletedApplications.deletedCount,
-          deletedDocuments: applicationIds.length > 0 ? "All related documents" : 0,
-          deletedTimelineEntries: applicationIds.length > 0 ? "All related timeline entries" : 0,
-          deletedPayments: applicationIds.length > 0 ? "All related payments" : 0
-        }
+    // 2. Delete all documents related to applications
+    if (applicationIds.length > 0) {
+      const docResult = await ApplicationDocument.deleteMany({
+        applicationId: { $in: applicationIds }
       });
-
-    } catch (transactionError) {
-      // If anything fails, rollback the transaction
-      await session.abortTransaction();
-      throw transactionError;
-    } finally {
-      session.endSession();
+      deletedDocumentsCount = docResult.deletedCount;
+      console.log(`Deleted ${deletedDocumentsCount} documents`);
     }
+
+    // 3. Delete all timeline entries related to applications
+    if (applicationIds.length > 0) {
+      const timelineResult = await ApplicationTimeline.deleteMany({
+        applicationId: { $in: applicationIds }
+      });
+      deletedTimelineCount = timelineResult.deletedCount;
+      console.log(`Deleted ${deletedTimelineCount} timeline entries`);
+    }
+
+    // 4. Delete all payments related to applications or client
+    if (applicationIds.length > 0) {
+      const paymentResult = await Payment.deleteMany({
+        $or: [
+          { applicationId: { $in: applicationIds } },
+          { clientId: clientId }
+        ]
+      });
+      deletedPaymentsCount = paymentResult.deletedCount;
+      console.log(`Deleted ${deletedPaymentsCount} payments`);
+    }
+
+    // 5. Delete all tasks related to applications
+    if (applicationIds.length > 0) {
+      const taskResult = await Task.deleteMany({
+        applicationId: { $in: applicationIds }
+      });
+      deletedTasksCount = taskResult.deletedCount;
+      console.log(`Deleted ${deletedTasksCount} tasks`);
+    }
+
+    // 6. Delete all messages where client is sender or recipient
+    const messageResult = await Message.deleteMany({
+      $or: [
+        { senderId: clientId },
+        { recipientId: clientId }
+      ]
+    });
+    deletedMessagesCount = messageResult.deletedCount;
+    console.log(`Deleted ${deletedMessagesCount} messages`);
+
+    // 7. Delete all notifications for the client
+    const notificationResult = await Notification.deleteMany({
+      userId: clientId
+    });
+    deletedNotificationsCount = notificationResult.deletedCount;
+    console.log(`Deleted ${deletedNotificationsCount} notifications`);
+
+    // 8. Delete all ticket replies for client's tickets
+    if (ticketIds.length > 0) {
+      const ticketReplyResult = await TicketReply.deleteMany({
+        ticketId: { $in: ticketIds }
+      });
+      deletedTicketRepliesCount = ticketReplyResult.deletedCount;
+      console.log(`Deleted ${deletedTicketRepliesCount} ticket replies`);
+    }
+
+    // 9. Delete all tickets created by the client
+    const ticketResult = await Ticket.deleteMany({
+      userId: clientId
+    });
+    deletedTicketsCount = ticketResult.deletedCount;
+    console.log(`Deleted ${deletedTicketsCount} tickets`);
+
+    // 10. Delete all applications for this client
+    const deletedApplications = await Application.deleteMany({
+      userId: clientId
+    });
+    console.log(`Deleted ${deletedApplications.deletedCount} applications`);
+
+    // 11. Finally, delete the client user
+    const deletedClient = await User.findByIdAndDelete(clientId);
+    console.log(`Deleted client: ${deletedClient.fullName}`);
+
+    res.status(200).json({
+      success: true,
+      message: "Client and all associated data deleted successfully",
+      data: {
+        deletedClient: {
+          id: deletedClient._id,
+          name: deletedClient.fullName,
+          email: deletedClient.email
+        },
+        deletedApplications: deletedApplications.deletedCount,
+        deletedDocuments: deletedDocumentsCount,
+        deletedTimelineEntries: deletedTimelineCount,
+        deletedPayments: deletedPaymentsCount,
+        deletedTasks: deletedTasksCount,
+        deletedMessages: deletedMessagesCount,
+        deletedNotifications: deletedNotificationsCount,
+        deletedTickets: deletedTicketsCount,
+        deletedTicketReplies: deletedTicketRepliesCount
+      }
+    });
 
   } catch (error) {
     console.error("Delete Client Error:", error);
+    console.error("Error stack:", error.stack);
     
     // Handle specific error types
     if (error.name === 'CastError') {

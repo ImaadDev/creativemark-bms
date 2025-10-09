@@ -24,6 +24,7 @@ import {
   X,
   FileText
 } from "lucide-react";
+import Swal from 'sweetalert2';
 import { useTranslation } from "../../../i18n/TranslationContext";
 import { useAuth } from "../../../contexts/AuthContext";
 import { paymentService } from "../../../services/paymentService";
@@ -58,11 +59,46 @@ export default function AdminPaymentsPage() {
 
   const loadPayments = async () => {
     try {
-      const response = await paymentService.getPendingPayments();
-      setPayments(response.data || []);
+      // Load ALL payments (not just pending) to show payment history
+      const response = await paymentService.getAllPayments();
+      // getAllPayments returns { payments, stats }, extract the payments array
+      setPayments(response.data?.payments || []);
     } catch (error) {
       console.error("Error loading payments:", error);
       setPayments([]);
+      
+      // Show error alert only if it's a critical error
+      if (error.response?.status >= 500) {
+        Swal.fire({
+          title: 'Loading Error',
+          html: `
+            <div class="text-center">
+              <p class="text-gray-700 mb-3">Failed to load payments from the server.</p>
+              <div class="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p class="text-sm text-amber-700">The page will retry automatically, or you can refresh manually.</p>
+              </div>
+            </div>
+          `,
+          icon: 'warning',
+          confirmButtonColor: '#f59e0b',
+          confirmButtonText: 'Refresh Page',
+          showCancelButton: true,
+          cancelButtonColor: '#6b7280',
+          cancelButtonText: 'Dismiss',
+          background: '#ffffff',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            title: 'text-gray-900 font-semibold',
+            content: 'text-gray-600',
+            confirmButton: 'rounded-lg font-medium px-6 py-3',
+            cancelButton: 'rounded-lg font-medium px-6 py-3'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+      }
     }
   };
 
@@ -70,11 +106,39 @@ export default function AdminPaymentsPage() {
     e.preventDefault();
     if (!verificationAction || !selectedPayment) return;
 
+    // Show loading alert
+    Swal.fire({
+      title: verificationAction === 'approve' ? 
+        'Approving Payment...' : 
+        'Rejecting Payment...',
+      html: `
+        <div class="text-center">
+          <p class="text-gray-600 mb-2">Please wait while we process the payment verification.</p>
+          ${typeof selectedPayment.installmentIndex === 'number' ? 
+            `<p class="text-sm text-gray-500">Installment #${selectedPayment.installmentIndex + 1}</p>` : 
+            '<p class="text-sm text-gray-500">Full Payment</p>'
+          }
+        </div>
+      `,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      background: '#ffffff',
+      customClass: {
+        popup: 'rounded-2xl shadow-2xl',
+        title: 'text-gray-900 font-semibold'
+      },
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     setVerifying(true);
     try {
       let response;
       
-      if (selectedPayment.installmentIndex !== undefined) {
+      // Check if it's an installment (must be a number, not null or undefined)
+      if (typeof selectedPayment.installmentIndex === 'number') {
         // Verify installment
         response = await paymentService.verifyInstallmentPayment(
           selectedPayment._id,
@@ -101,23 +165,176 @@ export default function AdminPaymentsPage() {
         setVerificationAction("");
         setAdminNotes("");
         setSelectedPayment(null);
-        alert(t('admin.paymentManagement.paymentSuccess', { action: verificationAction }));
+        
+        // Show success alert
+        Swal.fire({
+          title: verificationAction === 'approve' ? 
+            'Payment Approved!' : 
+            'Payment Rejected',
+          html: `
+            <div class="text-center">
+              <div class="mb-4">
+                <div class="w-16 h-16 mx-auto mb-3 rounded-full ${
+                  verificationAction === 'approve' ? 
+                  'bg-gradient-to-br from-green-400 to-green-600' : 
+                  'bg-gradient-to-br from-red-400 to-red-600'
+                } flex items-center justify-center">
+                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    ${verificationAction === 'approve' ? 
+                      '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>' :
+                      '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'
+                    }
+                  </svg>
+                </div>
+              </div>
+              <p class="text-gray-700 mb-2">
+                ${verificationAction === 'approve' ? 
+                  'The payment has been successfully approved and processed.' :
+                  'The payment has been rejected.'
+                }
+              </p>
+              <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mt-3">
+                <p class="text-sm text-gray-600">
+                  <strong>Client:</strong> ${selectedPayment.clientId?.fullName || 'N/A'}
+                </p>
+                <p class="text-sm text-gray-600">
+                  <strong>Amount:</strong> ${
+                    typeof selectedPayment.installmentIndex === 'number' ? 
+                    (selectedPayment.installments[selectedPayment.installmentIndex]?.amount || 0) :
+                    selectedPayment.totalAmount
+                  } SAR
+                </p>
+              </div>
+            </div>
+          `,
+          icon: 'success',
+          confirmButtonColor: verificationAction === 'approve' ? '#059669' : '#dc2626',
+          confirmButtonText: 'OK',
+          background: '#ffffff',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            title: 'text-gray-900 font-bold',
+            content: 'text-gray-600',
+            confirmButton: 'rounded-lg font-medium px-6 py-3'
+          }
+        });
       } else {
-        alert(response.message || t('admin.paymentManagement.failedToAction', { action: verificationAction }));
+        // Show error alert
+        Swal.fire({
+          title: 'Verification Failed',
+          html: `
+            <div class="text-center">
+              <p class="text-gray-700 mb-3">${response.message || 'Failed to process payment verification'}</p>
+              <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p class="text-sm text-red-700">Please try again or contact support if the issue persists.</p>
+              </div>
+            </div>
+          `,
+          icon: 'error',
+          confirmButtonColor: '#dc2626',
+          confirmButtonText: 'OK',
+          background: '#ffffff',
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl',
+            title: 'text-gray-900 font-semibold',
+            content: 'text-gray-600',
+            confirmButton: 'rounded-lg font-medium px-6 py-3'
+          }
+        });
       }
     } catch (error) {
       console.error("Error verifying payment:", error);
-      alert(t('admin.paymentManagement.failedToActionRetry', { action: verificationAction }));
+      
+      // Show error alert
+      Swal.fire({
+        title: 'Verification Error',
+        html: `
+          <div class="text-center">
+            <p class="text-gray-700 mb-3">An error occurred while verifying the payment.</p>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p class="text-sm text-red-700 font-mono">${error.message || 'Unknown error'}</p>
+            </div>
+          </div>
+        `,
+        icon: 'error',
+        confirmButtonColor: '#dc2626',
+        confirmButtonText: 'Try Again',
+        background: '#ffffff',
+        customClass: {
+          popup: 'rounded-2xl shadow-2xl',
+          title: 'text-gray-900 font-semibold',
+          content: 'text-gray-600',
+          confirmButton: 'rounded-lg font-medium px-6 py-3'
+        }
+      });
     } finally {
       setVerifying(false);
     }
   };
 
-  const openVerificationModal = (payment, installmentIndex = null, action = "") => {
-    setSelectedPayment({ ...payment, installmentIndex });
-    setVerificationAction(action);
-    setIsVerificationModalOpen(true);
-    setIsPaymentDetailsOpen(false);
+  const openVerificationModal = async (payment, installmentIndex = null, action = "") => {
+    // Show confirmation dialog first
+    const result = await Swal.fire({
+      title: action === 'approve' ? 'Approve Payment?' : 'Reject Payment?',
+      html: `
+        <div class="text-left">
+          <p class="text-gray-700 mb-4">
+            Are you sure you want to <strong class="${action === 'approve' ? 'text-green-600' : 'text-red-600'}">${action}</strong> this payment?
+          </p>
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <p class="text-gray-600 text-sm mb-2">
+              <strong>Client:</strong> ${payment.clientId?.fullName || 'N/A'}
+            </p>
+            <p class="text-gray-600 text-sm mb-2">
+              <strong>Amount:</strong> ${
+                typeof installmentIndex === 'number' ? 
+                (payment.installments[installmentIndex]?.amount || (payment.totalAmount / 3)) :
+                payment.totalAmount
+              } SAR
+            </p>
+            <p class="text-gray-600 text-sm">
+              <strong>Type:</strong> ${
+                typeof installmentIndex === 'number' ? 
+                `Installment #${installmentIndex + 1}` : 
+                'Full Payment'
+              }
+            </p>
+          </div>
+          ${action === 'reject' ? `
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3">
+              <p class="text-sm text-amber-800">⚠️ The client will be notified about this rejection.</p>
+            </div>
+          ` : `
+            <div class="bg-green-50 border border-green-200 rounded-lg p-3 mt-3">
+              <p class="text-sm text-green-800">✓ The client will be notified and the application will proceed.</p>
+            </div>
+          `}
+        </div>
+      `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: action === 'approve' ? '#059669' : '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: `Yes, ${action === 'approve' ? 'Approve' : 'Reject'}`,
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+      background: '#ffffff',
+      customClass: {
+        popup: 'rounded-2xl shadow-2xl',
+        title: 'text-gray-900 font-semibold',
+        content: 'text-gray-600',
+        confirmButton: 'rounded-lg font-medium px-6 py-3',
+        cancelButton: 'rounded-lg font-medium px-6 py-3'
+      }
+    });
+
+    // If confirmed, open the verification modal
+    if (result.isConfirmed) {
+      setSelectedPayment({ ...payment, installmentIndex });
+      setVerificationAction(action);
+      setIsVerificationModalOpen(true);
+      setIsPaymentDetailsOpen(false);
+    }
   };
 
   // Enhanced filtering and sorting logic
@@ -125,6 +342,9 @@ export default function AdminPaymentsPage() {
     let filtered = payments.filter((payment) => {
       const matchesFilter = filter === "all" || 
         (filter === "submitted" && payment.status === "submitted") ||
+        (filter === "approved" && payment.status === "approved") ||
+        (filter === "rejected" && payment.status === "rejected") ||
+        (filter === "pending" && payment.status === "pending") ||
         (filter === "installments" && payment.paymentPlan === "installments") ||
         (filter === "full" && payment.paymentPlan === "full");
       
@@ -182,26 +402,34 @@ export default function AdminPaymentsPage() {
   }, [payments, filter, searchQuery, dateRange, sortBy]);
 
   const stats = useMemo(() => {
-    const totalPending = payments.length;
+    const totalPayments = payments.length;
     const submittedPayments = payments.filter(p => p.status === "submitted").length;
+    const approvedPayments = payments.filter(p => p.status === "approved").length;
+    const rejectedPayments = payments.filter(p => p.status === "rejected").length;
+    const pendingPayments = payments.filter(p => p.status === "pending").length;
     const fullPayments = payments.filter(p => p.paymentPlan === "full").length;
     const installmentPayments = payments.filter(p => p.paymentPlan === "installments").length;
     
     // Additional statistics
     const totalAmount = payments.reduce((sum, payment) => sum + payment.totalAmount, 0);
     const submittedAmount = payments.filter(p => p.status === "submitted").reduce((sum, payment) => sum + payment.totalAmount, 0);
-    const averageAmount = totalPending > 0 ? totalAmount / totalPending : 0;
+    const approvedAmount = payments.filter(p => p.status === "approved").reduce((sum, payment) => sum + payment.totalAmount, 0);
+    const averageAmount = totalPayments > 0 ? totalAmount / totalPayments : 0;
     
     // Processing time statistics (mock data - you might want to calculate this from actual data)
     const avgProcessingTime = "2.5 hours"; // This could be calculated from actual verification times
     
     return {
-      totalPending,
+      totalPayments,
       submittedPayments,
+      approvedPayments,
+      rejectedPayments,
+      pendingPayments,
       fullPayments,
       installmentPayments,
       totalAmount,
       submittedAmount,
+      approvedAmount,
       averageAmount,
       avgProcessingTime
     };
@@ -281,14 +509,14 @@ export default function AdminPaymentsPage() {
             <div className="p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl bg-gradient-to-br from-[#242021] to-[#3a3537] text-[#ffd17a] shadow-xl lg:shadow-2xl">
               <div className="flex items-center justify-between mb-3">
                 <span className='text-xs sm:text-sm font-semibold uppercase tracking-wide opacity-80'>
-                  {t('admin.paymentManagement.totalPending')}
+                  {t('admin.paymentManagement.totalPayments') || 'Total Payments'}
                 </span>
                 <div className="p-1.5 sm:p-2 rounded-lg lg:rounded-xl bg-[#ffd17a]/20">
-                  <Clock size={16} className="sm:w-[18px] sm:h-[18px]" />
+                  <DollarSign size={16} className="sm:w-[18px] sm:h-[18px]" />
                 </div>
               </div>
               <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-1">
-                {stats.totalPending}
+                {stats.totalPayments}
               </div>
               <div className='text-xs opacity-70'>
                 {t('admin.paymentManagement.payments')}
@@ -430,9 +658,11 @@ export default function AdminPaymentsPage() {
 
                 {/* Status Filter Buttons */}
                 <div className="flex flex-wrap gap-2">
-                  {[
-                    { key: "all", label: t('admin.paymentManagement.all'), count: stats.totalPending },
+                  {                  [
+                    { key: "all", label: t('admin.paymentManagement.all'), count: stats.totalPayments },
                     { key: "submitted", label: t('admin.paymentManagement.submitted'), count: stats.submittedPayments },
+                    { key: "approved", label: t('admin.paymentManagement.approved') || 'Approved', count: stats.approvedPayments },
+                    { key: "rejected", label: t('admin.paymentManagement.rejected') || 'Rejected', count: stats.rejectedPayments },
                     { key: "full", label: t('admin.paymentManagement.full'), count: stats.fullPayments },
                     { key: "installments", label: t('admin.paymentManagement.installments'), count: stats.installmentPayments }
                   ].map(({ key, label, count }) => (
@@ -771,7 +1001,7 @@ export default function AdminPaymentsPage() {
                   {verificationAction === 'approve' ? t('admin.paymentManagement.approvePayment') : t('admin.paymentManagement.rejectPayment')}
                 </h2>
                 <p className="text-[#ffd17a]/80 text-xs leading-tight">
-                  {selectedPayment.installmentIndex !== undefined 
+                  {typeof selectedPayment.installmentIndex === 'number'
                     ? `Installment #${selectedPayment.installmentIndex + 1}`
                     : t('admin.paymentManagement.fullPayment')
                   }
@@ -802,7 +1032,7 @@ export default function AdminPaymentsPage() {
                     <div className="flex justify-between gap-2">
                       <span className="text-gray-500">{t('admin.paymentManagement.amount')}:</span>
                       <span className="font-bold text-gray-900">
-                        {selectedPayment.installmentIndex !== undefined 
+                        {typeof selectedPayment.installmentIndex === 'number'
                           ? selectedPayment.installments[selectedPayment.installmentIndex]?.amount || (selectedPayment.totalAmount / 3).toFixed(2)
                           : selectedPayment.totalAmount
                         } SAR
@@ -820,7 +1050,7 @@ export default function AdminPaymentsPage() {
                 {/* Receipt Image - Extra Compact - Only relevant receipt */}
                 {(() => {
                   // If verifying a specific installment, show only that installment's receipt
-                  if (selectedPayment.installmentIndex !== undefined && selectedPayment.installments) {
+                  if (typeof selectedPayment.installmentIndex === 'number' && selectedPayment.installments) {
                     const installment = selectedPayment.installments[selectedPayment.installmentIndex];
                     if (installment?.receiptImage) {
                       return (
