@@ -82,7 +82,7 @@ const BeautifulInvoice = ({ payment, onClose }) => {
     printWindow.onload = () => {
       setTimeout(() => {
         printWindow.print();
-      }, 300);
+      }, 500);
     };
   };
 

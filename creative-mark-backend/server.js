@@ -21,6 +21,7 @@ import taskRoutes from './routes/taskRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import ticketRoutes from './routes/ticketRoutes.js';
+import invoiceRoutes from './routes/invoiceRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -97,6 +98,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/invoices', invoiceRoutes);
 
 
 // Error handling middleware

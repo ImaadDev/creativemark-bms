@@ -63,6 +63,7 @@ export default function Sidebar({ role, isOpen, onClose }) {
       { name: t('navigation.tickets'), href: "/admin/tickets", icon: "support", badge: "8" },
       { name: t('navigation.payments'), href: "/admin/payments", icon: "payments", badge: "3" },
       { name: t('navigation.reports'), href: "/admin/reports", icon: "reports" },
+      { name: t('navigation.invoices'), href: "/admin/invoices", icon: "invoices" },
       { name: t('navigation.clients'), href: "/admin/clients", icon: "clients" },
       { name: t('navigation.addUser'), href: "/admin/add-user", icon: "clients" },
       { name: t('navigation.tasks'), href: "/admin/tasks", icon: "tasks", badge: "5" },
