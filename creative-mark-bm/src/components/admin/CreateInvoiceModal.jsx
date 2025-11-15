@@ -5,6 +5,7 @@ import InvoicePreview from "./InvoicePreview";
 import ToastContainer from "../common/Toast";
 import { motion } from "framer-motion";
 import { createInvoice } from "../../services/invoiceService";
+import { useTranslation } from "../../i18n/TranslationContext";
 
 
 // Toast Hook
@@ -27,6 +28,7 @@ const generateInvoiceNumber = () => {
 };
 
 const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     clientName: "",
     clientFullName: "",
@@ -141,27 +143,27 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.clientName.trim()) newErrors.clientName = "Client name is required";
-    if (!formData.clientEmail.trim()) newErrors.clientEmail = "Client email is required";
-    if (!formData.dueDate) newErrors.dueDate = "Due date is required";
-    if (!formData.invoiceNumber.trim()) newErrors.invoiceNumber = "Invoice number is required";
+    if (!formData.clientName.trim()) newErrors.clientName = t('createInvoice.validation.clientNameRequired');
+    if (!formData.clientEmail.trim()) newErrors.clientEmail = t('createInvoice.validation.clientEmailRequired');
+    if (!formData.dueDate) newErrors.dueDate = t('createInvoice.validation.dueDateRequired');
+    if (!formData.invoiceNumber.trim()) newErrors.invoiceNumber = t('createInvoice.validation.invoiceNumberRequired');
 
     formData.items.forEach((item, i) => {
-      if (!item.description.trim()) newErrors[`desc_${i}`] = "Description is required";
-      if (item.quantity <= 0) newErrors[`qty_${i}`] = "Quantity must be greater than 0";
-      if (item.unitPrice <= 0) newErrors[`price_${i}`] = "Unit price must be greater than 0";
+      if (!item.description.trim()) newErrors[`desc_${i}`] = t('createInvoice.validation.descriptionRequired');
+      if (item.quantity <= 0) newErrors[`qty_${i}`] = t('createInvoice.validation.quantityGreaterThanZero');
+      if (item.unitPrice <= 0) newErrors[`price_${i}`] = t('createInvoice.validation.unitPriceGreaterThanZero');
     });
 
     if (formData.installments.length > 0) {
       let totalInstallmentAmount = 0;
       formData.installments.forEach((inst, i) => {
         totalInstallmentAmount += inst.amount;
-        if (inst.amount <= 0) newErrors[`inst_amount_${i}`] = "Amount must be greater than 0";
-        if (!inst.dueDate) newErrors[`inst_dueDate_${i}`] = "Due date is required";
-        if (inst.status === "Paid" && !inst.paidDate) newErrors[`inst_paidDate_${i}`] = "Paid date is required for Paid status";
+        if (inst.amount <= 0) newErrors[`inst_amount_${i}`] = t('createInvoice.validation.amountGreaterThanZero');
+        if (!inst.dueDate) newErrors[`inst_dueDate_${i}`] = t('createInvoice.validation.installmentDueDateRequired');
+        if (inst.status === "Paid" && !inst.paidDate) newErrors[`inst_paidDate_${i}`] = t('createInvoice.validation.paidDateRequiredForPaid');
       });
       if (Math.abs(totalInstallmentAmount - formData.grandTotal) > 0.01) {
-        newErrors.installmentsTotal = `Installment total ($${totalInstallmentAmount.toFixed(2)}) must match Grand Total ($${formData.grandTotal.toFixed(2)}).`;
+        newErrors.installmentsTotal = t('createInvoice.installmentsTotalError', { total: totalInstallmentAmount.toFixed(2), grandTotal: formData.grandTotal.toFixed(2) });
       }
     }
 
@@ -173,7 +175,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
     e.preventDefault();
   
     if (!validateForm()) {
-      addToast("Please fix the errors in the form", "error");
+      addToast(t('createInvoice.messages.fixErrors'), "error");
       return;
     }
   
@@ -229,13 +231,13 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
       };
   
       const res = await createInvoice(data);
-  
-      addToast("Invoice created successfully!", "success");
+
+      addToast(t('createInvoice.messages.invoiceCreated'), "success");
       onSuccess(res.invoice);
       onClose();
     } catch (error) {
       console.error("Error creating invoice:", error);
-      addToast(error.message || "Error creating invoice", "error");
+      addToast(error.message || t('createInvoice.messages.errorCreating'), "error");
     } finally {
       setLoading(false);
     }
@@ -276,7 +278,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
             <div>
               <h2 className="text-2xl font-bold bg-gradient-to-r from-[#242021] to-[#242021]/80 bg-clip-text text-transparent">
-                Create New Invoice
+                {t('createInvoice.title')}
               </h2>
               <span className="text-sm font-semibold text-[#ffd17a]/80">#{formData.invoiceNumber}</span>
             </div>
@@ -294,16 +296,16 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
           <div className="flex-1 overflow-y-auto p-6 space-y-8">
             {/* Client Info */}
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">Client Information</h3>
+              <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">{t('createInvoice.clientInformation')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {[
-                  { label: "Name *", field: "clientName", type: "text" },
-                  { label: "Email *", field: "clientEmail", type: "email" },
-                  { label: "Phone", field: "clientPhone", type: "text" },
-                  { label: "Address", field: "clientAddress", type: "text" },
-                  { label: "City", field: "clientCity", type: "text" },
-                  { label: "Country", field: "clientCountry", type: "text" },
-                  { label: "Zip Code", field: "clientZipCode", type: "text" },
+                  { label: `${t('createInvoice.name')} *`, field: "clientName", type: "text" },
+                  { label: `${t('createInvoice.email')} *`, field: "clientEmail", type: "email" },
+                  { label: t('createInvoice.phone'), field: "clientPhone", type: "text" },
+                  { label: t('createInvoice.address'), field: "clientAddress", type: "text" },
+                  { label: t('createInvoice.city'), field: "clientCity", type: "text" },
+                  { label: t('createInvoice.country'), field: "clientCountry", type: "text" },
+                  { label: t('createInvoice.zipCode'), field: "clientZipCode", type: "text" },
                 ].map(({ label, field, type }) => (
                   <div key={field}>
                     <label className="block text-sm font-medium text-[#242021]/80">{label}</label>
@@ -323,37 +325,37 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
 
             {/* Invoice Info */}
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">Invoice Details</h3>
+              <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">{t('createInvoice.invoiceDetails')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-[#242021]/80">Status</label>
+                  <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.status')}</label>
                   <select
                     value={formData.status}
                     onChange={(e) => handleInputChange("status", e.target.value)}
                     className="w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021]">
-                    <option value="Pending">Pending</option>
-                    <option value="Partially Paid">Partially Paid</option>
-                    <option value="Paid">Paid</option>
-                    <option value="Overdue">Overdue</option>
-                    <option value="Cancelled">Cancelled</option>
+                    <option value="Pending">{t('createInvoice.statusOptions.pending')}</option>
+                    <option value="Partially Paid">{t('createInvoice.statusOptions.partiallyPaid')}</option>
+                    <option value="Paid">{t('createInvoice.statusOptions.paid')}</option>
+                    <option value="Overdue">{t('createInvoice.statusOptions.overdue')}</option>
+                    <option value="Cancelled">{t('createInvoice.statusOptions.cancelled')}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#242021]/80">Payment Method</label>
+                  <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.paymentMethod')}</label>
                   <select
                     value={formData.paymentMethod}
                     onChange={(e) => handleInputChange("paymentMethod", e.target.value)}
                     className="w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021]"
                   >
-                    <option value="Cash">Cash</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
-                    <option value="Credit Card">Credit Card</option>
-                    <option value="PayPal">PayPal</option>
-                    <option value="Other">Other</option>
+                    <option value="Cash">{t('createInvoice.paymentMethodOptions.cash')}</option>
+                    <option value="Bank Transfer">{t('createInvoice.paymentMethodOptions.bankTransfer')}</option>
+                    <option value="Credit Card">{t('createInvoice.paymentMethodOptions.creditCard')}</option>
+                    <option value="PayPal">{t('createInvoice.paymentMethodOptions.paypal')}</option>
+                    <option value="Other">{t('createInvoice.paymentMethodOptions.other')}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#242021]/80">Invoice Date</label>
+                  <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.invoiceDate')}</label>
                   <input
                     type="date"
                     value={formData.invoiceDate}
@@ -362,7 +364,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#242021]/80">Due Date *</label>
+                  <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.dueDate')} *</label>
                   <input
                     type="date"
                     value={formData.dueDate}
@@ -378,14 +380,14 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
 
             {/* Financial Summary */}
             <div className="bg-[#242021]/5 p-6 rounded-2xl space-y-4">
-              <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">Financial Summary</h3>
+              <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">{t('createInvoice.financialSummary')}</h3>
               <div className="space-y-3">
                 {[
-                  { label: "Subtotal", value: `SAR ${formData.subTotal.toFixed(2)}`, color: "text-[#242021]" },
-                  { label: `Tax (${formData.taxRate}%)`, value: `SAR ${formData.taxAmount.toFixed(2)}`, color: "text-[#242021]" },
-                  { label: "Discount", value: `SAR ${formData.discount.toFixed(2)}`, color: "text-emerald-600" },
-                  { label: "Grand Total", value: `SAR ${formData.grandTotal.toFixed(2)}`, color: "text-[#ffd17a]" },
-                  { label: "Remaining Due", value: `SAR ${formData.remainingAmount.toFixed(2)}`, color: "text-red-600" },
+                  { label: t('createInvoice.subtotal'), value: `SAR ${formData.subTotal.toFixed(2)}`, color: "text-[#242021]" },
+                  { label: `${t('createInvoice.tax')} (${formData.taxRate}%)`, value: `SAR ${formData.taxAmount.toFixed(2)}`, color: "text-[#242021]" },
+                  { label: t('createInvoice.discount'), value: `SAR ${formData.discount.toFixed(2)}`, color: "text-emerald-600" },
+                  { label: t('createInvoice.grandTotal'), value: `SAR ${formData.grandTotal.toFixed(2)}`, color: "text-[#ffd17a]" },
+                  { label: t('createInvoice.remainingDue'), value: `SAR ${formData.remainingAmount.toFixed(2)}`, color: "text-red-600" },
                 ].map(({ label, value, color }) => (
                   <div key={label} className="flex justify-between text-sm font-medium">
                     <span className="text-[#242021]/80">{label}:</span>
@@ -398,20 +400,20 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
             {/* Items */}
             <div>
               <div className="flex justify-between items-center mb-4 border-b border-[#ffd17a]/20 pb-2">
-                <h3 className="text-lg font-semibold text-[#242021]">Invoice Items</h3>
+                <h3 className="text-lg font-semibold text-[#242021]">{t('createInvoice.invoiceItems')}</h3>
                 <button
                   type="button"
                   onClick={addItem}
                   className="flex items-center gap-2 px-6 py-3 bg-[#ffd17a] text-[#242021] rounded-xl hover:bg-[#ffd17a]/80 transition-all duration-300 font-semibold"
                 >
-                  <FaPlus className="w-4 h-4" /> Add Item
+                  <FaPlus className="w-4 h-4" /> {t('createInvoice.addItem')}
                 </button>
               </div>
               <div className="space-y-4">
                 {formData.items.map((item, i) => (
                   <div key={i} className="grid grid-cols-12 gap-4 bg-[#242021]/5 p-4 rounded-2xl">
                     <div className="col-span-12 sm:col-span-5">
-                      <label className="block text-sm font-medium text-[#242021]/80">Description *</label>
+                      <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.description')} *</label>
                       <input
                         type="text"
                         value={item.description}
@@ -419,12 +421,12 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                         className={`w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021] placeholder-[#242021]/50 ${
                           errors[`desc_${i}`] ? "border-red-500" : ""
                         }`}
-                        placeholder="Item description"
+                        placeholder={t('createInvoice.description')}
                       />
                       {errors[`desc_${i}`] && <p className="text-red-500 text-xs mt-1">{errors[`desc_${i}`]}</p>}
                     </div>
                     <div className="col-span-6 sm:col-span-2">
-                      <label className="block text-sm font-medium text-[#242021]/80">Qty *</label>
+                      <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.quantity')} *</label>
                       <input
                         type="number"
                         min="1"
@@ -437,7 +439,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                       {errors[`qty_${i}`] && <p className="text-red-500 text-xs mt-1">{errors[`qty_${i}`]}</p>}
                     </div>
                     <div className="col-span-6 sm:col-span-2">
-                      <label className="block text-sm font-medium text-[#242021]/80">Price *</label>
+                      <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.price')} *</label>
                       <input
                         type="number"
                         min="0"
@@ -451,7 +453,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                       {errors[`price_${i}`] && <p className="text-red-500 text-xs mt-1">{errors[`price_${i}`]}</p>}
                     </div>
                     <div className="col-span-6 sm:col-span-2">
-                      <label className="block text-sm font-medium text-[#242021]/80">Total</label>
+                      <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.total')}</label>
                       <input
                         type="text"
                         value={`SAR ${item.total.toFixed(2)}`}
@@ -478,13 +480,13 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
             {/* Installments */}
             <div>
               <div className="flex justify-between items-center mb-4 border-b border-[#ffd17a]/20 pb-2">
-                <h3 className="text-lg font-semibold text-[#242021]">Installment Schedule</h3>
+                <h3 className="text-lg font-semibold text-[#242021]">{t('createInvoice.installmentSchedule')}</h3>
                 <button
                   type="button"
                   onClick={addInstallment}
                   className="flex items-center gap-2 px-6 py-3 bg-[#ffd17a] text-[#242021] rounded-xl hover:bg-[#ffd17a]/80 transition-all duration-300 font-semibold"
                 >
-                  <FaPlus className="w-4 h-4" /> Add Installment
+                  <FaPlus className="w-4 h-4" /> {t('createInvoice.addInstallment')}
                 </button>
               </div>
               {errors.installmentsTotal && (
@@ -495,7 +497,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
               <div className="space-y-4">
                 {formData.installments.length === 0 ? (
                   <p className="text-[#242021]/70 italic text-sm">
-                    No installments defined. Full remaining amount (SAR {formData.remainingAmount.toFixed(2)}) due on invoice due date.
+                    {t('createInvoice.noInstallmentsMessage', { amount: formData.remainingAmount.toFixed(2) })}
                   </p>
                 ) : (
                   formData.installments.map((inst, i) => (
@@ -504,7 +506,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                       className="grid grid-cols-12 gap-4 bg-[#242021]/5 p-4 rounded-2xl border border-[#ffd17a]/20"
                     >
                       <div className="col-span-6 sm:col-span-1">
-                        <label className="block text-sm font-medium text-[#242021]/80">No.</label>
+                        <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.number')}</label>
                         <input
                           type="text"
                           value={inst.installmentNumber}
@@ -513,7 +515,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                         />
                       </div>
                       <div className="col-span-6 sm:col-span-3">
-                        <label className="block text-sm font-medium text-[#242021]/80">Due Date *</label>
+                        <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.dueDate')} *</label>
                         <input
                           type="date"
                           value={inst.dueDate}
@@ -525,7 +527,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                         {errors[`inst_dueDate_${i}`] && <p className="text-red-500 text-xs mt-1">{errors[`inst_dueDate_${i}`]}</p>}
                       </div>
                       <div className="col-span-6 sm:col-span-3">
-                        <label className="block text-sm font-medium text-[#242021]/80">Amount *</label>
+                        <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.amount')} *</label>
                         <input
                           type="number"
                           min="0.01"
@@ -539,20 +541,20 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                         {errors[`inst_amount_${i}`] && <p className="text-red-500 text-xs mt-1">{errors[`inst_amount_${i}`]}</p>}
                       </div>
                       <div className="col-span-6 sm:col-span-2">
-                        <label className="block text-sm font-medium text-[#242021]/80">Status</label>
+                        <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.status')}</label>
                         <select
                           value={inst.status}
                           onChange={(e) => handleInstallmentChange(i, "status", e.target.value)}
                           className="w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021]"
                         >
-                          <option value="Pending">Pending</option>
-                          <option value="Paid">Paid</option>
-                          <option value="Overdue">Overdue</option>
+                          <option value="Pending">{t('createInvoice.installmentStatusOptions.pending')}</option>
+                          <option value="Paid">{t('createInvoice.installmentStatusOptions.paid')}</option>
+                          <option value="Overdue">{t('createInvoice.installmentStatusOptions.overdue')}</option>
                         </select>
                       </div>
                       <div className="col-span-6 sm:col-span-2">
                         <label className="block text-sm font-medium text-[#242021]/80">
-                          Paid Date {inst.status === "Paid" ? "*" : ""}
+                          {t('createInvoice.paidDate')} {inst.status === "Paid" ? "*" : ""}
                         </label>
                         <input
                           type="date"
@@ -582,10 +584,10 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
 
             {/* Tax, Discount, Paid Amount */}
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">Additional Details</h3>
+              <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">{t('createInvoice.additionalDetails')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-[#242021]/80">Tax Rate (%)</label>
+                  <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.taxRate')}</label>
                   <input
                     type="number"
                     min="0"
@@ -597,7 +599,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#242021]/80">Discount (SAR)</label>
+                  <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.discountAmount')}</label>
                   <input
                     type="number"
                     min="0"
@@ -608,7 +610,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#242021]/80">Paid Amount (SAR)</label>
+                  <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.paidAmount')}</label>
                   <input
                     type="number"
                     min="0"
@@ -623,13 +625,13 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
 
             {/* Notes */}
             <div>
-              <label className="block text-sm font-medium text-[#242021]/80">Notes</label>
+              <label className="block text-sm font-medium text-[#242021]/80">{t('createInvoice.notes')}</label>
               <textarea
                 value={formData.notes}
                 onChange={(e) => handleInputChange("notes", e.target.value)}
                 className="w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021] placeholder-[#242021]/50"
                 rows={4}
-                placeholder="Add any additional notes..."
+                placeholder={t('createInvoice.notesPlaceholder')}
               />
             </div>
           </div>
@@ -642,14 +644,14 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                 onClick={handlePreview}
                 className="flex items-center gap-2 px-6 py-3 bg-white/50 border border-[#242021]/10 rounded-xl hover:bg-[#ffd17a]/10 text-[#242021] font-semibold transition-all duration-300"
               >
-                <FaEye className="w-4 h-4" /> Preview
+                <FaEye className="w-4 h-4" /> {t('createInvoice.preview')}
               </button>
               <button
                 type="submit"
                 disabled={loading}
                 className="flex items-center gap-2 px-6 py-3 bg-[#ffd17a] text-[#242021] rounded-xl hover:bg-[#ffd17a]/80 disabled:opacity-50 font-semibold transition-all duration-300"
               >
-                <FaSave className="w-4 h-4" /> {loading ? "Saving..." : "Save Invoice"}
+                <FaSave className="w-4 h-4" /> {loading ? t('createInvoice.saving') : t('createInvoice.saveInvoice')}
               </button>
             </div>
           </div>
