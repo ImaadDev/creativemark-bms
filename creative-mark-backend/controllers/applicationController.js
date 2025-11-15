@@ -828,15 +828,43 @@ export const getUserApplications = async (req, res) => {
     });
     
     const applications = await Application.find({ userId })
+      .populate("documents")
+      .populate("timeline")
+      .populate("payment")
       .select('_id serviceType status partnerType externalCompaniesCount needVirtualOffice createdAt updatedAt')
       .sort({ createdAt: -1 }); // Most recent first
 
     console.log("Found applications for user:", applications.length, applications);
 
+    // Format response data to match frontend expectations
+    const formattedApplications = applications.map((app) => ({
+      _id: app._id,
+      serviceType: app.serviceType, // Keep direct field for compatibility
+      serviceDetails: {
+        serviceType: app.serviceType,
+        partnerType: app.partnerType,
+        externalCompaniesCount: app.externalCompaniesCount,
+        needVirtualOffice: app.needVirtualOffice
+      },
+      status: {
+        current: app.status
+      },
+      timestamps: {
+        createdAt: app.createdAt,
+        updatedAt: app.updatedAt
+      },
+      documents: app.documents || [],
+      timeline: app.timeline || [],
+      payment: app.payment || null,
+      progressPercentage: app.timeline && app.timeline.length > 0 
+        ? Math.max(...app.timeline.map(t => t.progress || 0))
+        : 0
+    }));
+
     res.status(200).json({
       success: true,
       message: "Applications retrieved successfully",
-      data: applications
+      data: formattedApplications
     });
 
   } catch (error) {

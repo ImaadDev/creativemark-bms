@@ -5,9 +5,11 @@ import { FaEye, FaEdit, FaTrash, FaFileInvoice, FaSearch, FaFilter, FaDownload, 
 import { getInvoices, deleteInvoice } from "../../../services/invoiceService";
 import CreateInvoiceModal from "../../../components/admin/CreateInvoiceModal";
 import EditInvoiceModal from "../../../components/admin/EditInvoiceModal";
+import { useTranslation } from "../../../i18n/TranslationContext";
 
 export default function InvoicesPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -114,20 +116,20 @@ export default function InvoicesPage() {
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-stone-900 mb-2">Invoices</h1>
-              <p className="text-stone-600">Manage and track all client invoices</p>
+              <h1 className="text-4xl font-bold text-stone-900 mb-2">{t('invoices.title')}</h1>
+              <p className="text-stone-600">{t('invoices.description')}</p>
             </div>
             <div className="flex gap-3">
               <button className="px-5 py-2.5 bg-white text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-all flex items-center gap-2 border border-stone-200 shadow-sm">
                 <FaDownload />
-                Export
+                {t('invoices.export')}
               </button>
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="px-5 py-2.5 bg-stone-800 text-white font-medium rounded-lg shadow hover:bg-stone-900 transition-all flex items-center gap-2"
               >
                 <FaPlus />
-                New Invoice
+                {t('invoices.newInvoice')}
               </button>
             </div>
           </div>
@@ -138,14 +140,14 @@ export default function InvoicesPage() {
               <div className="flex items-center justify-between mb-3">
                 <FaFileInvoice className="text-2xl opacity-80" />
               </div>
-              <p className="text-stone-300 text-xs font-medium uppercase tracking-wider mb-1">Total Invoices</p>
+              <p className="text-stone-300 text-xs font-medium uppercase tracking-wider mb-1">{t('invoices.totalInvoices')}</p>
               <p className="text-3xl font-bold">{stats.total}</p>
             </div>
 
             <div className="bg-white rounded-xl p-6 shadow border border-stone-200">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                <p className="text-stone-600 text-xs font-semibold uppercase tracking-wider">Paid</p>
+                <p className="text-stone-600 text-xs font-semibold uppercase tracking-wider">{t('invoices.paid')}</p>
               </div>
               <p className="text-3xl font-bold text-stone-900">{stats.paid}</p>
             </div>
@@ -153,7 +155,7 @@ export default function InvoicesPage() {
             <div className="bg-white rounded-xl p-6 shadow border border-stone-200">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-3 h-3 bg-rose-500 rounded-full"></div>
-                <p className="text-stone-600 text-xs font-semibold uppercase tracking-wider">Unpaid</p>
+                <p className="text-stone-600 text-xs font-semibold uppercase tracking-wider">{t('invoices.unpaid')}</p>
               </div>
               <p className="text-3xl font-bold text-stone-900">{stats.unpaid}</p>
             </div>
@@ -161,7 +163,7 @@ export default function InvoicesPage() {
             <div className="bg-white rounded-xl p-6 shadow border border-stone-200">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
-                <p className="text-stone-600 text-xs font-semibold uppercase tracking-wider">Pending</p>
+                <p className="text-stone-600 text-xs font-semibold uppercase tracking-wider">{t('invoices.pending')}</p>
               </div>
               <p className="text-3xl font-bold text-stone-900">{stats.pending}</p>
             </div>
@@ -169,7 +171,7 @@ export default function InvoicesPage() {
             <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 shadow border border-amber-200">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-amber-700 text-xl font-bold">$</span>
-                <p className="text-amber-700 text-xs font-semibold uppercase tracking-wider">Revenue</p>
+                <p className="text-amber-700 text-xs font-semibold uppercase tracking-wider">{t('invoices.revenue')}</p>
               </div>
               <p className="text-2xl font-bold text-amber-900">SAR {stats.totalRevenue.toLocaleString()}</p>
             </div>
@@ -181,7 +183,7 @@ export default function InvoicesPage() {
               <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
               <input
                 type="text"
-                placeholder="Search by name, invoice number, or email..."
+                placeholder={t('invoices.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-white text-stone-900 placeholder-stone-400 pl-12 pr-4 py-3 rounded-lg border border-stone-200 focus:border-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-200 transition-all"
@@ -194,10 +196,10 @@ export default function InvoicesPage() {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="bg-white text-stone-900 pl-12 pr-8 py-3 rounded-lg border border-stone-200 focus:border-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-200 transition-all appearance-none cursor-pointer min-w-[180px]"
               >
-                <option value="all">All Status</option>
-                <option value="paid">Paid</option>
-                <option value="unpaid">Unpaid</option>
-                <option value="pending">Pending</option>
+                <option value="all">{t('invoices.allStatus')}</option>
+                <option value="paid">{t('invoices.paid')}</option>
+                <option value="unpaid">{t('invoices.unpaid')}</option>
+                <option value="pending">{t('invoices.pending')}</option>
               </select>
             </div>
           </div>
@@ -207,16 +209,16 @@ export default function InvoicesPage() {
         {loading ? (
           <div className="bg-white rounded-xl border border-stone-200 p-12 text-center shadow">
             <div className="w-16 h-16 border-4 border-stone-800 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <h3 className="text-stone-900 text-lg font-semibold mb-2">Loading Invoices...</h3>
-            <p className="text-stone-600">Please wait</p>
+            <h3 className="text-stone-900 text-lg font-semibold mb-2">{t('invoices.loadingInvoices')}</h3>
+            <p className="text-stone-600">{t('invoices.pleaseWait')}</p>
           </div>
         ) : filteredInvoices.length === 0 ? (
           <div className="bg-white rounded-xl border border-stone-200 p-12 text-center shadow">
             <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <FaFileInvoice className="text-stone-400 text-2xl" />
             </div>
-            <h3 className="text-stone-900 text-lg font-semibold mb-2">No Invoices Found</h3>
-            <p className="text-stone-600">Try adjusting your search or filter criteria</p>
+            <h3 className="text-stone-900 text-lg font-semibold mb-2">{t('invoices.noInvoicesFound')}</h3>
+            <p className="text-stone-600">{t('invoices.tryAdjustingSearchOrFilterCriteria')}</p>
           </div>
         ) : (
           <>
@@ -225,13 +227,13 @@ export default function InvoicesPage() {
               <table className="w-full">
                 <thead>
                   <tr className="bg-stone-50 border-b border-stone-200">
-                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">Invoice ID</th>
-                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">Client</th>
-                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">Email</th>
-                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">Issue Date</th>
-                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">Total</th>
-                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">Status</th>
-                    <th className="py-4 px-6 text-center text-xs font-semibold text-stone-700 uppercase tracking-wider">Actions</th>
+                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">{t('invoices.invoiceID')}</th>
+                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">{t('invoices.client')}</th>
+                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">{t('invoices.email')}</th>
+                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">{t('invoices.issueDate')}</th>
+                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">{t('invoices.total')}</th>
+                    <th className="py-4 px-6 text-left text-xs font-semibold text-stone-700 uppercase tracking-wider">{t('invoices.status')}</th>
+                    <th className="py-4 px-6 text-center text-xs font-semibold text-stone-700 uppercase tracking-wider">{t('invoices.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100">

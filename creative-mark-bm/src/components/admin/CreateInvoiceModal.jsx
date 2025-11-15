@@ -6,6 +6,7 @@ import ToastContainer from "../common/Toast";
 import { motion } from "framer-motion";
 import { createInvoice } from "../../services/invoiceService";
 
+
 // Toast Hook
 const useToasts = () => {
   const [toasts, setToasts] = useState([]);
@@ -170,33 +171,65 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (!validateForm()) {
       addToast("Please fix the errors in the form", "error");
       return;
     }
-
+  
     setLoading(true);
+  
     try {
+      const totalPaid = Number(formData.paidAmount) || 0;
+      const grandTotal = Number(formData.grandTotal) || 0;
+      const remaining = Math.max(grandTotal - totalPaid, 0);
+  
+      // Determine status automatically
+      let status = "Pending";
+      if (totalPaid >= grandTotal) {
+        status = "Paid";
+      } else if (totalPaid > 0 && totalPaid < grandTotal) {
+        status = "Partially Paid";
+      }
+  
+      // Handle installments logic
+      const installments =
+        formData.installments && formData.installments.length > 0
+          ? formData.installments.map((inst, index) => ({
+              installmentNumber: index + 1,
+              amount: Number(inst.amount) || 0,
+              dueDate: inst.dueDate || null,
+              paidAmount: Number(inst.paidAmount) || 0,
+              status:
+                inst.paidAmount >= inst.amount
+                  ? "Paid"
+                  : inst.paidAmount > 0
+                  ? "Partially Paid"
+                  : "Pending",
+              paidDate: inst.paidDate || undefined,
+            }))
+          : [
+              {
+                installmentNumber: 1,
+                amount: remaining,
+                dueDate: formData.dueDate,
+                paidAmount: 0,
+                status: "Pending",
+                paidDate: undefined,
+              },
+            ];
+  
       const data = {
         ...formData,
-        installments:
-          formData.installments.length > 0
-            ? formData.installments.map((inst) => ({
-                ...inst,
-                paidDate: inst.paidDate || undefined,
-              }))
-            : [
-                {
-                  installmentNumber: 1,
-                  amount: formData.remainingAmount,
-                  dueDate: formData.dueDate,
-                  status: "Pending",
-                  paidDate: undefined,
-                },
-              ],
+        grandTotal,
+        paidAmount: totalPaid,
+        remainingAmount: remaining,
+        status,
+        installments,
       };
-
+  
       const res = await createInvoice(data);
+  
       addToast("Invoice created successfully!", "success");
       onSuccess(res.invoice);
       onClose();
@@ -207,6 +240,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
       setLoading(false);
     }
   };
+  
 
   const handlePreview = () => setShowPreview(true);
 
@@ -296,8 +330,7 @@ const CreateInvoiceModal = ({ isOpen, onClose, onSuccess }) => {
                   <select
                     value={formData.status}
                     onChange={(e) => handleInputChange("status", e.target.value)}
-                    className="w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021]"
-                  >
+                    className="w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021]">
                     <option value="Pending">Pending</option>
                     <option value="Partially Paid">Partially Paid</option>
                     <option value="Paid">Paid</option>

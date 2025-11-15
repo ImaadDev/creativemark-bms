@@ -1,16 +1,14 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import {sendEmail} from '../utils/sendEmail.js'
+import { sendEmail } from "../utils/sendEmail.js";
 
 /**
  * Generate JWT Token
  */
 const generateToken = (userId, role) => {
-  return jwt.sign(
-    { id: userId, role },
-    process.env.JWT_SECRET || "supersecretkey",
-    { expiresIn: "7d" }
-  );
+  return jwt.sign({ id: userId, role }, process.env.JWT_SECRET, {
+    expiresIn: "12h",
+  });
 };
 
 /**
@@ -118,8 +116,8 @@ export const registerUser = async (req, res) => {
         </body>
         </html>
       `
-    )
-     
+    );
+
     // 5️⃣ Send instant response to frontend
     return res.status(201).json({
       success: true,
@@ -135,29 +133,37 @@ export const registerUser = async (req, res) => {
   }
 };
 
-
-
 export const verifyEmail = async (req, res) => {
   try {
     const { token } = req.query;
     if (!token) {
-      return res.status(400).json({ success: false, message: "Invalid or missing token" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid or missing token" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({ email: decoded.email });
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     if (user.isVerified) {
-      return res.status(200).json({ success: true, message: "Email already verified. You can now log in.", alreadyVerified: true });
+      return res.status(200).json({
+        success: true,
+        message: "Email already verified. You can now log in.",
+        alreadyVerified: true,
+      });
     }
 
     // Check if token expired manually (optional)
     if (user.verificationTokenExpires < Date.now()) {
-      return res.status(400).json({ success: false, message: "Verification link expired" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Verification link expired" });
     }
 
     user.isVerified = true;
@@ -165,13 +171,16 @@ export const verifyEmail = async (req, res) => {
     user.verificationTokenExpires = undefined;
     await user.save();
 
-    return res.status(200).json({ success: true, message: "Email verified successfully" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Email verified successfully" });
   } catch (error) {
     console.error("Email Verification Error:", error);
-    res.status(500).json({ success: false, message: "Invalid or expired token" });
+    res
+      .status(500)
+      .json({ success: false, message: "Invalid or expired token" });
   }
 };
-
 
 // ✅ Send verification email
 export const sendVerificationEmail = async (req, res) => {
@@ -179,12 +188,17 @@ export const sendVerificationEmail = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     if (user.isVerified)
       return res.json({ success: true, message: "Email already verified" });
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
     // Update user with new verification token
     user.verificationToken = token;
     user.verificationTokenExpires = Date.now() + 3600000; // 1 hour
@@ -209,7 +223,9 @@ export const sendVerificationEmail = async (req, res) => {
 
             <!-- Content -->
             <div style="padding: 40px 20px;">
-              <p style="margin: 0 0 20px; color: #333; font-size: 16px;">Hi <strong>${user.fullName}</strong>,</p>
+              <p style="margin: 0 0 20px; color: #333; font-size: 16px;">Hi <strong>${
+                user.fullName
+              }</strong>,</p>
               
               <p style="margin: 0 0 30px; color: #666; line-height: 1.6;">
                 You requested a new verification link for your CreativeMark account. Click the button below to verify your email.
@@ -263,8 +279,6 @@ export const sendVerificationEmail = async (req, res) => {
   }
 };
 
-
-
 /**
  * @desc    Register Admin (protected, main office only)
  * @route   POST /api/auth/register-admin
@@ -276,13 +290,17 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email and password are required" });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
     const user = await User.findOne({ email: normalizedEmail });
     if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ success: false, message: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
     }
 
     if (!user.isVerified) {
@@ -291,11 +309,9 @@ export const loginUser = async (req, res) => {
         message: "Please verify your email before logging in.",
       });
     }
-    
 
     const token = generateToken(user._id, user.role);
-  
-    
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must be HTTPS in prod
@@ -304,9 +320,6 @@ export const loginUser = async (req, res) => {
       path: "/", // Ensure cookie is available for all paths
       domain: process.env.NODE_ENV === "production" ? undefined : undefined, // Let browser handle domain
     });
-    
-    
-   
 
     res.json({
       success: true,
@@ -344,13 +357,13 @@ export const logoutUser = (req, res) => {
       path: "/", // Ensure cookie is available for all paths
       domain: process.env.NODE_ENV === "production" ? undefined : undefined, // Let browser handle domain
     });
-    
+
     res.json({ success: true, message: "Logged out successfully" });
   } catch (error) {
     console.error("Logout error:", error);
-    res.status(500).json({ 
-      success: false, 
-      error: "Failed to logout" 
+    res.status(500).json({
+      success: false,
+      error: "Failed to logout",
     });
   }
 };
@@ -364,7 +377,10 @@ export const createUser = async (req, res) => {
   try {
     // Check if user is admin
     if (req.user.role !== "admin") {
-      return res.status(403).json({ success: false, message: "Access denied. Admin privileges required." });
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. Admin privileges required.",
+      });
     }
 
     // Handle both JSON and FormData
@@ -372,7 +388,10 @@ export const createUser = async (req, res) => {
       const parsed = {};
       for (const [key, value] of Object.entries(data)) {
         // Handle arrays (skills, permissions, specializations, etc.)
-        if (typeof value === 'string' && (value.startsWith('[') || value.startsWith('{'))) {
+        if (
+          typeof value === "string" &&
+          (value.startsWith("[") || value.startsWith("{"))
+        ) {
           try {
             parsed[key] = JSON.parse(value);
           } catch (e) {
@@ -386,7 +405,7 @@ export const createUser = async (req, res) => {
     };
 
     const formData = parseData(req.body);
-    
+
     const {
       fullName,
       email,
@@ -422,14 +441,14 @@ export const createUser = async (req, res) => {
       languages,
       availability,
       // Admin fields
-      accessLevel
+      accessLevel,
     } = formData;
 
     // Validate required fields
     if (!fullName || !email || !password || !role) {
       return res.status(400).json({
         success: false,
-        message: "Full name, email, password, and role are required"
+        message: "Full name, email, password, and role are required",
       });
     }
 
@@ -437,7 +456,7 @@ export const createUser = async (req, res) => {
     if (!["employee", "partner", "admin"].includes(role)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid role. Must be employee, partner, or admin"
+        message: "Invalid role. Must be employee, partner, or admin",
       });
     }
 
@@ -447,7 +466,7 @@ export const createUser = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "User with this email already exists"
+        message: "User with this email already exists",
       });
     }
 
@@ -467,7 +486,7 @@ export const createUser = async (req, res) => {
       address,
       profilePicture,
       bio,
-      isActive: true
+      isActive: true,
     };
 
     // Add role-specific details
@@ -482,7 +501,7 @@ export const createUser = async (req, res) => {
         permissions: permissions || [],
         workLocation,
         emergencyContact,
-        skills: skills || []
+        skills: skills || [],
       };
     } else if (role === "partner") {
       userData.partnerDetails = {
@@ -490,20 +509,26 @@ export const createUser = async (req, res) => {
         partnerType,
         companyName,
         crNumber,
-        sharePercentage: sharePercentage ? parseFloat(sharePercentage) : undefined,
-        contractStartDate: contractStartDate ? new Date(contractStartDate) : undefined,
-        contractEndDate: contractEndDate ? new Date(contractEndDate) : undefined,
+        sharePercentage: sharePercentage
+          ? parseFloat(sharePercentage)
+          : undefined,
+        contractStartDate: contractStartDate
+          ? new Date(contractStartDate)
+          : undefined,
+        contractEndDate: contractEndDate
+          ? new Date(contractEndDate)
+          : undefined,
         commissionRate: commissionRate ? parseFloat(commissionRate) : undefined,
         specializations: specializations || [],
         serviceAreas: serviceAreas || [],
         languages: languages || [],
-        availability: availability || "available"
+        availability: availability || "available",
       };
     } else if (role === "admin") {
       userData.adminDetails = {
         adminId: uniqueId,
         permissions: permissions || [],
-        accessLevel: accessLevel || "admin"
+        accessLevel: accessLevel || "admin",
       };
     }
 
@@ -517,20 +542,21 @@ export const createUser = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: `${role.charAt(0).toUpperCase() + role.slice(1)} created successfully`,
-      data: userResponse
+      message: `${
+        role.charAt(0).toUpperCase() + role.slice(1)
+      } created successfully`,
+      data: userResponse,
     });
-
   } catch (error) {
     console.error("Create User Error:", error);
-    
+
     // Handle validation errors
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
         success: false,
         message: "Validation failed",
-        errors
+        errors,
       });
     }
 
@@ -539,13 +565,13 @@ export const createUser = async (req, res) => {
       const field = Object.keys(error.keyPattern)[0];
       return res.status(400).json({
         success: false,
-        message: `${field} already exists`
+        message: `${field} already exists`,
       });
     }
 
     res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -557,14 +583,22 @@ export const createUser = async (req, res) => {
  */
 export const updateProfile = async (req, res) => {
   try {
+    console.log('🚀 Backend: Starting profile update...');
+    console.log('📊 Backend: User ID:', req.user.id);
+    console.log('📊 Backend: Request body:', req.body);
+    console.log('📊 Backend: Request file:', req.file);
+
     const userId = req.user.id;
-    
+
     // Handle both JSON and FormData
     const parseData = (data) => {
       const parsed = {};
       for (const [key, value] of Object.entries(data)) {
         // Handle arrays (skills, permissions, specializations, etc.)
-        if (typeof value === 'string' && (value.startsWith('[') || value.startsWith('{'))) {
+        if (
+          typeof value === "string" &&
+          (value.startsWith("[") || value.startsWith("{"))
+        ) {
           try {
             parsed[key] = JSON.parse(value);
           } catch (e) {
@@ -578,15 +612,16 @@ export const updateProfile = async (req, res) => {
     };
 
     const formData = parseData(req.body);
-    
+    console.log('📊 Backend: Parsed form data:', formData);
+
     // Handle profile picture upload
     let profilePictureUrl = null;
     if (req.file) {
       // File was uploaded via multer and saved to Cloudinary
       profilePictureUrl = req.file.path;
-      console.log('Profile picture uploaded to Cloudinary:', profilePictureUrl);
+      console.log("Profile picture uploaded to Cloudinary:", profilePictureUrl);
     }
-    
+
     const {
       fullName,
       email,
@@ -619,7 +654,7 @@ export const updateProfile = async (req, res) => {
       languages,
       availability,
       // Admin fields
-      accessLevel
+      accessLevel,
     } = formData;
 
     // Find the user
@@ -627,21 +662,21 @@ export const updateProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
     // Check if email is being changed and if it's already taken
     if (email && email !== user.email) {
       const normalizedEmail = email.toLowerCase().trim();
-      const existingUser = await User.findOne({ 
+      const existingUser = await User.findOne({
         email: normalizedEmail,
-        _id: { $ne: userId }
+        _id: { $ne: userId },
       });
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: "Email already exists"
+          message: "Email already exists",
         });
       }
     }
@@ -655,7 +690,8 @@ export const updateProfile = async (req, res) => {
       nationality: nationality || user.nationality,
       address: address || user.address,
       bio: bio || user.bio,
-      profilePicture: profilePictureUrl || profilePicture || user.profilePicture
+      profilePicture:
+        profilePictureUrl || profilePicture || user.profilePicture,
     };
 
     // Update role-specific details based on user role
@@ -665,12 +701,15 @@ export const updateProfile = async (req, res) => {
         position: position || user.employeeDetails?.position,
         department: department || user.employeeDetails?.department,
         salary: salary ? parseFloat(salary) : user.employeeDetails?.salary,
-        hireDate: hireDate ? new Date(hireDate) : user.employeeDetails?.hireDate,
+        hireDate: hireDate
+          ? new Date(hireDate)
+          : user.employeeDetails?.hireDate,
         manager: manager || user.employeeDetails?.manager,
         permissions: permissions || user.employeeDetails?.permissions || [],
         workLocation: workLocation || user.employeeDetails?.workLocation,
-        emergencyContact: emergencyContact || user.employeeDetails?.emergencyContact,
-        skills: skills || user.employeeDetails?.skills || []
+        emergencyContact:
+          emergencyContact || user.employeeDetails?.emergencyContact,
+        skills: skills || user.employeeDetails?.skills || [],
       };
     } else if (user.role === "partner") {
       updateData.partnerDetails = {
@@ -678,46 +717,56 @@ export const updateProfile = async (req, res) => {
         partnerType: partnerType || user.partnerDetails?.partnerType,
         companyName: companyName || user.partnerDetails?.companyName,
         crNumber: crNumber || user.partnerDetails?.crNumber,
-        sharePercentage: sharePercentage ? parseFloat(sharePercentage) : user.partnerDetails?.sharePercentage,
-        contractStartDate: contractStartDate ? new Date(contractStartDate) : user.partnerDetails?.contractStartDate,
-        contractEndDate: contractEndDate ? new Date(contractEndDate) : user.partnerDetails?.contractEndDate,
-        commissionRate: commissionRate ? parseFloat(commissionRate) : user.partnerDetails?.commissionRate,
-        specializations: specializations || user.partnerDetails?.specializations || [],
+        sharePercentage: sharePercentage
+          ? parseFloat(sharePercentage)
+          : user.partnerDetails?.sharePercentage,
+        contractStartDate: contractStartDate
+          ? new Date(contractStartDate)
+          : user.partnerDetails?.contractStartDate,
+        contractEndDate: contractEndDate
+          ? new Date(contractEndDate)
+          : user.partnerDetails?.contractEndDate,
+        commissionRate: commissionRate
+          ? parseFloat(commissionRate)
+          : user.partnerDetails?.commissionRate,
+        specializations:
+          specializations || user.partnerDetails?.specializations || [],
         serviceAreas: serviceAreas || user.partnerDetails?.serviceAreas || [],
         languages: languages || user.partnerDetails?.languages || [],
-        availability: availability || user.partnerDetails?.availability || "available"
+        availability:
+          availability || user.partnerDetails?.availability || "available",
       };
     } else if (user.role === "admin") {
       updateData.adminDetails = {
         ...user.adminDetails,
         permissions: permissions || user.adminDetails?.permissions || [],
-        accessLevel: accessLevel || user.adminDetails?.accessLevel || "admin"
+        accessLevel: accessLevel || user.adminDetails?.accessLevel || "admin",
       };
     }
 
     // Update the user
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      updateData,
-      { new: true, runValidators: true }
-    ).select("-passwordHash");
+    console.log('📊 Backend: Update data:', updateData);
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-passwordHash");
 
+    console.log('✅ Backend: User updated successfully:', updatedUser);
     res.json({
       success: true,
       message: "Profile updated successfully",
-      data: updatedUser
+      data: updatedUser,
     });
-
   } catch (error) {
     console.error("Update Profile Error:", error);
-    
+
     // Handle validation errors
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
         success: false,
         message: "Validation failed",
-        errors
+        errors,
       });
     }
 
@@ -726,13 +775,13 @@ export const updateProfile = async (req, res) => {
       const field = Object.keys(error.keyPattern)[0];
       return res.status(400).json({
         success: false,
-        message: `${field} already exists`
+        message: `${field} already exists`,
       });
     }
 
     res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -750,14 +799,14 @@ export const updatePassword = async (req, res) => {
     if (!currentPassword || !newPassword) {
       return res.status(400).json({
         success: false,
-        message: "Current password and new password are required"
+        message: "Current password and new password are required",
       });
     }
 
     if (newPassword.length < 8) {
       return res.status(400).json({
         success: false,
-        message: "New password must be at least 8 characters long"
+        message: "New password must be at least 8 characters long",
       });
     }
 
@@ -766,7 +815,7 @@ export const updatePassword = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
@@ -775,7 +824,7 @@ export const updatePassword = async (req, res) => {
     if (!isCurrentPasswordValid) {
       return res.status(400).json({
         success: false,
-        message: "Current password is incorrect"
+        message: "Current password is incorrect",
       });
     }
 
@@ -785,14 +834,13 @@ export const updatePassword = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Password updated successfully"
+      message: "Password updated successfully",
     });
-
   } catch (error) {
     console.error("Update Password Error:", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -812,14 +860,14 @@ export const updateSettings = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
     // Update settings
     user.settings = {
       ...user.settings,
-      ...settingsData
+      ...settingsData,
     };
 
     await user.save();
@@ -827,14 +875,13 @@ export const updateSettings = async (req, res) => {
     res.json({
       success: true,
       message: "Settings updated successfully",
-      data: user.settings
+      data: user.settings,
     });
-
   } catch (error) {
     console.error("Update Settings Error:", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -850,7 +897,7 @@ export const deleteUser = async (req, res) => {
     if (req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
-        message: "Access denied. Admin privileges required."
+        message: "Access denied. Admin privileges required.",
       });
     }
 
@@ -861,7 +908,7 @@ export const deleteUser = async (req, res) => {
     if (!deletedBy) {
       return res.status(400).json({
         success: false,
-        message: "Deleted by user ID is required"
+        message: "Deleted by user ID is required",
       });
     }
 
@@ -869,7 +916,7 @@ export const deleteUser = async (req, res) => {
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid user ID format"
+        message: "Invalid user ID format",
       });
     }
 
@@ -878,7 +925,7 @@ export const deleteUser = async (req, res) => {
     if (!userToDelete) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
@@ -886,7 +933,7 @@ export const deleteUser = async (req, res) => {
     if (id === req.user.id) {
       return res.status(400).json({
         success: false,
-        message: "You cannot delete your own account"
+        message: "You cannot delete your own account",
       });
     }
 
@@ -895,7 +942,7 @@ export const deleteUser = async (req, res) => {
     if (!deletingUser || deletingUser.role !== "admin") {
       return res.status(403).json({
         success: false,
-        message: "Unauthorized. Only admin can delete users"
+        message: "Unauthorized. Only admin can delete users",
       });
     }
 
@@ -903,10 +950,12 @@ export const deleteUser = async (req, res) => {
     await User.findByIdAndDelete(id);
 
     // Emit notification if needed (optional)
-    const io = req.app.get('io');
+    const io = req.app.get("io");
     if (io) {
       // You can add notification logic here if needed
-      console.log(`User ${userToDelete.fullName} deleted by ${deletingUser.fullName}`);
+      console.log(
+        `User ${userToDelete.fullName} deleted by ${deletingUser.fullName}`
+      );
     }
 
     res.json({
@@ -917,19 +966,21 @@ export const deleteUser = async (req, res) => {
         deletedUser: {
           name: userToDelete.fullName,
           email: userToDelete.email,
-          role: userToDelete.role
+          role: userToDelete.role,
         },
         deletedBy: deletingUser.fullName,
-        deletedAt: new Date()
-      }
+        deletedAt: new Date(),
+      },
     });
-
   } catch (error) {
     console.error("Delete User Error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
-      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Something went wrong",
     });
   }
 };
@@ -943,7 +994,9 @@ export const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-passwordHash");
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     res.json({ success: true, data: user });

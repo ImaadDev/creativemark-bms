@@ -287,15 +287,16 @@ export default function ReportsPage() {
     const inProgressData = new Array(12).fill(0);
     const pendingData = new Array(12).fill(0);
 
-    analytics.monthlyTrends.forEach(trend => {
-      const monthIndex = trend._id.month - 1; // MongoDB months are 1-indexed
-      if (monthIndex >= 0 && monthIndex < 12) {
-        // Assuming backend returns total count, distribute by status
-        const total = trend.count;
-        completedData[monthIndex] = Math.floor(total * 0.5); // 50% completed
-        inProgressData[monthIndex] = Math.floor(total * 0.3); // 30% in progress
-        pendingData[monthIndex] = Math.floor(total * 0.2); // 20% pending
-      }
+    (Array.isArray(analytics.monthlyTrends) ? analytics.monthlyTrends : []).forEach((trend) => {
+      const rawMonth = trend?.month ?? trend?._id?.month;
+      if (typeof rawMonth !== 'number') return;
+      const monthIndex = rawMonth - 1; // Months are 1-indexed in MongoDB aggregations
+      if (monthIndex < 0 || monthIndex > 11) return;
+
+      const total = Number(trend?.count ?? trend?.total ?? trend?.value ?? 0) || 0;
+      completedData[monthIndex] = Math.floor(total * 0.5);
+      inProgressData[monthIndex] = Math.floor(total * 0.3);
+      pendingData[monthIndex] = Math.floor(total * 0.2);
     });
 
     return {
