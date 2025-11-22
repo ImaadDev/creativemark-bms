@@ -521,7 +521,7 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Creative Mark Team** - [GitHub](https://github.com/yourusername)
+- **Creative Mark Team** - [GitHub](https://github.com/ImaadDev)
 
 ---
 
@@ -537,10 +537,9 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Email**: support@creativemark.com
-- **Documentation**: [docs.creativemark.com](https://docs.creativemark.com)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/creativemark-bms/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/creativemark-bms/discussions)
+- **Email**: kimad1728@gmail.com
+
+
 
 ---
 
@@ -564,7 +563,7 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 **[⬆ back to top](#-creative-mark-business-management-system-bms)**
 
-Built with ❤️ by Creative Mark Team
+Built with ❤️ by Imad Hussain Khan
 
 *Creating the future of business management*
 
