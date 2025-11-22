@@ -2225,6 +2225,27 @@
     "quantity": "الكمية",
     "unitPrice": "سعر الوحدة",
     "paymentMethod": "طريقة الدفع",
+    "paymentSchedule": "جدول الدفع",
+    "billTo": "الفاتورة إلى",
+    "invoiceDetails": "تفاصيل الفاتورة",
+    "invoiceDate": "تاريخ الفاتورة:",
+    "dueDate": "تاريخ الاستحقاق:",
+    "status": "الحالة:",
+    "paid": "مدفوع",
+    "partiallyPaid": "مدفوع جزئياً",
+    "pending": "معلق",
+    "description": "الوصف",
+    "qty": "الكمية",
+    "price": "السعر",
+    "total": "المجموع",
+    "subtotal": "المجموع الفرعي",
+    "tax": "الضريبة",
+    "discount": "الخصم",
+    "total": "المجموع",
+    "paymentProgress": "تقدم الدفع",
+    "notes": "الملاحظات",
+    "thankYouForBusiness": "شكراً لك على أعمالك!",
+    "questionsContact": "لأي أسئلة بخصوص هذه الفاتورة، يرجى الاتصال بنا على",
     "editInvoice": "تعديل الفاتورة",
     "loading": "جاري تحميل الفاتورة...",
     "notFound": "الفاتورة غير موجودة",
@@ -2258,8 +2279,6 @@
     "quantity": "الكمية",
     "price": "السعر",
     "total": "المجموع",
-    "installmentSchedule": "جدول الأقساط",
-    "addInstallment": "إضافة قسط",
     "number": "الرقم",
     "amount": "المبلغ",
     "paidDate": "تاريخ الدفع",
@@ -2272,8 +2291,6 @@
     "preview": "معاينة",
     "saveInvoice": "حفظ الفاتورة",
     "saving": "جاري الحفظ...",
-    "noInstallmentsMessage": "لا توجد أقساط محددة. المبلغ المتبقي الكامل (ريال {{amount}}) مستحق في تاريخ استحقاق الفاتورة.",
-    "installmentsTotalError": "مجموع الأقساط (ريال {{total}}) يجب أن يطابق المجموع الكلي (ريال {{grandTotal}}).",
     "validation": {
       "clientNameRequired": "اسم العميل مطلوب",
       "clientEmailRequired": "بريد العميل الإلكتروني مطلوب",
@@ -2282,9 +2299,7 @@
       "descriptionRequired": "الوصف مطلوب",
       "quantityGreaterThanZero": "الكمية يجب أن تكون أكبر من 0",
       "unitPriceGreaterThanZero": "سعر الوحدة يجب أن يكون أكبر من 0",
-      "amountGreaterThanZero": "المبلغ يجب أن يكون أكبر من 0",
-      "installmentDueDateRequired": "تاريخ الاستحقاق مطلوب",
-      "paidDateRequiredForPaid": "تاريخ الدفع مطلوب لحالة المدفوع"
+      "amountGreaterThanZero": "المبلغ يجب أن يكون أكبر من 0"
     },
     "messages": {
       "fixErrors": "يرجى إصلاح الأخطاء في النموذج",
@@ -2304,11 +2319,6 @@
       "creditCard": "بطاقة ائتمان",
       "paypal": "باي بال",
       "other": "أخرى"
-    },
-    "installmentStatusOptions": {
-      "pending": "معلق",
-      "paid": "مدفوع",
-      "overdue": "متأخر"
     }
   },
   "invoices": {

@@ -49,7 +49,6 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
     grandTotal: 0,
     paidAmount: 0,
     remainingAmount: 0,
-    installments: [],
     notes: "",
   });
 
@@ -90,13 +89,6 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
               grandTotal: data.grandTotal || 0,
               paidAmount: data.paidAmount || 0,
               remainingAmount: data.remainingAmount || 0,
-              installments: data.installments && data.installments.length > 0 
-                ? data.installments.map(inst => ({
-                    ...inst,
-                    dueDate: inst.dueDate ? new Date(inst.dueDate).toISOString().split("T")[0] : "",
-                    paidDate: inst.paidDate ? new Date(inst.paidDate).toISOString().split("T")[0] : "",
-                  }))
-                : [],
               notes: data.notes || "",
             });
             setLoading(false);
@@ -140,7 +132,6 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
         grandTotal: 0,
         paidAmount: 0,
         remainingAmount: 0,
-        installments: [],
         notes: "",
       });
       setErrors({});
@@ -193,31 +184,6 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
     }
   };
 
-  const addInstallment = () => {
-    setFormData((prev) => ({
-      ...prev,
-      installments: [
-        ...prev.installments,
-        { installmentNumber: prev.installments.length + 1, amount: 0, dueDate: "", status: "Pending", paidDate: "" },
-      ],
-    }));
-  };
-
-  const handleInstallmentChange = (index, field, value) => {
-    const newInstallments = [...formData.installments];
-    newInstallments[index][field] = field === "amount" ? Number(value) || 0 : value;
-    if (field === "status" && value !== "Paid") {
-      newInstallments[index].paidDate = "";
-    }
-    setFormData((prev) => ({ ...prev, installments: newInstallments }));
-  };
-
-  const removeInstallment = (index) => {
-    const newInstallments = formData.installments
-      .filter((_, i) => i !== index)
-      .map((inst, i) => ({ ...inst, installmentNumber: i + 1 }));
-    setFormData((prev) => ({ ...prev, installments: newInstallments }));
-  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -233,18 +199,6 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
       if (item.unitPrice <= 0) newErrors[`price_${i}`] = "Unit price must be greater than 0";
     });
 
-    if (formData.installments.length > 0) {
-      let totalInstallmentAmount = 0;
-      formData.installments.forEach((inst, i) => {
-        totalInstallmentAmount += inst.amount;
-        if (inst.amount <= 0) newErrors[`inst_amount_${i}`] = "Amount must be greater than 0";
-        if (!inst.dueDate) newErrors[`inst_dueDate_${i}`] = "Due date is required";
-        if (inst.status === "Paid" && !inst.paidDate) newErrors[`inst_paidDate_${i}`] = "Paid date is required for Paid status";
-      });
-      if (Math.abs(totalInstallmentAmount - formData.grandTotal) > 0.01) {
-        newErrors.installmentsTotal = `Installment total (SAR ${totalInstallmentAmount.toFixed(2)}) must match Grand Total (SAR ${formData.grandTotal.toFixed(2)}).`;
-      }
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -261,21 +215,6 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
     try {
       const data = {
         ...formData,
-        installments:
-          formData.installments.length > 0
-            ? formData.installments.map((inst) => ({
-                ...inst,
-                paidDate: inst.paidDate || undefined,
-              }))
-            : [
-                {
-                  installmentNumber: 1,
-                  amount: formData.remainingAmount,
-                  dueDate: formData.dueDate,
-                  status: "Pending",
-                  paidDate: undefined,
-                },
-              ],
       };
 
       let res;
@@ -316,16 +255,16 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-[#242021]/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
     >
       <motion.div
         initial={{ scale: 0.95, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl w-full max-w-[95vw] sm:max-w-5xl max-h-[95vh] flex flex-col border border-[#ffd17a]/20"
+        className="bg-white rounded-lg shadow-lg w-full max-w-[95vw] sm:max-w-5xl max-h-[95vh] flex flex-col border border-gray-200"
       >
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-4 border-b border-[#ffd17a]/20 bg-gradient-to-r from-[#242021]/5 to-white/5 flex-shrink-0">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-[#ffd17a] rounded-xl flex items-center justify-center">
               <FaFileInvoiceDollar className="text-[#242021] w-6 h-6" />
@@ -360,7 +299,7 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
               <>
                 {/* Client Info */}
                 <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">Client Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Client Information</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {[
                       { label: "Name *", field: "clientName", type: "text" },
@@ -389,7 +328,7 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
 
                 {/* Invoice Info */}
                 <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">Invoice Details</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Invoice Details</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-[#242021]/80">Status</label>
@@ -445,7 +384,7 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
 
                 {/* Financial Summary */}
                 <div className="bg-[#242021]/5 p-6 rounded-2xl space-y-4">
-                  <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">Financial Summary</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Financial Summary</h3>
                   <div className="space-y-3">
                     {[
                       { label: "Subtotal", value: `SAR ${formData.subTotal.toFixed(2)}`, color: "text-[#242021]" },
@@ -465,7 +404,7 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
                 {/* Items */}
                 <div>
                   <div className="flex justify-between items-center mb-4 border-b border-[#ffd17a]/20 pb-2">
-                    <h3 className="text-lg font-semibold text-[#242021]">Invoice Items</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Invoice Items</h3>
                     <button
                       type="button"
                       onClick={addItem}
@@ -542,114 +481,10 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
                   </div>
                 </div>
 
-                {/* Installments */}
-                <div>
-                  <div className="flex justify-between items-center mb-4 border-b border-[#ffd17a]/20 pb-2">
-                    <h3 className="text-lg font-semibold text-[#242021]">Installment Schedule</h3>
-                    <button
-                      type="button"
-                      onClick={addInstallment}
-                      className="flex items-center gap-2 px-6 py-3 bg-[#ffd17a] text-[#242021] rounded-xl hover:bg-[#ffd17a]/80 transition-all duration-300 font-semibold"
-                    >
-                      <FaPlus className="w-4 h-4" /> Add Installment
-                    </button>
-                  </div>
-                  {errors.installmentsTotal && (
-                    <div className="p-4 mb-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
-                      {errors.installmentsTotal}
-                    </div>
-                  )}
-                  <div className="space-y-4">
-                    {formData.installments.length === 0 ? (
-                      <p className="text-[#242021]/70 italic text-sm">
-                        No installments defined. Full remaining amount (SAR {formData.remainingAmount.toFixed(2)}) due on invoice due date.
-                      </p>
-                    ) : (
-                      formData.installments.map((inst, i) => (
-                        <div
-                          key={i}
-                          className="grid grid-cols-12 gap-4 bg-[#242021]/5 p-4 rounded-2xl border border-[#ffd17a]/20"
-                        >
-                          <div className="col-span-6 sm:col-span-1">
-                            <label className="block text-sm font-medium text-[#242021]/80">No.</label>
-                            <input
-                              type="text"
-                              value={inst.installmentNumber}
-                              readOnly
-                              className="w-full px-4 py-3 bg-[#242021]/5 border border-[#242021]/10 rounded-xl text-[#242021] text-center"
-                            />
-                          </div>
-                          <div className="col-span-6 sm:col-span-3">
-                            <label className="block text-sm font-medium text-[#242021]/80">Due Date *</label>
-                            <input
-                              type="date"
-                              value={inst.dueDate}
-                              onChange={(e) => handleInstallmentChange(i, "dueDate", e.target.value)}
-                              className={`w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021] ${
-                                errors[`inst_dueDate_${i}`] ? "border-red-500" : ""
-                              }`}
-                            />
-                            {errors[`inst_dueDate_${i}`] && <p className="text-red-500 text-xs mt-1">{errors[`inst_dueDate_${i}`]}</p>}
-                          </div>
-                          <div className="col-span-6 sm:col-span-3">
-                            <label className="block text-sm font-medium text-[#242021]/80">Amount *</label>
-                            <input
-                              type="number"
-                              min="0.01"
-                              step="0.01"
-                              value={inst.amount}
-                              onChange={(e) => handleInstallmentChange(i, "amount", e.target.value)}
-                              className={`w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021] ${
-                                errors[`inst_amount_${i}`] ? "border-red-500" : ""
-                              }`}
-                            />
-                            {errors[`inst_amount_${i}`] && <p className="text-red-500 text-xs mt-1">{errors[`inst_amount_${i}`]}</p>}
-                          </div>
-                          <div className="col-span-6 sm:col-span-2">
-                            <label className="block text-sm font-medium text-[#242021]/80">Status</label>
-                            <select
-                              value={inst.status}
-                              onChange={(e) => handleInstallmentChange(i, "status", e.target.value)}
-                              className="w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021]"
-                            >
-                              <option value="Pending">Pending</option>
-                              <option value="Paid">Paid</option>
-                              <option value="Overdue">Overdue</option>
-                            </select>
-                          </div>
-                          <div className="col-span-6 sm:col-span-2">
-                            <label className="block text-sm font-medium text-[#242021]/80">
-                              Paid Date {inst.status === "Paid" ? "*" : ""}
-                            </label>
-                            <input
-                              type="date"
-                              value={inst.paidDate}
-                              onChange={(e) => handleInstallmentChange(i, "paidDate", e.target.value)}
-                              className={`w-full px-4 py-3 bg-white/50 border border-[#242021]/10 rounded-xl focus:border-[#ffd17a] focus:ring-2 focus:ring-[#ffd17a]/30 transition-all duration-300 text-[#242021] ${
-                                errors[`inst_paidDate_${i}`] ? "border-red-500" : ""
-                              }`}
-                              disabled={inst.status !== "Paid"}
-                            />
-                            {errors[`inst_paidDate_${i}`] && <p className="text-red-500 text-xs mt-1">{errors[`inst_paidDate_${i}`]}</p>}
-                          </div>
-                          <div className="col-span-6 sm:col-span-1 flex justify-end items-center">
-                            <button
-                              type="button"
-                              onClick={() => removeInstallment(i)}
-                              className="p-3 text-red-600 hover:bg-red-100/50 rounded-xl transition-all duration-300"
-                            >
-                              <FaTrash className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
 
                 {/* Tax, Discount, Paid Amount */}
                 <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-[#242021] border-b border-[#ffd17a]/20 pb-2">Additional Details</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Additional Details</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-[#242021]/80">Tax Rate (%)</label>
@@ -704,7 +539,7 @@ const EditInvoiceModal = ({ isOpen, onClose, onSuccess, invoice }) => {
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-[#ffd17a]/20 bg-[#242021]/5 flex-shrink-0">
+          <div className="p-6 border-t border-gray-200 bg-gray-50 flex-shrink-0">
             <div className="flex justify-end gap-4">
               <button
                 type="button"

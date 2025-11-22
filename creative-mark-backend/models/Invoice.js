@@ -1,17 +1,5 @@
 import mongoose from "mongoose";
 
-const installmentSchema = new mongoose.Schema({
-  installmentNumber: { type: Number, required: true },
-  amount: { type: Number, required: true },
-  dueDate: { type: Date, required: true },
-  status: {
-    type: String,
-    enum: ["Pending", "Paid", "Overdue"],
-    default: "Pending",
-  },
-  paidDate: { type: Date },
-});
-
 const itemSchema = new mongoose.Schema({
   description: { type: String, required: true },
   quantity: { type: Number, required: true },
@@ -54,12 +42,11 @@ const invoiceSchema = new mongoose.Schema(
     discount: { type: Number, default: 0 },
     grandTotal: { type: Number, required: true },
 
-    // Payment & Installments
+    // Payment
     paymentMethod: {
       type: String,
       enum: ["Cash", "Bank Transfer", "Credit Card", "PayPal", "Other"],
     },
-    installments: [installmentSchema],
     paidAmount: { type: Number, default: 0 },
     remainingAmount: { type: Number, default: 0 },
 

@@ -1,8 +1,10 @@
 import React from 'react';
 import { FaTimes, FaPrint, FaDownload } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../i18n/TranslationContext';
 
 const InvoicePreview = ({ invoice, onClose }) => {
+  const { t } = useTranslation();
   const handlePrint = () => {
     window.print();
   };
@@ -53,7 +55,7 @@ const InvoicePreview = ({ invoice, onClose }) => {
             {/* Client & Invoice Info */}
             <div className="grid grid-cols-2 gap-8 mb-8">
               <div className="p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold text-gray-700 mb-2">Bill To</h3>
+                <h3 className="font-semibold text-gray-700 mb-2">{t('invoice.billTo')}</h3>
                 <div className="text-gray-600">
                   <p className="font-medium">{invoice.clientName}</p>
                   <p>{invoice.clientEmail}</p>
@@ -63,18 +65,18 @@ const InvoicePreview = ({ invoice, onClose }) => {
                 </div>
               </div>
               <div className="p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold text-gray-700 mb-2">Invoice Details</h3>
+                <h3 className="font-semibold text-gray-700 mb-2">{t('invoice.invoiceDetails')}</h3>
                 <div className="grid grid-cols-2 gap-2 text-gray-600">
-                  <p>Invoice Date:</p>
+                  <p>{t('invoice.invoiceDate')}</p>
                   <p>{new Date(invoice.invoiceDate).toLocaleDateString()}</p>
-                  <p>Due Date:</p>
+                  <p>{t('invoice.dueDate')}</p>
                   <p>{new Date(invoice.dueDate).toLocaleDateString()}</p>
-                  <p>Status:</p>
+                  <p>{t('invoice.status')}</p>
                   <p className={`font-semibold ${
-                    invoice.status === 'Paid' ? 'text-green-600' :
-                    invoice.status === 'Unpaid' ? 'text-red-600' :
+                    invoice.paidAmount >= invoice.grandTotal ? 'text-green-600' :
+                    invoice.paidAmount > 0 ? 'text-blue-600' :
                     'text-yellow-600'
-                  }`}>{invoice.status}</p>
+                  }`}>{invoice.paidAmount >= invoice.grandTotal ? t('invoice.statusPaid') : invoice.paidAmount > 0 ? t('invoice.statusPartiallyPaid') : t('invoice.statusPending')}</p>
                 </div>
               </div>
             </div>
@@ -84,10 +86,10 @@ const InvoicePreview = ({ invoice, onClose }) => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="py-3 text-left text-gray-600">Description</th>
-                    <th className="py-3 text-right text-gray-600">Qty</th>
-                    <th className="py-3 text-right text-gray-600">Price</th>
-                    <th className="py-3 text-right text-gray-600">Total</th>
+                    <th className="py-3 text-left text-gray-600">{t('invoice.description')}</th>
+                    <th className="py-3 text-right text-gray-600">{t('invoice.quantity')}</th>
+                    <th className="py-3 text-right text-gray-600">{t('invoice.unitPrice')}</th>
+                    <th className="py-3 text-right text-gray-600">{t('invoice.amount')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -108,19 +110,19 @@ const InvoicePreview = ({ invoice, onClose }) => {
               <div className="w-80">
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-gray-600">{t('invoice.subtotal')}</span>
                     <span className="text-gray-800">SAR {invoice.subTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Tax ({invoice.taxRate}%)</span>
+                    <span className="text-gray-600">{t('invoice.tax')} ({invoice.taxRate}%)</span>
                     <span className="text-gray-800">SAR {invoice.taxAmount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Discount</span>
+                    <span className="text-gray-600">{t('invoice.discount')}</span>
                     <span className="text-green-600">-SAR {invoice.discount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between pt-2 border-t border-gray-200">
-                    <span className="font-semibold text-gray-800">Total</span>
+                    <span className="font-semibold text-gray-800">{t('invoice.totalAmount')}</span>
                     <span className="font-bold text-blue-600">SAR {invoice.grandTotal.toFixed(2)}</span>
                   </div>
                 </div>
@@ -139,7 +141,7 @@ const InvoicePreview = ({ invoice, onClose }) => {
                   />
                 </div>
                 <div className="flex justify-between mt-2 text-sm">
-                  <span className="text-gray-600">Payment Progress</span>
+                  <span className="text-gray-600">{t('invoice.paymentProgress')}</span>
                   <span className="text-gray-800 font-medium">
                     SAR {invoice.paidAmount.toFixed(2)} / SAR {invoice.grandTotal.toFixed(2)}
                   </span>
@@ -147,43 +149,19 @@ const InvoicePreview = ({ invoice, onClose }) => {
               </div>
             )}
 
-            {/* Installments */}
-            {invoice.installments && invoice.installments.length > 0 && (
-              <div className="mb-8">
-                <h3 className="font-semibold text-gray-700 mb-4">Payment Schedule</h3>
-                <div className="space-y-2">
-                  {invoice.installments.map((inst, index) => (
-                    <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <span className="text-gray-600">Installment {inst.installmentNumber}</span>
-                        <p className="text-sm text-gray-500">Due: {new Date(inst.dueDate).toLocaleDateString()}</p>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-medium text-gray-800">SAR {inst.amount.toFixed(2)}</span>
-                        <p className={`text-sm ${
-                          inst.status === 'Paid' ? 'text-green-600' :
-                          inst.status === 'Overdue' ? 'text-red-600' :
-                          'text-yellow-600'
-                        }`}>{inst.status}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Notes */}
             {invoice.notes && (
               <div className="mb-8">
-                <h3 className="font-semibold text-gray-700 mb-2">Notes</h3>
+                <h3 className="font-semibold text-gray-700 mb-2">{t('invoice.notes')}</h3>
                 <p className="text-gray-600 whitespace-pre-wrap">{invoice.notes}</p>
               </div>
             )}
 
             {/* Footer */}
             <div className="text-center text-gray-500 text-sm border-t pt-8">
-              <p>Thank you for your business!</p>
-              <p className="mt-1">Questions? Contact us at info@creativemark1</p>
+              <p>{t('invoice.thankYou')}</p>
+              <p className="mt-1">{t('invoice.questionsContact')} info@creativemark1</p>
             </div>
           </div>
         </div>

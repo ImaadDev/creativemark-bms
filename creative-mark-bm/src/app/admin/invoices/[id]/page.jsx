@@ -20,60 +20,19 @@ const InvoicePrintPage = () => {
       try {
         setLoading(true);
         const data = await getInvoiceById(params.id);
-        console.log("data", data);
+        console.log("data :", data.status);
   
-        // 🔹 Calculate totals properly
-     // 🧮 Calculate total paid and remaining dynamically
-let totalPaid = 0;
-
-// If there are installments, use them
-if (data.installments && data.installments.length > 0) {
-  const paidFromInstallments = data.installments
-    .filter(inst => inst.status === "Paid" || inst.status === "Partially Paid")
-    .reduce((sum, inst) => sum + (inst.paidAmount || 0), 0);
-
-  // If total from installments is > 0, use that
-  if (paidFromInstallments > 0) {
-    totalPaid = paidFromInstallments;
-  } else {
-    // Otherwise fall back to root invoice paidAmount
-    totalPaid = data.paidAmount || 0;
-  }
-} else {
-  // No installments — use main paidAmount
-  totalPaid = data.paidAmount || 0;
-}
-
-const remaining = Math.max(data.grandTotal - totalPaid, 0);
-
-// 🏷️ Determine status
-let status = "Pending";
-if (totalPaid >= data.grandTotal) {
-  status = "Paid";
-} else if (totalPaid > 0 && totalPaid < data.grandTotal) {
-  status = "Partially Paid";
-}
-
-  
-       // 🧩 Ensure all installments show as Paid if invoice fully paid
-let updatedInstallments = data.installments || [];
-
-if (status === "Paid" && updatedInstallments.length > 0) {
-  updatedInstallments = updatedInstallments.map((inst) => ({
-    ...inst,
-    status: "Paid",
-    paidAmount: inst.amount,
-    paidDate: inst.paidDate || new Date(),
-  }));
-}
-
-setInvoice({
-  ...data,
-  paidAmount: totalPaid,
-  remainingAmount: remaining > 0 ? remaining : 0,
-  status,
-  installments: updatedInstallments,
-});
+        // Calculate totals
+        const totalPaid = data.paidAmount || 0;
+        const remaining = Math.max(data.grandTotal - totalPaid, 0);
+        
+     
+        
+        setInvoice({
+          ...data,
+          paidAmount: totalPaid,
+          remainingAmount: remaining > 0 ? remaining : 0,
+        });
 
 
       } catch (error) {
@@ -293,69 +252,24 @@ setInvoice({
           {/* Summary & Payment Schedule */}
           <div className="grid grid-cols-2 gap-8 px-8 pb-8 border-t border-gray-200 pt-8">
             {/* Payment Schedule */}
-             <div>
-               <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">{t('invoice.installmentSchedule')}</p>
+            <div>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">{t('invoice.paymentSchedule')}</p>
               <div className="space-y-3">
-              {invoice.status === "Paid" ? (
-  <div className="bg-gray-50 border-l-4 border-gray-900 pl-4 pr-4 py-3 rounded-r-lg">
-    <p className="font-semibold text-gray-900">
-      {t('invoice.fullPayment')} — SAR {invoice.grandTotal.toLocaleString()}
-    </p>
-    <p className="text-xs text-gray-600 mt-1">
-      {t('invoice.paid')}: {new Date(invoice.dueDate).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })}
-    </p>
-    <span
-      className={`inline-block px-2 py-1 rounded text-xs font-semibold mt-2 border ${getStatusColor("Paid")}`}
-    >
-      {t('invoice.statusPaid')}
-    </span>
-  </div>
-) : invoice.installments && invoice.installments.length > 0 &&
- !(invoice.installments.length === 1 && invoice.installments[0].amount === invoice.grandTotal) ? (
-  invoice.installments.map((inst, idx) => (
-
-                    <div key={idx} className="bg-gray-50 border-l-4 border-gray-900 pl-4 pr-4 py-3 rounded-r-lg">
-                      <p className="font-semibold text-gray-900">
-                        {t('invoice.installment')} {inst.installmentNumber} — SAR {inst.amount.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1">
-                        {t('invoice.dueDate')}: {new Date(inst.dueDate).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                        {inst.paidDate && ` • ${t('invoice.paid')}: ${new Date(inst.paidDate).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}`}
-                      </p>
-                      <span className={`inline-block px-2 py-1 rounded text-xs font-semibold mt-2 border ${getStatusColor(inst.status)}`}>
-                        {t(`invoice.status${inst.status.replace(/\s+/g, '')}`)}
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="bg-gray-50 border-l-4 border-gray-900 pl-4 pr-4 py-3 rounded-r-lg">
-                    <p className="font-semibold text-gray-900">
-                      {t('invoice.fullPayment')} — SAR {invoice.grandTotal.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-gray-600 mt-1">
-                      {t('invoice.dueDate')}: {new Date(invoice.dueDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </p>
-                    <span className={`inline-block px-2 py-1 rounded text-xs font-semibold mt-2 border ${getStatusColor(invoice.status)}`}>
-                      {t(`invoice.status${invoice.status.replace(/\s+/g, '')}`)}
-                    </span>
-                  </div>
-                )}
+                <div className="bg-gray-50 border-l-4 border-gray-900 pl-4 pr-4 py-3 rounded-r-lg">
+                  <p className="font-semibold text-gray-900">
+                    {t('invoice.fullPayment')} — SAR {invoice.grandTotal.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    {t('invoice.dueDate')}: {new Date(invoice.dueDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </p>
+                  <span className={`inline-block px-2 py-1 rounded text-xs font-semibold mt-2 border ${getStatusColor(invoice.status)}`}>
+                    {t(`invoice.status${invoice.status.replace(/\s+/g, '')}`)}
+                  </span>
+                </div>
               </div>
             </div>
 

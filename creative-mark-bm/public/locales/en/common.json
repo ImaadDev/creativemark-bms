@@ -2213,6 +2213,7 @@
     "quantity": "Quantity",
     "unitPrice": "Unit Price",
     "paymentMethod": "Payment Method",
+    "paymentSchedule": "Payment Schedule",
     "editInvoice": "Edit Invoice",
     "loading": "Loading invoice...",
     "notFound": "Invoice not found",
@@ -2246,8 +2247,6 @@
     "quantity": "Qty",
     "price": "Price",
     "total": "Total",
-    "installmentSchedule": "Installment Schedule",
-    "addInstallment": "Add Installment",
     "number": "No.",
     "amount": "Amount",
     "paidDate": "Paid Date",
@@ -2260,8 +2259,6 @@
     "preview": "Preview",
     "saveInvoice": "Save Invoice",
     "saving": "Saving...",
-    "noInstallmentsMessage": "No installments defined. Full remaining amount (SAR {{amount}}) due on invoice due date.",
-    "installmentsTotalError": "Installment total (SAR {{total}}) must match Grand Total (SAR {{grandTotal}}).",
     "validation": {
       "clientNameRequired": "Client name is required",
       "clientEmailRequired": "Client email is required",
@@ -2270,9 +2267,7 @@
       "descriptionRequired": "Description is required",
       "quantityGreaterThanZero": "Quantity must be greater than 0",
       "unitPriceGreaterThanZero": "Unit price must be greater than 0",
-      "amountGreaterThanZero": "Amount must be greater than 0",
-      "installmentDueDateRequired": "Due date is required",
-      "paidDateRequiredForPaid": "Paid date is required for Paid status"
+      "amountGreaterThanZero": "Amount must be greater than 0"
     },
     "messages": {
       "fixErrors": "Please fix the errors in the form",
@@ -2292,11 +2287,6 @@
       "creditCard": "Credit Card",
       "paypal": "PayPal",
       "other": "Other"
-    },
-    "installmentStatusOptions": {
-      "pending": "Pending",
-      "paid": "Paid",
-      "overdue": "Overdue"
     }
   },
   "invoices": {
