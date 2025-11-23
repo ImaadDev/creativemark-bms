@@ -17,7 +17,6 @@ import {
   User,
   Globe,
   Briefcase,
-  Handshake,
   Building,
   Heart,
   FileImage,
@@ -56,10 +55,6 @@ export default function ModernMultiStepForm() {
     externalCompaniesCount: 0,
     externalCompaniesDetails: [],
     serviceType: "",
-    partnerType: "sole",
-    partnerId: "",
-    saudiPartnerName: "",
-    saudiPartnerIqama: null,
     projectEstimatedValue: "",
     familyMembers: [],
     needVirtualOffice: false,
@@ -100,7 +95,6 @@ export default function ModernMultiStepForm() {
 
   function getRequirements() {
     const svc = form.serviceType;
-    const partnerType = form.partnerType;
 
     if (svc === "engineering") {
       return {
@@ -109,15 +103,9 @@ export default function ModernMultiStepForm() {
       };
     }
     if (svc === "commercial" || svc === "trade") {
-      if (partnerType === "sole") {
-        return {
-          requiredExternalCompanies: 3,
-          note: t('application.requirements.commercialSole')
-        };
-      }
       return {
-        requiredExternalCompanies: 1,
-        note: t('application.requirements.commercialWithPartner')
+        requiredExternalCompanies: 3,
+        note: t('application.requirements.commercialSole')
       };
     }
     if (svc === "real_estate") {
@@ -172,16 +160,6 @@ export default function ModernMultiStepForm() {
         break;
       case "serviceType":
         if (!value) error = t('validation.serviceTypeRequired');
-        break;
-      case "saudiPartnerName":
-        if (formData.partnerType === 'withSaudiPartner' && !value?.trim()) {
-          error = t('validation.saudiPartnerNameRequired');
-        }
-        break;
-      case "saudiPartnerIqama":
-        if (formData.partnerType === 'withSaudiPartner' && !value) {
-          error = t('validation.saudiPartnerIqamaRequired');
-        }
         break;
       case "projectEstimatedValue":
         if (formData.serviceType === 'real_estate') {
@@ -245,15 +223,6 @@ export default function ModernMultiStepForm() {
         }
         break;
       case 4:
-        if (form.serviceType === "commercial" && form.partnerType === "withSaudiPartner") {
-          const partnerNameError = validateField("saudiPartnerName", form.saudiPartnerName);
-          if (partnerNameError) newErrors.saudiPartnerName = partnerNameError;
-          
-          const partnerIqamaError = validateField("saudiPartnerIqama", form.saudiPartnerIqama);
-          if (partnerIqamaError) newErrors.saudiPartnerIqama = partnerIqamaError;
-        }
-        break;
-      case 5:
         // External companies validation
         const companyRequirements = getRequirements();
         
@@ -320,10 +289,6 @@ export default function ModernMultiStepForm() {
           // If user doesn't have sufficient companies or chose passport only, no additional validation needed
         }
         
-        // If user has Saudi partner, require Saudi partner Iqama
-        if (form.serviceType === "commercial" && form.partnerType === "withSaudiPartner" && !form.saudiPartnerIqama) {
-          newErrors.saudiPartnerIqama = t('application.validation.saudiPartnerIqamaRequired');
-        }
         break;
       default:
         break;
@@ -407,9 +372,6 @@ export default function ModernMultiStepForm() {
     setForm(prev => ({ ...prev, passportFile: e.target.files?.[0] || null }));
   }
 
-  function handleSaudiPartnerIqamaChange(e) {
-    setForm(prev => ({ ...prev, saudiPartnerIqama: e.target.files?.[0] || null }));
-  }
 
   // Dynamic field management
   function addFamilyMember() {
@@ -474,23 +436,14 @@ export default function ModernMultiStepForm() {
           if (form.serviceType === "real_estate") fieldsToTouch.projectEstimatedValue = true;
           break;
         case 4:
-          if (form.serviceType === "commercial" && form.partnerType === "withSaudiPartner") {
-            fieldsToTouch.saudiPartnerName = true;
-            fieldsToTouch.saudiPartnerIqama = true;
-          }
-          break;
-        case 5:
           fieldsToTouch.externalCompaniesCount = true;
           if (getRequirements().requiredExternalCompanies > 0 && form.externalCompaniesCount === 0) {
             fieldsToTouch.companyArrangesExternalCompanies = true;
           }
           break;
-        case 7:
+        case 6:
           fieldsToTouch.passportFile = true;
           fieldsToTouch.idCard = true;
-          if (form.serviceType === "commercial" && form.partnerType === "withSaudiPartner") {
-            fieldsToTouch.saudiPartnerIqama = true;
-          }
           if (getRequirements().requiredExternalCompanies > 0 && form.externalCompaniesCount >= getRequirements().requiredExternalCompanies && form.docOption === "uploadDocs") {
             fieldsToTouch.companyDocuments = true;
           }
@@ -518,10 +471,6 @@ export default function ModernMultiStepForm() {
       validationErrors.serviceType = "Service type is required";
     }
     
-    // Check partner type validation
-    if (form.partnerType === "withSaudiPartner" && (!form.saudiPartnerName || form.saudiPartnerName.trim() === "")) {
-      validationErrors.saudiPartnerName = "Saudi partner name is required when partner type is 'with Saudi partner'";
-    }
     
     // If there are validation errors, show them and stop submission
     if (Object.keys(validationErrors).length > 0) {
@@ -538,9 +487,6 @@ export default function ModernMultiStepForm() {
       const applicationData = {
         // userId removed - will be taken from authenticated user in middleware
         serviceType: form.serviceType?.trim(), // Ensure no whitespace
-        partnerType: form.partnerType || "sole",
-        partnerId: form.partnerId || null,
-        saudiPartnerName: form.saudiPartnerName?.trim() || null,
         externalCompaniesCount: parseInt(form.externalCompaniesCount) || 0,
         externalCompaniesDetails: form.externalCompaniesDetails || [],
         projectEstimatedValue: form.projectEstimatedValue ? parseFloat(form.projectEstimatedValue) : null,
@@ -573,10 +519,6 @@ export default function ModernMultiStepForm() {
         filesToUpload.idCard = Array.from(form.uploadedFiles.idCard);
       }
 
-      // Add Saudi partner Iqama file if available
-      if (form.saudiPartnerIqama) {
-        filesToUpload.saudiPartnerIqama = [form.saudiPartnerIqama];
-      }
 
       // Add commercial registration files if user chose to upload docs
       if (form.docOption === "uploadDocs" && form.uploadedFiles) {
@@ -625,12 +567,11 @@ export default function ModernMultiStepForm() {
     { id: 1, title: t('application.steps.personalInfo') || 'Personal Info', icon: User, description: t('application.steps.basicInformation') || 'Basic information' },
     { id: 2, title: t('application.steps.background') || 'Background', icon: Globe, description: t('application.steps.nationalityStatus') || 'Nationality & status' },
     { id: 3, title: t('application.steps.serviceType') || 'Service Type', icon: Briefcase, description: t('application.steps.businessActivity') || 'Business activity' },
-    { id: 4, title: t('application.steps.partnerships') || 'Partnerships', icon: Handshake, description: t('application.steps.partnerDetails') || 'Partner details' },
-    { id: 5, title: t('application.steps.companies') || 'Companies', icon: Building, description: t('application.steps.externalCompanies') || 'External companies' },
-    { id: 6, title: t('application.steps.family') || 'Family', icon: Heart, description: t('application.steps.familyMembers') || 'Family members' },
-    { id: 7, title: t('application.steps.documents') || 'Documents', icon: FileImage, description: t('application.steps.fileUploads') || 'File uploads' },
-    { id: 8, title: t('application.steps.fee') || 'Fee', icon: RiyalSign, description: t('application.steps.feeDetails') || 'Fee details' },
-    { id: 9, title: t('application.steps.review') || 'Review', icon: CheckCircle, description: t('application.steps.finalReview') || 'Final review' }
+    { id: 4, title: t('application.steps.companies') || 'Companies', icon: Building, description: t('application.steps.externalCompanies') || 'External companies' },
+    { id: 5, title: t('application.steps.family') || 'Family', icon: Heart, description: t('application.steps.familyMembers') || 'Family members' },
+    { id: 6, title: t('application.steps.documents') || 'Documents', icon: FileImage, description: t('application.steps.fileUploads') || 'File uploads' },
+    { id: 7, title: t('application.steps.fee') || 'Fee', icon: RiyalSign, description: t('application.steps.feeDetails') || 'Fee details' },
+    { id: 8, title: t('application.steps.review') || 'Review', icon: CheckCircle, description: t('application.steps.finalReview') || 'Final review' }
   ];
 
   // Handle requirements modal acceptance
@@ -1107,41 +1048,6 @@ export default function ModernMultiStepForm() {
                     {renderErrorMessage("serviceType")}
                   </div>
 
-                  {form.serviceType === "commercial" && (
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">{t('application.serviceType.partnershipType')}</label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-[#ffd17a]/50 transition-colors">
-                          <input 
-                            type="radio"
-                            name="partnerType" 
-                            value="sole"
-                            checked={form.partnerType === "sole"}
-                            onChange={handleChange} 
-                            className="text-[#ffd17a]"
-                          />
-                          <div>
-                            <div className="font-medium text-gray-900">{t('application.serviceType.solePartner')}</div>
-                            <div className="text-sm text-gray-600">{t('application.serviceType.noSaudiPartner')}</div>
-                          </div>
-                        </label>
-                        <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-[#ffd17a]/50 transition-colors">
-                          <input 
-                            type="radio"
-                            name="partnerType" 
-                            value="withSaudiPartner"
-                            checked={form.partnerType === "withSaudiPartner"}
-                            onChange={handleChange} 
-                            className="text-[#ffd17a]"
-                          />
-                          <div>
-                            <div className="font-medium text-gray-900">{t('application.serviceType.withSaudiPartner')}</div>
-                            <div className="text-sm text-gray-600">{t('application.serviceType.partnershipRequired')}</div>
-                          </div>
-                        </label>
-                      </div>
-                    </div>
-                  )}
 
                   {form.serviceType === "real_estate" && (
                     <div>
@@ -1170,77 +1076,9 @@ export default function ModernMultiStepForm() {
               </div>
             )}
 
-            {/* Step 4: Partnership Details */}
+
+            {/* Step 4: External Companies */}
             {step === 4 && (
-              <div className="space-y-6">
-                <div className={`mb-8 ${isRTL ? 'text-right' : 'text-center'}`}>
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 mb-6 shadow-xl">
-                    <Handshake className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className={`text-2xl sm:text-3xl font-bold text-gray-900 mb-4 ${isRTL ? 'text-right' : 'text-center'}`}>
-                    {t('application.steps.partnerships')}
-                  </h3>
-                  <p className={`text-lg text-gray-600 max-w-2xl leading-relaxed ${isRTL ? 'text-right ml-auto' : 'text-center mx-auto'}`}>
-                    {t('application.steps.partnerDetails')}
-                  </p>
-                </div>
-
-                <div className="space-y-6">
-                  {form.serviceType === "commercial" && form.partnerType === "withSaudiPartner" && (
-                    <div className="space-y-6">
-                      <div>
-                        <label className={`block text-sm font-semibold text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.saudiPartnerName')} *</label>
-                        <input 
-                          name="saudiPartnerName" 
-                          value={form.saudiPartnerName} 
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          placeholder={t('application.partnerships.enterSaudiPartnerName')} 
-                          className={`${getInputClassName("saudiPartnerName")} ${isRTL ? 'text-right' : 'text-left'}`}
-                          dir={isRTL ? 'rtl' : 'ltr'}
-                        />
-                        {renderErrorMessage("saudiPartnerName")}
-                        <p className={`text-sm text-gray-600 mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.saudiPartnerNameNote')}</p>
-                      </div>
-
-                      <div>
-                        <label className={`block text-sm font-semibold text-gray-700 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.saudiPartnerIqama')} *</label>
-                        <div className={`border-2 border-dashed border-gray-300 p-6 hover:border-gray-400 transition-colors ${isRTL ? 'text-right' : 'text-center'}`}>
-                          <Upload className={`w-8 h-8 mb-3 text-gray-400 ${isRTL ? 'ml-auto' : 'mx-auto'}`} />
-                          <p className={`text-sm text-gray-600 mb-3 ${isRTL ? 'text-right' : 'text-center'}`}>{t('application.partnerships.uploadSaudiPartnerIqama')}</p>
-                          <input
-                            type="file"
-                            accept="image/*,.pdf"
-                            onChange={handleSaudiPartnerIqamaChange}
-                            className={`w-full text-sm text-gray-600 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#ffd17a]/10 file:text-[#242021] ${isRTL ? 'file:ml-4' : 'file:mr-4'}`}
-                            dir={isRTL ? 'rtl' : 'ltr'}
-                          />
-                          {form.saudiPartnerIqama && (
-                            <p className={`text-sm text-[#ffd17a] mt-2 font-medium ${isRTL ? 'text-right' : 'text-center'}`}>
-                              ✓ {t('application.partnerships.fileSelected')}: {form.saudiPartnerIqama.name}
-                            </p>
-                          )}
-                        </div>
-                        {renderErrorMessage("saudiPartnerIqama")}
-                        <p className={`text-sm text-gray-600 mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.saudiPartnerIqamaNote')}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {form.serviceType && form.serviceType !== "commercial" && (
-                    <div className="bg-[#ffd17a]/10 border border-[#ffd17a]/20 rounded-xl p-4">
-                      <h3 className={`font-semibold text-[#242021] mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{t('application.partnerships.noPartnershipRequired')}</h3>
-                      <p className={`text-sm text-[#242021]/80 ${isRTL ? 'text-right' : 'text-left'}`}>
-                        {t('application.partnerships.noPartnershipDescription')}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Step 5: External Companies */}
-            {step === 5 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 mb-6 shadow-xl">
@@ -1422,8 +1260,8 @@ export default function ModernMultiStepForm() {
               </div>
             )}
 
-            {/* Step 6: Family Members */}
-            {step === 6 && (
+            {/* Step 5: Family Members */}
+            {step === 5 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 mb-6 shadow-xl">
@@ -1513,8 +1351,8 @@ export default function ModernMultiStepForm() {
               </div>
             )}
 
-            {/* Step 7: Document Upload */}
-            {step === 7 && (
+            {/* Step 6: Document Upload */}
+            {step === 6 && (
               <div className="space-y-6">
                 <div className={`mb-8 ${isRTL ? 'text-right' : 'text-center'}`}>
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 mb-6 shadow-xl">
@@ -1788,8 +1626,8 @@ export default function ModernMultiStepForm() {
               </div>
             )}
 
-            {/* Step 8: Fee Details */}
-            {step === 8 && (
+            {/* Step 7: Fee Details */}
+            {step === 7 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 mb-6 shadow-xl">
@@ -1843,8 +1681,8 @@ export default function ModernMultiStepForm() {
               </div>
             )}
 
-            {/* Step 9: Review */}
-            {step === 9 && (
+            {/* Step 8: Review */}
+            {step === 8 && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/80 mb-6 shadow-xl">
@@ -1915,10 +1753,6 @@ export default function ModernMultiStepForm() {
                         <h4 className="font-medium text-gray-900 mb-2">{t('application.review.serviceDetails')}</h4>
                         <div className="space-y-1 text-gray-600">
                           <p><span className="font-medium">{t('application.review.serviceType')}</span> {form.serviceType ? form.serviceType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : t('application.review.notSelected')}</p>
-                          <p><span className="font-medium">{t('application.review.partnerType')}</span> {form.partnerType === "sole" ? t('application.review.solePartner') : t('application.review.withSaudiPartner')}</p>
-                          {form.partnerType === "withSaudiPartner" && form.saudiPartnerName && (
-                            <p><span className="font-medium">{t('application.review.saudiPartner')}</span> {form.saudiPartnerName}</p>
-                          )}
                           <p><span className="font-medium">{t('application.review.virtualOffice')}</span> {form.needVirtualOffice ? t('application.review.yes') : t('application.review.no')}</p>
                           {form.projectEstimatedValue && (
                             <p><span className="font-medium">{t('application.review.projectValue')}</span> {Number(form.projectEstimatedValue).toLocaleString()} SAR</p>

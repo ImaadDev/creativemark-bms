@@ -418,28 +418,15 @@ export const createUser = async (req, res) => {
       address,
       profilePicture,
       bio,
+      autoApprove,
       // Employee fields
       position,
       department,
-      salary,
       hireDate,
-      manager,
       permissions,
       workLocation,
       emergencyContact,
       skills,
-      // Partner fields
-      partnerType,
-      companyName,
-      crNumber,
-      sharePercentage,
-      contractStartDate,
-      contractEndDate,
-      commissionRate,
-      specializations,
-      serviceAreas,
-      languages,
-      availability,
       // Admin fields
       accessLevel,
     } = formData;
@@ -453,10 +440,10 @@ export const createUser = async (req, res) => {
     }
 
     // Validate role
-    if (!["employee", "partner", "admin"].includes(role)) {
+    if (!["employee", "admin"].includes(role)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid role. Must be employee, partner, or admin",
+        message: "Invalid role. Must be employee or admin",
       });
     }
 
@@ -487,6 +474,7 @@ export const createUser = async (req, res) => {
       profilePicture,
       bio,
       isActive: true,
+      isVerified: autoApprove || false, // Auto-verify if admin chooses to skip email verification
     };
 
     // Add role-specific details
@@ -495,34 +483,11 @@ export const createUser = async (req, res) => {
         employeeId: uniqueId,
         position,
         department,
-        salary: salary ? parseFloat(salary) : undefined,
         hireDate: hireDate ? new Date(hireDate) : undefined,
-        manager,
         permissions: permissions || [],
         workLocation,
         emergencyContact,
         skills: skills || [],
-      };
-    } else if (role === "partner") {
-      userData.partnerDetails = {
-        partnerId: uniqueId,
-        partnerType,
-        companyName,
-        crNumber,
-        sharePercentage: sharePercentage
-          ? parseFloat(sharePercentage)
-          : undefined,
-        contractStartDate: contractStartDate
-          ? new Date(contractStartDate)
-          : undefined,
-        contractEndDate: contractEndDate
-          ? new Date(contractEndDate)
-          : undefined,
-        commissionRate: commissionRate ? parseFloat(commissionRate) : undefined,
-        specializations: specializations || [],
-        serviceAreas: serviceAreas || [],
-        languages: languages || [],
-        availability: availability || "available",
       };
     } else if (role === "admin") {
       userData.adminDetails = {
@@ -544,8 +509,9 @@ export const createUser = async (req, res) => {
       success: true,
       message: `${
         role.charAt(0).toUpperCase() + role.slice(1)
-      } created successfully`,
+      } created successfully${autoApprove ? ' and auto-approved' : '. Email verification sent'}`,
       data: userResponse,
+      autoApproved: autoApprove || false,
     });
   } catch (error) {
     console.error("Create User Error:", error);
@@ -634,25 +600,11 @@ export const updateProfile = async (req, res) => {
       // Employee fields
       position,
       department,
-      salary,
       hireDate,
-      manager,
       permissions,
       workLocation,
       emergencyContact,
       skills,
-      // Partner fields
-      partnerType,
-      companyName,
-      crNumber,
-      sharePercentage,
-      contractStartDate,
-      contractEndDate,
-      commissionRate,
-      specializations,
-      serviceAreas,
-      languages,
-      availability,
       // Admin fields
       accessLevel,
     } = formData;
@@ -700,41 +652,14 @@ export const updateProfile = async (req, res) => {
         ...user.employeeDetails,
         position: position || user.employeeDetails?.position,
         department: department || user.employeeDetails?.department,
-        salary: salary ? parseFloat(salary) : user.employeeDetails?.salary,
         hireDate: hireDate
           ? new Date(hireDate)
           : user.employeeDetails?.hireDate,
-        manager: manager || user.employeeDetails?.manager,
         permissions: permissions || user.employeeDetails?.permissions || [],
         workLocation: workLocation || user.employeeDetails?.workLocation,
         emergencyContact:
           emergencyContact || user.employeeDetails?.emergencyContact,
         skills: skills || user.employeeDetails?.skills || [],
-      };
-    } else if (user.role === "partner") {
-      updateData.partnerDetails = {
-        ...user.partnerDetails,
-        partnerType: partnerType || user.partnerDetails?.partnerType,
-        companyName: companyName || user.partnerDetails?.companyName,
-        crNumber: crNumber || user.partnerDetails?.crNumber,
-        sharePercentage: sharePercentage
-          ? parseFloat(sharePercentage)
-          : user.partnerDetails?.sharePercentage,
-        contractStartDate: contractStartDate
-          ? new Date(contractStartDate)
-          : user.partnerDetails?.contractStartDate,
-        contractEndDate: contractEndDate
-          ? new Date(contractEndDate)
-          : user.partnerDetails?.contractEndDate,
-        commissionRate: commissionRate
-          ? parseFloat(commissionRate)
-          : user.partnerDetails?.commissionRate,
-        specializations:
-          specializations || user.partnerDetails?.specializations || [],
-        serviceAreas: serviceAreas || user.partnerDetails?.serviceAreas || [],
-        languages: languages || user.partnerDetails?.languages || [],
-        availability:
-          availability || user.partnerDetails?.availability || "available",
       };
     } else if (user.role === "admin") {
       updateData.adminDetails = {

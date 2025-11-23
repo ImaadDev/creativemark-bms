@@ -49,12 +49,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
   return (
     <>
-      <header className="sticky top-0 z-20 backdrop-blur-sm lg:rounded-3xl"
-              style={{
-                background: 'linear-gradient(135deg, #242021 0%, #2a2422 50%, #242021 100%)',
-                borderBottom: '1px solid rgba(255, 209, 122, 0.2)',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
-              }}>
+      <header className="sticky top-0 z-20 bg-[#292422] border-b border-gray-700">
         <div className="flex items-center justify-between h-18 sm:h-20 lg:h-22 px-6 sm:px-8 lg:px-12">
           
           {/* Left Section */}
@@ -62,7 +57,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             {/* Mobile Menu Toggle */}
             <button
               onClick={onToggleSidebar}
-              className="lg:hidden p-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:scale-105"
+              className="lg:hidden p-3 hover:bg-gray-800 transition-colors"
               style={{ color: '#ffd17a' }}
               aria-label="Toggle sidebar"
             >
@@ -94,7 +89,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             {currentUser?.role === 'client' && (
               <button
                 onClick={() => setShowHelpModal(true)}
-                className="p-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:scale-105"
+                className="p-3 hover:bg-gray-800 transition-colors"
                 style={{ color: '#ffd17a' }}
                 aria-label={t('navigation.helpSupport')}
               >
@@ -113,7 +108,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className={`flex items-center p-2 sm:p-3 rounded-xl transition-all duration-300 hover:bg-white/10 ${isRTL ? 'space-x-reverse space-x-2 sm:space-x-3' : 'space-x-2 sm:space-x-3'}`}
+                className={`flex items-center p-2 sm:p-3 hover:bg-gray-800 transition-colors ${isRTL ? 'space-x-reverse space-x-2 sm:space-x-3' : 'space-x-2 sm:space-x-3'}`}
                 style={{ color: '#ffd17a' }}
               >
                 {/* Avatar */}
@@ -137,11 +132,11 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
               </button>
 
               {showUserMenu && (
-                <div className={`absolute mt-2 w-64 sm:w-72 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 py-4 z-30 ${isRTL ? 'left-0' : 'right-0'} max-w-[calc(100vw-2rem)]`}>
+                <div className={`absolute mt-2 w-64 sm:w-72 bg-white border border-gray-200 py-4 z-30 ${isRTL ? 'left-0' : 'right-0'} max-w-[calc(100vw-2rem)]`}>
                   <div className="px-4 pb-3 border-b border-gray-200/50">
                     <button
                       onClick={() => setShowUserMenu(false)}
-                      className={`flex items-center w-full p-2 rounded-xl hover:bg-gray-50 transition-colors ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}
+                      className={`flex items-center w-full p-2 hover:bg-gray-50 transition-colors ${isRTL ? 'space-x-reverse space-x-3' : 'space-x-3'}`}
                     >
                       <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200">
                         {currentUser?.profilePicture ? (
@@ -187,7 +182,7 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
                       <span className="text-sm font-medium text-blue-900">{refreshing ? t('messages.refreshing') : t('navigation.refreshProfile')}</span>
                     </button>
 
-                    <div className="border-t border-gray-200/50 my-2"></div>
+                    <div className="border-t border-gray-200 my-2"></div>
 
                     <button
                       onClick={handleLogout}
@@ -206,8 +201,8 @@ export default function Navbar({ onToggleSidebar, isSidebarOpen }) {
 
       {/* Help Modal */}
       {showHelpModal && currentUser?.role === 'client' && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden animate-in zoom-in duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-hidden">
             {/* Modal content here - same as your previous implementation */}
           </div>
         </div>

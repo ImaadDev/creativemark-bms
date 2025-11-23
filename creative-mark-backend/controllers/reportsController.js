@@ -14,13 +14,11 @@ export const getDashboardAnalytics = async (req, res) => {
     const [
       totalApplications,
       totalClients,
-      totalEmployees,
-      totalPartners
+      totalEmployees
     ] = await Promise.all([
       Application.countDocuments(),
       User.countDocuments({ role: "client" }),
-      User.countDocuments({ role: { $in: ["employee", "admin"] } }),
-      User.countDocuments({ role: "partner" })
+      User.countDocuments({ role: { $in: ["employee", "admin"] } })
     ]);
 
     // Get application status breakdown
@@ -61,16 +59,6 @@ export const getDashboardAnalytics = async (req, res) => {
       {
         $group: {
           _id: "$serviceType",
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-
-    // Get partner type breakdown
-    const partnerTypeBreakdown = await Application.aggregate([
-      {
-        $group: {
-          _id: "$partnerType",
           count: { $sum: 1 }
         }
       }
@@ -231,8 +219,7 @@ export const getDashboardAnalytics = async (req, res) => {
         overview: {
           totalApplications,
           totalClients,
-          totalEmployees,
-          totalPartners
+          totalEmployees
         },
         statusBreakdown: statusBreakdown.map(item => ({
           status: item._id,
@@ -245,10 +232,6 @@ export const getDashboardAnalytics = async (req, res) => {
         })),
         serviceTypeBreakdown: serviceTypeBreakdown.map(item => ({
           serviceType: item._id,
-          count: item.count
-        })),
-        partnerTypeBreakdown: partnerTypeBreakdown.map(item => ({
-          partnerType: item._id,
           count: item.count
         })),
         recentApplications: recentApplications.map(app => ({
@@ -344,7 +327,6 @@ export const getApplicationReports = async (req, res) => {
         nationality: app.userId.nationality
       },
       serviceType: app.serviceType,
-      partnerType: app.partnerType,
       status: app.status,
       assignedEmployees: app.assignedEmployees.map(assignment => ({
         id: assignment.employeeId._id,

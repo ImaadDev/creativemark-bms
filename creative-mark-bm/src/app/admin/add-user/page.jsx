@@ -17,6 +17,7 @@ import {
   FaSpinner,
   FaCamera,
   FaCheck,
+  FaCheckCircle,
   FaExclamationTriangle,
   FaUserCircle,
   FaIdCard,
@@ -50,64 +51,12 @@ export default function AddUserPage() {
     profilePicture: null,
     // Employee fields
     hireDate: '',
-    salary: '',
-    manager: '',
     permissions: [],
     workLocation: '',
     emergencyContact: '',
-    // Partner fields
-    partnerId: '',
-    partnerType: '',
-    contractStartDate: '',
-    contractEndDate: '',
-    commissionRate: '',
-    specializations: [],
-    serviceAreas: [],
-    languages: [],
-    availability: 'available',
-      // Partnership Information
-      partnershipType: '',
-      clientEngagementManager: '',
-    // Partner Information
-    legalEntityName: '',
-    legalFormOfEntity: '',
-    businessAddress: '',
-    // General Manager / Director Details
-    title: '',
-    gmFullName: '',
-    gmDateOfBirth: '',
-    countryOfBirth: '',
-    gmNationality: '',
-    passportNumber: '',
-    passportCountryOfIssue: '',
-    gender: '',
-    gmEmail: '',
-    gmMobileNumber: '',
-    // Incorporation & Contact Details
-    incorporationDocumentsEmail: '',
-    billingAddress: '',
-    officeAddress: '',
-    buildingName: '',
-    city: '',
-    streetDistrict: '',
-    postalZipCode: '',
-    country: '',
-    // Banking Details
-    bankName: '',
-    beneficiaryAccountName: '',
-    bankAccountNumber: '',
-    iban: '',
-    swiftCode: '',
-    bankStreetAddress: '',
-    bankCity: '',
-    accountsContactPerson: '',
-    trn: '',
-    // Required Documents
-    companyRegistrationTradeLicense: null,
-    generalManagerDirectorPassport: null,
-    vatCertificate: null,
     // Common fields
-    userRole: 'employee'
+    userRole: 'employee',
+    autoApprove: false
   });
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState('');
@@ -126,7 +75,6 @@ export default function AddUserPage() {
 
   const userRoles = [
     { value: 'employee', label: t('forms.employee'), icon: '👤' },
-    { value: 'partner', label: t('forms.externalPartner'), icon: '🤝' },
     { value: 'admin', label: t('forms.administrator'), icon: '👑' }
   ];
 
@@ -140,23 +88,6 @@ export default function AddUserPage() {
   ];
 
 
-  const partnerTypes = [
-    t('admin.addUserManagement.partnerTypes.serviceProvider'),
-    t('admin.addUserManagement.partnerTypes.consultant'),
-    t('admin.addUserManagement.partnerTypes.freelancer'),
-    t('admin.addUserManagement.partnerTypes.agency'),
-    t('admin.addUserManagement.partnerTypes.vendor'),
-    t('admin.addUserManagement.partnerTypes.contractor')
-  ];
-
-  const partnershipTypes = [
-    t('admin.addUserManagement.partnershipTypes.freeZoneCompany'),
-    t('admin.addUserManagement.partnershipTypes.branchOffice'),
-    t('admin.addUserManagement.partnershipTypes.representativeOffice'),
-    t('admin.addUserManagement.partnershipTypes.subsidiary'),
-    t('admin.addUserManagement.partnershipTypes.jointVenture'),
-    t('admin.addUserManagement.partnershipTypes.other')
-  ];
 
   const legalFormOfEntityOptions = [
     t('admin.addUserManagement.legalFormOfEntity.limitedLiabilityCompany'),
@@ -369,8 +300,11 @@ export default function AddUserPage() {
       const response = await createUser(userData);
       
       if (response.success) {
-        setSuccess(`${formData.userRole === 'employee' ? t('admin.addUserManagement.employeeCreatedSuccessfully') : formData.userRole === 'partner' ? t('admin.addUserManagement.partnerCreatedSuccessfully') : t('admin.addUserManagement.userCreatedSuccessfully')}`);
-        
+        const successMessage = response.autoApproved
+          ? `${formData.userRole === 'employee' ? t('admin.addUserManagement.employeeCreatedSuccessfully') : t('admin.addUserManagement.userCreatedSuccessfully')} and auto-approved`
+          : `${formData.userRole === 'employee' ? t('admin.addUserManagement.employeeCreatedSuccessfully') : t('admin.addUserManagement.userCreatedSuccessfully')}. Email verification sent`;
+        setSuccess(successMessage);
+
         // Reset form after success
         setTimeout(() => {
           router.push('/admin/all-employees');
@@ -438,105 +372,49 @@ export default function AddUserPage() {
       profilePicture: null,
       // Employee fields
       hireDate: '',
-      salary: '',
-      manager: '',
       permissions: [],
       workLocation: '',
       emergencyContact: '',
-      // Partner fields
-      partnerId: '',
-      partnerType: '',
-      contractStartDate: '',
-      contractEndDate: '',
-      commissionRate: '',
-      specializations: [],
-      serviceAreas: [],
-      languages: [],
-      availability: 'available',
-      // Partnership Information
-      partnershipType: '',
-      clientEngagementManager: '',
-      // Partner Information
-      legalEntityName: '',
-      legalFormOfEntity: '',
-      businessAddress: '',
-      // General Manager / Director Details
-      title: '',
-      gmFullName: '',
-      gmDateOfBirth: '',
-      countryOfBirth: '',
-      gmNationality: '',
-      passportNumber: '',
-      passportCountryOfIssue: '',
-      gender: '',
-      gmEmail: '',
-      gmMobileNumber: '',
-      // Incorporation & Contact Details
-      incorporationDocumentsEmail: '',
-      billingAddress: '',
-      officeAddress: '',
-      buildingName: '',
-      city: '',
-      streetDistrict: '',
-      postalZipCode: '',
-      country: '',
-      // Banking Details
-      bankName: '',
-      beneficiaryAccountName: '',
-      bankAccountNumber: '',
-      iban: '',
-      swiftCode: '',
-      bankStreetAddress: '',
-      bankCity: '',
-      accountsContactPerson: '',
-      trn: '',
-      // Required Documents
-      companyRegistrationTradeLicense: null,
-      generalManagerDirectorPassport: null,
-      vatCertificate: null,
       // Common fields
-      userRole: 'employee'
+      userRole: 'employee',
+      autoApprove: false
     });
     setErrors({});
     setSuccess('');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
-        {/* Modern Header */}
-        <div className="mb-6 sm:mb-8 lg:mb-12">
-          <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 sm:gap-6">
-            <div className="flex-1">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#242021] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg sm:shadow-xl">
-                  <FaUserPlus className="text-lg sm:text-2xl text-white" />
-                </div>
-                <div className="flex-1">
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
-                    {t('forms.addNewUser')}
-                  </h1>
-                  <p className="text-sm sm:text-base lg:text-lg text-gray-600 mt-1 sm:mt-2">
-                    {t('forms.createNewAccount')}
-                  </p>
-                </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#242021] flex items-center justify-center">
+                <FaUserPlus className="text-xl text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {t('forms.addNewUser')}
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  {t('forms.createNewAccount')}
+                </p>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-              <button
-                onClick={handleCancel}
-                className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 text-gray-600 hover:text-gray-900 hover:bg-white/80 border border-gray-200 hover:border-gray-300 rounded-lg sm:rounded-xl transition-all duration-200 font-medium text-sm sm:text-base"
-              >
-                <FaTimes className="mr-2 text-sm sm:text-base" />
-                {t('buttons.cancel')}
-              </button>
-            </div>
+            <button
+              onClick={handleCancel}
+              className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 hover:border-gray-400 transition-colors font-medium"
+            >
+              <FaTimes className="mr-2" />
+              {t('buttons.cancel')}
+            </button>
           </div>
         </div>
 
         {/* Progress Indicator */}
-        <div className="mb-6 sm:mb-8">
-          <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+        <div className="mb-6">
+          <div className="bg-white border border-gray-200 p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-gray-900">{t('descriptions.formProgress')}</h3>
               <span className="text-sm font-medium text-gray-600">
@@ -547,15 +425,15 @@ export default function AddUserPage() {
                 })()}
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div 
-                className="bg-gradient-to-r from-[#ffd17a] to-[#ffd17a]/80 h-3 rounded-full transition-all duration-500 ease-out"
-                style={{ 
+            <div className="w-full bg-gray-200 h-2">
+              <div
+                className="bg-[#ffd17a] h-2 transition-all duration-500"
+                style={{
                   width: `${(() => {
                     const fields = ['fullName', 'email', 'password', 'userRole'];
                     const completed = fields.filter(field => formData[field] && formData[field].toString().trim() !== '').length;
                     return (completed / fields.length) * 100;
-                  })()}%` 
+                  })()}%`
                 }}
               ></div>
             </div>
@@ -564,53 +442,56 @@ export default function AddUserPage() {
 
         {/* Success Message */}
         {success && (
-          <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-200 rounded-xl sm:rounded-2xl flex items-center shadow-lg">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
-              <FaCheck className="text-white text-sm sm:text-lg" />
+          <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 flex items-center">
+            <div className="w-10 h-10 bg-emerald-500 flex items-center justify-center mr-4 flex-shrink-0">
+              <FaCheck className="text-white" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-emerald-900 font-bold text-sm sm:text-lg">{success}</p>
-              <p className="text-emerald-700 text-xs sm:text-sm">{t('admin.addUserManagement.redirectingToUsersList')}</p>
+            <div className="flex-1">
+              <p className="text-emerald-900 font-bold">{success}</p>
+              <p className="text-emerald-700 text-sm">{t('admin.addUserManagement.redirectingToUsersList')}</p>
             </div>
           </div>
         )}
 
         {/* Error Message */}
         {errors.general && (
-          <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-xl sm:rounded-2xl flex items-center shadow-lg">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
-              <FaExclamationTriangle className="text-white text-sm sm:text-lg" />
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 flex items-center">
+            <div className="w-10 h-10 bg-red-500 flex items-center justify-center mr-4 flex-shrink-0">
+              <FaExclamationTriangle className="text-white" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-red-900 font-bold text-sm sm:text-lg">{t('admin.addUserManagement.error')}</p>
-              <p className="text-red-700 text-xs sm:text-sm">{errors.general}</p>
+            <div className="flex-1">
+              <p className="text-red-900 font-bold">{t('admin.addUserManagement.error')}</p>
+              <p className="text-red-700 text-sm">{errors.general}</p>
             </div>
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Profile Picture Section */}
             <div className="lg:col-span-1">
-              <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6">{t('admin.addUserManagement.profilePicture')}</h3>
-                
+              <div className="bg-white border border-gray-200 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+                  <FaCamera className="mr-2 text-gray-600" />
+                  {t('admin.addUserManagement.profilePicture')}
+                </h3>
+
                 <div className="text-center">
                   <div className="relative inline-block">
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-[#ffd17a]/20 to-[#ffd17a]/30 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm border-4 border-white">
+                    <div className="w-32 h-32 bg-gray-100 border-2 border-gray-200 flex items-center justify-center">
                       {formData.profilePicture ? (
                         <img
                           src={URL.createObjectURL(formData.profilePicture)}
                           alt="Profile"
-                          className="w-full h-full object-cover rounded-lg sm:rounded-xl"
+                          className="w-full h-full object-cover"
                         />
                       ) : (
-                        <FaUserCircle className="text-4xl sm:text-6xl text-[#242021]" />
+                        <FaUserCircle className="text-6xl text-gray-400" />
                       )}
                     </div>
-                    
-                    <label className="absolute -bottom-2 -right-2 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/90 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:from-[#ffd17a]/90 hover:to-[#ffd17a] transition-all duration-200">
-                      <FaCamera className="text-[#242021] text-xs sm:text-sm" />
+
+                    <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-[#ffd17a] flex items-center justify-center cursor-pointer hover:bg-[#ffd17a]/90 transition-colors">
+                      <FaCamera className="text-[#242021] text-sm" />
                       <input
                         type="file"
                         accept="image/*"
@@ -619,7 +500,7 @@ export default function AddUserPage() {
                       />
                     </label>
                   </div>
-                  
+
                   <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {t('admin.addUserManagement.uploadProfilePhoto')}
@@ -628,7 +509,7 @@ export default function AddUserPage() {
                       type="file"
                       accept="image/*"
                       onChange={handleFileChange}
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#ffd17a] file:text-[#242021] hover:file:bg-[#ffd17a]/90"
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-medium file:bg-[#ffd17a] file:text-[#242021] hover:file:bg-[#ffd17a]/90"
                     />
                     {errors.profilePicture && (
                       <p className="text-red-600 text-sm mt-1">{errors.profilePicture}</p>
@@ -644,27 +525,28 @@ export default function AddUserPage() {
           </div>
 
           {/* Form Fields */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div className="lg:col-span-2 space-y-6">
               {/* Account Information */}
-              <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                  <FaLock className="mr-3 text-[#242021]" />
+              <div className="bg-white border border-gray-200 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+                  <FaLock className="mr-2 text-gray-600" />
                   {t('admin.addUserManagement.accountInformation')}
                 </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-{t('forms.userRole')} *
+                    <label className="block text-sm font-medium text-gray-700 mb-4 flex items-center">
+                      <FaUser className="mr-2 text-gray-500" />
+                      {t('forms.userRole')} *
                     </label>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {userRoles.map(role => (
                         <label
                           key={role.value}
-                          className={`relative flex flex-col items-center p-4 sm:p-6 border-2 rounded-xl sm:rounded-2xl cursor-pointer transition-all duration-300 group hover:scale-105 ${
+                          className={`relative flex flex-col items-center p-6 border-2 cursor-pointer transition-colors ${
                             formData.userRole === role.value
-                              ? 'border-[#ffd17a] bg-gradient-to-br from-[#ffd17a]/10 to-[#ffd17a]/20 shadow-lg shadow-[#ffd17a]/20'
-                              : 'border-gray-200 hover:border-[#ffd17a]/50 hover:bg-gradient-to-br hover:from-gray-50 hover:to-white shadow-sm hover:shadow-lg'
+                              ? 'border-[#ffd17a] bg-[#ffd17a]/5'
+                              : 'border-gray-200 hover:border-[#ffd17a]/50 hover:bg-gray-50'
                           }`}
                         >
                           <input
@@ -676,28 +558,27 @@ export default function AddUserPage() {
                             className="sr-only"
                           />
                           <div className="flex flex-col items-center text-center space-y-3">
-                            <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                            <div className={`w-16 h-16 flex items-center justify-center ${
                               formData.userRole === role.value
-                                ? 'bg-gradient-to-br from-[#ffd17a] to-[#ffd17a]/90 shadow-lg'
-                                : 'bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-[#ffd17a]/20 group-hover:to-[#ffd17a]/30'
+                                ? 'bg-[#ffd17a]'
+                                : 'bg-gray-100'
                             }`}>
-                              <span className="text-lg sm:text-2xl">{role.icon}</span>
+                              <span className="text-2xl">{role.icon}</span>
                             </div>
                             <div>
-                              <div className={`text-sm sm:text-lg font-bold transition-colors duration-200 ${
+                              <div className={`text-lg font-bold ${
                                 formData.userRole === role.value ? 'text-[#242021]' : 'text-gray-900'
                               }`}>
                                 {role.label}
                               </div>
-                              <div className="text-xs sm:text-sm text-gray-500 mt-1">
+                              <div className="text-sm text-gray-500 mt-1">
                                 {role.value === 'employee' && t('admin.addUserManagement.internalTeamMember')}
-                                {role.value === 'partner' && t('admin.addUserManagement.externalServiceProvider')}
                                 {role.value === 'admin' && t('admin.addUserManagement.systemAdministrator')}
                               </div>
                             </div>
                           </div>
                           {formData.userRole === role.value && (
-                            <div className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 bg-[#ffd17a] rounded-full flex items-center justify-center">
+                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-[#ffd17a] flex items-center justify-center">
                               <FaCheck className="text-[#242021] text-xs" />
                             </div>
                           )}
@@ -709,9 +590,32 @@ export default function AddUserPage() {
                     )}
                   </div>
 
+                  {/* Auto Approve Checkbox */}
+                  <div className="md:col-span-2">
+                    <label className="flex items-center space-x-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="autoApprove"
+                        checked={formData.autoApprove}
+                        onChange={(e) => setFormData(prev => ({ ...prev, autoApprove: e.target.checked }))}
+                        className="w-4 h-4 text-[#ffd17a] border-gray-300 focus:ring-[#ffd17a] focus:ring-2"
+                      />
+                      <div className="flex items-center">
+                        <FaCheckCircle className="mr-2 text-gray-500" />
+                        <span className="text-sm font-medium text-gray-700">
+                          Auto-approve user (skip email verification)
+                        </span>
+                      </div>
+                    </label>
+                    <p className="text-xs text-gray-500 mt-1 ml-7">
+                      If checked, user will be automatically verified and can log in immediately
+                    </p>
+                  </div>
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-{t('forms.password')} *
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                      <FaLock className="mr-2 text-gray-500" />
+                      {t('forms.password')} *
                     </label>
                     <div className="relative">
                       <input
@@ -719,8 +623,8 @@ export default function AddUserPage() {
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 pr-12 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                          errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
+                        className={`w-full px-4 py-3 border focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-colors pr-12 bg-white text-sm ${
+                          errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-300'
                         }`}
                         placeholder={t('admin.addUserManagement.enterPassword')}
                       />
@@ -738,8 +642,9 @@ export default function AddUserPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-{t('forms.confirmPassword')} *
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                      <FaLock className="mr-2 text-gray-500" />
+                      {t('forms.confirmPassword')} *
                     </label>
                     <div className="relative">
                       <input
@@ -747,8 +652,8 @@ export default function AddUserPage() {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
-                        className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 pr-12 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                          errors.confirmPassword ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
+                        className={`w-full px-4 py-3 border focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-colors pr-12 bg-white text-sm ${
+                          errors.confirmPassword ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-300'
                         }`}
                         placeholder={t('admin.addUserManagement.confirmPassword')}
                       />
@@ -768,15 +673,16 @@ export default function AddUserPage() {
               </div>
 
               {/* Personal Information */}
-              <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                  <FaUser className="mr-3 text-[#242021]" />
+              <div className="bg-white border border-gray-200 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+                  <FaUser className="mr-2 text-gray-600" />
                   {t('admin.addUserManagement.personalInformation')}
                 </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                      <FaUser className="mr-2 text-gray-500" />
                       {t('forms.fullName')} *
                     </label>
                     <input
@@ -784,8 +690,8 @@ export default function AddUserPage() {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                        errors.fullName ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
+                      className={`w-full px-4 py-3 border focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-colors bg-white text-sm ${
+                        errors.fullName ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-300'
                       }`}
                       placeholder={t('admin.addUserManagement.enterFullName')}
                     />
@@ -795,8 +701,8 @@ export default function AddUserPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <FaEnvelope className="inline mr-2" />
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                      <FaEnvelope className="mr-2 text-gray-500" />
                       Email Address *
                     </label>
                     <input
@@ -804,8 +710,8 @@ export default function AddUserPage() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                        errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
+                      className={`w-full px-4 py-3 border focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-colors bg-white text-sm ${
+                        errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-300'
                       }`}
                       placeholder={t('admin.addUserManagement.enterEmailAddress')}
                     />
@@ -818,25 +724,25 @@ export default function AddUserPage() {
 
               {/* Employment Information - Only show for employees */}
               {formData.userRole === 'employee' && (
-                <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                  <FaUserTie className="mr-3 text-[#242021]" />
+                <div className="bg-white border border-gray-200 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+                  <FaUserTie className="mr-2 text-gray-600" />
                   {t('admin.addUserManagement.employmentInformation')}
                 </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <FaBuilding className="inline mr-2" />
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                      <FaBuilding className="mr-2 text-gray-500" />
                       Department
                     </label>
                     <select
                       name="department"
                       value={formData.department}
                       onChange={handleInputChange}
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                        errors.department ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
+                      className={`w-full px-4 py-3 border focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-colors bg-white text-sm ${
+                        errors.department ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-300'
                       }`}
                     >
                       <option value="">Select department</option>
@@ -850,7 +756,8 @@ export default function AddUserPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                      <FaIdCard className="mr-2 text-gray-500" />
                       Position
                     </label>
                     <input
@@ -858,8 +765,8 @@ export default function AddUserPage() {
                       name="position"
                       value={formData.position}
                       onChange={handleInputChange}
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                        errors.position ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
+                      className={`w-full px-4 py-3 border focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-colors bg-white text-sm ${
+                        errors.position ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-300'
                       }`}
                       placeholder={t('admin.addUserManagement.enterPosition')}
                     />
@@ -869,8 +776,8 @@ export default function AddUserPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <FaCalendar className="inline mr-2" />
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                      <FaCalendar className="mr-2 text-gray-500" />
                       Hire Date
                     </label>
                     <input
@@ -878,8 +785,8 @@ export default function AddUserPage() {
                       name="hireDate"
                       value={formData.hireDate}
                       onChange={handleInputChange}
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                        errors.hireDate ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
+                      className={`w-full px-4 py-3 border focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-colors bg-white text-sm ${
+                        errors.hireDate ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-300'
                       }`}
                     />
                     {errors.hireDate && (
@@ -888,15 +795,16 @@ export default function AddUserPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                      <FaMapMarkerAlt className="mr-2 text-gray-500" />
                       Work Location
                     </label>
                     <select
                       name="workLocation"
                       value={formData.workLocation}
                       onChange={handleInputChange}
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                        errors.workLocation ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
+                      className={`w-full px-4 py-3 border focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-colors bg-white text-sm ${
+                        errors.workLocation ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-300'
                       }`}
                     >
                       <option value="">Select work location</option>
@@ -909,710 +817,45 @@ export default function AddUserPage() {
                     )}
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Manager
-                    </label>
-                    <input
-                      type="text"
-                      name="manager"
-                      value={formData.manager}
-                      onChange={handleInputChange}
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                        errors.manager ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
-                      }`}
-                      placeholder={t('admin.addUserManagement.enterManagerName')}
-                    />
-                    {errors.manager && (
-                      <p className="text-red-600 text-sm mt-1">{errors.manager}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Salary
-                    </label>
-                    <input
-                      type="number"
-                      name="salary"
-                      value={formData.salary}
-                      onChange={handleInputChange}
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base ${
-                        errors.salary ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200'
-                      }`}
-                      placeholder={t('admin.addUserManagement.enterSalary')}
-                    />
-                    {errors.salary && (
-                      <p className="text-red-600 text-sm mt-1">{errors.salary}</p>
-                    )}
-                  </div>
                 </div>
                 </div>
               )}
 
-
-              {/* Partnership Information - Only show for partners */}
-              {formData.userRole === 'partner' && (
-                <>
-                  {/* Partnership Information Section */}
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaHandshake className="mr-3 text-[#242021]" />
-                      Partnership Information
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Partnership Type *
-                        </label>
-                        <select
-                          name="partnershipType"
-                          value={formData.partnershipType}
-                          onChange={handleInputChange}
-                          className={getInputClassName('partnershipType', "w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base")}
-                        >
-                          <option value="">Select partnership type</option>
-                          {partnershipTypes.map(type => (
-                            <option key={type} value={type}>{type}</option>
-                          ))}
-                        </select>
-                        {errors.partnershipType && (
-                          <p className="text-red-600 text-sm mt-1">{errors.partnershipType}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Client Engagement Manager *
-                        </label>
-                        <input
-                          type="text"
-                          name="clientEngagementManager"
-                          value={formData.clientEngagementManager}
-                          onChange={handleInputChange}
-                          className={getInputClassName('clientEngagementManager', "w-full px-3 sm:px-4 py-3 sm:py-4 border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base")}
-                          placeholder={t('admin.addUserManagement.enterClientEngagementManagerName')}
-                        />
-                        {errors.clientEngagementManager && (
-                          <p className="text-red-600 text-sm mt-1">{errors.clientEngagementManager}</p>
-                        )}
-                      </div>
-
-                    </div>
-                  </div>
-
-                  {/* Partner Information Section */}
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaBuilding className="mr-3 text-[#242021]" />
-                      Partner Information
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Legal Entity Name (as per Trade License / Incorporation Certificate) *
-                        </label>
-                        <input
-                          type="text"
-                          name="legalEntityName"
-                          value={formData.legalEntityName}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterLegalEntityName')}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Legal Form of Entity *
-                        </label>
-                        <select
-                          name="legalFormOfEntity"
-                          value={formData.legalFormOfEntity}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                        >
-                          <option value="">Select legal form</option>
-                          {legalFormOfEntityOptions.map(form => (
-                            <option key={form} value={form}>{form}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Business Address *
-                        </label>
-                        <input
-                          type="text"
-                          name="businessAddress"
-                          value={formData.businessAddress}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterBusinessAddress')}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* General Manager / Director Details Section */}
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaUserTie className="mr-3 text-[#242021]" />
-                      General Manager / Director Details
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Title *
-                        </label>
-                        <select
-                          name="title"
-                          value={formData.title}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                        >
-                          <option value="">Select title</option>
-                          {titleOptions.map(title => (
-                            <option key={title} value={title}>{title}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="gmFullName"
-                          value={formData.gmFullName}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterFullName')}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Date of Birth (dd-MMM-yyyy) *
-                        </label>
-                        <input
-                          type="date"
-                          name="gmDateOfBirth"
-                          value={formData.gmDateOfBirth}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                        />
-                      </div>
-
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Country of Birth *
-                        </label>
-                        <input
-                          type="text"
-                          name="countryOfBirth"
-                          value={formData.countryOfBirth}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterCountryOfBirth')}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Nationality (GM) *
-                        </label>
-                        <input
-                          type="text"
-                          name="gmNationality"
-                          value={formData.gmNationality}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterNationality')}
-                        />
-                      </div>
-
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Passport Number *
-                        </label>
-                        <input
-                          type="text"
-                          name="passportNumber"
-                          value={formData.passportNumber}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterPassportNumber')}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Passport Country of Issue *
-                        </label>
-                        <input
-                          type="text"
-                          name="passportCountryOfIssue"
-                          value={formData.passportCountryOfIssue}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter passport country of issue"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Gender *
-                        </label>
-                        <select
-                          name="gender"
-                          value={formData.gender}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                        >
-                          <option value="">Select gender</option>
-                          {genderOptions.map(gender => (
-                            <option key={gender} value={gender}>{gender}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Email *
-                        </label>
-                        <input
-                          type="email"
-                          name="gmEmail"
-                          value={formData.gmEmail}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterEmailAddress')}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Mobile Number (+966…) *
-                        </label>
-                        <input
-                          type="tel"
-                          name="gmMobileNumber"
-                          value={formData.gmMobileNumber}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="+966 50 123 4567"
-                        />
-                      </div>
-
-                    </div>
-                  </div>
-
-                  {/* Incorporation & Contact Details Section */}
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaMapMarkerAlt className="mr-3 text-[#242021]" />
-                      Incorporation & Contact Details
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Incorporation Documents Email *
-                        </label>
-                        <input
-                          type="email"
-                          name="incorporationDocumentsEmail"
-                          value={formData.incorporationDocumentsEmail}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter incorporation documents email"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Billing Address *
-                        </label>
-                        <input
-                          type="text"
-                          name="billingAddress"
-                          value={formData.billingAddress}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter billing address"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Office Address *
-                        </label>
-                        <input
-                          type="text"
-                          name="officeAddress"
-                          value={formData.officeAddress}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter office address"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Building Name
-                        </label>
-                        <input
-                          type="text"
-                          name="buildingName"
-                          value={formData.buildingName}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter building name"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          City *
-                        </label>
-                        <input
-                          type="text"
-                          name="city"
-                          value={formData.city}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterCity')}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Street/District *
-                        </label>
-                        <input
-                          type="text"
-                          name="streetDistrict"
-                          value={formData.streetDistrict}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter street/district"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Postal / Zip Code *
-                        </label>
-                        <input
-                          type="text"
-                          name="postalZipCode"
-                          value={formData.postalZipCode}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter postal/zip code"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Country *
-                        </label>
-                        <input
-                          type="text"
-                          name="country"
-                          value={formData.country}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterCountry')}
-                        />
-                      </div>
-
-                    </div>
-                  </div>
-
-                  {/* Banking Details Section */}
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaBuilding className="mr-3 text-[#242021]" />
-                      Banking Details
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Bank Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="bankName"
-                          value={formData.bankName}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder={t('admin.addUserManagement.enterBankName')}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Beneficiary Account Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="beneficiaryAccountName"
-                          value={formData.beneficiaryAccountName}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter beneficiary account name"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Bank Account Number *
-                        </label>
-                        <input
-                          type="text"
-                          name="bankAccountNumber"
-                          value={formData.bankAccountNumber}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter bank account number"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          IBAN *
-                        </label>
-                        <input
-                          type="text"
-                          name="iban"
-                          value={formData.iban}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter IBAN"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          SWIFT Code *
-                        </label>
-                        <input
-                          type="text"
-                          name="swiftCode"
-                          value={formData.swiftCode}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter SWIFT code"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Bank Street Address *
-                        </label>
-                        <input
-                          type="text"
-                          name="bankStreetAddress"
-                          value={formData.bankStreetAddress}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter bank street address"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Bank City *
-                        </label>
-                        <input
-                          type="text"
-                          name="bankCity"
-                          value={formData.bankCity}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter bank city"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Accounts Contact Person *
-                        </label>
-                        <input
-                          type="text"
-                          name="accountsContactPerson"
-                          value={formData.accountsContactPerson}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter accounts contact person"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          TRN (Tax Registration Number)
-                        </label>
-                        <input
-                          type="text"
-                          name="trn"
-                          value={formData.trn}
-                          onChange={handleInputChange}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md text-sm sm:text-base"
-                          placeholder="Enter TRN"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Required Documents Section */}
-                  <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                      <FaFileAlt className="mr-3 text-[#242021]" />
-                      Required Documents (Uploads)
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Company Registration / Trade License Copy *
-                        </label>
-                        <input
-                          type="file"
-                          name="companyRegistrationTradeLicense"
-                          onChange={handleFileChange}
-                          accept=".pdf,.doc,.docx"
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#ffd17a] file:text-[#242021] hover:file:bg-[#ffd17a]/90 text-sm sm:text-base"
-                        />
-                        {errors.companyRegistrationTradeLicense && (
-                          <p className="text-red-600 text-sm mt-1">{errors.companyRegistrationTradeLicense}</p>
-                        )}
-                        <p className="text-xs text-gray-500 mt-2">
-                          Max size: 10MB. Formats: PDF, DOC, DOCX
-                        </p>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          General Manager / Director Passport Copy *
-                        </label>
-                        <input
-                          type="file"
-                          name="generalManagerDirectorPassport"
-                          onChange={handleFileChange}
-                          accept=".pdf,.doc,.docx"
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#ffd17a] file:text-[#242021] hover:file:bg-[#ffd17a]/90 text-sm sm:text-base"
-                        />
-                        {errors.generalManagerDirectorPassport && (
-                          <p className="text-red-600 text-sm mt-1">{errors.generalManagerDirectorPassport}</p>
-                        )}
-                        <p className="text-xs text-gray-500 mt-2">
-                          Max size: 10MB. Formats: PDF, DOC, DOCX
-                        </p>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          VAT Certificate *
-                        </label>
-                        <input
-                          type="file"
-                          name="vatCertificate"
-                          onChange={handleFileChange}
-                          accept=".pdf,.doc,.docx"
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ffd17a]/20 focus:border-[#ffd17a] transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#ffd17a] file:text-[#242021] hover:file:bg-[#ffd17a]/90 text-sm sm:text-base"
-                        />
-                        {errors.vatCertificate && (
-                          <p className="text-red-600 text-sm mt-1">{errors.vatCertificate}</p>
-                        )}
-                        <p className="text-xs text-gray-500 mt-2">
-                          Max size: 10MB. Formats: PDF, DOC, DOCX
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-
             </div>
 
-            {/* Action Buttons - Mobile */}
-            <div className="lg:hidden mt-6 sm:mt-8 space-y-3 sm:space-y-4">
-              <button
-                type="submit"
-                disabled={saving}
-                className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-[#242021] text-white hover:bg-[#242021]/90 disabled:opacity-50 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100 text-sm sm:text-base"
-              >
-                {saving ? (
-                  <>
-                    <FaSpinner className="animate-spin mr-2 text-sm sm:text-base" />
-                    {t('buttons.creating')} {formData.userRole === 'employee' ? t('forms.employee') : formData.userRole === 'partner' ? t('forms.externalPartner') : t('forms.administrator')}...
-                  </>
-                ) : (
-                  <>
-                    <FaSave className="mr-2 text-sm sm:text-base" />
-                    {t('buttons.create')} {formData.userRole === 'employee' ? t('forms.employee') : formData.userRole === 'partner' ? t('forms.externalPartner') : t('forms.administrator')}
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={handleReset}
-                className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base"
-              >
-                <FaTimes className="mr-2 text-sm sm:text-base" />
-                {t('admin.addUserManagement.resetForm')}
-              </button>
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="w-full flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-white/90 backdrop-blur-sm border-2 border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl text-sm sm:text-base"
-              >
-{t('buttons.cancel')}
-              </button>
-            </div>
-
-            {/* Action Buttons - Desktop */}
-            <div className="hidden lg:block mt-8 sm:mt-12">
-              <div className="flex items-center justify-end space-x-4 sm:space-x-6">
+            {/* Action Buttons */}
+            <div className="mt-8">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4">
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="flex items-center px-4 sm:px-8 py-3 sm:py-4 bg-white/90 backdrop-blur-sm border-2 border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl text-sm sm:text-base"
+                  className="flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors font-medium"
                 >
-  {t('buttons.cancel')}
+                  <FaTimes className="mr-2" />
+                  {t('buttons.cancel')}
                 </button>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="flex items-center px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base"
+                  className="flex items-center justify-center px-6 py-3 bg-gray-600 text-white hover:bg-gray-700 transition-colors font-medium"
                 >
-                  <FaTimes className="mr-2 text-sm sm:text-base" />
+                  <FaTimes className="mr-2" />
                   {t('admin.addUserManagement.resetForm')}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex items-center px-4 sm:px-8 py-3 sm:py-4 bg-[#242021] text-white hover:bg-[#242021]/90 disabled:opacity-50 transition-all duration-200 font-medium rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100 text-sm sm:text-base"
+                  className="flex items-center justify-center px-6 py-3 bg-[#242021] text-white hover:bg-[#242021]/90 disabled:opacity-50 transition-colors font-medium"
                 >
                   {saving ? (
                     <>
-                      <FaSpinner className="animate-spin mr-2 text-sm sm:text-base" />
-{t('buttons.creating')} {formData.userRole === 'employee' ? t('forms.employee') : formData.userRole === 'partner' ? t('forms.externalPartner') : t('forms.administrator')}...
+                      <FaSpinner className="animate-spin mr-2" />
+                      {t('buttons.creating')} {formData.userRole === 'employee' ? t('forms.employee') : t('forms.administrator')}...
                     </>
                   ) : (
                     <>
-                      <FaSave className="mr-2 text-sm sm:text-base" />
-                      {t('buttons.create')} {formData.userRole === 'employee' ? t('forms.employee') : formData.userRole === 'partner' ? t('forms.externalPartner') : t('forms.administrator')}
+                      <FaSave className="mr-2" />
+                      {t('buttons.create')} {formData.userRole === 'employee' ? t('forms.employee') : t('forms.administrator')}
                     </>
                   )}
                 </button>

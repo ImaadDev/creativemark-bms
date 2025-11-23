@@ -45,9 +45,6 @@ const getNextMonthDate = () => {
  * @param   {Object} req.body - Application data
  * @param   {string} req.body.userId - User ID (required)
  * @param   {string} req.body.serviceType - Service type (required)
- * @param   {string} [req.body.partnerType] - Partner type (default: "sole")
- * @param   {string} [req.body.partnerId] - Saudi partner ID
- * @param   {string} [req.body.saudiPartnerName] - Saudi partner name
  * @param   {number} [req.body.externalCompaniesCount] - Number of external companies (default: 0)
  * @param   {Array} [req.body.externalCompaniesDetails] - External companies details
  * @param   {number} [req.body.projectEstimatedValue] - Project estimated value
@@ -72,9 +69,6 @@ export const addApplication = async (req, res) => {
     const {
       userId, // This should be ignored for security - use authenticated user instead
       serviceType,
-      partnerType,
-      partnerId,
-      saudiPartnerName,
       externalCompaniesCount,
       externalCompaniesDetails,
       projectEstimatedValue,
@@ -189,9 +183,6 @@ export const addApplication = async (req, res) => {
       const application = new Application({
         userId: authenticatedUserId, // Use authenticated user ID for security
         serviceType,
-        partnerType: partnerType || "sole",
-        partnerId: partnerId || null,
-        saudiPartnerName: saudiPartnerName || null,
         externalCompaniesCount: externalCompaniesCount || 0,
         externalCompaniesDetails: parsedExternalCompanies,
         projectEstimatedValue,
@@ -308,8 +299,6 @@ if (io) {
           applicationId: application._id,
           status: application.status,
           serviceType: application.serviceType,
-          partnerType: application.partnerType,
-          saudiPartnerName: application.saudiPartnerName,
           externalCompaniesCount: application.externalCompaniesCount,
           needVirtualOffice: application.needVirtualOffice,
           approvedBy: application.approvedBy,
@@ -714,7 +703,6 @@ export const getApplication = async (req, res) => {
 
     const application = await Application.findById(applicationId)
       .populate("userId", "fullName email phone role nationality")
-      .populate("partnerId", "fullName email phone role")
       .populate("assignedEmployees.employeeId", "fullName email role position")
       .populate("approvedBy", "fullName email role")
       .populate("documents")
@@ -741,14 +729,6 @@ export const getApplication = async (req, res) => {
       },
       serviceDetails: {
         serviceType: application.serviceType,
-        partnerType: application.partnerType,
-        partner: application.partnerId ? {
-          id: application.partnerId._id,
-          name: application.partnerId.fullName,
-          email: application.partnerId.email,
-          phone: application.partnerId.phone
-        } : null,
-        saudiPartnerName: application.saudiPartnerName,
         externalCompaniesCount: application.externalCompaniesCount,
         externalCompaniesDetails: application.externalCompaniesDetails,
         projectEstimatedValue: application.projectEstimatedValue,
@@ -831,7 +811,7 @@ export const getUserApplications = async (req, res) => {
       .populate("documents")
       .populate("timeline")
       .populate("payment")
-      .select('_id serviceType status partnerType externalCompaniesCount needVirtualOffice createdAt updatedAt')
+      .select('_id serviceType status externalCompaniesCount needVirtualOffice createdAt updatedAt')
       .sort({ createdAt: -1 }); // Most recent first
 
     console.log("Found applications for user:", applications.length, applications);
@@ -842,7 +822,6 @@ export const getUserApplications = async (req, res) => {
       serviceType: app.serviceType, // Keep direct field for compatibility
       serviceDetails: {
         serviceType: app.serviceType,
-        partnerType: app.partnerType,
         externalCompaniesCount: app.externalCompaniesCount,
         needVirtualOffice: app.needVirtualOffice
       },
@@ -884,7 +863,6 @@ export const getAllApplications = async (req, res) => {
   try {
     const applications = await Application.find()
       .populate("userId", "fullName email phone role nationality")
-      .populate("partnerId", "fullName email phone role")
       .populate("assignedEmployees.employeeId", "fullName email role position")
       .populate("approvedBy", "fullName email role")
       .populate("documents")
@@ -916,15 +894,6 @@ export const getAllApplications = async (req, res) => {
         : null,
       serviceDetails: {
         serviceType: app.serviceType,
-        partnerType: app.partnerType,
-        partner: app.partnerId
-          ? {
-              id: app.partnerId._id,
-              name: app.partnerId.fullName,
-              email: app.partnerId.email,
-              phone: app.partnerId.phone,
-            }
-          : null,
         externalCompaniesCount: app.externalCompaniesCount,
         externalCompaniesDetails: app.externalCompaniesDetails,
         projectEstimatedValue: app.projectEstimatedValue,
@@ -1049,7 +1018,6 @@ export const assignApplicationToEmployees = async (req, res) => {
       { new: true, runValidators: true }
     ).populate([
       { path: 'userId', select: 'name email phone nationality role' },
-      { path: 'partnerId', select: 'name email phone nationality role' },
       { path: 'assignedEmployees.employeeId', select: 'name email phone role' },
       { path: 'approvedBy', select: 'name email role' }
     ]);
@@ -1127,15 +1095,6 @@ export const assignApplicationToEmployees = async (req, res) => {
       },
       serviceDetails: {
         serviceType: updatedApplication.serviceType,
-        partnerType: updatedApplication.partnerType,
-        partner: updatedApplication.partnerId ? {
-          id: updatedApplication.partnerId._id,
-          name: updatedApplication.partnerId.name,
-          email: updatedApplication.partnerId.email,
-          phone: updatedApplication.partnerId.phone,
-          role: updatedApplication.partnerId.role,
-          nationality: updatedApplication.partnerId.nationality,
-        } : null,
         externalCompaniesCount: updatedApplication.externalCompaniesCount,
         externalCompaniesDetails: updatedApplication.externalCompaniesDetails,
         familyMembers: updatedApplication.familyMembers,
@@ -1297,7 +1256,6 @@ export const getAssignedApplications = async (req, res) => {
       "assignedEmployees.employeeId": employeeId
     })
       .populate("userId", "fullName email phone nationality")
-      .populate("partnerId", "fullName email phone nationality")
       .populate("assignedEmployees.employeeId", "fullName email role position")
       .populate("approvedBy", "fullName email role")
       .populate("documents")
@@ -1321,7 +1279,6 @@ export const getAssignedApplications = async (req, res) => {
       clientName: app.userId?.fullName || app.userId?.name || 'Unknown Client',
       clientEmail: app.userId?.email,
       clientPhone: app.userId?.phone,
-      partnerType: app.partnerType,
       externalCompaniesCount: app.externalCompaniesCount,
       needVirtualOffice: app.needVirtualOffice,
       companyArrangesExternalCompanies: app.companyArrangesExternalCompanies,

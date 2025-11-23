@@ -110,7 +110,7 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 p-6 lg:p-10">
+    <div className="min-h-screen bg-stone-50 p-6 lg:p-10">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
@@ -120,13 +120,13 @@ export default function InvoicesPage() {
               <p className="text-stone-600">{t('invoices.description')}</p>
             </div>
             <div className="flex gap-3">
-              <button className="px-5 py-2.5 bg-white text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-all flex items-center gap-2 border border-stone-200 shadow-sm">
+              <button className="px-5 py-2.5 bg-white text-stone-700 font-medium hover:bg-stone-50 transition-colors flex items-center gap-2 border border-stone-200">
                 <FaDownload />
                 {t('invoices.export')}
               </button>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-5 py-2.5 bg-stone-800 text-white font-medium rounded-lg shadow hover:bg-stone-900 transition-all flex items-center gap-2"
+                className="px-5 py-2.5 bg-stone-800 text-white font-medium hover:bg-stone-900 transition-colors flex items-center gap-2"
               >
                 <FaPlus />
                 {t('invoices.newInvoice')}
@@ -136,7 +136,7 @@ export default function InvoicesPage() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-            <div className="bg-gradient-to-br from-stone-800 to-stone-900 rounded-xl p-6 shadow-lg text-white">
+            <div className="bg-gradient-to-br from-stone-800 to-stone-900 p-6 text-white">
               <div className="flex items-center justify-between mb-3">
                 <FaFileInvoice className="text-2xl opacity-80" />
               </div>
@@ -144,31 +144,31 @@ export default function InvoicesPage() {
               <p className="text-3xl font-bold">{stats.total}</p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow border border-stone-200">
+            <div className="bg-white p-6 border border-stone-200">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-emerald-500"></div>
                 <p className="text-stone-600 text-xs font-semibold uppercase tracking-wider">{t('invoices.paid')}</p>
               </div>
               <p className="text-3xl font-bold text-stone-900">{stats.paid}</p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow border border-stone-200">
+            <div className="bg-white p-6 border border-stone-200">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-3 h-3 bg-rose-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-rose-500"></div>
                 <p className="text-stone-600 text-xs font-semibold uppercase tracking-wider">{t('invoices.unpaid')}</p>
               </div>
               <p className="text-3xl font-bold text-stone-900">{stats.unpaid}</p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow border border-stone-200">
+            <div className="bg-white p-6 border border-stone-200">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-amber-500"></div>
                 <p className="text-stone-600 text-xs font-semibold uppercase tracking-wider">{t('invoices.pending')}</p>
               </div>
               <p className="text-3xl font-bold text-stone-900">{stats.pending}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 shadow border border-amber-200">
+            <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-6 border border-amber-200">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-amber-700 text-xl font-bold">$</span>
                 <p className="text-amber-700 text-xs font-semibold uppercase tracking-wider">{t('invoices.revenue')}</p>
@@ -186,7 +186,7 @@ export default function InvoicesPage() {
                 placeholder={t('invoices.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white text-stone-900 placeholder-stone-400 pl-12 pr-4 py-3 rounded-lg border border-stone-200 focus:border-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-200 transition-all"
+                className="w-full bg-white text-stone-900 placeholder-stone-400 pl-12 pr-4 py-3 border border-stone-200 focus:border-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-200 transition-colors"
               />
             </div>
             <div className="relative">
@@ -194,7 +194,7 @@ export default function InvoicesPage() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="bg-white text-stone-900 pl-12 pr-8 py-3 rounded-lg border border-stone-200 focus:border-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-200 transition-all appearance-none cursor-pointer min-w-[180px]"
+                className="bg-white text-stone-900 pl-12 pr-8 py-3 border border-stone-200 focus:border-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-200 transition-colors appearance-none cursor-pointer min-w-[180px]"
               >
                 <option value="all">{t('invoices.allStatus')}</option>
                 <option value="paid">{t('invoices.paid')}</option>
@@ -207,14 +207,14 @@ export default function InvoicesPage() {
 
         {/* Invoices Table/Cards */}
         {loading ? (
-          <div className="bg-white rounded-xl border border-stone-200 p-12 text-center shadow">
-            <div className="w-16 h-16 border-4 border-stone-800 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="bg-white border border-stone-200 p-12 text-center">
+            <div className="w-16 h-16 border-4 border-stone-800 border-t-transparent animate-spin mx-auto mb-4"></div>
             <h3 className="text-stone-900 text-lg font-semibold mb-2">{t('invoices.loadingInvoices')}</h3>
             <p className="text-stone-600">{t('invoices.pleaseWait')}</p>
           </div>
         ) : filteredInvoices.length === 0 ? (
-          <div className="bg-white rounded-xl border border-stone-200 p-12 text-center shadow">
-            <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white border border-stone-200 p-12 text-center">
+            <div className="w-16 h-16 bg-stone-100 flex items-center justify-center mx-auto mb-4">
               <FaFileInvoice className="text-stone-400 text-2xl" />
             </div>
             <h3 className="text-stone-900 text-lg font-semibold mb-2">{t('invoices.noInvoicesFound')}</h3>
@@ -223,7 +223,7 @@ export default function InvoicesPage() {
         ) : (
           <>
             {/* Desktop Table View */}
-            <div className="hidden lg:block bg-white rounded-xl shadow border border-stone-200 overflow-hidden">
+            <div className="hidden lg:block bg-white border border-stone-200 overflow-hidden">
               <table className="w-full">
                 <thead>
                   <tr className="bg-stone-50 border-b border-stone-200">
@@ -240,13 +240,13 @@ export default function InvoicesPage() {
                   {filteredInvoices.map((invoice, index) => (
                     <tr key={invoice._id || invoice.id || index} className="hover:bg-stone-50 transition-colors">
                       <td className="py-4 px-6">
-                        <span className="font-semibold text-stone-900 bg-stone-100 px-3 py-1 rounded-md text-sm">
+                        <span className="font-semibold text-stone-900 bg-stone-100 px-3 py-1 text-sm">
                           {invoice.invoiceNumber || invoice._id}
                         </span>
                       </td>
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 bg-gradient-to-br from-stone-700 to-stone-900 rounded-lg flex items-center justify-center font-semibold text-white text-sm">
+                          <div className="w-9 h-9 bg-gradient-to-br from-stone-700 to-stone-900 flex items-center justify-center font-semibold text-white text-sm">
                             {invoice.clientName.charAt(0).toUpperCase()}
                           </div>
                           <span className="text-stone-900 font-medium">{invoice.clientName}</span>
@@ -263,7 +263,7 @@ export default function InvoicesPage() {
                       </td>
                       <td className="py-4 px-6">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          className={`px-3 py-1 text-xs font-semibold ${
                             invoice.status === "Paid"
                               ? "bg-emerald-100 text-emerald-700"
                               : invoice.status === "Unpaid"
@@ -278,21 +278,21 @@ export default function InvoicesPage() {
                         <div className="flex justify-center gap-2">
                           <button
                             onClick={() => handleViewInvoice(invoice._id)}
-                            className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-lg transition-all"
+                            className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
                             title="View"
                           >
                             <FaEye />
                           </button>
                           <button
                             onClick={() => handleEditInvoice(invoice._id)}
-                            className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-lg transition-all"
+                            className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
                             title="Edit"
                           >
                             <FaEdit />
                           </button>
                           <button
                             onClick={() => handleDeleteInvoice(invoice._id)}
-                            className="p-2 text-rose-600 hover:text-white hover:bg-rose-600 rounded-lg transition-all"
+                            className="p-2 text-rose-600 hover:text-white hover:bg-rose-600 transition-colors"
                             title="Delete"
                           >
                             <FaTrash />
@@ -310,11 +310,11 @@ export default function InvoicesPage() {
               {filteredInvoices.map((invoice) => (
                 <div
                   key={invoice._id}
-                  className="bg-white rounded-xl p-5 border border-stone-200 shadow hover:shadow-md transition-all"
+                  className="bg-white p-5 border border-stone-200 hover:border-stone-300 transition-colors"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-stone-700 to-stone-900 rounded-lg flex items-center justify-center font-semibold text-white">
+                      <div className="w-10 h-10 bg-gradient-to-br from-stone-700 to-stone-900 flex items-center justify-center font-semibold text-white">
                         {invoice.clientName.charAt(0).toUpperCase()}
                       </div>
                       <div>
@@ -323,7 +323,7 @@ export default function InvoicesPage() {
                       </div>
                     </div>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      className={`px-3 py-1 text-xs font-semibold ${
                         invoice.status === "Paid"
                           ? "bg-emerald-100 text-emerald-700"
                           : invoice.status === "Unpaid"
@@ -353,21 +353,21 @@ export default function InvoicesPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleViewInvoice(invoice._id)}
-                      className="flex-1 py-2.5 bg-stone-100 text-stone-900 font-medium rounded-lg hover:bg-stone-200 transition-all flex items-center justify-center gap-2"
+                      className="flex-1 py-2.5 bg-stone-100 text-stone-900 font-medium hover:bg-stone-200 transition-colors flex items-center justify-center gap-2"
                     >
                       <FaEye />
                       View
                     </button>
                     <button
                       onClick={() => handleEditInvoice(invoice._id)}
-                      className="flex-1 py-2.5 bg-stone-100 text-stone-900 font-medium rounded-lg hover:bg-stone-200 transition-all flex items-center justify-center gap-2"
+                      className="flex-1 py-2.5 bg-stone-100 text-stone-900 font-medium hover:bg-stone-200 transition-colors flex items-center justify-center gap-2"
                     >
                       <FaEdit />
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteInvoice(invoice._id)}
-                      className="py-2.5 px-4 bg-rose-100 text-rose-700 font-medium rounded-lg hover:bg-rose-200 transition-all"
+                      className="py-2.5 px-4 bg-rose-100 text-rose-700 font-medium hover:bg-rose-200 transition-colors"
                     >
                       <FaTrash />
                     </button>

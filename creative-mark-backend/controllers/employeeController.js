@@ -610,7 +610,6 @@ export const getEmployeeApplicationDetails = async (req, res) => {
       "assignedEmployees.employeeId": employeeId
     })
     .populate('userId', 'fullName email phone nationality')
-    .populate('partnerId', 'fullName email phone')
     .populate('approvedBy', 'fullName')
     .populate('assignedEmployees.employeeId', 'fullName email');
 
@@ -637,7 +636,6 @@ export const getEmployeeApplicationDetails = async (req, res) => {
       _id: application._id,
       id: application._id,
       serviceType: application.serviceType,
-      partnerType: application.partnerType,
       externalCompaniesCount: application.externalCompaniesCount,
       externalCompaniesDetails: application.externalCompaniesDetails,
       projectEstimatedValue: application.projectEstimatedValue,
@@ -655,12 +653,6 @@ export const getEmployeeApplicationDetails = async (req, res) => {
         phone: application.userId.phone,
         nationality: application.userId.nationality
       },
-      partner: application.partnerId ? {
-        _id: application.partnerId._id,
-        name: application.partnerId.fullName,
-        email: application.partnerId.email,
-        phone: application.partnerId.phone
-      } : null,
       createdAt: application.createdAt,
       updatedAt: application.updatedAt,
       timeline: timeline.map(entry => ({
@@ -768,7 +760,6 @@ export const updateEmployeeApplicationData = async (req, res) => {
       { new: true, runValidators: true }
     )
       .populate("userId", "fullName email phone nationality")
-      .populate("partnerId", "fullName email phone")
       .populate("approvedBy", "fullName")
       .populate("assignedEmployees.employeeId", "fullName email");
 
@@ -840,7 +831,6 @@ export const updateEmployeeApplicationData = async (req, res) => {
       _id: updatedApplication._id,
       id: updatedApplication._id,
       serviceType: updatedApplication.serviceType,
-      partnerType: updatedApplication.partnerType,
       externalCompaniesCount: updatedApplication.externalCompaniesCount,
       externalCompaniesDetails: updatedApplication.externalCompaniesDetails,
       projectEstimatedValue: updatedApplication.projectEstimatedValue,
@@ -859,14 +849,6 @@ export const updateEmployeeApplicationData = async (req, res) => {
         phone: updatedApplication.userId.phone,
         nationality: updatedApplication.userId.nationality,
       },
-      partner: updatedApplication.partnerId
-        ? {
-            _id: updatedApplication.partnerId._id,
-            name: updatedApplication.partnerId.fullName,
-            email: updatedApplication.partnerId.email,
-            phone: updatedApplication.partnerId.phone,
-          }
-        : null,
       createdAt: updatedApplication.createdAt,
       updatedAt: updatedApplication.updatedAt,
       timeline: timeline.map((entry) => ({

@@ -112,10 +112,6 @@ function LoginForm() {
             console.log("Frontend: Redirecting to /employee");
             router.push('/employee');
             break;
-          case 'partner':
-            console.log("Frontend: Redirecting to /partner");
-            router.push('/partner');
-            break;
           case 'admin':
             console.log("Frontend: Redirecting to /admin");
             router.push('/admin');

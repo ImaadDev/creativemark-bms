@@ -33,34 +33,11 @@ const UserSchema = new mongoose.Schema({
   },
 
   // Role-based system
-  role: { 
-    type: String, 
-    enum: ["client", "employee", "partner", "admin"], 
+  role: {
+    type: String,
+    enum: ["client", "employee", "admin"],
     default: "client",
     index: true
-  },
-
-  // Partner-specific fields
-  partnerDetails: {
-    partnerId: { type: String, unique: true, sparse: true }, // Unique partner ID
-    partnerType: { 
-      type: String, 
-      enum: ["consultant", "contractor", "vendor", "freelancer", "agency"] 
-    },
-    companyName: String,
-    crNumber: String,   // Commercial Registration Number
-    sharePercentage: Number,
-    contractStartDate: Date,
-    contractEndDate: Date,
-    commissionRate: Number,
-    specializations: [String],
-    serviceAreas: [String],
-    languages: [String],
-    availability: { 
-      type: String, 
-      enum: ["available", "busy", "unavailable"], 
-      default: "available" 
-    },
   },
 
   // Employee-specific fields
@@ -124,27 +101,26 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
  * Generate unique ID for different user types
  */
 UserSchema.statics.generateUniqueId = async function (role) {
-  const prefix = role === 'employee' ? 'CR' : role === 'partner' ? 'PT' : 'AD';
+  const prefix = role === 'employee' ? 'CR' : 'AD';
   let counter = 1;
   let uniqueId;
-  
+
   do {
     const randomNum = Math.floor(Math.random() * 90000) + 10000; // 5-digit random number
     uniqueId = `${prefix}-${randomNum}`;
-    
+
     // Check if this ID already exists
     const existingUser = await this.findOne({
       $or: [
         { 'employeeDetails.employeeId': uniqueId },
-        { 'partnerDetails.partnerId': uniqueId },
         { 'adminDetails.adminId': uniqueId }
       ]
     });
-    
+
     if (!existingUser) break;
     counter++;
   } while (counter < 100); // Prevent infinite loop
-  
+
   return uniqueId;
 };
 

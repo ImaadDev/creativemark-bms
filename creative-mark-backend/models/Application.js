@@ -3,8 +3,6 @@ import mongoose from "mongoose";
 const ApplicationSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Client
-    partnerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Saudi Partner (if any)
-    saudiPartnerName: { type: String }, // Saudi Partner Name (if any)
 
     serviceType: {
       type: String,
@@ -18,12 +16,6 @@ const ApplicationSchema = new mongoose.Schema(
         "advertising",
       ],
       required: true,
-    },
-
-    partnerType: {
-      type: String,
-      enum: ["sole", "withSaudiPartner"],
-      default: "sole",
     },
 
     externalCompaniesCount: { type: Number, default: 0 },

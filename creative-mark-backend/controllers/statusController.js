@@ -4,9 +4,9 @@ import User from "../models/User.js";
 import Notification from "../models/Notification.js";
 
 /**
- * @desc    Update application status (for employees and partners)
+ * @desc    Update application status (for employees)
  * @route   PATCH /api/status/:applicationId/update
- * @access  Private (Employee/Partner)
+ * @access  Private (Employee)
  * @param   {string} req.params.applicationId - Application ID
  * @param   {string} req.body.status - New status
  * @param   {string} req.body.note - Optional note

@@ -102,13 +102,13 @@ const InternalRequestsContent = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
-        <div className="text-center bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-6 sm:p-8">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center bg-white border border-gray-200 p-6 sm:p-8">
           <div className="relative">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#242021] rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#242021] flex items-center justify-center mx-auto mb-4">
               <FaSpinner className="animate-spin text-lg sm:text-2xl text-white" />
             </div>
-            <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-[#ffd17a] border-2 border-white rounded-full"></div>
+            <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-[#ffd17a] border-2 border-white"></div>
           </div>
           <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{t('admin.requests.loadingApplications')}</h3>
           <p className="text-sm sm:text-base text-gray-600">{t('admin.requests.fetchingData')}</p>
@@ -120,10 +120,10 @@ const InternalRequestsContent = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {/* Modern Header - Matching Admin Dashboard Style */}
-          <div className="relative overflow-hidden bg-[#242021] text-white shadow-2xl rounded-xl sm:rounded-2xl mb-6 sm:mb-8">
+          <div className="relative overflow-hidden bg-[#242021] text-white mb-6 sm:mb-8">
             <div className="absolute inset-0 bg-black/10"></div>
             <div className="absolute top-0 right-0 w-48 sm:w-64 lg:w-96 h-48 sm:h-64 lg:h-96 bg-[#ffd17a]/10 transform rotate-45 translate-x-16 sm:translate-x-24 lg:translate-x-32 -translate-y-16 sm:-translate-y-24 lg:-translate-y-32"></div>
             <div className="absolute bottom-0 left-0 w-32 sm:w-48 lg:w-64 h-32 sm:h-48 lg:h-64 bg-[#ffd17a]/10 transform -rotate-45 -translate-x-8 sm:-translate-x-12 lg:-translate-x-16 translate-y-8 sm:translate-y-12 lg:translate-y-16"></div>
@@ -132,7 +132,7 @@ const InternalRequestsContent = () => {
               <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 sm:gap-6">
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#ffd17a] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg sm:shadow-xl">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#ffd17a] flex items-center justify-center">
                       <FaFileAlt className="text-lg sm:text-2xl text-[#242021]" />
                     </div>
                     <div className="flex-1">
@@ -146,15 +146,15 @@ const InternalRequestsContent = () => {
                   </div>
                   
                   <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 mt-4 sm:mt-6">
-                    <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
+                    <div className="flex items-center gap-1 sm:gap-2 bg-white/10 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2">
                       <FaList className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
                       <span className="text-xs sm:text-sm">{t('admin.requests.totalApplications')}: 24</span>
                     </div>
-                    <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
+                    <div className="flex items-center gap-1 sm:gap-2 bg-white/10 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2">
                       <FaClock className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
                       <span className="text-xs sm:text-sm">{t('admin.requests.pending')}: 8</span>
                     </div>
-                    <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg">
+                    <div className="flex items-center gap-1 sm:gap-2 bg-white/10 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2">
                       <FaTasks className="text-[#ffd17a] text-xs sm:text-sm lg:text-base" />
                       <span className="text-xs sm:text-sm">{t('admin.requests.inProgress')}: 12</span>
                     </div>
@@ -162,16 +162,16 @@ const InternalRequestsContent = () => {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                  <button 
+                  <button
                     onClick={() => setRefreshTrigger(prev => prev + 1)}
-                    className="group bg-[#ffd17a] rounded-lg sm:rounded-xl text-[#242021] px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-[#ffd17a]/90 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
+                    className="group bg-[#ffd17a] text-[#242021] px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-[#ffd17a]/90 transition-colors flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
                   >
                     <FaSpinner className="text-sm sm:text-base group-hover:rotate-180 transition-transform duration-300" />
                     {t('admin.requests.refreshData')}
                   </button>
-                  <button 
+                  <button
                     onClick={() => setShowAssignModal(true)}
-                    className="group bg-white/10 rounded-lg sm:rounded-xl backdrop-blur-sm text-white border border-white/20 px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
+                    className="group bg-white/10 text-white border border-white/20 px-4 sm:px-6 py-2.5 sm:py-3 font-semibold hover:bg-white/20 transition-colors flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
                   >
                     <FaUserCheck className="text-sm sm:text-base" />
                     {t('admin.requests.assignRequest')}
@@ -185,7 +185,7 @@ const InternalRequestsContent = () => {
           <div className="mb-6 sm:mb-8">
             {/* Desktop Tabs */}
             <div className="hidden md:block">
-              <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-2">
+              <div className="bg-white border border-gray-200 p-2">
                 <nav className="flex space-x-2">
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
@@ -194,9 +194,9 @@ const InternalRequestsContent = () => {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`group relative flex-1 flex items-center justify-center py-4 px-6 rounded-lg font-medium text-sm transition-all duration-300 ${
+                        className={`group relative flex-1 flex items-center justify-center py-4 px-6 font-medium text-sm transition-colors ${
                           isActive
-                            ? 'bg-[#242021] text-white shadow-lg'
+                            ? 'bg-[#242021] text-white'
                             : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                         }`}
                       >
@@ -205,9 +205,9 @@ const InternalRequestsContent = () => {
                           <div className="text-left">
                             <div className="flex items-center space-x-2">
                               <span>{tab.label}</span>
-                              <span className={`px-2 py-1 text-xs font-bold rounded-full ${
-                                isActive 
-                                  ? 'bg-white/20 text-white' 
+                              <span className={`px-2 py-1 text-xs font-bold ${
+                                isActive
+                                  ? 'bg-white/20 text-white'
                                   : 'bg-gray-100 text-gray-600'
                               }`}>
                                 {tab.count}
@@ -229,7 +229,7 @@ const InternalRequestsContent = () => {
 
             {/* Mobile Tabs - Horizontal Scroll */}
             <div className="md:hidden">
-              <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-2">
+              <div className="bg-white border border-gray-200 p-2">
                 <div className="flex space-x-2 overflow-x-auto scrollbar-hide pb-1">
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
@@ -238,17 +238,17 @@ const InternalRequestsContent = () => {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`flex-shrink-0 flex flex-col items-center py-3 px-4 rounded-lg font-medium text-sm transition-all duration-300 min-w-[120px] ${
+                        className={`flex-shrink-0 flex flex-col items-center py-3 px-4 font-medium text-sm transition-colors min-w-[120px] ${
                           isActive
-                            ? 'bg-[#242021] text-white shadow-lg'
+                            ? 'bg-[#242021] text-white'
                             : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                         }`}
                       >
                         <Icon className={`text-lg mb-2 ${isActive ? 'text-white' : 'text-gray-500'}`} />
                         <span className="text-xs whitespace-nowrap">{tab.label}</span>
-                        <span className={`px-2 py-0.5 text-xs font-bold rounded-full mt-1 ${
-                          isActive 
-                            ? 'bg-white/20 text-white' 
+                        <span className={`px-2 py-0.5 text-xs font-bold mt-1 ${
+                          isActive
+                            ? 'bg-white/20 text-white'
                             : 'bg-gray-100 text-gray-600'
                         }`}>
                           {tab.count}
@@ -262,7 +262,7 @@ const InternalRequestsContent = () => {
           </div>
 
           {/* Main Content Area */}
-          <div className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl overflow-hidden">
+          <div className="bg-white border border-gray-200 overflow-hidden">
             <RequestsList
               statusFilter={getStatusFilter(activeTab)}
               assignedFilter={activeTab === 'assigned' ? 'me' : 'all'}
@@ -308,9 +308,9 @@ const InternalRequestsPage = () => {
   
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
-        <div className="text-center bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200/50 rounded-xl sm:rounded-2xl p-6 sm:p-8">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#242021] rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center bg-white border border-gray-200 p-6 sm:p-8">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#242021] flex items-center justify-center mx-auto mb-4">
             <FaSpinner className="animate-spin text-lg sm:text-2xl text-white" />
           </div>
           <p className="text-sm sm:text-base text-gray-600">{t('admin.requests.loadingRequests')}</p>
