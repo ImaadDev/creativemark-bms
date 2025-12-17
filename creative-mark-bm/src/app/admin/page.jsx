@@ -52,6 +52,7 @@ import { getAllClients } from '../../services/clientApi';
 import { paymentService } from '../../services/paymentService';
 import { FullPageLoading } from '../../components/LoadingSpinner';
 import { useTranslation } from '../../i18n/TranslationContext';
+import { getInvoices } from '@/services/invoiceService';
 
 export default function InternalDashboard() {
   const { t } = useTranslation();
@@ -96,6 +97,7 @@ export default function InternalDashboard() {
   const [ticketStats, setTicketStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [invoices , setInvoices] = useState([]);
 
   useEffect(() => {
     loadDashboardData();
@@ -235,6 +237,93 @@ export default function InternalDashboard() {
     }
   };
 
+
+     useEffect(() => {
+        fetchInvoices();
+      }, []);
+    
+      const fetchInvoices = async () => {
+        try {
+          setLoading(true);
+          const data = await getInvoices();
+          console.log("📋 Fetched invoices:", data);
+    
+          if (data && data.invoices && Array.isArray(data.invoices)) {
+            setInvoices(data.invoices);
+          } else if (Array.isArray(data)) {
+            setInvoices(data);
+          } else {
+            console.warn("Unexpected data format from server:", data);
+            setInvoices([]);
+          }
+        } catch (error) {
+          console.error("Error fetching invoices:", error);
+          if (error.response?.data) {
+            console.error("Server error details:", error.response.data);
+          }
+          setInvoices([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+
+      const now = new Date();
+const currentMonth = now.getMonth();
+const currentYear = now.getFullYear();
+
+const thisMonthRevenue = invoices
+  .filter(i => {
+    const date = new Date(i.createdAt);
+    return (
+      i.status === "Paid" &&
+      date.getMonth() === currentMonth &&
+      date.getFullYear() === currentYear
+    );
+  })
+  .reduce(
+    (sum, i) => sum + (i.grandTotal || i.totalAmount || 0),
+    0
+  );
+
+
+  const pendingThisMonthRevenue = invoices
+  .filter(i => {
+    const date = new Date(i.createdAt);
+    return (
+      i.status === "Pending" &&
+      date.getMonth() === currentMonth &&
+      date.getFullYear() === currentYear
+    );
+  })
+  .reduce(
+    (sum, i) => sum + (i.grandTotal || i.totalAmount || 0),
+    0
+  );
+
+
+
+     
+
+    const InvoiceStats = {
+  totalInvoices: invoices.length,
+
+  totalRevenue: invoices.reduce((sum, i) => sum + (i.grandTotal || i.totalAmount || 0),0),
+
+  pendingRevenue:  invoices.filter((i) => i.status === "Pending").reduce((sum , i) => sum + (i.grandTotal || 0), 0),
+
+   
+
+  approvedRevenue: invoices.filter((i) => i.status === "Paid").reduce((sum ,i) => sum +  (i.grandTotal || 0), 0),
+
+  thisMonthRevenue: thisMonthRevenue,
+  thisMonthPendingRevenue: pendingThisMonthRevenue,
+};
+
+console.log("Invoices Stats: ", InvoiceStats)
+
+
+
   const StatCard = ({ title, value, icon: Icon, color, onClick, trend, subtitle, isPrimary = false }) => (
     <div
       className={`group relative bg-white border border-gray-200 p-4 sm:p-6 cursor-pointer hover:border-gray-300 transition-colors ${
@@ -244,8 +333,8 @@ export default function InternalDashboard() {
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{title}</p>
-          <p className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-1 ${
+          <p className="text-xs font-medium text-gray-600 mb-1">{title}</p>
+          <p className={`text-xs lg:text-xl font-bold mb-1 ${
             isPrimary ? 'text-[#242021]' : 'text-gray-900'
           }`}>{value}</p>
           {subtitle && (
@@ -477,7 +566,7 @@ export default function InternalDashboard() {
           />
           <StatCard
             title={t('admin.monthlyRevenue')}
-            value={`$${stats.paymentStats.monthlyRevenue.toLocaleString()}`}
+            value={`SAR ${InvoiceStats.thisMonthRevenue.toLocaleString()}`}
             icon={FaDollarSign}
             color="emerald"
             subtitle={t('admin.thisMonth')}
@@ -499,7 +588,7 @@ export default function InternalDashboard() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <StatCard
             title={t('adminDashboard.totalRevenue')}
-            value={`$${stats.paymentStats.totalRevenue.toLocaleString()}`}
+            value={`SAR ${Math.floor(InvoiceStats.totalRevenue).toLocaleString()}`}
             icon={FaDollarSign}
             color="emerald"
             subtitle={t('adminDashboard.allTimeRevenue')}
@@ -507,7 +596,7 @@ export default function InternalDashboard() {
           />
           <StatCard
             title={t('adminDashboard.approvedRevenue')}
-            value={`$${stats.paymentStats.approvedRevenue.toLocaleString()}`}
+            value={`SAR ${Math.floor(InvoiceStats.approvedRevenue).toLocaleString()}`}
             icon={FaCheckCircle}
             color="green"
             subtitle={t('adminDashboard.verifiedPayments')}
@@ -515,7 +604,7 @@ export default function InternalDashboard() {
           />
           <StatCard
             title={t('adminDashboard.pendingRevenue')}
-            value={`$${stats.paymentStats.pendingRevenue.toLocaleString()}`}
+            value={`SAR ${Math.floor(InvoiceStats.pendingRevenue).toLocaleString()}`}
             icon={FaClock}
             color="yellow"
             subtitle={t('adminDashboard.awaitingPayment')}
@@ -523,7 +612,7 @@ export default function InternalDashboard() {
           />
           <StatCard
             title={t('adminDashboard.underReview')}
-            value={`$${stats.paymentStats.submittedRevenue.toLocaleString()}`}
+            value={`${InvoiceStats.totalInvoices.toLocaleString()}`}
             icon={FaExclamationTriangle}
             color="orange"
             subtitle={t('adminDashboard.pendingVerification')}
@@ -569,45 +658,7 @@ export default function InternalDashboard() {
           </div>
         )}
 
-        {/* Analytics & Performance Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
-          <StatCard
-            title={t('admin.conversionRate')}
-            value={`${stats.conversionRate}%`}
-            icon={FaPercent}
-            color="green"
-            subtitle={t('admin.successRate')}
-            trend={5}
-            onClick={() => router.push('/admin/reports')}
-          />
-          <StatCard
-            title={t('admin.avgProcessing')}
-            value={`${stats.avgProcessingTime} ${t('admin.days')}`}
-            icon={FaClock}
-            color="blue"
-            subtitle={t('admin.averageTime')}
-            trend={-12}
-            onClick={() => router.push('/admin/reports')}
-          />
-          <StatCard
-            title={t('admin.clientSatisfaction')}
-            value={`${stats.clientSatisfaction}/5`}
-            icon={FaThumbsUp}
-            color="emerald"
-            subtitle={t('admin.rating')}
-            trend={3}
-            onClick={() => router.push('/admin/reports')}
-          />
-          <StatCard
-            title={t('admin.monthlyGrowth')}
-            value={`${stats.monthlyGrowth}%`}
-            icon={FaArrowUp}
-            color="purple"
-            subtitle={t('admin.growthRate')}
-            trend={stats.monthlyGrowth}
-            onClick={() => router.push('/admin/reports')}
-          />
-        </div>
+     
 
         {/* Charts & Analytics Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
